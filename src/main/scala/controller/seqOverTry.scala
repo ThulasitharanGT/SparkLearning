@@ -11,7 +11,7 @@ object seqOverTry extends SparkOpener {
      // df.selectExpr("Item",explode(split($"CountryList',',')) as County","profit").show()
 
     // df.select(s"*",explode(split(df.col("CountryList"),','))).show()
-    df.select($"*",explode(split($"CountryList",","))).show()
+  //  df.select($"*",explode(split($"CountryList",","))).show() - not working in intelliji
 /*
 * in shell     df.select($"*",explode(split($"CountryList",","))).show()
 +------+-----------+------+---+
