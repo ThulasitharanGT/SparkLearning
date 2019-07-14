@@ -25,6 +25,15 @@ object SplittingOneColumnToMultiple extends SparkOpener {
     temp_df= temp_df.withColumn("Day",when(temp_df_no_employees_updated_splitted.getItem(0) > 31,31).otherwise(temp_df_no_employees_updated_splitted.getItem(0)))
     temp_df= temp_df.withColumn("Month",when(temp_df_no_employees_updated_splitted.getItem(1) >1 ,"Dec".toString()).otherwise(temp_df_no_employees_updated_splitted.getItem(1)) )
     temp_df.show()
+    // works in repl
+    //survey_df.as("a").join(temp_df.as("b"),$"a.id" === $"b.Day").show()
+   // survey_df.as("a").join(temp_df.as("b"),$"a.id" === $"b.Day","left").show()
+    survey_df.join(temp_df,survey_df.col("id") === temp_df.col("Day"),"left").show() // inteliji way
+
+
+    // multiple columns
+    //    survey_df.join(temp_df,survey_df.col("id") === temp_df.col("Day") && survey_df.col("id") === temp_df.col("Day"),"left").show() // inteliji way
+    // survey_df.as("a").join(temp_df.as("b"),$"a.id" === $"b.Day" && next on coldition ,"left").show()
   }
 
 }
