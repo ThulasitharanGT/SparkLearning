@@ -1,4 +1,4 @@
-package constants
+package org.constants
 
 object PathConstants {
   val INPUT_BASE_PATH = "D:\\study\\Project_1.0\\Input\\"

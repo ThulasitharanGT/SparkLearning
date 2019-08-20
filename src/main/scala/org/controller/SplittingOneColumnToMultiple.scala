@@ -1,12 +1,12 @@
-package controller
-import util.SparkOpener
+package org.controller
+import org.util.SparkOpener
 import org.apache.spark.sql.functions._
 
 object SplittingOneColumnToMultiple extends SparkOpener {
 
   def main(args: Array[String]): Unit = {
     val spark = SparkSessionLoc("SparkSession")
-    val survey_df = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load("D:\\study\\survey.csv") //.na.fill(" ")
+    val survey_df = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(System.getProperty("user.dir")+"\\Input\\survey.csv") //.na.fill(" ")
     survey_df.createOrReplaceTempView("survey_view")
 
    // spark.sql("select instr(no_employees,'-')    from survey_view where id = 1").show

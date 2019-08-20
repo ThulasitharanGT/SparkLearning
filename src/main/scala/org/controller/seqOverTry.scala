@@ -1,11 +1,11 @@
-package controller
-import util.SparkOpener
+package org.controller
+import org.util.SparkOpener
 import org.apache.spark.sql.functions._
 
 object seqOverTry extends SparkOpener {
   def main(args: Array[String]): Unit = {
     val spark = SparkSessionLoc("SparkSession")
-    val df=spark.read.format("csv").option("header","true").option("inferSchema","true").option("delimiter","|").load("D:\\study\\seq_over_try.txt")
+    val df=spark.read.format("csv").option("header","true").option("inferSchema","true").option("delimiter","|").load(System.getProperty("user.dir")+"\\Input\\seq_over_try.txt")
   // val df_temp=
 
      // df.selectExpr("Item",explode(split($"CountryList',',')) as County","profit").show()

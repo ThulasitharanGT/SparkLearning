@@ -1,4 +1,4 @@
-package controller
+package org.controller
 
 object ZipExample {
   def main(args: Array[String]): Unit = {

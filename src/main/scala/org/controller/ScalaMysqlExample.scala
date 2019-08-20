@@ -1,8 +1,8 @@
-package controller
+package org.controller
 
 import java.util.Properties
 
-import util.SparkOpener
+import org.util.SparkOpener
 
 object ScalaMysqlExample extends SparkOpener {
 
@@ -22,7 +22,7 @@ object ScalaMysqlExample extends SparkOpener {
     properties.put("user","root")
     properties.put("password","")
     Class.forName("com.mysql.jdbc.Driver")
-    val Revenue_df=spark.read.format("csv").option("header","true").option("delimiter","|").option("inferSchema","true").load("D:\\study\\productrevenue.txt")
+    val Revenue_df=spark.read.format("csv").option("header","true").option("delimiter","|").option("inferSchema","true").load(System.getProperty("user.dir")+"\\Input\\productrevenue.txt")
     Revenue_df.write.mode("append").jdbc(url,"vsms.temp",properties )
 
     spark.close()

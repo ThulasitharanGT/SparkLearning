@@ -1,12 +1,12 @@
-package controller
+package org.controller
 
-import util.SparkOpener
+import org.util.SparkOpener
 
 object FunctionClass extends SparkOpener
 {
   val spark=SparkSessionLoc("SparkSession")
   def main(args: Array[String]): Unit = {
-    val survey_df=spark.read.format("csv").option("header","true").option("inferSchema","true").load("D:\\study\\survey.csv")//.na.fill(" ")
+    val survey_df=spark.read.format("csv").option("header","true").option("inferSchema","true").load(System.getProperty("user.dir")+"\\Input\\survey.csv")//.na.fill(" ")
     survey_df.show(10,false)
     survey_df.createOrReplaceTempView("survey_view")
    val survey_correct= spark.sql(
