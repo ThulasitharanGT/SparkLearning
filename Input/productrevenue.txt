@@ -1,0 +1,11 @@
+product|category|revenue
+thin|cell phone|6000
+normal|tablet|1500
+mini|cell phone|9000
+ultra thin|tablet|1500
+very thin|cell phone|5000
+Big|cell phone|6000
+bendable|tablet|2500
+foldable|cell phone|6000
+pro|tablet|2500
+pro2|cell phone|6000

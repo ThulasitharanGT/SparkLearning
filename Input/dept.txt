@@ -1,0 +1,9 @@
+dept_id|dept_name|Reveue|Month_Year
+1|Computer|500|Jan-1998
+1|Computer|900|Feb-1998
+1|Computer|200|April-1998
+2|Commerce|800|May-1998
+2|Commerce|100|Jan-1998
+3|Viscom|600|Jun-1998
+4|English|300|Jul-1998
+5|French|150|Aug-1998

@@ -1,0 +1,10 @@
+simple :
+var avail_inf =spark.read.format("csv").option("header", "true").option("inferSchema", "true").option("delimiter","|").load("D:\\study\\Avail_car.txt");
+avail_inf.show(10,false);
+avail_inf.createOrReplaceTempView("avail_inf_view");
+spark.sql("select * from avail_inf_view").show();
+var sold_inf =spark.read.format("csv").option("header", "true").option("inferSchema", "true").option("delimiter","|").load("D:\\study\\Sold_car.txt");
+sold_inf.show(10,false);
+
+
+ avail_inf.groupBy("Make").agg(count("model"))

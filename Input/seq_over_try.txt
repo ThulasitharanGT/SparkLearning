@@ -1,0 +1,9 @@
+Item|CountryList|Profit
+Phone|USA,AUS,GER|8000
+Phone|USA,AUS|12000
+Phone|USA,CHN|23000
+Phone|GBR,CHN,AUS|1000
+Laptop|USA,AUS,GER|12000
+Laptop|USA,AUS|23000
+Laptop|USA,CHN|1000
+Laptop|GBR,CHN,AUS|8000

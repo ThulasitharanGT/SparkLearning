@@ -1,0 +1,2 @@
+StateID|VehicleID|Model|StartTripTime|EndTripTime
+S_001|V_001|Verna|2019-05-05 10:00:00|2019-05-05 10:40:00
