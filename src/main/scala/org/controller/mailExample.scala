@@ -6,15 +6,16 @@ import javax.mail.internet.MimeMessage
 object mailExample {
 
   def main(args: Array[String]): Unit = {
+   // val d=10.*(7)
     val lineBr = "<br>"
     val fromMailId = "confidential.details.007@gmail.com"
     val smptHost="smtp.gmail.com"
-    val toMailId ="marveljegadheesh0401@gmail.com"   //"gomgov07@gmail.com" // "govindarajmsme@gmail.com"
+    val toMailId ="narayanan.075@gmail.com"//"marveljegadheesh0401@gmail.com"   //"gomgov07@gmail.com" // "govindarajmsme@gmail.com"
    // val toMailId = "driftking9696@gmail.com"
-  //  val subject = "Invite for purchasing Ferrari SF90 Stradale"
-   // val body = "Congratulations ," + lineBr + lineBr + " You have been selected as one of the few members who can buy a Ferrari SF90 Stradale " + lineBr + lineBr + "Thanks," + lineBr + "Ferrari Sales Team"
-    val subject = "Invitation for internship program in NASA"
-    val body = "Congratulations Master Jegadheesh G," + lineBr + lineBr + " It is NASA's pleasure to inform you that you have been shortlisted by our institute NASA for your enormous performance in your academics. Based on the feedback given by your school Kendriya Vidayalaya IIT Chennai on your academics we have made a serious decision and have aggregated our results. It is our pleasure to inform you that you have been selected for summer internship program 2020. This Internship program will take place in NASA HQ Washington, D.C., United States from April 2020 to June 2020. Kindly initiate VISA process from your end and we hope that you have a Passport. The travel charges will not be bared by us, but we will provide Accommodation and food services for the internship period.  Kindly let us know if you are willing or not willing to take part in this Internship. If we don't get any response within 20 days of sending this E-Mail, we will assume that the candidate is not willing to participate and drop the processing of this application." + lineBr + lineBr + "Note : This is a confidential E-Mail and do not share this E-Mail with anyone other than School, Passport officers and Embassy. "+ lineBr + lineBr + "Thanks," + lineBr + "Nasa Internship Team"
+   val subject = "Invite for purchasing Ferrari SF90 Stradale"
+    val body = "Congratulations ," + lineBr + lineBr + " You have been selected as one of the few members who can buy a Ferrari SF90 Stradale " + lineBr + lineBr + "Thanks," + lineBr + "Ferrari Sales Team"
+  //  val subject = "Invitation for internship program in NASA"
+  //  val body = "Congratulations Master Jegadheesh G," + lineBr + lineBr + " It is NASA's pleasure to inform you that you have been shortlisted by our institute NASA for your enormous performance in your academics. Based on the feedback given by your school Kendriya Vidayalaya IIT Chennai on your academics we have made a serious decision and have aggregated our results. It is our pleasure to inform you that you have been selected for summer internship program 2020. This Internship program will take place in NASA HQ Washington, D.C., United States from April 2020 to June 2020. Kindly initiate VISA process from your end and we hope that you have a Passport. The travel charges will not be bared by us, but we will provide Accommodation and food services for the internship period.  Kindly let us know if you are willing or not willing to take part in this Internship. If we don't get any response within 20 days of sending this E-Mail, we will assume that the candidate is not willing to participate and drop the processing of this application." + lineBr + lineBr + "Note : This is a confidential E-Mail and do not share this E-Mail with anyone other than School, Passport officers and Embassy. "+ lineBr + lineBr + "Thanks," + lineBr + "Nasa Internship Team"
     val prop = System.getProperties()
     prop.put("mail.smtp.host", smptHost)
     prop.put("mail.smtp.auth", "true")
