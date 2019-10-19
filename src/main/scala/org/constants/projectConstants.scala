@@ -12,6 +12,7 @@ object projectConstants {
   val fileTypeAvroValue="avro"
   val fileTypeOrcValue="orc"
   val fileTypeJsonValue="json"
+  val windowsSep="\\"
   val fileTypeXmlValue="xml"
   val fileRootTagXmlArg ="rootTag"
   val fileRowTagXmlArg ="rowTag"
