@@ -14,7 +14,7 @@ object partitionedTableRead extends SparkOpener{
     val brands="Toyota,Ford,Hyundai"
     val basePath=System.getProperty("user.dir")
     val tableName="tablePartitioned"
-    val tempPartitionedPath=basePath+projectConstants.windowsSep+tableName+projectConstants.windowsSep+"year=%year%"+projectConstants.windowsSep+"brand=%brand%"+projectConstants.windowsSep
+    val tempPartitionedPath=basePath+projectConstants.pathSep+"Input"+projectConstants.pathSep+tableName+projectConstants.pathSep+"year=%year%"+projectConstants.pathSep+"brand=%brand%"+projectConstants.pathSep
     inputMap.put("years",years)
     inputMap.put("yearsReplacingParam","%year%")
     inputMap.put("brands",brands)
@@ -25,7 +25,8 @@ object partitionedTableRead extends SparkOpener{
     inputMap.put("tempBasePath",tempPartitionedPath)
     inputMap.put(projectConstants.fileTypeArgConstant,projectConstants.fileTypeParquetValue)
     val spark=SparkSessionLoc("temp")
-    reqCarDetailsLoad(spark,inputMap)
+    val dfTemp=reqCarDetailsLoad(spark,inputMap)
+    dfTemp.show
   }
   def reqCarDetailsLoad(spark:SparkSession,inputMap: collection.mutable.Map[String,String])= {
     var df: DataFrame = null
@@ -40,18 +41,23 @@ object partitionedTableRead extends SparkOpener{
         inputMap.put(projectConstants.fileFormatArg, projectConstants.fileTypeParquetValue)
         // Dynamicaly reading if exists
         println(inputMap(projectConstants.filePathArgValue))
-        val result = ("ls "+inputMap(projectConstants.filePathArgValue) !).toInt
-          result match {
-          case 0 => {
-            if (df == null)
-              df = readWriteUtil.readDF(spark, inputMap)
-            else
-              df.union(readWriteUtil.readDF(spark, inputMap))
+        try {
+            "ls " + inputMap(projectConstants.filePathArgValue) !  match {
+            case 0 => {
+              if (df == null)
+                df = readWriteUtil.readDF(spark, inputMap)
+              else
+                df.union(readWriteUtil.readDF(spark, inputMap))
+            }
+            case 1 => print(inputMap(projectConstants.filePathArgValue) + "Does not exist !")
+            case _ => df
           }
-          case 1 => print(inputMap(projectConstants.filePathArgValue) + "Does not exist !")
-          case _ => df
-        }
 
+        }
+        catch
+          {
+            case e:Exception => println(e.printStackTrace())
+          }
       }
     df
   }

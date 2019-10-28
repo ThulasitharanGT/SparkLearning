@@ -7,6 +7,8 @@ object ZipExample {
     val ZippedDonutandPrices=donutsPrice.zip(donuts)
     println(ZippedDonutandPrices)
     // only ok for equal amount of items and if they are in order both sides
+    val a=1 to 100
+    print(a.groupBy(_.%(3)))
 
   }
 
