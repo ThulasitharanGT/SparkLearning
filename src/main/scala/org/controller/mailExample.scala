@@ -3,6 +3,7 @@ package org.controller
 import javax.mail._
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
+
 object mailExample {
 
   def main(args: Array[String]): Unit = {
