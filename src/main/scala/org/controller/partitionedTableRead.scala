@@ -46,18 +46,10 @@ object partitionedTableRead extends SparkOpener{
         println(inputMap(projectConstants.filePathArgValue))
         "ls "+inputMap(projectConstants.filePathArgValue) ! match {
           case 0 => {
-            if (df == null) {
+            if (df == null)
               df = readWriteUtil.readDF(spark, inputMap)
-              println(year)
-              println(brand)
-              println("First time")
-            }
-            else {
+            else
               df=df.union(readWriteUtil.readDF(spark, inputMap))
-              println(year)
-              println(brand)
-              println("unioning time")
-            }
           }
           case 1 => print(inputMap(projectConstants.filePathArgValue) + "Does not exist !")
           case _ => df
