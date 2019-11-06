@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SparkLearning.iml" filepath="$PROJECT_DIR$/SparkLearning.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SparkLearning.main.iml" filepath="$PROJECT_DIR$/.idea/modules/SparkLearning.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SparkLearning.test.iml" filepath="$PROJECT_DIR$/.idea/modules/SparkLearning.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SparkLearning.SparkLearning.iml" filepath="$PROJECT_DIR$/.idea/modules/SparkLearning.SparkLearning.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SparkLearning.SparkLearning.main.iml" filepath="$PROJECT_DIR$/.idea/modules/SparkLearning.SparkLearning.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SparkLearning.SparkLearning.test.iml" filepath="$PROJECT_DIR$/.idea/modules/SparkLearning.SparkLearning.test.iml" />
     </modules>
   </component>
 </project>

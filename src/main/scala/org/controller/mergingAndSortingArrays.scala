@@ -1,6 +1,6 @@
-package org.controller.splittingTime
+package org.controller
 
-object mergingArrayFunction {
+object mergingAndSortingArrays {
   def mergeArrays(a: Array[Int], b: Array[Int]): Array[Int] = {
     val concatenatedArray=a ++ b
     val concatenatedList=concatenatedArray.toList

@@ -3,6 +3,8 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
       <module name="SparkLearning.main" target="1.8" />
+      <module name="SparkLearning.SparkLearning.main" target="1.8" />
+      <module name="SparkLearning.SparkLearning.test" target="1.8" />
       <module name="SparkLearning.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
