@@ -63,7 +63,7 @@ dependencies {
     compile 'org.apache.avro:avro-mapred:1.8.2'
     compile 'org.apache.avro:avro:1.8.2'
     compile 'org.apache.avro:avro-compiler:1.8.2'
-   // compile 'mysql-connector-java:8.0.15'
+    // compile 'mysql-connector-java:8.0.15'
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.15'
     // compile 'org.apache.parquet:parquet-avro:1.10.1'
     compile group: 'commons-io', name: 'commons-io', version: '2.5'

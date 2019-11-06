@@ -12,7 +12,7 @@ object projectConstants {
   val fileTypeAvroValue="avro"
   val fileTypeOrcValue="orc"
   val fileTypeJsonValue="json"
-  val pathSep="""\\"""
+  val pathSep="/"
   val fileTypeXmlValue="xml"
   val fileRootTagXmlArg ="rootTag"
   val fileRowTagXmlArg ="rowTag"
