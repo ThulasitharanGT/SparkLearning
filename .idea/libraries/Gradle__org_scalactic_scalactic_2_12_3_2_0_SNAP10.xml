@@ -2,10 +2,12 @@
   <library name="Gradle: org.scalactic:scalactic_2.12:3.2.0-SNAP10">
     <CLASSES>
       <root url="jar://$USER_HOME$/Softwares/gradle-5.2.1/caches/modules-2/files-2.1/org.scalactic/scalactic_2.12/3.2.0-SNAP10/1f877bb26bc7ce3881fd7363932be4cc861bf829/scalactic_2.12-3.2.0-SNAP10.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalactic/scalactic_2.12/3.2.0-SNAP10/1f877bb26bc7ce3881fd7363932be4cc861bf829/scalactic_2.12-3.2.0-SNAP10.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://$USER_HOME$/Softwares/gradle-5.2.1/caches/modules-2/files-2.1/org.scalactic/scalactic_2.12/3.2.0-SNAP10/a52be355bcae752dc87a2718ef2e1d01dc0379e1/scalactic_2.12-3.2.0-SNAP10-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalactic/scalactic_2.12/3.2.0-SNAP10/a52be355bcae752dc87a2718ef2e1d01dc0379e1/scalactic_2.12-3.2.0-SNAP10-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
