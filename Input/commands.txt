@@ -9,3 +9,17 @@ avail_inf.groupBy("Make").agg(count("model"))
 
 val survey_df = spark.read.format("csv").option("header", "true").option("inferSchema", "true").option("delimiter","|").load("C:\\Users\\RAPTOR\\IdeaProjects\\SparkLearning\\Input\\availCarForUdf.txt")
 survey_df.write.mode("overwrite").partitionBy("year","brand","model").parquet("C:\\Users\\RAPTOR\\IdeaProjects\\SparkLearning\\Input\\tablePartitioned\\")
+
+
+
+val df=spark.read.option("basePath","file:///home/raptor/IdeaProjects/SparkLearning/Input/tablePartitioned").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/tablePartitioned")
+
+df.write.mode("overwrite").partitionBy("year","brand","model")parquet("/usr/hive/external/carTable")
+
+if dfs doesn't work. stop all. delete data node dir and name node dir. create them again and start all.
+
+
+
+granting priviliges to mysql 
+GRANT ALL PRIVILEGES ON *.* TO  'raptor'@'localhost' IDENTIFIED BY 'IAMTHEemperor';
+FLUSH PRIVILEGES;

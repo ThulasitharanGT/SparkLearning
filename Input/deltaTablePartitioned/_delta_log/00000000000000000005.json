@@ -1,0 +1,9 @@
+{"commitInfo":{"timestamp":1573992752784,"operation":"UPDATE","operationParameters":{"predicate":"(model#668 = Endeavour)"},"readVersion":4,"isBlindAppend":false}}
+{"remove":{"path":"year=2010/brand=Ford/model=Endeavour/part-00116-fe62c8a8-d612-451f-9e10-6a5a32431389.c000.snappy.parquet","deletionTimestamp":1573992751658,"dataChange":true}}
+{"remove":{"path":"year=2010/brand=Ford/model=Endeavour/part-00026-9005adc7-2899-4f42-99ef-c4903ae4caba.c000.snappy.parquet","deletionTimestamp":1573992751658,"dataChange":true}}
+{"remove":{"path":"year=2010/brand=Ford/model=Endeavour/part-00085-9e777876-2310-41d7-960c-c1ab37acfa9b.c000.snappy.parquet","deletionTimestamp":1573992751658,"dataChange":true}}
+{"remove":{"path":"year=2011/brand=Ford/model=Endeavour/part-00052-282e3912-20cf-4e04-870f-6177dcb0333f.c000.snappy.parquet","deletionTimestamp":1573992751658,"dataChange":true}}
+{"remove":{"path":"year=2011/brand=Ford/model=Endeavour/part-00054-ebd4f21e-6c97-44b2-9cf2-f4d20dbda836.c000.snappy.parquet","deletionTimestamp":1573992751658,"dataChange":true}}
+{"remove":{"path":"year=2011/brand=Ford/model=Endeavour/part-00044-4ab653be-4c4a-4069-9169-5f886e00e371.c000.snappy.parquet","deletionTimestamp":1573992751658,"dataChange":true}}
+{"add":{"path":"year=2010/brand=Ford/model=FreeStyle/part-00000-85f87c6e-430f-4d02-a120-494645cfe0c3.c000.snappy.parquet","partitionValues":{"year":"2010","brand":"Ford","model":"FreeStyle"},"size":1113,"modificationTime":1573992752000,"dataChange":true}}
+{"add":{"path":"year=2011/brand=Ford/model=FreeStyle/part-00000-a4d4a9e4-ccbd-425f-b724-79efb5f00b80.c000.snappy.parquet","partitionValues":{"year":"2011","brand":"Ford","model":"FreeStyle"},"size":1122,"modificationTime":1573992752000,"dataChange":true}}
