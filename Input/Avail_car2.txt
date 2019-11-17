@@ -1,0 +1,27 @@
+Vehicle_id|model|brand|year|miles|intake_date_time
+v0211H|verna|Hyundai|2011|4|5000|2017-12-20 06:30:00
+v0211F|Eco-sport|Ford|2013|2|4000|2018-02-10 06:30:00
+v0212F|Endeavour|Ford|2011|7|8000|2018-04-26 06:30:00
+v0211L|Gallardo|Lambhorghini|2013|10|2000|2018-05-16 06:30:00
+v0212L|Merchilago|Lambhorghini|2014|6|8000|2018-11-09 06:30:00
+v0213L|Aventador|Lambhorghini|2015|3|1000|2017-12-21 06:30:00
+v0212H|verna|Hyundai|2013|8|67000|2018-01-11 08:30:00
+v0213H|Elantra|Hyundai|2011|7|5000|2018-06-29 06:30:000
+v0213F|Eco-sport|Ford|2017|4|59000|2018-09-30 06:30:00
+v0214F|Endeavour|Ford|2010|2|9000|2018-03-23 06:30:000
+v0214L|Sesto-Elemento|Lambhorghini|2013|11|2000|2018-02-14 06:30:00
+v0215L|Hurrican|Lambhorghini|2014|10|8000|2018-01-24 06:30:00
+v0216L|Centanario|Lambhorghini|2017|11|1000|2018-05-11 06:30:00
+v0111H|verna|Hyundai|2011|12|5000|2018-01-20 06:30:00
+v0101F|Eco-sport|Ford|2013|8|4000|2018-02-10 06:30:00
+v0102F|Endeavour|Ford|2011|6|8000|2017-11-12 06:30:00
+v0101L|Gallardo|Lambhorghini|2013|7|2000|2018-05-16 06:30:00
+v0102L|Merchilago|Lambhorghini|2014|2|8000|2017-11-09 06:30:00
+v0103L|Aventador|Lambhorghini|2015|8|1000|2017-12-06 06:30:00
+v0102H|verna|Hyundai|2013|5|67000|2018-11-25 08:30:00
+v0103H|Elantra|Hyundai|2011|2|5000|2018-06-29 06:30:000
+v0103F|Eco-sport|Ford|2017|9|59000|2018-09-30 06:30:00
+v0104F|Endeavour|Ford|2010|3|9000|2018-06-23 06:30:000
+v0104L|Sesto-Elemento|Lambhorghini|2013|3|2000|2017-11-14 06:30:00
+v0105L|Hurrican|Lambhorghini|2014|5|8000|2018-09-24 06:30:00
+v0106L|Centanario|Lambhorghini|2017|2|1000|2018-07-11 06:30:00

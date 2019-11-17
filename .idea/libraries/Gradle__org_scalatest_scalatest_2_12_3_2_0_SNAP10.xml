@@ -2,12 +2,10 @@
   <library name="Gradle: org.scalatest:scalatest_2.12:3.2.0-SNAP10">
     <CLASSES>
       <root url="jar://$USER_HOME$/Softwares/gradle-5.2.1/caches/modules-2/files-2.1/org.scalatest/scalatest_2.12/3.2.0-SNAP10/4d9868f3d2b4c019d66b6c7fa22a52637d9df74f/scalatest_2.12-3.2.0-SNAP10.jar!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalatest/scalatest_2.12/3.2.0-SNAP10/4d9868f3d2b4c019d66b6c7fa22a52637d9df74f/scalatest_2.12-3.2.0-SNAP10.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://$USER_HOME$/Softwares/gradle-5.2.1/caches/modules-2/files-2.1/org.scalatest/scalatest_2.12/3.2.0-SNAP10/20f5c79db0dcfdec3ce73765ddf55eccb9b847c3/scalatest_2.12-3.2.0-SNAP10-sources.jar!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalatest/scalatest_2.12/3.2.0-SNAP10/20f5c79db0dcfdec3ce73765ddf55eccb9b847c3/scalatest_2.12-3.2.0-SNAP10-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

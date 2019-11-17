@@ -2,12 +2,10 @@
   <library name="Gradle: org.scala-lang.modules:scala-swing_2.11:2.0.3">
     <CLASSES>
       <root url="jar://$USER_HOME$/Softwares/gradle-5.2.1/caches/modules-2/files-2.1/org.scala-lang.modules/scala-swing_2.11/2.0.3/4ac2dba71c17967af873ec9a8b2501a0afcf292d/scala-swing_2.11-2.0.3.jar!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-swing_2.11/2.0.3/4ac2dba71c17967af873ec9a8b2501a0afcf292d/scala-swing_2.11-2.0.3.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://$USER_HOME$/Softwares/gradle-5.2.1/caches/modules-2/files-2.1/org.scala-lang.modules/scala-swing_2.11/2.0.3/8b49b43e09fd9e6270cc4019e1d71308961809a5/scala-swing_2.11-2.0.3-sources.jar!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-swing_2.11/2.0.3/8b49b43e09fd9e6270cc4019e1d71308961809a5/scala-swing_2.11-2.0.3-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

@@ -24,7 +24,7 @@ object deltaReadAsDeltaTable extends SparkOpener{
     inputMap.put(projectConstants.basePathArgConstant,basePath)
     inputMap.put(projectConstants.headerArgConstant,projectConstants.stringTrue)
     val df =readWriteUtil.readDF(spark,inputMap)
-    deltaTableTemp.update(col("model")=== "Endeavour",Map("model"->lit("FreeStyle"),"miles"->lit(4000)))
+    deltaTableTemp.update(col("model") === "Endeavour",Map("model"->lit("FreeStyle"),"miles"->lit(4000)))
     // or
    // deltaTableTemp.updateExpr("model = 'Endeavour'",Map("model"->"FreeStyle","miles"->"4000"))
     // folder new one is created from endeavour to free style. new data wll read from free style  as updated in log
