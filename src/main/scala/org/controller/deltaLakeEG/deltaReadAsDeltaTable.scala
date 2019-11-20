@@ -37,6 +37,11 @@ object deltaReadAsDeltaTable extends SparkOpener{
     deltaTableTemp.as("HIST").merge(df.as("CURR"),"HIST.Vehicle_id = CURR.Vehicle_id").whenMatched().updateExpr(Map("HIST.month" -> "CURR.month","HIST.miles" -> "CURR.miles","HIST.intake_date_time" -> "CURR.intake_date_time","HIST.year" -> "CURR.year","HIST.brand" -> "CURR.brand","HIST.model" -> "CURR.model")).whenNotMatched().insertAll().execute()
 
      deltaTableTemp.toDF.show()
+    deltaTableTemp.history().show()
+
+    deltaTableTemp.update(col(""),Map("" ->lit("")))
+    deltaTableTemp.updateExpr("",Map("" ->""))
+
   }
 
 }

@@ -1,4 +1,4 @@
-Vehicle_id|model|brand|year|miles|intake_date_time
+Vehicle_id|model|brand|year|month|miles|intake_date_time
 v0211H|verna|Hyundai|2011|4|5000|2017-12-20 06:30:00
 v0211F|Eco-sport|Ford|2013|2|4000|2018-02-10 06:30:00
 v0212F|Endeavour|Ford|2011|7|8000|2018-04-26 06:30:00
