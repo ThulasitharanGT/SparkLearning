@@ -24,36 +24,61 @@ val deltaTableVersion=spark.read.format("delta").option("asOfTimestamp","").load
 
 // creating new one 
 
-hdfs dfs -mkdir -p /user/raptor/testing/hadoop/detltaTableTestFolder
+hdfs dfs -mkdir -p /user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles
 
-hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/Avail_car3.txt /user/raptor/testing/hadoop/detltaTableTestFolder
+hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/Avail_car3.txt /user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles
 
-hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/Avail_car2.txt /user/raptor/testing/hadoop/detltaTableTestFolder
+hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/Avail_cars4.txt /user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car4.txt
 
-hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/Avail_car.txt /user/raptor/testing/hadoop/detltaTableTestFolder/Avail_car_diff_schema.txt
+hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/Avail_car2.txt /user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles
 
-val deltaTableInput1=spark.read.format("com.databricks.spark.csv").option("header","true").option("delimiter","|").option("inferSchema","true").load("/user/raptor/testing/hadoop/detltaTableTestFolder/Avail_car3.txt")
+hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/Avail_car.txt /user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car_diff_schema.txt
 
+hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/Avail_Car_ExtraColumn.txt /user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car_ExtraColumn_schema.txt
 
+// loading to DF
 
-val deltaTableInput2=spark.read.format("com.databricks.spark.csv").option("header","true").option("delimiter","|").option("inferSchema","true").load("/user/raptor/testing/hadoop/detltaTableTestFolder/Avail_car2.txt")
+val deltaTableInput1=spark.read.format("com.databricks.spark.csv").option("header","true").option("delimiter","|").option("inferSchema","true").load("/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car3.txt").selectExpr("Vehicle_id","model","brand","year","month","miles","CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time")
 
+val deltaTableInput2=spark.read.format("com.databricks.spark.csv").option("header","true").option("delimiter","|").option("inferSchema","true").load("/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car2.txt")
+
+val deltaTableInput3=spark.read.format("com.databricks.spark.csv").option("header","true").option("delimiter","|").option("inferSchema","true").load("/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car4.txt").selectExpr("Vehicle_id","model","brand","year","month","miles","CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time")
+
+val deltaTableInputDiffSchema=spark.read.format("com.databricks.spark.csv").option("header","true").option("delimiter","|").option("inferSchema","true").load("/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car_diff_schema.txt")
+
+val deltaTableInputExtraColumn=spark.read.format("com.databricks.spark.csv").option("header","true").option("delimiter","|").option("inferSchema","true").load("/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car_ExtraColumn_schema.txt").selectExpr("Vehicle_id","model","brand","year","month","miles","CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time","number_of_owners")
 
 // converting from dd-mm-YYYY HH:mm:ss to YYYY-MM-DD HH:mm:ss
 
+// changed at top.
+val tempDeltaTableInput1= deltaTableInput1.selectExpr("Vehicle_id","model","brand","year","month","miles","CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time")
 
-deltaTableInput1.selectExpr("Vehicle_id","model","brand","year","month","miles","CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time").write.mode("overwrite").format("delta").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/detltaTableTestFolder/deltaTablePartitioned")
+// partition by not working in shell(2.11, scla, working in 2.12 scala in intellji) -- write through intelliji
+deltaTableInput1.write.format("delta").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/deltaTableTestFolder/deltaTablePartitioned_tempCheck_1")
 
 // loaded delta table
 
-val deltaTableUpdated=spark.read.format("delta").load("/user/raptor/testing/hadoop/detltaTableTestFolder/deltaTablePartitioned")
+val deltaTableUpdated=spark.read.format("delta").load("/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned")
 
-deltaTableInput2.write.mode("append").format("delta").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/detltaTableTestFolder/TempdeltaTablePartitioned")
+deltaTableInput2.write.mode("append").format("delta").save("/user/raptor/testing/hadoop/detltaTableTestFolder/temp_DeltaTablePartitioned") // ->>> not working, instead use delta table 
+deltaTableDeltaFormat.as("HIST").merge(deltaTableInput2.as("CURR"),"HIST.Vehicle_id = CURR.Vehicle_id").whenMatched().updateAll().whenNotMatched().insertAll().execute()
 
+deltaTableInput3.write.mode("overwrite").option("spark.sql.sources.partitionOverwriteMode","dynamic").format("delta").save("hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned")
+
+deltaTableDeltaFormat.as("HIST").merge(deltaTableInput2.as("CURR"),"HIST.Vehicle_id = CURR.Vehicle_id").whenMatched().updateAll().whenNotMatched().insertAll().execute()
+
+deltaTableInputDiffSchema.write.mode("overwrite").option("spark.sql.sources.partitionOverwriteMode","dynamic").format("delta").save("hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned") // wont work Diff Schema
+
+deltaTableInputDiffSchema.write.mode("overwrite").option("spark.sql.sources.partitionOverwriteMode","dynamic").option("mergeSchema","true").format("delta").save("hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned") // wont work schema with more columns can only be merged, less columns cannot be meged
+
+deltaTableInputExtraColumn.write.mode("overwrite").option("spark.sql.sources.partitionOverwriteMode","dynamic").option("mergeSchema","true").format("delta").save("hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned")// works
+
+val deltaTableDeltaFormat=DeltaTable.forPath(spark,"/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned")
 
 deltaTableUpdated.select("model").distinct.show
 
-val deltaTableDeltaFormat=DeltaTable.forPath(spark,"/user/raptor/testing/hadoop/detltaTableTestFolder/deltaTablePartitioned")
+val deltaTableUpdated=spark.read.format("delta").load("/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned")
+
 
 deltaTableDeltaFormat.updateExpr("model = 'Eco-Sport'",Map("model"->"'Free-Style'","year"->"2017")) // string in single quoutes in update expr
 

@@ -70,9 +70,11 @@ object addingColumnToParquetFileInProd extends SparkOpener {
     totFile.printSchema
   }
 
-}
-  // with s3 full access
+
+
   /*
+  // with s3 full access
+
   import sys.process._
   import scala.collection.mutable.ListBuffer
   val cred="-Dfs.s3a.access.key=AKIAIA6BZFLJIF7PBAOA -Dfs.s3a.secret.key=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 -Dfs.s3a.proxy.host=proxyanbcge.nbc.com -Dfs.s3a.proxy.port=80" // pproxy must be set in emr by defaault
@@ -119,8 +121,27 @@ object addingColumnToParquetFileInProd extends SparkOpener {
   val fileNameFinal=fileName.split("\n") // taking the name of part file as string
   val mvCommand="mv "+outPath.substring(0,outPath.lastIndexOf("/"))+"/"+fileNameFinal(0)+" "+outPath // renaming command from part file to required file  name
     mvCommand!
-  }
+  } due to comment opening like paths
+   */
+   */
+   */
+   */
+   */
+   */
+   */
+   */
+   */
+   */
+   */
+   */
+   */
+   */
+}
 
-*/
+
+
+
+
+
 
 
