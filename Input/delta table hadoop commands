@@ -60,12 +60,14 @@ deltaTableInput1.write.format("delta").partitionBy("brand","model","year","month
 
 val deltaTableUpdated=spark.read.format("delta").load("/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned")
 
-deltaTableInput2.write.mode("append").format("delta").save("/user/raptor/testing/hadoop/detltaTableTestFolder/temp_DeltaTablePartitioned") // ->>> not working, instead use delta table 
+deltaTableInput1.write.mode("overwrite").partitionBy("brand","model","year","month").format("delta").save("/user/raptor/testing/hadoop/deltaTableTestFolder/deltaTablePartitioned_bronze")
+
+deltaTableInput2.write.mode("append").format("delta").save("/user/raptor/testing/hadoop/deltaTableTestFolder/deltaTablePartitioned_bronze") // ->>> not working, instead use delta table 
 deltaTableDeltaFormat.as("HIST").merge(deltaTableInput2.as("CURR"),"HIST.Vehicle_id = CURR.Vehicle_id").whenMatched().updateAll().whenNotMatched().insertAll().execute()
 
-deltaTableInput3.write.mode("overwrite").option("spark.sql.sources.partitionOverwriteMode","dynamic").format("delta").save("hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned")
+deltaTableInput3.write.mode("overwrite").option("spark.sql.sources.partitionOverwriteMode","dynamic").format("delta").save("hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/deltaTablePartitioned_bronze")
 
-deltaTableDeltaFormat.as("HIST").merge(deltaTableInput2.as("CURR"),"HIST.Vehicle_id = CURR.Vehicle_id").whenMatched().updateAll().whenNotMatched().insertAll().execute()
+deltaTableDeltaFormat_bronze.as("HIST").merge(deltaTableInput2.as("CURR"),"HIST.Vehicle_id = CURR.Vehicle_id").whenMatched().updateAll().whenNotMatched().insertAll().execute()
 
 deltaTableInputDiffSchema.write.mode("overwrite").option("spark.sql.sources.partitionOverwriteMode","dynamic").format("delta").save("hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned") // wont work Diff Schema
 
@@ -75,12 +77,33 @@ deltaTableInputExtraColumn.write.mode("overwrite").option("spark.sql.sources.par
 
 val deltaTableDeltaFormat=DeltaTable.forPath(spark,"/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned")
 
+val deltaTableDeltaFormat_bronze=DeltaTable.forPath(spark,"/user/raptor/testing/hadoop/deltaTableTestFolder/deltaTablePartitioned_bronze")
+
 deltaTableUpdated.select("model").distinct.show
+
+// adding another Column.
+
+deltaTableDeltaFormat_bronze.toDF.selectExpr("Vehicle_id","model","brand","year","month","miles","intake_date_time","case when brand in ('Ford','Lambhorghini') then cast (1 as INT) else cast(2 as int) end  as number_of_owners ").write.mode("overwrite").format("delta").option("spark.sql.sources.partitionOverwriteMode","dynamic").save("/user/raptor/testing/hadoop/deltaTableTestFolder/deltaTablePartitioned_broze_extraColumn")
 
 val deltaTableUpdated=spark.read.format("delta").load("/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned")
 
+deltaTableInputExtraColumn
 
 deltaTableDeltaFormat.updateExpr("model = 'Eco-Sport'",Map("model"->"'Free-Style'","year"->"2017")) // string in single quoutes in update expr
+
+spark.read.format("delta").load("/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned").where("brand in  ('Volswogen','Renault','Ferrari','Aston-Martin')")
+('Volswogen','Renault','Ferrari','Aston-Martin') // taking new data
+
+spark.read.format("delta").load("/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned").filter("brand not in  ('Volswogen','Renault','Ferrari','Aston-Martin')")
+//('Volswogen','Renault','Ferrari','Aston-Martin')
+
+spark.read.format("delta").load("/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned").where("brand not in  ('Volswogen','Renault','Ferrari','Aston-Martin')").withColumn("number_of_owners",expr("coalesce(number_of_owners,case when brand in ('Ford','Lambhorghini') then cast (1 as INT) else cast(2 as int) end )"))
+
+
+cd /home/raptor/IdeaProjects/SparkLearning/build/libs/
+
+spark-submit --class org.controller.deltaLakeEG.deltaLakeHadoopEg --deploy-mode client --master yarn --num-executors 2 --executor-memory 1g --driver-memory 1g --driver-cores 2 --executor-cores 2   SparkLearning-1.0-SNAPSHOT.jar
+
 
 
 

@@ -47,8 +47,8 @@ object readWriteUtil {
       case value if value== projectConstants.fileTypeAvroValue =>df.write.mode(inputMap(projectConstants.fileOverwriteAppendArg)).format(projectConstants.fileTypeAvroValue).save(inputMap(projectConstants.filePathArgValue))
       case value if value== projectConstants.fileTypeJsonValue =>df.write.mode(inputMap(projectConstants.fileOverwriteAppendArg)).json(inputMap(projectConstants.filePathArgValue))
       case value if value== projectConstants.fileTypeXmlValue =>df.write.mode(inputMap(projectConstants.fileOverwriteAppendArg)).format(projectConstants.fileTypeXmlFormatValue).option(projectConstants.fileRowTagXmlArg,inputMap(projectConstants.fileRowTagXmlArg)).option(projectConstants.fileRootTagXmlArg,inputMap(projectConstants.fileRootTagXmlArg)).save(inputMap(projectConstants.filePathArgValue))
-      case value if value== projectConstants.fileTypeOrcValue =>df.write.format( projectConstants.fileTypeOrcValue ).save(inputMap(projectConstants.filePathArgValue))
-      case value if value== projectConstants.fileTypeDeltaValue =>df.write.format( projectConstants.fileTypeDeltaValue ).save(inputMap(projectConstants.filePathArgValue))
+      case value if value== projectConstants.fileTypeOrcValue =>df.write.format( projectConstants.fileTypeOrcValue ).mode(inputMap(projectConstants.fileOverwriteAppendArg)).save(inputMap(projectConstants.filePathArgValue))
+      case value if value== projectConstants.fileTypeDeltaValue =>df.write.format( projectConstants.fileTypeDeltaValue ).mode(inputMap(projectConstants.fileOverwriteAppendArg)).save(inputMap(projectConstants.filePathArgValue))
 
       //default TextFile
       case _=>df.write.mode(inputMap(projectConstants.fileOverwriteAppendArg)).option(projectConstants.delimiterArgConstant,inputMap(projectConstants.delimiterArgConstant)).option(projectConstants.headerArgConstant,inputMap(projectConstants.headerArgConstant)).text(inputMap(projectConstants.filePathArgValue))
