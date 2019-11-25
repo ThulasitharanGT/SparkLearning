@@ -104,6 +104,47 @@ cd /home/raptor/IdeaProjects/SparkLearning/build/libs/
 
 spark-submit --class org.controller.deltaLakeEG.deltaLakeHadoopEg --deploy-mode client --master yarn --num-executors 2 --executor-memory 1g --driver-memory 1g --driver-cores 2 --executor-cores 2   SparkLearning-1.0-SNAPSHOT.jar
 
+//////////////////////////
+
+val deltaTableDeltaFormat_bronze=DeltaTable.forPath(spark,"/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze")
+
+deltaTableInput1.write.mode("overwrite").partitionBy("brand","model","year","month").format("delta").save("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze_columnAdditionTry")
+
+deltaTableInput2.write.mode("append").format("delta").save("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze") // ->>> not working, instead use delta table 
+
+deltaTableDeltaFormat_bronze.as("HIST").merge(deltaTableInput3.as("CURR"),"HIST.Vehicle_id = CURR.Vehicle_id").whenMatched().updateAll().whenNotMatched().insertAll().execute()
+
+deltaTableInput3.write.mode("overwrite").option("spark.sql.sources.partitionOverwriteMode","dynamic").format("delta").save("hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/deltaTablePartitioned_bronze")
+
+// merging schema
+
+deltaTableInput1.write.mode("overwrite").partitionBy("brand","model","year","month").format("delta").save("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze_columnAdditionTry") // partition by only works on intelliji, yet to try spark 3
+
+deltaTableInput2.write.mode("append").format("delta").save("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze_columnAdditionTry") 
+
+deltaTableInput3.write.mode("append").format("delta").save("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze_columnAdditionTry") 
+
+deltaTableInput4.write.mode("append").format("delta").oprion("mergeSchema","true").save("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze_columnAdditionTry") 
+
+val DeltaTableNewTry=DeltaTable.forPath(spark,"/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTableAddingColumnInBetween_Bronze")
+
+DeltaTableNewTry.toDF.show
+DeltaTableNewTry.toDF.filter("brand not in ('Volswogen','Ferrari','Aston-Martin','Renault')").show
+
+//moving to gold
+
+spark.read.format("delta").load("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTableAddingColumnInBetween_Bronze").where("brand not in  ('Volswogen','Renault','Ferrari','Aston-Martin')").withColumn("number_of_owners",expr("coalesce(number_of_owners,case when brand in ('Ford','Lambhorghini') then cast (1 as INT) else cast(2 as int) end )")).write.mode("overwrite").format("delta").save("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTableAddingColumnInBetween_Silver")
+
+spark.read.format("delta").load("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTableAddingColumnInBetween_Bronze").where("brand in  ('Volswogen','Renault','Ferrari','Aston-Martin')").write.mode("append").format("delta").save("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTableAddingColumnInBetween_Silver")
+
+.option("overwriteSchema", "true") --> for overwriting schema
+
+.option("mergeSchema", "true")  --> for addding columns
+
+
+
+
+
 
 
 

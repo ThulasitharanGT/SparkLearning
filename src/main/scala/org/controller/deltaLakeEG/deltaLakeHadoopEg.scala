@@ -6,8 +6,6 @@ import org.util.{SparkOpener,readWriteUtil}
 object deltaLakeHadoopEg extends SparkOpener {
   def main(args: Array[String]): Unit = {
     val spark=SparkSessionLoc("delta lake hadoop")
-
-
     val basePath="hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/"
     val inputPath=basePath+"inputFiles/"
     val outputPath=basePath+"outputFiles/"
