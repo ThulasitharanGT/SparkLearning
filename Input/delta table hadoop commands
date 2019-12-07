@@ -1,6 +1,7 @@
 
 
 spark-shell --packages io.delta:delta-core_2.11:0.4.0
+spark-shell --packages io.delta:delta-core_2.12:0.4.0
 
 /home/raptor/Softwares/hadoop-2.7.3/sbin/start-dfs.sh
 
@@ -60,7 +61,7 @@ deltaTableInput1.write.format("delta").partitionBy("brand","model","year","month
 
 val deltaTableUpdated=spark.read.format("delta").load("/user/raptor/testing/hadoop/deltaTableTestFolder/temp_DeltaTablePartitioned")
 
-deltaTableInput1.write.mode("overwrite").partitionBy("brand","model","year","month").format("delta").save("/user/raptor/testing/hadoop/deltaTableTestFolder/deltaTablePartitioned_bronze")
+deltaTableInput1.write.mode("overwrite").partitionBy("brand","model","year","month").format("delta").save("/user/raptor/testing/hadoop/deltaTableTestFolder/partitionedDeltaEg")
 
 deltaTableInput2.write.mode("append").format("delta").save("/user/raptor/testing/hadoop/deltaTableTestFolder/deltaTablePartitioned_bronze") // ->>> not working, instead use delta table 
 deltaTableDeltaFormat.as("HIST").merge(deltaTableInput2.as("CURR"),"HIST.Vehicle_id = CURR.Vehicle_id").whenMatched().updateAll().whenNotMatched().insertAll().execute()

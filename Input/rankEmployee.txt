@@ -1,0 +1,10 @@
+emp_id|city
+1|chn
+2|hyd
+3|blr
+1|chn
+2|hyd
+3|blr
+1|blr
+2|chn
+3|hyd

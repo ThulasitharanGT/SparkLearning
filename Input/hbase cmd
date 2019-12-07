@@ -1,0 +1,18 @@
+creating table:
+ create  'cardata','software','hardware','other'
+
+inserting data to table:
+
+put 'cardata','v001_H','hardware:alloy_wheels','yes'
+put 'cardata','v001_H','hardware:anti_Lock_break','yes'
+put 'cardata','v001_H','software:electronic_breakforce_distribution','yes'
+put 'cardata','v001_H','software:terrain_mode','yes'
+put 'cardata','v001_H','software:traction_control','yes'
+put 'cardata','v001_H','software:stability_control','yes'
+put 'cardata','v001_H','software:cruize_control','yes'
+put 'cardata','v001_H','other:make','hyundai'
+put 'cardata','v001_H','other:model','i10'
+put 'cardata','v001_H','other:variant','sportz'
+
+
+

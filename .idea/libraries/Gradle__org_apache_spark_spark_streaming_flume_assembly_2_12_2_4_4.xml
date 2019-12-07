@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: org.apache.spark:spark-streaming-flume-assembly_2.12:2.4.4">
     <CLASSES>
-      <root url="jar://$USER_HOME$/Softwares/gradle-5.2.1/caches/modules-2/files-2.1/org.apache.spark/spark-streaming-flume-assembly_2.12/2.4.4/960fe3d41185f36c761360492e317ab9286eee0/spark-streaming-flume-assembly_2.12-2.4.4.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-streaming-flume-assembly_2.12/2.4.4/960fe3d41185f36c761360492e317ab9286eee0/spark-streaming-flume-assembly_2.12-2.4.4.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$USER_HOME$/Softwares/gradle-5.2.1/caches/modules-2/files-2.1/org.apache.spark/spark-streaming-flume-assembly_2.12/2.4.4/750f91e98e8a4423cb7f7ab81b9c41c12e079c30/spark-streaming-flume-assembly_2.12-2.4.4-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-streaming-flume-assembly_2.12/2.4.4/750f91e98e8a4423cb7f7ab81b9c41c12e079c30/spark-streaming-flume-assembly_2.12-2.4.4-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

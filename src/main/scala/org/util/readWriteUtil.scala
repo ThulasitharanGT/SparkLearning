@@ -54,6 +54,12 @@ object readWriteUtil {
       case _=>df.write.mode(inputMap(projectConstants.fileOverwriteAppendArg)).option(projectConstants.delimiterArgConstant,inputMap(projectConstants.delimiterArgConstant)).option(projectConstants.headerArgConstant,inputMap(projectConstants.headerArgConstant)).text(inputMap(projectConstants.filePathArgValue))
     }
   }
+
+  def readRdd(spark:SparkSession,inputMap:collection.mutable.Map[String,String])=
+    {
+      spark.sparkContext.textFile(inputMap(projectConstants.fileTypeArgConstant),inputMap(projectConstants.rddPartitionArg).toInt)
+
+    }
 }
 
 /*df.coalesce(1).write.mode("overwrite").format("csv")

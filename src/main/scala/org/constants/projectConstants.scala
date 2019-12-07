@@ -5,6 +5,7 @@ object projectConstants {
   val inferSchemaArgConstant="inferSchema"
   val csvFormat="com.databricks.spark.csv"
   val deltaFormat="delta"
+  val rddPartitionArg="rddPartitionArg"
   val fileTypeDeltaValue="delta"
   val fileFormatArg="format"
   val columnNameArg="columnNames"
@@ -31,6 +32,7 @@ object projectConstants {
   val delimiterOr="|"
   val delimiterNot="!"
   val delimiterComma=","
+  val delimiterTilde="~"
   val booleanTrue=true
   val booleanFalse=false
   val stringTrue="true"
