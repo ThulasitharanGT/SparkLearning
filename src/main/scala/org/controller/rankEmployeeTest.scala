@@ -19,6 +19,12 @@ object rankEmployeeTest extends SparkOpener{
     inputMap.put(projectConstants.fileTypeArgConstant,projectConstants.fileTypeCsvValue)
     val empDf=readWriteUtil.readDF(spark,inputMap)
     empDf.groupBy("emp_id","city").agg(count("city").as("city_count")).withColumn("rankedCol",rank() over(Window.orderBy(desc("city_count")))).filter("rankedCol=1").drop("rankedCol","city_count").orderBy("emp_id").show(false)
+    // same as
+    empDf.createOrReplaceTempView("emp")
+    val sqlForRank="select emp_id, city from (select emp_id, city, rank() over (order by count(city) desc) rank_Col from  emp   group by emp_id, city) where rank_col=1 order by emp_id "
+    readWriteUtil.execSparkSql(spark,sqlForRank).show(false)
+
+
   }
 
 }
