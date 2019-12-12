@@ -14,5 +14,146 @@ put 'cardata','v001_H','other:make','hyundai'
 put 'cardata','v001_H','other:model','i10'
 put 'cardata','v001_H','other:variant','sportz'
 
+// 2 extra columns
+
+put 'cardata','v002_H','hardware:alloy_wheels','yes'
+put 'cardata','v002_H','hardware:anti_Lock_break','yes'
+put 'cardata','v002_H','software:electronic_breakforce_distribution','yes'
+put 'cardata','v002_H','software:rev_indicator','yes'
+put 'cardata','v002_H','software:terrain_mode','yes'
+put 'cardata','v002_H','software:traction_control','yes'
+put 'cardata','v002_H','software:stability_control','yes'
+put 'cardata','v002_H','software:cruize_control','yes'
+put 'cardata','v002_H','software:drift_control','yes'
+put 'cardata','v002_H','other:make','hyundai'
+put 'cardata','v002_H','other:model','i20'
+put 'cardata','v002_H','other:variant','sportz'
+
+// 1 less column 
+inserting data to table:
+
+
+put 'cardata','v003_H','hardware:anti_Lock_break','yes'
+put 'cardata','v003_H','software:electronic_breakforce_distribution','yes'
+put 'cardata','v003_H','software:terrain_mode','yes'
+put 'cardata','v003_H','software:traction_control','yes'
+put 'cardata','v003_H','software:stability_control','yes'
+put 'cardata','v003_H','software:cruize_control','yes'
+put 'cardata','v003_H','other:make','hyundai'
+put 'cardata','v003_H','other:model','santro'
+put 'cardata','v003_H','other:variant','sportz'
+
+scan 'cardata'
+
+create external table car_detail_hbase(
+car_id string,
+alloy_wheels string,
+anti_Lock_break string,
+electronic_breakforce_distribution string,
+terrain_mode string,
+traction_control string,
+stability_control string,
+cruize_control string,
+make string,
+model string,
+variant string)
+STORED BY
+'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+WITH SERDEPROPERTIES
+("hbase.columns.mapping"=":key,hardware:alloy_wheels,hardware:anti_Lock_break,
+software:electronic_breakforce_distribution,software:terrain_mode,
+software:traction_control,software:stability_control,software:cruize_control,other:make,
+other:model,other:variant")
+TBLPROPERTIES
+("hbase.table.name"="cardata")
+
+
+-> wat ever mapped is bought. extra is dropped, cols not present for the particular row, null is returned
+
+//
+
+hive
+
+create external table cardata_silver
+(Vehicle_id string ,
+miles int ,
+intake_date_time timestamp ,
+number_of_owners int)
+PARTITIONED BY
+(
+brand string ,
+model string,
+year int ,
+month int 
+)
+STORED AS PARQUET
+LOCATION
+'/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTableAddingColumnInBetween_Silver/';
+
+
+brand=Renault/model=Megane/year=2010/month
+
+
+/home/raptor/Softwares/hbase-1.2.5
+/home/raptor/Softwares/hadoop-2.7.3
+
+
+spark-shell  --packages org.apache.hbase:hbase:1.2.5,org.apache.hadoop:hadoop-common:2.7.3,org.apache.hbase:hbase-common:1.2.5,org.apache.hbase:hbase-client:1.2.5,org.apache.hbase:hbase-protocol:1.2.5,org.apache.hbase:hbase-hadoop2-compat:1.2.5,org.apache.hbase:hbase-server:1.2.5 --files /home/raptor/Softwares/hbase-1.2.5/conf/hbase-site.xml
+
+ spark-shell --packages com.hortonworks:shc-core:1.1.1-2.1-s_2.11,org.apache.hadoop:hadoop-common:2.7.3,org.apache.hbase:hbase-common:1.2.5,org.apache.hbase:hbase-client:1.2.5,org.apache.hbase:hbase-protocol:1.2.5,org.apache.hbase:hbase-hadoop2-compat:1.2.5,org.apache.hbase:hbase-server:1.2.5  --repositories http://repo.hortonworks.com/content/groups/public/  --files /home/raptor/Softwares/hbase-1.2.5/conf/hbase-site.xml
+
+
+spark-shell --packages com.hortonworks:shc-core:1.1.1-2.1-s_2.11,org.apache.hadoop:hadoop-common:2.7.3,org.apache.hbase:hbase-common:1.2.5,org.apache.hbase:hbase-client:1.2.5,org.apache.hbase:hbase-protocol:1.2.5,org.apache.hbase:hbase-hadoop2-compat:1.2.5,org.apache.hbase:hbase-server:1.2.5,org.json4s:json4s-jackson_2.11:3.6.7  --repositories http://repo.hortonworks.com/content/groups/public/  --files /home/raptor/Softwares/hbase-1.2.5/conf/hbase-site.xml
+
+org.json4s:json4s-jackson_2.10:3.6.7
+
+  --repositories http://repo.hortonworks.com/content/groups/public/       ,org.apache.hbase:hbase-hadoop2-compat:1.2.5,org.apache.hbase:hbase-server:1.2.5  --repositories http://repo.hortonworks.com/content/groups/public/  --files /home/raptor/Softwares/hbase-1.2.5/conf/hbase-site.xml
+
+
+
+import org.apache.spark.sql.execution.datasources.hbase._
+import spark.implicits._
+import org.apache.hadoop.hbase.client.{HBaseAdmin, Result}
+import org.apache.hadoop.hbase.{ HBaseConfiguration, HTableDescriptor }
+import org.apache.hadoop.hbase.mapreduce.TableInputFormat
+import org.apache.hadoop.hbase.io.ImmutableBytesWritable
+
+def carCatalog = s"""{
+"table":{"namespace":"default", "name":"cardata"},
+"rowkey":"key",
+"columns":{
+"alloy_wheels":{"cf":"hardware", "col":"alloy_wheels", "type":"string"},
+"anti_Lock_break":{"cf":"hardware", "col":"anti_Lock_break", "type":"string"},
+"electronic_breakforce_distribution":{"cf":"software", "col":"electronic_breakforce_distribution", "type":"string"},
+"terrain_mode":{"cf":"software", "col":"terrain_mode", "type":"string"},
+"traction_control":{"cf":"software", "col":"traction_control", "type":"string"}
+}
+}""".stripMargin
+
+val hbaseDF=spark.read.options(Map(HBaseTableCatalog.tableCatalog->carCatalog)).format("org.apache.spark.sql.execution.datasources.hbase").load()
+
+val hbaseDF=spark.read.options(Map(HBaseTableCatalog.tableCatalog->carCatalog)).format("hbase").load()
+
+
+zookeeper start:
+
+sh /home/raptor/Softwares/kafka_2.12-2.3.1/bin/zookeeper-server-start.sh  /home/raptor/Softwares/kafka_2.12-2.3.1/config/zookeeper.properties
+
+sh /home/raptor/Softwares/kafka_2.12-2.3.1/bin/zookeeper-server-stop.sh  
+
+hbase start stop:
+
+sh /home/raptor/Softwares/hbase-1.2.5/bin/start-hbase.sh
+
+/home/raptor/Softwares/hbase-1.2.5/bin/stop-hbase.sh
+
+hadoop start:
+
+/home/raptor/Softwares/hadoop-2.7.3/sbin/start-all.sh
+
+/home/raptor/Softwares/hadoop-2.7.3/sbin/stop-all.sh
+
+
+
 
 
