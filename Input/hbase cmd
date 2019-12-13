@@ -45,6 +45,8 @@ put 'cardata','v003_H','other:variant','sportz'
 
 scan 'cardata'
 
+// hive table
+
 create external table car_detail_hbase(
 car_id string,
 alloy_wheels string,
@@ -97,18 +99,10 @@ brand=Renault/model=Megane/year=2010/month
 /home/raptor/Softwares/hbase-1.2.5
 /home/raptor/Softwares/hadoop-2.7.3
 
-
-spark-shell  --packages org.apache.hbase:hbase:1.2.5,org.apache.hadoop:hadoop-common:2.7.3,org.apache.hbase:hbase-common:1.2.5,org.apache.hbase:hbase-client:1.2.5,org.apache.hbase:hbase-protocol:1.2.5,org.apache.hbase:hbase-hadoop2-compat:1.2.5,org.apache.hbase:hbase-server:1.2.5 --files /home/raptor/Softwares/hbase-1.2.5/conf/hbase-site.xml
-
- spark-shell --packages com.hortonworks:shc-core:1.1.1-2.1-s_2.11,org.apache.hadoop:hadoop-common:2.7.3,org.apache.hbase:hbase-common:1.2.5,org.apache.hbase:hbase-client:1.2.5,org.apache.hbase:hbase-protocol:1.2.5,org.apache.hbase:hbase-hadoop2-compat:1.2.5,org.apache.hbase:hbase-server:1.2.5  --repositories http://repo.hortonworks.com/content/groups/public/  --files /home/raptor/Softwares/hbase-1.2.5/conf/hbase-site.xml
+Jackson version issue. 3.2.10 is the correct one
 
 
-spark-shell --packages com.hortonworks:shc-core:1.1.1-2.1-s_2.11,org.apache.hadoop:hadoop-common:2.7.3,org.apache.hbase:hbase-common:1.2.5,org.apache.hbase:hbase-client:1.2.5,org.apache.hbase:hbase-protocol:1.2.5,org.apache.hbase:hbase-hadoop2-compat:1.2.5,org.apache.hbase:hbase-server:1.2.5,org.json4s:json4s-jackson_2.11:3.6.7  --repositories http://repo.hortonworks.com/content/groups/public/  --files /home/raptor/Softwares/hbase-1.2.5/conf/hbase-site.xml
-
-org.json4s:json4s-jackson_2.10:3.6.7
-
-  --repositories http://repo.hortonworks.com/content/groups/public/       ,org.apache.hbase:hbase-hadoop2-compat:1.2.5,org.apache.hbase:hbase-server:1.2.5  --repositories http://repo.hortonworks.com/content/groups/public/  --files /home/raptor/Softwares/hbase-1.2.5/conf/hbase-site.xml
-
+spark-shell --packages com.hortonworks:shc:1.1.1-2.1-s_2.11,com.hortonworks:shc-core:1.1.1-2.1-s_2.11   --repositories https://repository.apache.org/content/repositories/releases  --files /home/raptor/Softwares/hbase-1.2.5/conf/hbase-site.xml
 
 
 import org.apache.spark.sql.execution.datasources.hbase._
@@ -122,17 +116,49 @@ def carCatalog = s"""{
 "table":{"namespace":"default", "name":"cardata"},
 "rowkey":"key",
 "columns":{
+"vehicle_id":{"cf":"rowkey", "col":"key", "type":"string"},
 "alloy_wheels":{"cf":"hardware", "col":"alloy_wheels", "type":"string"},
 "anti_Lock_break":{"cf":"hardware", "col":"anti_Lock_break", "type":"string"},
 "electronic_breakforce_distribution":{"cf":"software", "col":"electronic_breakforce_distribution", "type":"string"},
 "terrain_mode":{"cf":"software", "col":"terrain_mode", "type":"string"},
-"traction_control":{"cf":"software", "col":"traction_control", "type":"string"}
+"traction_control":{"cf":"software", "col":"traction_control", "type":"string"},
+"stability_control":{"cf":"software", "col":"stability_control", "type":"string"},
+"cruize_control":{"cf":"software", "col":"cruize_control", "type":"string"},
+"make":{"cf":"other", "col":"make", "type":"string"},
+"model":{"cf":"other", "col":"model", "type":"string"},
+"variant":{"cf":"other", "col":"variant", "type":"string"}
 }
 }""".stripMargin
 
+
+spark.conf.set("spark.hbase.host", "localhost")
+
 val hbaseDF=spark.read.options(Map(HBaseTableCatalog.tableCatalog->carCatalog)).format("org.apache.spark.sql.execution.datasources.hbase").load()
 
-val hbaseDF=spark.read.options(Map(HBaseTableCatalog.tableCatalog->carCatalog)).format("hbase").load()
+case class carRecord(
+    vehicle_id: String,
+    alloy_wheels: String,
+    anti_Lock_break: String,
+    electronic_breakforce_distribution: String,
+    terrain_mode: String,
+    traction_control: String,
+    stability_control: String,
+    cruize_control: String,
+    make: String,
+    model: String,
+    variant: String
+    )
+
+val newCarDF = spark.createDataFrame(Seq(("v004_H", "yes", "yes", "yes","yes","yes","yes","yes","Suzuki","Baleno","Delta"))).toDF("vehicle_id","alloy_wheels","anti_Lock_break","electronic_breakforce_distribution","terrain_mode","traction_control","stability_control","cruize_control","make","model","variant")
+
+var carData = new Array[carRecord](1)
+carData(0) = newCarRecord
+
+val sc=spark.sparkContext
+newCarDF.write.options(Map(HBaseTableCatalog.tableCatalog -> carCatalog, HBaseTableCatalog.newTable -> "5")).format("org.apache.spark.sql.execution.datasources.hbase").save()
+
+
+org.json4s:json4s-jackson_2.11:3.3.0,org.json4s:json4s-scalap_2.11:3.3.0,org.json4s:json4s-core_2.11:3.3.0,org.json4s:json4s-ast_2.11:3.3.0
 
 
 zookeeper start:
