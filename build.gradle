@@ -35,6 +35,9 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
+        url "https://oss.sonatype.org/content/repositories/snapshot"
+    }
+    maven {
         url "http://repo.hortonworks.com/content/repositories/releases/"
     }
 
