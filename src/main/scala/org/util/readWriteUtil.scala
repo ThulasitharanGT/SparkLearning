@@ -1,9 +1,9 @@
 package org.util
 import org.apache.spark.sql.DataFrame
-
 import org.apache.spark.sql.SparkSession
 import org.constants.projectConstants
 import io.delta.tables._
+import org.apache.spark.sql.execution.datasources.hbase.HBaseTableCatalog
 object readWriteUtil {
   def readDF(spark:SparkSession,inputMap:collection.mutable.Map[String,String]):DataFrame ={
      var dfTemp=spark.createDataFrame(Seq(("invalid Scn"," Error"))).toDF("Scn","Desc")
@@ -29,6 +29,11 @@ object readWriteUtil {
       case _ => println("Invalid selection")
       }
     dfTemp
+  }
+
+  //Hbase table read
+  def withCatalog(spark:SparkSession,catalog:String): DataFrame ={
+    spark.read.options(Map(HBaseTableCatalog.tableCatalog->catalog)).format(projectConstants.hbaseFormat).load()
   }
 
   def deltaTableRead(spark:SparkSession,inputMap:collection.mutable.Map[String,String]) ={

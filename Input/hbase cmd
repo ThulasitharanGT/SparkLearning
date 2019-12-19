@@ -151,12 +151,13 @@ case class carRecord(
 
 val newCarDF = spark.createDataFrame(Seq(("v004_H", "yes", "yes", "yes","yes","yes","yes","yes","Suzuki","Baleno","Delta"))).toDF("vehicle_id","alloy_wheels","anti_Lock_break","electronic_breakforce_distribution","terrain_mode","traction_control","stability_control","cruize_control","make","model","variant")
 
-var carData = new Array[carRecord](1)
-carData(0) = newCarRecord
+//one less column
+val newCarDF2 = spark.createDataFrame(Seq(("v004_H", "yes", "yes", "yes","yes","yes","yes","yes","Suzuki","ciaz"))).toDF("vehicle_id","alloy_wheels","anti_Lock_break","electronic_breakforce_distribution","terrain_mode","traction_control","stability_control","cruize_control","make","model")
 
-val sc=spark.sparkContext
 newCarDF.write.options(Map(HBaseTableCatalog.tableCatalog -> carCatalog, HBaseTableCatalog.newTable -> "5")).format("org.apache.spark.sql.execution.datasources.hbase").save()
 
+// invalid columns invalid inserting doesnt work
+newCarDF2.write.options(Map(HBaseTableCatalog.tableCatalog -> carCatalog, HBaseTableCatalog.newTable -> "5")).format("org.apache.spark.sql.execution.datasources.hbase").save()
 
 org.json4s:json4s-jackson_2.11:3.3.0,org.json4s:json4s-scalap_2.11:3.3.0,org.json4s:json4s-core_2.11:3.3.0,org.json4s:json4s-ast_2.11:3.3.0
 

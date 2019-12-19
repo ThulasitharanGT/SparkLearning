@@ -19,6 +19,7 @@ object projectConstants {
   val fileTypeXmlValue="xml"
   val fileRootTagXmlArg ="rootTag"
   val fileRowTagXmlArg ="rowTag"
+  val hbaseFormat="org.apache.spark.sql.execution.datasources.hbase"
   val fileTypeXmlFormatValue="com.databricks.spark.xml"
   val fileTypeAvroFormatValue="com.databricks.spark.avro"
   val fileTypeCsvValue="csvHeader"
