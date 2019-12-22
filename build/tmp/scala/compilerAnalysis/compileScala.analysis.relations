@@ -36,6 +36,10 @@ products:
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> build/classes/scala/main/org/controller/AdvancedTopic/addingColumnToParquetFileInProd$$anonfun$main$5.class
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> build/classes/scala/main/org/controller/AdvancedTopic/addingColumnToParquetFileInProd$.class
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> build/classes/scala/main/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.class
+   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer$$anonfun$main$1.class
+   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer$$anonfun$main$2.class
+   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer$.class
+   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer.class
    src/main/scala/org/controller/FunctionClass.scala -> build/classes/scala/main/org/controller/FunctionClass$.class
    src/main/scala/org/controller/FunctionClass.scala -> build/classes/scala/main/org/controller/FunctionClass.class
    src/main/scala/org/controller/PivotExample.scala -> build/classes/scala/main/org/controller/PivotExample$.class
@@ -168,6 +172,8 @@ binary dependencies:
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.4/e6a748c169978b0d070002f7849e4edc9bbb3db4/spark-sql_2.11-2.4.4.jar
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/FunctionClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.4/e6a748c169978b0d070002f7849e4edc9bbb3db4/spark-sql_2.11-2.4.4.jar
    src/main/scala/org/controller/FunctionClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/FunctionClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
@@ -391,6 +397,10 @@ class names:
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> org.controller.AdvancedTopic.addingColumnToParquetFileInProd$$anonfun$main$3
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> org.controller.AdvancedTopic.addingColumnToParquetFileInProd$$anonfun$main$4
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> org.controller.AdvancedTopic.addingColumnToParquetFileInProd$$anonfun$main$5
+   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer
+   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer$
+   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer$$anonfun$main$1
+   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer$$anonfun$main$2
    src/main/scala/org/controller/FunctionClass.scala -> org.controller.FunctionClass
    src/main/scala/org/controller/FunctionClass.scala -> org.controller.FunctionClass$
    src/main/scala/org/controller/PivotExample.scala -> org.controller.PivotExample
