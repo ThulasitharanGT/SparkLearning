@@ -1,7 +1,7 @@
 package org.controller.AdvancedTopic
 import scala.collection.mutable.ListBuffer
 object listToListBuffer {
-  val inputList = List(1,2,3,6,7,8,12,13,14,16,19,20,98,99,54,99,100)
+  val inputList = List(1,2,3,6,7,8,12,13,14,16,19,20,98,99,54,99,100,67)
   val lb=new ListBuffer[List[Int]]()
   var tL=new Array[Int](inputList.size)
   var tLCounter=0
@@ -30,7 +30,10 @@ def addElementToArray(currentIndex:Int)
  }
   def checkingLastElement(currentIndex:Int)={
     if (inputList(currentIndex-1)+1 == inputList(currentIndex))
+      {
       addElementToArray(currentIndex)
+      addElementToListBuffer()
+      }
     else
     if (tL.size >0)
     {
