@@ -1,0 +1,9 @@
+var xmlDf=spark.read.format("com.databricks.spark.xml").option("rowTag","brand").option("rootTag","car").load("/home/raptor/IdeaProjects/SparkLearning/Input/carData.xml")
+
+xmlDf.withColumn("modelExploded",explode(col("model"))).drop("model").show(10,false)
+
+
+xmlDf.withColumn("modelExploded",explode(col("model"))).drop("model").withColumn("variantExploded",explode(col("variant"))).drop("variant").show(10,false)
+
+
+xmlDf.withColumn("modelExploded",explode(col("model"))).withColumn("variantExploded",explode(col("variant"))).drop("variant","model").show(100,false)

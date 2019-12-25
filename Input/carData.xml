@@ -1,0 +1,12 @@
+<xml version="1.0">
+<car>
+<brand name="Suzuki">
+<model>Swift,Baleno,Ciaz,S-Cross,Brezza</model>
+<variant>Lxi,Vxi,Zxi,Zxi(0),Vxi(0),Delta,Sigma,Alfa</variant>
+</brand>
+<brand name="Hyundai">
+<model>i20,Creta,Verna</model>
+<variant>Magna,Astra</variant>
+</brand>
+<car>
+</xml>
