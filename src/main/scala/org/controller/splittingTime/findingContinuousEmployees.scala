@@ -26,7 +26,7 @@ val spark=SparkSessionLoc("emploees Prog")
     inputMap.put(projectConstants.basePathArgConstant,System.getProperty("user.dir")+"/Input/")
     inputMap.put(projectConstants.filePathArgValue,System.getProperty("user.dir")+"/Input/tempEmployeeStartEnd.txt")
     val df=readWriteUtil.readDF(spark,inputMap).selectExpr("empId","substring(CAST(startDate as String),0,19) as startDate","substring(CAST(endDate as String),0,19) as endDate")
-    val dfOrdered=df.orderBy("empId","startDate")
+    val dfOrdered=df.orderBy("empId","startDate") //ordered for taking distinct empid
     //val totEmpCount=dfOrdered.select("empId").distinct.count
     val totEmpIdDistinctId=dfOrdered.select("empId").distinct
     val totEmpIdList=totEmpIdDistinctId.select("empId").rdd.map(r => r(0)).collect()
@@ -37,7 +37,7 @@ val spark=SparkSessionLoc("emploees Prog")
       //println(empIdCurrent)
       val currentEmpDf=dfOrdered.filter("empId="+empIdCurrent)
       currentEmpDf.show
-      val currentEmpArray=currentEmpDf.rdd.collect()
+      val currentEmpArray=currentEmpDf.rdd.collect() // gives a array of row's
       val currentEmpTotalRecords=currentEmpDf.count.toInt
       //currentEmpArray foreach println
       for (i <- 0 to currentEmpTotalRecords-1)

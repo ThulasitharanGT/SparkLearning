@@ -26,7 +26,7 @@ object deltaLakeHadoopEg extends SparkOpener {
     inputMap.put(projectConstants.filePathArgValue,inputPath+"Avail_car_ExtraColumn_schema.txt")
   // -->  val deltaInputDiffSchema=readWriteUtil.readDF(spark,inputMap).selectExpr("Vehicle_id","model","brand","year","month","miles","CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time","number_of_owners")
    // readWriteUtil.writeDF(inputMap,deltaInput1) // cant partition in this method
-    deltaInput1.write.mode("overwrite").format("delta").partitionBy("brand","model","year","month").save(outputPath+tableBronzeName)
+    deltaInput1.write.mode("overwrite").format("delta").partitionBy("year","month","brand","model").save(outputPath+tableBronzeName)
     inputMap.put(projectConstants.fileTypeArgConstant,projectConstants.fileTypeDeltaValue)
     inputMap.put(projectConstants.fileOverwriteAppendArg,projectConstants.fileAppendValue)
     inputMap.put(projectConstants.filePathArgValue,outputPath+tableBronzeName+projectConstants.pathSep)

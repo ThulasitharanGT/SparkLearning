@@ -44,46 +44,43 @@ repositories {
 }
 
 dependencies {
-    // compile 'org.scala-lang:scala-library:2.12.8'
-    // compile 'org.scala-lang:scala-reflect:2.12.8'
-    // compile 'org.scala-lang:scala-compiler:2.12.8'
 
+/*
+    compile 'org.scala-lang:scala-library:2.12.10'
+    compile 'org.scala-lang:scala-reflect:2.12.10'
+    compile 'org.scala-lang:scala-compiler:2.12.10'
+    compile 'org.scala-lang.modules:scala-parser-combinators_2.12:1.1.2'
+    compile 'org.apache.spark:spark-mllib_2.12:2.4.4'
+    compile 'org.apache.spark:spark-sql_2.12:2.4.4'
+    compile 'org.apache.spark:spark-streaming-flume-assembly_2.12:2.4.4'
+    compile 'org.apache.spark:spark-graphx_2.12:2.4.4'
+    compile 'org.apache.spark:spark-launcher_2.12:2.4.4'
+    compile 'org.apache.spark:spark-catalyst_2.12:2.4.4'
+    compile 'org.apache.spark:spark-streaming_2.12:2.4.4'
+    compile group: 'io.delta', name: 'delta-core_2.12', version: '0.5.0'
+    compile 'org.apache.spark:spark-core_2.12:2.4.4'
+    compile 'org.apache.spark:spark-hive_2.12:2.4.4'
+    compile 'org.apache.spark:spark-avro_2.12:2.4.4'
+
+*/
     compile 'org.scala-lang:scala-library:2.11.8'
     compile 'org.scala-lang:scala-reflect:2.11.8'
     compile 'org.scala-lang:scala-compiler:2.11.8'
-
- //   compile 'org.scala-lang.modules:scala-parser-combinators_2.12:1.1.2'
-
     compile 'org.scala-lang.modules:scala-parser-combinators_2.11:1.1.2'
-
     compile 'org.scala-lang.modules:scala-swing_2.11:2.0.3'
- // compile 'org.apache.spark:spark-mllib_2.12:2.4.4'
-    compile 'org.apache.spark:spark-mllib_2.11:2.4.4'
-    compile 'org.apache.spark:spark-sql_2.11:2.4.4'
- //   compile 'org.apache.spark:spark-sql_2.12:2.4.4'
-
-    compile 'org.apache.spark:spark-streaming-flume-assembly_2.11:2.4.4'
- //   compile 'org.apache.spark:spark-streaming-flume-assembly_2.12:2.4.4'
-
-    compile 'org.apache.spark:spark-graphx_2.11:2.4.4'
-    compile 'org.apache.spark:spark-launcher_2.11:2.4.4'
-    compile 'org.apache.spark:spark-catalyst_2.11:2.4.4'
-    compile 'org.apache.spark:spark-streaming_2.11:2.4.4'
-
- //  compile 'org.apache.spark:spark-graphx_2.12:2.4.4'
- //  compile 'org.apache.spark:spark-launcher_2.12:2.4.4'
- //  compile 'org.apache.spark:spark-catalyst_2.12:2.4.4'
- //  compile 'org.apache.spark:spark-streaming_2.12:2.4.4'
-
-    compile group: 'io.delta', name: 'delta-core_2.11', version: '0.4.0'
-    compile 'org.apache.spark:spark-core_2.11:2.4.4'
-    compile 'org.apache.spark:spark-hive_2.11:2.4.4'
-
-  //  compile group: 'io.delta', name: 'delta-core_2.12', version: '0.4.0'
-  //  compile 'org.apache.spark:spark-core_2.12:2.4.4'
-  //  compile 'org.apache.spark:spark-hive_2.12:2.4.4'
-
+    compile 'org.apache.spark:spark-mllib_2.11:2.4.0'
+    compile 'org.apache.spark:spark-sql_2.11:2.4.0'
+    compile 'org.apache.spark:spark-graphx_2.11:2.4.0'
+    compile 'org.apache.spark:spark-launcher_2.11:2.4.0'
+    compile 'org.apache.spark:spark-catalyst_2.11:2.4.0'
+    compile 'org.apache.spark:spark-streaming_2.11:2.4.0'
+    compile group: 'io.delta', name: 'delta-core_2.11', version: '0.5.0'
+    compile 'org.apache.spark:spark-core_2.11:2.4.0'
+    compile 'org.apache.spark:spark-hive_2.11:2.4.0'
     compile 'com.databricks:spark-avro_2.11:4.0.0'
+
+
+
     compile 'org.apache.avro:avro-mapred:1.8.2'
     compile 'org.apache.avro:avro:1.8.2'
     compile 'org.apache.avro:avro-compiler:1.8.2'
@@ -107,7 +104,23 @@ dependencies {
     compile group: 'org.apache.hbase', name: 'hbase-annotations', version: '1.2.5'
 
     // jackson modues
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.6'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.0'
+    compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.13'
+    compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.8.7'
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.8.6'
+    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-scala_2.11', version: '2.8.6'
+    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.8.6'
+    compile group: 'org.json4s', name: 'json4s-jackson_2.11', version: '3.2.10'
+    compile group: 'com.twitter', name: 'parquet-jackson', version: '1.6.0'
+    compile group: 'org.codehaus.jackson', name: 'jackson-jaxrs', version: '1.9.13'
+    compile group: 'org.codehaus.jackson', name: 'jackson-xc', version: '1.9.13'
+    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-paranamer', version: '2.8.6'
+
+
+    /*
+        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.1'
     compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.13'
     compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
@@ -119,7 +132,16 @@ dependencies {
     compile group: 'com.twitter', name: 'parquet-jackson', version: '1.6.0'
     compile group: 'org.codehaus.jackson', name: 'jackson-jaxrs', version: '1.9.13'
     compile group: 'org.codehaus.jackson', name: 'jackson-xc', version: '1.9.13'
-    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-paranamer', version: '2.10.1'
+    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-paranamer', version: '2.10.1'*/
+    // hadoop jars
+    compile group: 'org.apache.hadoop', name: 'hadoop-common', version: '2.7.3'
+    compile group: 'org.apache.hadoop', name: 'hadoop-client', version: '2.7.3'
+    compile group: 'org.apache.hadoop', name: 'hadoop-hdfs', version: '2.7.3'
+    compile group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: '2.7.3'
+    compile group: 'org.apache.hadoop', name: 'hadoop-annotations', version: '2.7.3'
+    compile group: 'org.apache.hadoop', name: 'hadoop-auth', version: '2.7.3'
+    compile group: 'org.apache.hadoop', name: 'hadoop-yarn-common', version: '2.7.3'
+
 
 
 

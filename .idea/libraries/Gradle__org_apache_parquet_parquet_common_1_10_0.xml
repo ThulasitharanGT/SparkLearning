@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.parquet:parquet-common:1.10.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.parquet/parquet-common/1.10.0/a0e1edfd215d988f7233aad0b0336cf51fa2b20f/parquet-common-1.10.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.parquet/parquet-common/1.10.0/6bc59621eb6771d2bdd369e9fc329f9f922e2d5a/parquet-common-1.10.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.spark:spark-sketch_2.11:2.4.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sketch_2.11/2.4.0/865380e33a4e184ab171ec37acbdf971aed6166b/spark-sketch_2.11-2.4.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sketch_2.11/2.4.0/84eb2ee1b52133f76aab41cb582cf4d3e78f76ac/spark-sketch_2.11-2.4.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
