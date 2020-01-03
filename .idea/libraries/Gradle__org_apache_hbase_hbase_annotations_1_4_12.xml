@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.hbase:hbase-annotations:1.4.12">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-annotations/1.4.12/66172691cbb0a51fd6770998512165f8f679caef/hbase-annotations-1.4.12.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-annotations/1.4.12/bce8cf548f7d40c26174e34ed9fcbab3795439ef/hbase-annotations-1.4.12-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

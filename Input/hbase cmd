@@ -101,6 +101,7 @@ brand=Renault/model=Megane/year=2010/month
 
 Jackson version issue. 3.2.10 is the correct one
 
+// use json 4s 3.2.10 jars forreading data from hbase. 3.5.3 jars wont work
 
 spark-shell --packages com.hortonworks:shc:1.1.1-2.1-s_2.11,com.hortonworks:shc-core:1.1.1-2.1-s_2.11   --repositories https://repository.apache.org/content/repositories/releases  --files /home/raptor/Softwares/hbase-1.2.5/conf/hbase-site.xml
 

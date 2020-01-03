@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.hbase.thirdparty:hbase-shaded-gson:3.0.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hbase.thirdparty/hbase-shaded-gson/3.0.0/5d4c9ac77d7257197249a971f7ba2b4b021bc67d/hbase-shaded-gson-3.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hbase.thirdparty/hbase-shaded-gson/3.0.0/e04dc6ddb9938b208f9838ed8c30116c0486d7d8/hbase-shaded-gson-3.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

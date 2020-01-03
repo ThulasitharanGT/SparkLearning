@@ -19,14 +19,19 @@ object deltaLakeHadoopEg extends SparkOpener {
     inputMap.put(projectConstants.delimiterArgConstant,projectConstants.delimiterOr)
     inputMap.put(projectConstants.headerArgConstant,projectConstants.stringTrue)
      val deltaInput1=readWriteUtil.readDF(spark,inputMap)
+    deltaInput1.show(false)
     inputMap.put(projectConstants.filePathArgValue,inputPath+"Avail_car3.txt")
     val deltaInput2=readWriteUtil.readDF(spark,inputMap).selectExpr("Vehicle_id","model","brand","year","month","miles","CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time")
+    deltaInput2.show(false)
     inputMap.put(projectConstants.filePathArgValue,inputPath+"Avail_car4.txt")
     val deltaInput3=readWriteUtil.readDF(spark,inputMap).selectExpr("Vehicle_id","model","brand","year","month","miles","CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time")
+    deltaInput3.show(false)
     inputMap.put(projectConstants.filePathArgValue,inputPath+"Avail_car_ExtraColumn_schema.txt")
   // -->  val deltaInputDiffSchema=readWriteUtil.readDF(spark,inputMap).selectExpr("Vehicle_id","model","brand","year","month","miles","CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time","number_of_owners")
    // readWriteUtil.writeDF(inputMap,deltaInput1) // cant partition in this method
-    deltaInput1.write.mode("overwrite").format("delta").partitionBy("year","month","brand","model").save(outputPath+tableBronzeName)
+    //deltaInput1.write.mode("overwrite").format("delta").partitionBy("year","month","brand","model").save(outputPath+tableBronzeName) //partitionBy not working in spark submit. delta table not created with partition folder
+    deltaInput1.write.mode("overwrite").partitionBy("year","month","brand","model").save(outputPath+tableBronzeName) //saving it as parq
+    DeltaTable.convertToDelta(spark,"parquet.`"+outputPath+tableBronzeName+"`","year int , month int ,brand string, model string") //converting parq to delta table
     inputMap.put(projectConstants.fileTypeArgConstant,projectConstants.fileTypeDeltaValue)
     inputMap.put(projectConstants.fileOverwriteAppendArg,projectConstants.fileAppendValue)
     inputMap.put(projectConstants.filePathArgValue,outputPath+tableBronzeName+projectConstants.pathSep)
