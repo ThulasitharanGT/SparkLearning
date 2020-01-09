@@ -16,6 +16,23 @@ object splittingDifferentColumnRecords extends SparkOpener{
     // below works in console
     //val df5Col=rdd5Col.toDF("col").selectExpr("split(col,'"+projectConstants.delimiterTilde+"') as col").selectExpr("col[0] as one","col[1] as two","col[2] as three","col[3] as four","col[4] as five")
     //val df3Col=rdd3Col.toDF("col").selectExpr("split(col,'"+projectConstants.delimiterTilde+"') as col").selectExpr("col[0] as one","col[1] as two","col[2] as three")
+    /*
+    val df=spark.read.csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/multipleRecordSchema.txt")
+    val dfWithArray=df.selectExpr("split(_c0,'~') as colArray","_c0")
+    val dfWithArraySize=dfWithArray.selectExpr("size(colArray) as tempSize","colArray","_c0")
+    //dfWithArray.select(size(col("colArray"))).show
+    val df5col=dfWithArraySize.filter("tempSize =5").select("colArray").selectExpr("colArray[0] as one","colArray[1] as two","colArray[2] as three","colArray[3] as four","colArray[4] as five")
+    val df3col=dfWithArraySize.filter("tempSize =3").select("colArray").selectExpr("colArray[0] as one","colArray[1] as two","colArray[2] as three")
 
+
+-------------
+
+second try
+val dfWithArray=df.withColumnRenamed("_c0","col").selectExpr("split(col,'~') as colArray").selectExpr("size(colArray) as numCols","colArray")
+
+dfWithArray.filter("numCols =5").selectExpr("colArray[0] as one").selectExpr("colArray[1] as two").selectExpr("colArray[2] as three").selectExpr("colArray[3] as four").selectExpr("colArray[4] as five")
+
+dfWithArray.filter("numCols =3").selectExpr("colArray[0] as one").selectExpr("colArray[1] as two").selectExpr("colArray[2] as three")
+*/
   }
 }

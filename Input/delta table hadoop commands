@@ -1,6 +1,6 @@
 
 
-spark-shell --packages io.delta:delta-core_2.11:0.4.0
+spark-shell --packages io.delta:delta-core_2.11:0.5.0
 spark-shell --packages io.delta:delta-core_2.12:0.4.0
 
 /home/raptor/Softwares/hadoop-2.7.3/sbin/start-dfs.sh
@@ -56,6 +56,10 @@ val tempDeltaTableInput1= deltaTableInput1.selectExpr("Vehicle_id","model","bran
 
 // partition by not working in shell(2.11, scla, working in 2.12 scala in intellji) -- write through intelliji
 deltaTableInput1.write.format("delta").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/deltaTableTestFolder/deltaTablePartitioned_tempCheck_1")
+
+deltaTableInput1.write.mode("overwrite").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze")
+
+DeltaTable.convertToDelta(spark,"parquet.`/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze`","brand string,model string,year int,month int")
 
 // loaded delta table
 
@@ -144,8 +148,46 @@ spark.read.format("delta").load("/user/raptor/testing/hadoop/deltaTableTestFolde
 
 
 
+----------------------------
+
+temp try 
+
+val deltaTableSilver=DeltaTable.forPath(spark,outputPath+"carsDeltaTable_Silver")
+
+val deltaTableBronze=DeltaTable.forPath(spark,outputPath+"carsDeltaTable_Bronze")
+
+deltaTableBronze.as("bronze").merge(deltaInput3.as("df"),"bronze.Vehicle_id=df.Vehicle_id").whenMatched.updateAll.whenNotMatched.insertAll.execute()
+
+deltaTableBronze.as("bronze").merge(deltaInput2.as("df"),"bronze.Vehicle_id=df.Vehicle_id and bronze.model=df.model").whenMatched.updateExpr(Map("model"->"bronze.model","brand"->"bronze.brand","year" -> "bronze.year" ,"month"->"bronze.month","miles"->"bronze.miles")).whenNotMatched.insertAll.execute()
 
 
+deltaTableBronze.as("bronze").merge(deltaTableSilver.toDF.as("silver"),"bronze.Vehicle_id=silver.Vehicle_id").whenMatched.updateExpr(Map("model"->"bronze.model","brand"->"bronze.brand","year" -> "bronze.year" ,"month"->"bronze.month","miles"->"bronze.miles")).whenNotMatched.insertAll.execute()
+
+-------------------------------
+
+creating pipeline
+
+deltaTableInput1.write.mode("overwrite").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze") // not partitioning while we write as delta, so converting it to delta // can be said like historic table is coverted to delta table
+
+DeltaTable.convertToDelta(spark,"parquet.`/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze`","brand string,model string,year int,month int")
+
+deltaTableInput2.write.format("delta").mode("append").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze")
+
+deltaTableInput3.write.format("delta").mode("append").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze")
+
+// actually replace where must come for historic data like less data year time. like less than 2010 data had one column less than new data. then we can replicate that data in a new df and with column the new column and overwrite using replace where --> here i took brand badexample but same functionality
+
+deltaTableInputExtraColumn.write.format("delta").mode("append").option("mergeSchema","true").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze")
+
+//replacing old data with additional coloumn value
+
+import org.apache.spark.sql.functions._
+
+DeltaTable.forPath(spark,"/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze").toDF.filter("brand not in ('Ferrari','Volswogen','Renault','Aston-Martin')").drop("number_of_owners").withColumn("number_of_owners",when(col("brand") ==="Hyundai",2).when(col("brand") ==="Lambhorghini",5).otherwise(3)).write.mode("overwrite").format("delta").option("replaceWhere","brand not in ('Ferrari','Volswogen','Renault','Aston-Martin')").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze")
+
+//checking data
+
+DeltaTable.forPath(spark,"/user/raptor/testing/hadoop/deltaTableTestFolder/outputFiles/carsDeltaTable_Bronze").toDF.filter("brand not in ('Ferrari','Volswogen','Renault','Aston-Martin')")
 
 
 

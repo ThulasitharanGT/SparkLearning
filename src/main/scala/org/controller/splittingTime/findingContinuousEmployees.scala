@@ -55,6 +55,7 @@ val spark=SparkSessionLoc("emploees Prog")
           val nextStartDateExpectedDay=currentEndDate.plusMinutes(60*24).dayOfYear().getAsText()
           //println("nextStartDateExpectedDay="+nextStartDateExpectedDay)
           val nextStartDateDayYear=nextStartDate.getYear()
+          nextStartDate.getDayOfMonth
           //println("nextStartDateDayYear="+nextStartDateDayYear)
           val nextStartDateDay=nextStartDate.dayOfYear().getAsText()
           //println("nextStartDateDay="+nextStartDateDay)
