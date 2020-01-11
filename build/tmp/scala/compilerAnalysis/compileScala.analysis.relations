@@ -38,6 +38,15 @@ products:
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> build/classes/scala/main/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.class
    src/main/scala/org/controller/AdvancedTopic/empCaseClass.scala -> build/classes/scala/main/org/controller/AdvancedTopic/empCaseClass$.class
    src/main/scala/org/controller/AdvancedTopic/empCaseClass.scala -> build/classes/scala/main/org/controller/AdvancedTopic/empCaseClass.class
+   src/main/scala/org/controller/AdvancedTopic/empCaseClassWithWeekend.scala -> build/classes/scala/main/org/controller/AdvancedTopic/empCaseClassWithWeekend$.class
+   src/main/scala/org/controller/AdvancedTopic/empCaseClassWithWeekend.scala -> build/classes/scala/main/org/controller/AdvancedTopic/empCaseClassWithWeekend.class
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> build/classes/scala/main/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap$$anonfun$1.class
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> build/classes/scala/main/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap$$anonfun$main$1$$anonfun$apply$1.class
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> build/classes/scala/main/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap$$anonfun$main$1.class
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> build/classes/scala/main/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap$$typecreator13$1.class
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> build/classes/scala/main/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap$$typecreator5$1.class
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> build/classes/scala/main/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap$.class
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> build/classes/scala/main/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.class
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer$$anonfun$main$1.class
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer$$anonfun$main$2.class
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer$.class
@@ -185,6 +194,15 @@ binary dependencies:
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/AdvancedTopic/empCaseClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/AdvancedTopic/empCaseClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/AdvancedTopic/empCaseClassWithWeekend.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/empCaseClassWithWeekend.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.0/9d000df2535f94f029a59950cf439f84e68c8bfc/spark-catalyst_2.11-2.4.0.jar
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.0/2eebc2356fa310b7cc0308b672b08cecfe85eb70/spark-core_2.11-2.4.0.jar
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/FunctionClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
@@ -323,6 +341,10 @@ binary dependencies:
 source dependencies:
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> src/main/scala/org/constants/projectConstants.scala
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> src/main/scala/org/controller/AdvancedTopic/empCaseClassWithWeekend.scala
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/FunctionClass.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/FunctionClass.scala -> src/main/scala/org/controller/UDFNewTry.scala
    src/main/scala/org/controller/FunctionClass.scala -> src/main/scala/org/util/SparkOpener.scala
@@ -422,6 +444,15 @@ class names:
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> org.controller.AdvancedTopic.addingColumnToParquetFileInProd$$anonfun$main$5
    src/main/scala/org/controller/AdvancedTopic/empCaseClass.scala -> org.controller.AdvancedTopic.empCaseClass
    src/main/scala/org/controller/AdvancedTopic/empCaseClass.scala -> org.controller.AdvancedTopic.empCaseClass$
+   src/main/scala/org/controller/AdvancedTopic/empCaseClassWithWeekend.scala -> org.controller.AdvancedTopic.empCaseClassWithWeekend
+   src/main/scala/org/controller/AdvancedTopic/empCaseClassWithWeekend.scala -> org.controller.AdvancedTopic.empCaseClassWithWeekend$
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> org.controller.AdvancedTopic.findingContinuousEmployeesWithGap
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> org.controller.AdvancedTopic.findingContinuousEmployeesWithGap$
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> org.controller.AdvancedTopic.findingContinuousEmployeesWithGap$$anonfun$1
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> org.controller.AdvancedTopic.findingContinuousEmployeesWithGap$$anonfun$main$1
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> org.controller.AdvancedTopic.findingContinuousEmployeesWithGap$$anonfun$main$1$$anonfun$apply$1
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> org.controller.AdvancedTopic.findingContinuousEmployeesWithGap$$typecreator13$1
+   src/main/scala/org/controller/AdvancedTopic/findingContinuousEmployeesWithGap.scala -> org.controller.AdvancedTopic.findingContinuousEmployeesWithGap$$typecreator5$1
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer$
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer$$anonfun$main$1
