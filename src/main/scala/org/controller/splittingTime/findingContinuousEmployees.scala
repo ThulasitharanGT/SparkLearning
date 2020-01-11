@@ -13,6 +13,8 @@ object findingContinuousEmployees extends SparkOpener {
   val dateFormat="yyyy-MM-dd HH:mm:ss"
   def stringToJodaTime(timeString:String) = DateTime.parse(timeString.toString,DateTimeFormat.forPattern(dateFormat))
 val spark=SparkSessionLoc("emploees Prog")
+  import spark.implicits._
+
   def main(args: Array[String]): Unit = {
 
   //  val df=spark.read.option("inferSchema","true")/*.option("timestampFormat","yyyy-MM-dd HH:mm:ss")*/.option("header","true").option("delimiter","|").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/tempEmployeeStartEnd.txt").selectExpr("empId","substring(CAST(startDate as String),0,19) as startDate","substring(CAST(endDate as String),0,19) as endDate")
@@ -85,7 +87,7 @@ val spark=SparkSessionLoc("emploees Prog")
 //case class empCaseClass(empId:String,startDate:String,endDate:String)
     //finalResultLB foreach println
     //finalResultLBExclusion foreach println
-    val finalResultDF=finalResultLB.map(_.toSeq).map(r => empCaseClass(r(0).toString,r(1).toString,r(2).toString))//.toDF()  ==> to DF works in repl
-    val finalResultLBExclusionDF=finalResultLBExclusion.map(_.toSeq).map(r => empCaseClass(r(0).toString,r(1).toString,r(2).toString))//.toDF()
+    val finalResultDF=finalResultLB.map(_.toSeq).map(r => empCaseClass(r(0).toString,r(1).toString,r(2).toString)).toDF() // ==> to DF works in repl
+    val finalResultLBExclusionDF=finalResultLBExclusion.map(_.toSeq).map(r => empCaseClass(r(0).toString,r(1).toString,r(2).toString)).toDF()
   }
 }
