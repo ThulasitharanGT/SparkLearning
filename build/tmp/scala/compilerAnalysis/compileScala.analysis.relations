@@ -97,6 +97,9 @@ products:
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample$$anonfun$main$1.class
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample$.class
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample.class
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaHadoopJobTest$$anonfun$main$1.class
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaHadoopJobTest$.class
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaHadoopJobTest.class
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaLakeHadoopEg$.class
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaLakeHadoopEg.class
    src/main/scala/org/controller/deltaLakeEG/deltaLakeNewColumnTableTry.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaLakeNewColumnTableTry$.class
@@ -105,6 +108,12 @@ products:
    src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaReadAsDeltaTable.class
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaTableRead$.class
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaTableRead.class
+   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> build/classes/scala/main/org/controller/deltaLakeEG/fixBronzeToSilver$$anonfun$main$1.class
+   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> build/classes/scala/main/org/controller/deltaLakeEG/fixBronzeToSilver$.class
+   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> build/classes/scala/main/org/controller/deltaLakeEG/fixBronzeToSilver.class
+   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> build/classes/scala/main/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze$$anonfun$main$1.class
+   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> build/classes/scala/main/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze$.class
+   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> build/classes/scala/main/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.class
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> build/classes/scala/main/org/controller/deltaLakeEG/readingFilesUsingStringSchema$.class
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> build/classes/scala/main/org/controller/deltaLakeEG/readingFilesUsingStringSchema.class
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> build/classes/scala/main/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable$.class
@@ -155,6 +164,8 @@ products:
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$$anonfun$5.class
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$$anonfun$main$1$$anonfun$apply$1.class
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$$anonfun$main$1.class
+   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$$typecreator13$1.class
+   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$$typecreator5$1.class
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$.class
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees.class
    src/main/scala/org/controller/udfCheck.scala -> build/classes/scala/main/org/controller/udfCheck$$anonfun$main$1.class
@@ -237,6 +248,11 @@ binary dependencies:
    src/main/scala/org/controller/UDFOnSurvey.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/ZipExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/ZipExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.5.0/428433056d5812912bf1af2058348351eee0fb4e/delta-core_2.11-0.5.0.jar
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.0/9d000df2535f94f029a59950cf439f84e68c8bfc/spark-catalyst_2.11-2.4.0.jar
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.5.0/428433056d5812912bf1af2058348351eee0fb4e/delta-core_2.11-0.5.0.jar
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.0/9d000df2535f94f029a59950cf439f84e68c8bfc/spark-catalyst_2.11-2.4.0.jar
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
@@ -255,6 +271,15 @@ binary dependencies:
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.5.0/428433056d5812912bf1af2058348351eee0fb4e/delta-core_2.11-0.5.0.jar
+   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.0/9d000df2535f94f029a59950cf439f84e68c8bfc/spark-catalyst_2.11-2.4.0.jar
+   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
+   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.0/9d000df2535f94f029a59950cf439f84e68c8bfc/spark-catalyst_2.11-2.4.0.jar
+   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
+   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
@@ -314,6 +339,7 @@ binary dependencies:
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.0/2eebc2356fa310b7cc0308b672b08cecfe85eb70/spark-core_2.11-2.4.0.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/udfCheck.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.0/9d000df2535f94f029a59950cf439f84e68c8bfc/spark-catalyst_2.11-2.4.0.jar
    src/main/scala/org/controller/udfCheck.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
@@ -360,6 +386,9 @@ source dependencies:
    src/main/scala/org/controller/UDFNewTry.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/UDFNewTry.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/UDFOnSurvey.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> src/main/scala/org/constants/projectConstants.scala
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> src/main/scala/org/util/readWriteUtil.scala
@@ -372,6 +401,11 @@ source dependencies:
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> src/main/scala/org/util/readWriteUtil.scala
+   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> src/main/scala/org/util/readWriteUtil.scala
+   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> src/main/scala/org/constants/projectConstants.scala
+   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> src/main/scala/org/constants/projectConstants.scala
@@ -503,6 +537,9 @@ class names:
    src/main/scala/org/controller/ZipExample.scala -> org.controller.ZipExample
    src/main/scala/org/controller/ZipExample.scala -> org.controller.ZipExample$
    src/main/scala/org/controller/ZipExample.scala -> org.controller.ZipExample$$anonfun$main$1
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> org.controller.deltaLakeEG.deltaHadoopJobTest
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> org.controller.deltaLakeEG.deltaHadoopJobTest$
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> org.controller.deltaLakeEG.deltaHadoopJobTest$$anonfun$main$1
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> org.controller.deltaLakeEG.deltaLakeHadoopEg
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> org.controller.deltaLakeEG.deltaLakeHadoopEg$
    src/main/scala/org/controller/deltaLakeEG/deltaLakeNewColumnTableTry.scala -> org.controller.deltaLakeEG.deltaLakeNewColumnTableTry
@@ -511,6 +548,12 @@ class names:
    src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala -> org.controller.deltaLakeEG.deltaReadAsDeltaTable$
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> org.controller.deltaLakeEG.deltaTableRead
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> org.controller.deltaLakeEG.deltaTableRead$
+   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> org.controller.deltaLakeEG.fixBronzeToSilver
+   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> org.controller.deltaLakeEG.fixBronzeToSilver$
+   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> org.controller.deltaLakeEG.fixBronzeToSilver$$anonfun$main$1
+   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> org.controller.deltaLakeEG.mergingSchemaNewColumnInBronze
+   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> org.controller.deltaLakeEG.mergingSchemaNewColumnInBronze$
+   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> org.controller.deltaLakeEG.mergingSchemaNewColumnInBronze$$anonfun$main$1
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> org.controller.deltaLakeEG.readingFilesUsingStringSchema
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> org.controller.deltaLakeEG.readingFilesUsingStringSchema$
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> org.controller.deltaLakeEG.readingfileAndSavingAsDeltaTable
@@ -563,6 +606,8 @@ class names:
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees$$anonfun$5
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees$$anonfun$main$1
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees$$anonfun$main$1$$anonfun$apply$1
+   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees$$typecreator13$1
+   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees$$typecreator5$1
    src/main/scala/org/controller/udfCheck.scala -> org.controller.udfCheck
    src/main/scala/org/controller/udfCheck.scala -> org.controller.udfCheck$
    src/main/scala/org/controller/udfCheck.scala -> org.controller.udfCheck$$anonfun$main$1

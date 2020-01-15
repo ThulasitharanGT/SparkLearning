@@ -1,0 +1,115 @@
+
+// runs in spark 2.4.0 due to 3.2.10 jacson and json jars supported for scala 2.11
+
+cd /home/raptor/IdeaProjects/SparkLearning/build/libs
+
+spark-submit --class org.controller.hbaseSpark.hbaseSparkReadWrite --deploy-mode client --master yarn --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-memory 1g --driver-cores 1   --packages com.hortonworks:shc-core:1.1.1-2.1-s_2.11,com.hortonworks:shc:1.1.1-2.1-s_2.11,org.apache.hbase:hbase-client:1.4.12,org.apache.hbase:hbase-server:1.4.12,org.apache.hbase:hbase-common:1.4.12,org.apache.hbase:hbase-protocol:1.4.12,org.apache.hbase:hbase-hadoop2-compat:1.4.12,org.apache.hbase:hbase-annotations:1.4.12,org.json4s:json4s-native_2.11:3.2.10,org.json4s:json4s-jackson_2.11:3.2.10,org.json4s:json4s-ext_2.11:3.2.10,org.json4s:json4s-core_2.11:3.2.10,org.json4s:json4s-ast_2.11:3.2.10,org.apache.httpcomponents:httpcore:4.4.4,org.apache.httpcomponents:httpclient:4.5.2  --repositories https://repository.apache.org/content/repositories/releases SparkLearning-1.0-SNAPSHOT.jar
+
+
+// runs in spark 2.4.4 due to 3.2.10 jacson and json jars not supported for scala 2.12
+
+cd /home/raptor/IdeaProjects/KafkaGradleTest/build/libs/
+
+
+spark-submit --class com.test.AtomicityUsingMysql.testScalaSparkKafkaRead --deploy-mode client --master yarn --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-memory 1g --driver-cores 1  --packages org.apache.spark:spark-sql-kafka-0-10_2.12:2.4.4,com.fasterxml.jackson.core:jackson-databind:2.10.1,com.fasterxml.jackson.core:jackson-core:2.10.1,org.codehaus.jackson:jackson-core-asl:1.9.13,org.codehaus.jackson:jackson-mapper-asl:1.9.13,com.fasterxml.jackson.core:jackson-annotations:2.10.1,com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.1,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.1,com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.10.1,org.json4s:json4s-jackson_2.12:3.5.3,com.twitter:parquet-jackson:1.6.0,org.codehaus.jackson:jackson-jaxrs:1.9.13,org.codehaus.jackson:jackson-xc:1.9.13,com.fasterxml.jackson.module:jackson-module-paranamer:2.10.1,com.google.protobuf:protobuf-java:3.11.1,org.apache.htrace:htrace-core:3.1.0-incubating,commons-cli:commons-cli:1.4  KafkaGradleTest-1.0-SNAPSHOT-all.jar
+
+
+// if te below work's we can proceed with crunching data kafka
+
+cd /home/raptor/IdeaProjects/SparkLearning/build/libs
+
+spark-submit --class org.controller.deltaLakeEG.deltaLakeHadoopEg --deploy-mode client --master yarn --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-memory 1g --driver-cores 1  --packages io.delta:delta-core_2.11:0.5.0 SparkLearning-1.0-SNAPSHOT.jar
+
+spark-submit --class org.controller.deltaLakeEG.deltaLakeHadoopEg --deploy-mode client --master yarn --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-memory 1g --driver-cores 1  --packages io.delta:delta-core_2.11:0.5.0 SparkLearning-1.0-SNAPSHOT.jar
+
+
+org.json4s:json4s-scalap_2.11:3.6.7
+
+//hdfs
+val df = spark.readStream.format("kafka").option("kafka.bootstrap.servers", "localhost:9092,localhost:9093,localhost:9094").option("value.deserializer","org.apache.kafka.common.serialization.StringDeserializer").option("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer").option("subscribe", "CarSensor").option("startingOffsets", "earliest").load()  
+
+val query = df.writeStream.outputMode("append").format("parquet").option("checkpointLocation","hdfs://localhost/user/raptor/kafka/temp/checkpoint").option("path","hdfs://localhost/user/raptor/kafka/temp/output/kafkaDeltaTableDump/carSensorBronze").partitionBy("key").start()
+
+/* local
+val df = spark.readStream.format("kafka").option("kafka.bootstrap.servers", "localhost:9092,localhost:9093,localhost:9094").option("value.deserializer","org.apache.kafka.common.serialization.StringDeserializer").option("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer").option("subscribe", "CarSensor").option("startingOffsets", "earliest").load()  
+
+val query = df.writeStream.outputMode("append").format("parquet").option("checkpointLocation","file:///home/raptor/kafka/temp/checkpoint").option("path","file:///home/raptor/kafka/temp/output/kafkaDeltaTableDump/carSensorBronze").partitionBy("key").start()
+*/
+
+val rawVoterQuery = df.writeStream.trigger(ProcessingTime("10 seconds")).outputMode("append").format("console").start()
+
+scala -classpath "/home/raptor/IdeaProjects/KafkaGradleTest/build/libs/KafkaGradleTest-1.0-SNAPSHOT-all.jar" com.test.AtomicityUsingMysql.SensorProducer
+---------------------------------------------------------------------------------------------
+
+
+
+//creating delta table .
+
+cd /home/raptor/IdeaProjects/SparkLearning/build/libs 
+
+spark-submit --class org.controller.deltaLakeEG.deltaHadoopJobTest --deploy-mode client --master yarn --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-memory 1g --driver-cores 1  --packages io.delta:delta-core_2.11:0.5.0 SparkLearning-1.0-SNAPSHOT.jar mode=append createOrAppendForDeltaWrite=create basePath=hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/ deltaTableBaseName=carDetailTable deltaTableType=Bronze selectExprNeeded=Yes fileName=Avail_car3.txt
+
+
+appending delta table 
+cd /home/raptor/IdeaProjects/SparkLearning/build/libs 
+
+spark-submit --class org.controller.deltaLakeEG.deltaHadoopJobTest --deploy-mode client --master yarn --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-memory 1g --driver-cores 1  --packages io.delta:delta-core_2.11:0.5.0 SparkLearning-1.0-SNAPSHOT.jar mode=append createOrAppendForDeltaWrite=append basePath=hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/ deltaTableBaseName=carDetailTable deltaTableType=Bronze selectExprNeeded=Yes fileName=Avail_car4.txt
+
+
+
+appending delta table  wit no select EXPR - File specific
+cd /home/raptor/IdeaProjects/SparkLearning/build/libs 
+
+spark-submit --class org.controller.deltaLakeEG.deltaHadoopJobTest --deploy-mode client --master yarn --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-memory 1g --driver-cores 1  --packages io.delta:delta-core_2.11:0.5.0 SparkLearning-1.0-SNAPSHOT.jar mode=append createOrAppendForDeltaWrite=append basePath=hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/ deltaTableBaseName=carDetailTable deltaTableType=Bronze selectExprNeeded=No fileName=Avail_car2.txt
+
+
+fileName=Avail_car3.txt
+fileName=Avail_car2.txt -- no 
+fileName=Avail_car4.txt
+
+
+
+//wit no select EXPR no mergeschema
+cd /home/raptor/IdeaProjects/SparkLearning/build/libs 
+
+spark-submit --class org.controller.deltaLakeEG.mergingSchemaNewColumnInBronze --deploy-mode client --master yarn --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-memory 1g --driver-cores 1  --packages io.delta:delta-core_2.11:0.5.0 SparkLearning-1.0-SNAPSHOT.jar mode=append createOrAppendForDeltaWrite=append basePath=hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/ deltaTableBaseName=carDetailTable deltaTableType=Bronze selectExprNeeded=No fileName=Avail_car5.txt mergeSchemaNeeded=No
+
+//wit select EXPR mergeschema
+
+cd /home/raptor/IdeaProjects/SparkLearning/build/libs 
+
+spark-submit --class org.controller.deltaLakeEG.mergingSchemaNewColumnInBronze --deploy-mode client --master yarn --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-memory 1g --driver-cores 1  --packages io.delta:delta-core_2.11:0.5.0 SparkLearning-1.0-SNAPSHOT.jar mode=append createOrAppendForDeltaWrite=append basePath=hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/ deltaTableBaseName=carDetailTable deltaTableType=Bronze selectExprNeeded=Yes fileName=Avail_car_ExtraColumn_schema.txt mergeSchemaNeeded=Yes
+
+
+
+-----------------------
+
+//creating delta table .
+
+cd /home/raptor/IdeaProjects/SparkLearning/build/libs 
+
+spark-submit --class org.controller.deltaLakeEG.deltaHadoopJobTest --deploy-mode client --master yarn --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-memory 1g --driver-cores 1  --packages io.delta:delta-core_2.11:0.5.0 SparkLearning-1.0-SNAPSHOT.jar mode=append createOrAppendForDeltaWrite=create basePath=hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/ deltaTableBaseName=carDetailTable deltaTableType=Silver selectExprNeeded=no fileName=Avail_car6.txt
+
+
+//fixing the silver
+
+cd /home/raptor/IdeaProjects/SparkLearning/build/libs 
+
+spark-submit --class org.controller.deltaLakeEG.fixBronzeToSilver --deploy-mode client --master yarn --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-memory 1g --driver-cores 1  --packages io.delta:delta-core_2.11:0.5.0 SparkLearning-1.0-SNAPSHOT.jar mode=overwrite basePath=hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/ deltaTableBaseName=carDetailTable 
+
+
+
+
+'Lambhorghini','Jeep','Hyundai','Konegzegg','Pagani','Suzuki','BAC','Ford','Bugatti'
+
+
+
+println("modeForDeltaWrite === "+modeForDeltaWrite)
+println("createOrAppendForDeltaWrite === "+createOrAppendForDeltaWrite)
+println("outputBasePath === "+outputBasePath)
+println("inputBasePath === "+inputBasePath)
+println("deltaTableBaseName === "+deltaTableBaseName)
+println("deltaTableType === "+deltaTableType)
+println("selectExprNeeded === "+selectExprNeeded)
+
+

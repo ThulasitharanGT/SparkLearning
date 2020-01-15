@@ -31,11 +31,16 @@ hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/Avail_car3.txt /user
 
 hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/Avail_cars4.txt /user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car4.txt
 
+hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/Avail_car5.txt /user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car5.txt
+
 hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/Avail_car2.txt /user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles
 
 hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/Avail_car.txt /user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car_diff_schema.txt
 
 hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/Avail_Car_ExtraColumn.txt /user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car_ExtraColumn_schema.txt
+
+hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/Avail_car6.txt /user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car6.txt
+
 
 // loading to DF
 

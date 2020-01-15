@@ -1,0 +1,4 @@
+Vehicle_id|model|brand|year|month|miles|intake_date_time|number_of_owners
+v0211J|Go|Datsun|2011|2|5000|2017-12-20 06:30:00|3
+v0211J|Redi-Go|Datsun|2013|12|4000|2018-02-10 06:30:00|3
+v0212J|Go+|Datsun|2011|9|8000|2018-04-26 06:30:00|3

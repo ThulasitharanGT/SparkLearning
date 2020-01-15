@@ -4,6 +4,8 @@ object projectConstants {
   val delimiterArgConstant="delimiter"
   val inferSchemaArgConstant="inferSchema"
   val csvFormat="com.databricks.spark.csv"
+  val deltareplaceWhereClause="replaceWhere"
+  val deltamergeSchemaClause="mergeSchema"
   val deltaFormat="delta"
   val rddPartitionArg="rddPartitionArg"
   val fileTypeDeltaValue="delta"

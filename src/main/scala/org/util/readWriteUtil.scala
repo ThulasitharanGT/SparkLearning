@@ -40,6 +40,11 @@ object readWriteUtil {
     DeltaTable.forPath(spark,inputMap(projectConstants.filePathArgValue))
   }
 
+  def deltaTableWriteFromDeltaTable(spark:SparkSession,inputMap:collection.mutable.Map[String,String],detlaTable:DeltaTable) ={
+    inputMap.put(projectConstants.fileTypeArgConstant,projectConstants.fileTypeDeltaValue)
+    writeDF(inputMap,detlaTable.toDF) // deltatable without any partition
+  }
+
   def execSparkSql(spark:SparkSession,sql:String):DataFrame={
     spark.sql(sql)
   }

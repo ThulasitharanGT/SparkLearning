@@ -1,0 +1,4 @@
+Vehicle_id|model|brand|year|month|miles|intake_date_time
+v0211J|Compass|Jeep|2011|2|5000|2017-12-20 06:30:00
+v0211J|Track-Hawk|Jeep|2013|12|4000|2018-02-10 06:30:00
+v0212J|Cherokee|Jeep|2011|9|8000|2018-04-26 06:30:00
