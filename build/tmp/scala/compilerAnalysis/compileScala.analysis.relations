@@ -114,14 +114,23 @@ products:
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> build/classes/scala/main/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze$$anonfun$main$1.class
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> build/classes/scala/main/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze$.class
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> build/classes/scala/main/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.class
+   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> build/classes/scala/main/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze$$anonfun$main$1.class
+   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> build/classes/scala/main/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze$.class
+   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> build/classes/scala/main/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.class
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> build/classes/scala/main/org/controller/deltaLakeEG/readingFilesUsingStringSchema$.class
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> build/classes/scala/main/org/controller/deltaLakeEG/readingFilesUsingStringSchema.class
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> build/classes/scala/main/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable$.class
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> build/classes/scala/main/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.class
+   src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> build/classes/scala/main/org/controller/deltaLakeEG/shellScriptSystemCommand$$anonfun$main$1$$anonfun$apply$mcV$sp$1.class
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> build/classes/scala/main/org/controller/deltaLakeEG/shellScriptSystemCommand$$anonfun$main$1.class
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> build/classes/scala/main/org/controller/deltaLakeEG/shellScriptSystemCommand$$anonfun$main$2.class
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> build/classes/scala/main/org/controller/deltaLakeEG/shellScriptSystemCommand$.class
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> build/classes/scala/main/org/controller/deltaLakeEG/shellScriptSystemCommand.class
+   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> build/classes/scala/main/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline$$anonfun$main$1$$anonfun$apply$mcV$sp$1.class
+   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> build/classes/scala/main/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline$$anonfun$main$1.class
+   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> build/classes/scala/main/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline$$anonfun$main$2.class
+   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> build/classes/scala/main/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline$.class
+   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> build/classes/scala/main/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.class
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> build/classes/scala/main/org/controller/hbaseSpark/hbaseSparkReadWrite$.class
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> build/classes/scala/main/org/controller/hbaseSpark/hbaseSparkReadWrite.class
    src/main/scala/org/controller/mailBeanClass.scala -> build/classes/scala/main/org/controller/mailBeanClass.class
@@ -284,6 +293,11 @@ binary dependencies:
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.5.0/428433056d5812912bf1af2058348351eee0fb4e/delta-core_2.11-0.5.0.jar
+   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.0/9d000df2535f94f029a59950cf439f84e68c8bfc/spark-catalyst_2.11-2.4.0.jar
+   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
+   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
@@ -293,6 +307,8 @@ binary dependencies:
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-client/1.4.12/4505890582f14e7396c267f4ed8a32d36703262/hbase-client-1.4.12.jar
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-common/1.4.12/e3ce0d78286afc4dbca4b2824e7abcd9c4b33e84/hbase-common-1.4.12.jar
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-server/1.4.12/1fcef61b34156e6ce0217ee56b8f63867c9a0fb4/hbase-server-1.4.12.jar
@@ -412,6 +428,7 @@ source dependencies:
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> src/main/scala/org/util/readWriteUtil.scala
+   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> src/main/scala/org/constants/projectConstants.scala
@@ -560,6 +577,9 @@ class names:
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> org.controller.deltaLakeEG.mergingSchemaNewColumnInBronze
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> org.controller.deltaLakeEG.mergingSchemaNewColumnInBronze$
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> org.controller.deltaLakeEG.mergingSchemaNewColumnInBronze$$anonfun$main$1
+   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> org.controller.deltaLakeEG.pushingStreamedDataToDeltaBronze
+   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> org.controller.deltaLakeEG.pushingStreamedDataToDeltaBronze$
+   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> org.controller.deltaLakeEG.pushingStreamedDataToDeltaBronze$$anonfun$main$1
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> org.controller.deltaLakeEG.readingFilesUsingStringSchema
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> org.controller.deltaLakeEG.readingFilesUsingStringSchema$
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> org.controller.deltaLakeEG.readingfileAndSavingAsDeltaTable
@@ -567,7 +587,13 @@ class names:
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand$
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand$$anonfun$main$1
+   src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand$$anonfun$main$1$$anonfun$apply$mcV$sp$1
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand$$anonfun$main$2
+   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> org.controller.deltaLakeEG.systemCommandRunningForStreamingPipeline
+   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> org.controller.deltaLakeEG.systemCommandRunningForStreamingPipeline$
+   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> org.controller.deltaLakeEG.systemCommandRunningForStreamingPipeline$$anonfun$main$1
+   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> org.controller.deltaLakeEG.systemCommandRunningForStreamingPipeline$$anonfun$main$1$$anonfun$apply$mcV$sp$1
+   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> org.controller.deltaLakeEG.systemCommandRunningForStreamingPipeline$$anonfun$main$2
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> org.controller.hbaseSpark.hbaseSparkReadWrite
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> org.controller.hbaseSpark.hbaseSparkReadWrite$
    src/main/scala/org/controller/mailBeanClass.scala -> org.controller.mailBeanClass
