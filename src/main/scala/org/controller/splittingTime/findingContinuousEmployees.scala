@@ -6,7 +6,6 @@ import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 
 import scala.collection.mutable.ListBuffer
-import org.controller.AdvancedTopic.empCaseClass
 import org.constants.projectConstants
 
 object findingContinuousEmployees extends SparkOpener {
@@ -89,5 +88,10 @@ val spark=SparkSessionLoc("emploees Prog")
     //finalResultLBExclusion foreach println
     val finalResultDF=finalResultLB.map(_.toSeq).map(r => empCaseClass(r(0).toString,r(1).toString,r(2).toString)).toDF() // ==> to DF works in repl
     val finalResultLBExclusionDF=finalResultLBExclusion.map(_.toSeq).map(r => empCaseClass(r(0).toString,r(1).toString,r(2).toString)).toDF()
+    println(" continuous records")
+    finalResultDF.show(false)
+
+    println(" gap records")
+    finalResultLBExclusionDF.show(false)
   }
 }

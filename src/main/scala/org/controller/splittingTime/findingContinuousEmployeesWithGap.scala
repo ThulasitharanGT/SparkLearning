@@ -1,13 +1,11 @@
-package org.controller.AdvancedTopic
+package org.controller.splittingTime
 
-import org.util.{SparkOpener, readWriteUtil}
+import org.constants.projectConstants
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-//import org.apache.spark.sql.Row
-import scala.collection.mutable.ListBuffer
-import org.controller.AdvancedTopic.empCaseClassWithWeekend
-import org.constants.projectConstants
+import org.util.{SparkOpener, readWriteUtil}
 
+import scala.collection.mutable.ListBuffer
 
 object findingContinuousEmployeesWithGap extends SparkOpener {
   val dateFormat="yyyy-MM-dd HH:mm:ss"
