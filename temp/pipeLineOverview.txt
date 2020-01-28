@@ -1,0 +1,3 @@
+First delta table is created using Avail car file, Some extra data is added (all creating/appending/merging single shell script do that with argument).
+silver is created.
+From bronze to silver data is fixed on the way of transfer.

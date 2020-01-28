@@ -13,7 +13,7 @@ object shellScriptSystemCommand {
       }
     //val basePath="/home/raptor/IdeaProjects/SparkLearning/temp/"
     val basePath=inputMap("basePath")
-    val scriptNameList=inputMap("scriptNameList").split(",")
+    val scriptNameList=inputMap("scriptNameList").split(",").map(_.replace("~"," "))
     var result:Int=2
    try {
      breakable {
@@ -27,8 +27,8 @@ object shellScriptSystemCommand {
            break
          //"ls "+basePath!
        }
+       println("Scripts executed Successfully .......................................... ")
      }
-     println("Scripts executed Successfully .......................................... ")
    }
     catch {
       case e:Exception => println(e.printStackTrace)

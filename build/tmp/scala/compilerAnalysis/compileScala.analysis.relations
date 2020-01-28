@@ -90,6 +90,7 @@ products:
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample$$anonfun$main$1.class
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample$.class
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample.class
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaHadoopJobTest$$anonfun$hasColumn$1$1.class
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaHadoopJobTest$$anonfun$main$1.class
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaHadoopJobTest$.class
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaHadoopJobTest.class
@@ -114,6 +115,7 @@ products:
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> build/classes/scala/main/org/controller/deltaLakeEG/readingFilesUsingStringSchema.class
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> build/classes/scala/main/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable$.class
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> build/classes/scala/main/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.class
+   src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> build/classes/scala/main/org/controller/deltaLakeEG/shellScriptSystemCommand$$anonfun$1.class
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> build/classes/scala/main/org/controller/deltaLakeEG/shellScriptSystemCommand$$anonfun$main$1$$anonfun$apply$mcV$sp$1.class
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> build/classes/scala/main/org/controller/deltaLakeEG/shellScriptSystemCommand$$anonfun$main$1.class
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> build/classes/scala/main/org/controller/deltaLakeEG/shellScriptSystemCommand$$anonfun$main$2.class
@@ -567,6 +569,7 @@ class names:
    src/main/scala/org/controller/ZipExample.scala -> org.controller.ZipExample$$anonfun$main$1
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> org.controller.deltaLakeEG.deltaHadoopJobTest
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> org.controller.deltaLakeEG.deltaHadoopJobTest$
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> org.controller.deltaLakeEG.deltaHadoopJobTest$$anonfun$hasColumn$1$1
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> org.controller.deltaLakeEG.deltaHadoopJobTest$$anonfun$main$1
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> org.controller.deltaLakeEG.deltaLakeHadoopEg
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> org.controller.deltaLakeEG.deltaLakeHadoopEg$
@@ -591,6 +594,7 @@ class names:
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> org.controller.deltaLakeEG.readingfileAndSavingAsDeltaTable$
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand$
+   src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand$$anonfun$1
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand$$anonfun$main$1
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand$$anonfun$main$1$$anonfun$apply$mcV$sp$1
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand$$anonfun$main$2

@@ -196,4 +196,4 @@ DeltaTable.forPath(spark,"/user/raptor/testing/hadoop/deltaTableTestFolder/outpu
 
 
 
-
+pipeline-->
