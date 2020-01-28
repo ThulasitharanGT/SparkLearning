@@ -10,19 +10,29 @@ import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import scala.collection.mutable.ListBuffer
 //import java.util.Date
-
+import org.constants.projectConstants
+import org.util.{SparkOpener,readWriteUtil}
 
 object SplittingTimeMain extends SparkOpener  {
 
 val spark=SparkSessionLoc("Testing Minute split")
 val sc =spark.sparkContext
-
+  import spark.implicits._
   def main(args: Array[String]): Unit = {
-    val TripRecord=spark.read.format("csv").option("header","true").option("inferSchema","false").option("delimiter","|").load(System.getProperty("user.dir")+"\\Input\\InputForSplit.txt")
+    val inputMap:collection.mutable.Map[String,String]= collection.mutable.Map[String,String]()
+    inputMap.put(projectConstants.headerArgConstant,projectConstants.stringTrue)
+    inputMap.put(projectConstants.inferSchemaArgConstant,projectConstants.stringFalse)
+    inputMap.put(projectConstants.delimiterArgConstant,projectConstants.delimiterOr)
+    inputMap.put(projectConstants.basePathArgConstant,System.getProperty("user.dir")+"/Input/")
+    inputMap.put(projectConstants.fileTypeArgConstant,projectConstants.fileTypeCsvValue)
+    inputMap.put(projectConstants.fileFormatArg,projectConstants.csvFormat)
+    inputMap.put(projectConstants.filePathArgValue,System.getProperty("user.dir")+"/Input/InputForSplit.txt")
+
+    val TripRecord=readWriteUtil.readDF(spark,inputMap)
     //val TripRecord=spark.read.format("csv").option("header","true").option("inferSchema","false").option("delimiter","|").load("C:\\Users\\RAPTOR\\IdeaProjects\\SparkLearning\\Input\\InputForSplit.txt")
 
     //val ReferenceTrip=spark.read.format("csv").option("header","true").option("inferSchema","true").option("delimiter","|").load("C:\\Users\\RAPTOR\\IdeaProjects\\SparkLearning\\Input\\ReferenceForSplit.txt")
-    val tripRecordSplitted =TripRecord//.flatMap(row => Splitting(row))  -- only works on repl
+    val tripRecordSplitted =TripRecord.flatMap(row => Splitting(row)) // -- only works on repl
     val finalDfTemp=tripRecordSplitted.selectExpr("value[0] as StateID","value[1] as VehicleID","value[2] as Model","cast (value[3] as Timestamp) as StartQhr","cast(value[4] as int) as M1","cast(value[5] as int) as M2","cast (value[6] as int) as M3","cast(value[7] as int) as M4","cast (value[8] as int) as M5","cast (value[9] as int) as M6","cast (value[10] as int) as M7","cast (value[11] as int) as M8","cast (value[12] as int) as M9","cast (value[13] as int) as M10","cast (value[14] as int) as M11","cast (value[15] as int) as M12","cast (value[16] as int) as M13","cast (value[17] as int) as M14","cast (value[18] as int) as M15","cast (value[19] as int) as Total")
     //combining over lapping records
     val finalDf=finalDfTemp.drop("Total").groupBy("StateID","VehicleID","Model","StartQhr").agg(
