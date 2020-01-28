@@ -1,6 +1,6 @@
 package org.controller.splittingTime
 
-import org.util.SparkOpener
+//import org.util.SparkOpener
 //import java.text.SimpleDateFormat
 //import java.sql.Timestamp
 import org.apache.spark.sql._
