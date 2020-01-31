@@ -14,6 +14,8 @@ object hbaseSparkReadWrite extends SparkOpener{
 
   /* use spark 2.4.0
   spark-submit --class org.controller.hbaseSpark.hbaseSparkReadWrite --deploy-mode client --master yarn --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-memory 1g --driver-cores 1 SparkLearning-1.0-SNAPSHOT.jar  --packages com.hortonworks:shc-core:1.1.1-2.1-s_2.11,com.hortonworks:shc:1.1.1-2.1-s_2.11,org.apache.hbase:hbase-client:1.2.5,org.apache.hbase:hbase-server:1.2.5,org.apache.hbase:hbase-common:1.2.5,org.apache.hbase:hbase-protocol:1.2.5,org.apache.hbase:hbase-hadoop2-compat:1.2.5,org.apache.hbase:hbase-annotations:1.2.5 --repositories https://repository.apache.org/content/repositories/releases
+// replace json 4s jars v 3.5.3 in spark 2.4.0 ti 3.2.10 (core,ast,ext,jackson,native -- scalap alone remains 3.5.3)
+
 */
 
   def main(args: Array[String]): Unit = {

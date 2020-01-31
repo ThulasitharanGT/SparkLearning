@@ -128,6 +128,12 @@ products:
    src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> build/classes/scala/main/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.class
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> build/classes/scala/main/org/controller/hbaseSpark/hbaseSparkReadWrite$.class
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> build/classes/scala/main/org/controller/hbaseSpark/hbaseSparkReadWrite.class
+   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/deltaStreamRead$$anonfun$main$1.class
+   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/deltaStreamRead$.class
+   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/deltaStreamRead.class
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead$$anonfun$main$1.class
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead$.class
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead.class
    src/main/scala/org/controller/mailBeanClass.scala -> build/classes/scala/main/org/controller/mailBeanClass.class
    src/main/scala/org/controller/mailExample.scala -> build/classes/scala/main/org/controller/mailExample$.class
    src/main/scala/org/controller/mailExample.scala -> build/classes/scala/main/org/controller/mailExample.class
@@ -314,6 +320,15 @@ binary dependencies:
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.0/9d000df2535f94f029a59950cf439f84e68c8bfc/spark-catalyst_2.11-2.4.0.jar
+   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.0/2eebc2356fa310b7cc0308b672b08cecfe85eb70/spark-core_2.11-2.4.0.jar
+   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
+   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.0/9d000df2535f94f029a59950cf439f84e68c8bfc/spark-catalyst_2.11-2.4.0.jar
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/mailBeanClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/mailBeanClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/mailExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/javax.mail/javax.mail-api/1.6.2/17a8151bab44f9c94f34c10db70d95ba3c830eda/javax.mail-api-1.6.2.jar
@@ -444,6 +459,10 @@ source dependencies:
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> src/main/scala/org/util/readWriteUtil.scala
+   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> src/main/scala/org/constants/projectConstants.scala
+   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> src/main/scala/org/constants/projectConstants.scala
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/mailExample.scala -> src/main/scala/org/controller/mailBeanClass.scala
    src/main/scala/org/controller/partitionedTableRead.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/partitionedTableRead.scala -> src/main/scala/org/util/SparkOpener.scala
@@ -472,7 +491,6 @@ source dependencies:
    src/main/scala/org/controller/windowFunctionEg.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/windowFunctionEg.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/wordCountDFExample.scala -> src/main/scala/org/util/SparkOpener.scala
-   src/main/scala/org/util/SparkOpener.scala -> src/main/scala/org/constants/PathConstants.scala
    src/main/scala/org/util/readWriteUtil.scala -> src/main/scala/org/constants/projectConstants.scala
 external dependencies:
 class names:
@@ -605,6 +623,12 @@ class names:
    src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> org.controller.deltaLakeEG.systemCommandRunningForStreamingPipeline$$anonfun$main$2
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> org.controller.hbaseSpark.hbaseSparkReadWrite
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> org.controller.hbaseSpark.hbaseSparkReadWrite$
+   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> org.controller.kafkaStreamExample.deltaStreamRead
+   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> org.controller.kafkaStreamExample.deltaStreamRead$
+   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> org.controller.kafkaStreamExample.deltaStreamRead$$anonfun$main$1
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead$
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead$$anonfun$main$1
    src/main/scala/org/controller/mailBeanClass.scala -> org.controller.mailBeanClass
    src/main/scala/org/controller/mailExample.scala -> org.controller.mailExample
    src/main/scala/org/controller/mailExample.scala -> org.controller.mailExample$
