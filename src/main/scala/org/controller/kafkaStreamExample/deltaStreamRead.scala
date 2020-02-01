@@ -6,7 +6,7 @@ import org.constants.projectConstants
 /*
 cd /home/raptor/IdeaProjects/SparkLearning/build/libs/
 
-spark-submit --class org.controller.kafkaStreamExample.deltaStreamRead  --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-cores 1 --driver-memory 1g --packages io.delta:delta-core_2.11:0.5.0  SparkLearning-1.0-SNAPSHOT.jar inputPath=hdfs://localhost/user/raptor/kafka/stream/output/carSensorDataFromStream/ checkPointLocation=hdfs://localhost/user/raptor/kafka/stream/checkpointCarSensorDataFromStream/ outputPath=hdfs://localhost/user/raptor/kafka/stream/temp/consoleCarSensorDataFromStream/
+spark-submit --class org.controller.kafkaStreamExample.deltaStreamRead  --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-cores 1 --driver-memory 1g --packages io.delta:delta-core_2.11:0.5.0  SparkLearning-1.0-SNAPSHOT.jar inputPath=hdfs://localhost/user/raptor/kafka/stream/output/carSensorDataFromStream/ checkPointLocation=hdfs://localhost/user/raptor/kafka/stream/checkpointForReadFromDeltaJob/ outputPath=hdfs://localhost/user/raptor/kafka/stream/temp/consoleCarSensorDataFromStream/
  */
 object deltaStreamRead extends SparkOpener{
   val spark=SparkSessionLoc("delta Stream TableRead")
@@ -27,5 +27,6 @@ def main(args:Array[String]):Unit={
   val queryStreamStartDF=deltaSteamDF.writeStream.outputMode("append").format("console").option("checkpointLocation",checkPointLocation).option("path",outputPath)
   println("--------------------->stream write object created<------------------------")
   queryStreamStartDF.start().awaitTermination()
+    // check ignoreChanges  and ignoreDeletes remove from stream table whele reading it in another session
 }
 }
