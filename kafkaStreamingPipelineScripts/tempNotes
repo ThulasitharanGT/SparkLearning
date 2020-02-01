@@ -1,0 +1,19 @@
+cd /home/raptor/IdeaProjects/SparkLearning/build/libs/
+
+spark-submit --class org.controller.kafkaStreamExample.kafkaStreamRead  --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-cores 1 --driver-memory 1g --packages org.apache.kafka:kafka-clients:2.3.1,org.apache.kafka:kafka_2.11:2.3.1,org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0,io.delta:delta-core_2.11:0.5.0  SparkLearning-1.0-SNAPSHOT.jar bootStrapServer=localhost:9092,localhost:9093,localhost:9094 keyDeserializer=org.apache.kafka.common.serialization.StringDeserializer valueDeserializer=org.apache.kafka.common.serialization.StringDeserializer topicName=CarSensor checkPointLocation=hdfs://localhost/user/raptor/kafka/stream/checkpoint/checkPointForStreamPullAndDeltaPushJob outputPath=hdfs://localhost/user/raptor/kafka/stream/output/carSensorDataFromStream/
+
+
+
+cd /home/raptor/IdeaProjects/SparkLearning/build/libs/
+
+spark-submit --class org.controller.kafkaStreamExample.deltaStreamRead  --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-cores 1 --driver-memory 1g --packages io.delta:delta-core_2.11:0.5.0  SparkLearning-1.0-SNAPSHOT.jar inputPath=hdfs://localhost/user/raptor/kafka/stream/output/carSensorDataFromStream/ checkPointLocation=hdfs://localhost/user/raptor/kafka/stream/checkpoint/checkPointForReadFromDeltaJob/ outputPath=hdfs://localhost/user/raptor/kafka/stream/temp/consoleCarSensorDataFromStream/
+ 
+
+spark-submit --class org.controller.kafkaStreamExample.systemCommandRunnerForShellScript --num-executors 1 --executor-cores 2 --executor-memory 1g --driver-memory 1g --driver-cores 1 SparkLearning-1.0-SNAPSHOT.jar scriptsNamesWithParam=startExtractLoadSteam.sh~CarSensor
+
+spark-submit --class org.controller.kafkaStreamExample.systemCommandRunnerForShellScript --num-executors 1 --executor-cores 2 --executor-memory 1g --driver-memory 1g --driver-cores 1 SparkLearning-1.0-SNAPSHOT.jar scriptsNamesWithParam=startReadStream.sh
+
+
+sh /home/raptor/IdeaProjects/SparkLearning/kafkaStreamingPipelineScripts/scriptTriggeringScript.sh startExtractLoadSteam.sh~CarSensor
+
+sh /home/raptor/IdeaProjects/SparkLearning/kafkaStreamingPipelineScripts/scriptTriggeringScript.sh startReadStream.sh
