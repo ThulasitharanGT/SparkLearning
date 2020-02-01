@@ -13,14 +13,15 @@ object systemCommandRunnerForShellScript {
         inputMap.put(keyPart,valPart)
       }
     val scriptsNamesWithParam=inputMap("scriptsNamesWithParam").replace("~"," ").split(",")
+    val basePath=inputMap("basePath")// /home/raptor/IdeaProjects/SparkLearning/kafkaStreamingPipelineScripts/
     var result:Int= (-1)
   breakable {
     for (scriptNamesWithParam <- scriptsNamesWithParam) {
-      val shellScriptCommand = "sh /home/raptor/IdeaProjects/SparkLearning/kafkaStreamingPipelineScripts/" + scriptNamesWithParam
+      val shellScriptCommand = "sh "+basePath + scriptNamesWithParam
       println("executing" + shellScriptCommand)
       result = shellScriptCommand !; // if we take thi ; then an error arise's. sys command spl char is not getting recognized as EOF
       result match {
-        case 0 => println("Execution Successful ====>" + shellScriptCommand)
+        case 0 => println("Execution Successful ====> " + shellScriptCommand)
         case _ => break
       }
     }
