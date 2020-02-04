@@ -134,6 +134,9 @@ products:
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead$$anonfun$main$1.class
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead$.class
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead.class
+   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/streamAggregationStats$$anonfun$main$1.class
+   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/streamAggregationStats$.class
+   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/streamAggregationStats.class
    src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript$$anonfun$main$1$$anonfun$apply$mcV$sp$1.class
    src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript$$anonfun$main$1.class
    src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript$$anonfun$main$2.class
@@ -334,6 +337,10 @@ binary dependencies:
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.0/9d000df2535f94f029a59950cf439f84e68c8bfc/spark-catalyst_2.11-2.4.0.jar
+   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
+   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/mailBeanClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
@@ -470,6 +477,10 @@ source dependencies:
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> src/main/scala/org/util/readWriteUtil.scala
+   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> src/main/scala/org/constants/projectConstants.scala
+   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/mailExample.scala -> src/main/scala/org/controller/mailBeanClass.scala
    src/main/scala/org/controller/partitionedTableRead.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/partitionedTableRead.scala -> src/main/scala/org/util/SparkOpener.scala
@@ -636,6 +647,9 @@ class names:
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead$
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead$$anonfun$main$1
+   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> org.controller.kafkaStreamExample.streamAggregationStats
+   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> org.controller.kafkaStreamExample.streamAggregationStats$
+   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> org.controller.kafkaStreamExample.streamAggregationStats$$anonfun$main$1
    src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> org.controller.kafkaStreamExample.systemCommandRunnerForShellScript
    src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> org.controller.kafkaStreamExample.systemCommandRunnerForShellScript$
    src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> org.controller.kafkaStreamExample.systemCommandRunnerForShellScript$$anonfun$main$1

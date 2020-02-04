@@ -70,6 +70,18 @@ object readWriteUtil {
       spark.sparkContext.textFile(inputMap(projectConstants.fileTypeArgConstant),inputMap(projectConstants.rddPartitionArg).toInt)
 
     }
+
+  def readStreamFunction(spark:SparkSession,inputMap:collection.mutable.Map[String,String])= {
+    inputMap(projectConstants.fileFormatArg) match {
+      case value if value== projectConstants.kafkaFormat =>spark.readStream.format (inputMap (projectConstants.fileFormatArg) ).option (projectConstants.kafkaBootStrapServersArg, inputMap (projectConstants.kafkaBootStrapServersArg) ).option (projectConstants.kafkaValueDeserializerArg, inputMap (projectConstants.kafkaValueDeserializerArg) ).option (projectConstants.kafkaKeyDeserializerArg, inputMap (projectConstants.kafkaKeyDeserializerArg) ).option (projectConstants.startingOffsetsArg, inputMap (projectConstants.startingOffsetsArg) ).option (projectConstants.subscribeArg, inputMap (projectConstants.subscribeArg) ).load ()
+      case value if value== projectConstants.deltaFormat =>spark.readStream.format (inputMap (projectConstants.fileFormatArg) ).load(inputMap(projectConstants.filePathArgValue))
+      case _ => println ("Default value for stream read function ");spark.readStream.format (inputMap (projectConstants.fileFormatArg) ).load(inputMap(projectConstants.filePathArgValue))
+    }
+  }
+
+  def writeStreamFunction(spark:SparkSession,inputMap:collection.mutable.Map[String,String],DataframeToStream: DataFrame)=DataframeToStream.writeStream.outputMode(inputMap(projectConstants.outputModeArg)).format(inputMap(projectConstants.fileFormatArg)).option(projectConstants.checkPointLocationArg,inputMap(projectConstants.checkPointLocationArg)).option(projectConstants.pathArg, inputMap(projectConstants.pathArg))
+  //readStreamDF.writeStream.outputMode("append").format(projectConstants.deltaFormat).option("checkpointLocation",checkPointLocation).option("path",outputPath)
+
 }
 
 /*df.coalesce(1).write.mode("overwrite").format("csv")

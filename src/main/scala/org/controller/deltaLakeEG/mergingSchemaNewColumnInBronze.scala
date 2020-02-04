@@ -38,7 +38,7 @@ val spark=SparkSessionLoc("merge schema eg")
     }
     df.printSchema
     mergeSchemaNeeded match {
-      case "yes" =>    df.write.format (projectConstants.deltaFormat).option(projectConstants.deltamergeSchemaClause,"true").mode(modeForDeltaWrite).partitionBy("brand", "model", "year", "month").save (outputBasePath + deltaTableBaseName + "_" + deltaTableType)
+      case "yes" =>    df.write.format (projectConstants.deltaFormat).option(projectConstants.deltaMergeSchemaClause,"true").mode(modeForDeltaWrite).partitionBy("brand", "model", "year", "month").save (outputBasePath + deltaTableBaseName + "_" + deltaTableType)
       case "no" => df.write.format(projectConstants.deltaFormat).mode(modeForDeltaWrite).partitionBy ("brand", "model", "year", "month").save (outputBasePath + deltaTableBaseName + "_" + deltaTableType)
       case _ => println("wrong mergeSchemaNeeded selection")
     }
