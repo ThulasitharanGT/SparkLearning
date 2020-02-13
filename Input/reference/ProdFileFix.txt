@@ -1,0 +1,104 @@
+
+import sys.process._
+import scala.collection.mutable.ListBuffer
+import scala.util.Try
+import org.apache.spark.sql.DataFrame
+
+
+
+var filePathStringList=List[String]()
+var filePathStringListFinal=new ListBuffer[String]()
+
+//Business Declarations
+
+val cred="-Dfs.s3a.access.key=AKIAIA6BZFLJIF7PBAOA -Dfs.s3a.secret.key=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 -Dfs.s3a.proxy.host=proxyanbcge.nbc.com -Dfs.s3a.proxy.port=80"
+"hdfs dfs -rm -r /data/prod_nfr_ext/temp_prod_0811"!
+"hdfs dfs -mkdir -p /data/prod_nfr_ext/temp_prod_0811/"!
+val filePathList=List("hdfs dfs "+cred+" -ls /data/prod_nfr_ext/temp_prod_0811/pacing/*/*/*/*","hdfs dfs "+cred+" -ls /data/prod_nfr_ext/temp_prod_0811/cycles/*/*/*/*/*","hdfs dfs "+cred+" -ls /data/prod_nfr_ext/temp_prod_0811/adhoc/*/*/*/*")
+val listOfFolders=List("adhoc","pacing","cycles")
+val src="/data/prod_nfr_ext/temp_prod_0811/"
+val dest="/data/dev/bedrock/solution/datafeed/nov17_1100/bin/Compass_extract_dev_test/Parquet_files_prod/temp_folder_prod_20191108/"
+
+// functins
+
+def distCpFiles(listOfFoldersParam:List[String]) ={
+for (folder <- listOfFoldersParam)
+"hadoop distcp "+cred+" s3a://nbcu-msi-compass/raw/"+folder+" /data/prod_nfr_ext/temp_prod_0811/"!
+}
+
+def hasColumn(df: DataFrame, colName: String) = Try(df(colName)).isSuccess
+
+
+def getAbsolutePaths(filePathListParam:List[String]) = {
+for(fp <- filePathListParam )
+{
+val filePathString=fp!!
+val filePathListTemp=filePathString.split("\n")
+filePathStringList=filePathStringList++filePathListTemp
+}
+for (path <- filePathStringList)
+if (path.contains("/"))
+filePathStringListFinal+=path
+filePathStringListFinal.map(value => value.substring(value.indexOf("/"),value.length))
+}
+
+
+
+def updateFilesAndWriteToPath(filePathStringTemp:ListBuffer[String])={
+for (path <- filePathStringTemp)
+{
+val inPath="file://"+path.replace(src,dest)
+val outPath=inPath.replace("temp_folder_prod_20191108","temp_FinalChange_prod_temp")
+var UpdatedDF:DataFrame=null
+if(path.contains(".parquet"))
+{
+val df=spark.read.load(inPath)
+hasColumn(df, "subnetblockflag") match 
+{
+case false => hasColumn(df, "lockedflag") match {case false => UpdatedDF=df.withColumn("subnetblockflag",lit("A")).withColumn("lockedflag",lit("A"))
+                                                       case true =>  UpdatedDF=df.withColumn("subnetblockflag",lit("A")) 
+  case _ => println("invalid SCN for lockedflag false ====> "+inPath ) }
+case true => hasColumn(df, "lockedflag")  match {case false => UpdatedDF=df.withColumn("subnetblockflag", when(col("subnetblockflag") === "  ","A").otherwise(col("subnetblockflag"))).withColumn("lockedflag",lit("A"))
+                                                       case true =>  UpdatedDF=df.withColumn("subnetblockflag", when(col("subnetblockflag") === " ", "A").otherwise(col("subnetblockflag"))).withColumn("lockedflag", when(col("lockedflag") === " ", "A").otherwise(col("lockedflag")))
+  case _ => println("invalid SCN for lockedflag true ====> "+inPath ) }
+case _ => println("invalid scn for has column match case ")   
+}
+UpdatedDF.coalesce(1).write.mode("overwrite").format("parquet").save(outPath.substring(0,outPath.lastIndexOf("/")))
+println(outPath.substring(0,outPath.lastIndexOf("/")))
+}
+}
+}
+
+
+
+distCpFiles(listOfFolders)
+val filePathStringStringTemp=getAbsolutePaths(filePathList)
+
+
+"mkdir -p /data/dev/bedrock/solution/datafeed/nov17_1100/bin/Compass_extract_dev_test/Parquet_files_prod/temp_folder_prod_20191108/"!
+"hdfs dfs -get /data/prod_nfr_ext/temp_prod_0811/* /data/dev/bedrock/solution/datafeed/nov17_1100/bin/Compass_extract_dev_test/Parquet_files_prod/temp_folder_prod_20191108/"!
+
+updateFilesAndWriteToPath(filePathStringStringTemp)
+
+for (path <- filePathStringStringTemp)
+{
+val inPath=path.replace(src,dest)
+val outPath=inPath.replace("temp_folder_prod_20191108","temp_FinalChange_prod_temp")
+val rmSuccessCommand="rm "+outPath.substring(0,outPath.lastIndexOf("/"))+"/_SUCCESS"
+rmSuccessCommand!
+val lsCommand="ls "+outPath.substring(0,outPath.lastIndexOf("/"))+"/ "
+val fileName=lsCommand!!
+val fileNameFinal=fileName.split("\n")
+val mvCommand="mv "+outPath.substring(0,outPath.lastIndexOf("/"))+"/"+fileNameFinal(0)+" "+outPath
+mvCommand!
+}
+
+-----
+
+to test 
+
+val totFile=spark.read.load("/data/dev/bedrock/solution/datafeed/nov17_1100/bin/Compass_extract_dev_test/Parquet_files_prod/temp_FinalChange_prod_temp/adhoc/*/*/*/*","/data/dev/bedrock/solution/datafeed/nov17_1100/bin/Compass_extract_dev_test/Parquet_files_prod/temp_FinalChange_prod_temp/cycles/*/*/*/*/*","/data/dev/bedrock/solution/datafeed/nov17_1100/bin/Compass_extract_dev_test/Parquet_files_prod/temp_FinalChange_prod_temp/pacing/*/*/*/*")
+
+totFile.printSchema
+
+totFile.select("subnetblockflag","lockedflag").distinct.show

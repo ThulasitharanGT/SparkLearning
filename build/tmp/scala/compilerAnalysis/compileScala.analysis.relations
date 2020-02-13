@@ -44,6 +44,16 @@ products:
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer$$anonfun$main$2.class
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer$.class
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer.class
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$1.class
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$2.class
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$3.class
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$4.class
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$dfSchemaChecker$1.class
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$dfSchemaChecker$2.class
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$dfSchemaChecker$3.class
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$main$1.class
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$.class
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.class
    src/main/scala/org/controller/FunctionClass.scala -> build/classes/scala/main/org/controller/FunctionClass$.class
    src/main/scala/org/controller/FunctionClass.scala -> build/classes/scala/main/org/controller/FunctionClass.class
    src/main/scala/org/controller/PivotExample.scala -> build/classes/scala/main/org/controller/PivotExample$.class
@@ -90,6 +100,10 @@ products:
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample$$anonfun$main$1.class
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample$.class
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample.class
+   src/main/scala/org/controller/breakExample.scala -> build/classes/scala/main/org/controller/breakExample$$anonfun$main$1$$anonfun$apply$mcVI$sp$1.class
+   src/main/scala/org/controller/breakExample.scala -> build/classes/scala/main/org/controller/breakExample$$anonfun$main$1.class
+   src/main/scala/org/controller/breakExample.scala -> build/classes/scala/main/org/controller/breakExample$.class
+   src/main/scala/org/controller/breakExample.scala -> build/classes/scala/main/org/controller/breakExample.class
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaHadoopJobTest$$anonfun$hasColumn$1$1.class
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaHadoopJobTest$$anonfun$main$1.class
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaHadoopJobTest$.class
@@ -242,6 +256,9 @@ binary dependencies:
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/FunctionClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
    src/main/scala/org/controller/FunctionClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/FunctionClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
@@ -274,6 +291,8 @@ binary dependencies:
    src/main/scala/org/controller/UDFOnSurvey.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/ZipExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/ZipExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/breakExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/breakExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.5.0/428433056d5812912bf1af2058348351eee0fb4e/delta-core_2.11-0.5.0.jar
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.0/9d000df2535f94f029a59950cf439f84e68c8bfc/spark-catalyst_2.11-2.4.0.jar
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
@@ -430,6 +449,9 @@ source dependencies:
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> src/main/scala/org/controller/AdvancedTopic/CaseClassCar.scala
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> src/main/scala/org/constants/projectConstants.scala
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/FunctionClass.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/FunctionClass.scala -> src/main/scala/org/controller/UDFNewTry.scala
    src/main/scala/org/controller/FunctionClass.scala -> src/main/scala/org/util/SparkOpener.scala
@@ -557,6 +579,16 @@ class names:
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer$
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer$$anonfun$main$1
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer$$anonfun$main$2
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$1
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$2
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$3
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$4
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$dfSchemaChecker$1
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$dfSchemaChecker$2
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$dfSchemaChecker$3
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$main$1
    src/main/scala/org/controller/FunctionClass.scala -> org.controller.FunctionClass
    src/main/scala/org/controller/FunctionClass.scala -> org.controller.FunctionClass$
    src/main/scala/org/controller/PivotExample.scala -> org.controller.PivotExample
@@ -603,6 +635,10 @@ class names:
    src/main/scala/org/controller/ZipExample.scala -> org.controller.ZipExample
    src/main/scala/org/controller/ZipExample.scala -> org.controller.ZipExample$
    src/main/scala/org/controller/ZipExample.scala -> org.controller.ZipExample$$anonfun$main$1
+   src/main/scala/org/controller/breakExample.scala -> org.controller.breakExample
+   src/main/scala/org/controller/breakExample.scala -> org.controller.breakExample$
+   src/main/scala/org/controller/breakExample.scala -> org.controller.breakExample$$anonfun$main$1
+   src/main/scala/org/controller/breakExample.scala -> org.controller.breakExample$$anonfun$main$1$$anonfun$apply$mcVI$sp$1
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> org.controller.deltaLakeEG.deltaHadoopJobTest
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> org.controller.deltaLakeEG.deltaHadoopJobTest$
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> org.controller.deltaLakeEG.deltaHadoopJobTest$$anonfun$hasColumn$1$1
