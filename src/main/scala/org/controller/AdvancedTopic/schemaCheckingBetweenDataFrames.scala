@@ -21,10 +21,11 @@ object schemaCheckingBetweenDataFrames extends SparkOpener{
     inputMap.put(projectConstants.inferSchemaArgConstant,projectConstants.stringTrue)
     inputMap.put(projectConstants.headerArgConstant,projectConstants.stringTrue)
     inputMap.put(projectConstants.basePathArgConstant,srcDFBasePath)
-    inputMap.put(projectConstants.pathArg,srcDFPath)
-    val srcDF=readWriteUtil.readDF(spark,inputMap)
+    inputMap.put(projectConstants.filePathArgValue,srcDFPath)
+    val srcDF=readWriteUtil.readDF(spark,inputMap).selectExpr("Vehicle_id","model","brand","year","month","miles","CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time")
+    // schema wont match if select expr is coommented abve as it's invalid date format and will be considered a string
     inputMap.put(projectConstants.basePathArgConstant,destDFBasePath)
-    inputMap.put(projectConstants.pathArg,destDFPath)
+    inputMap.put(projectConstants.filePathArgValue,destDFPath)
     val destDF=readWriteUtil.readDF(spark,inputMap)
     dfSchemaChecker(srcDF,destDF)
   }
@@ -59,7 +60,8 @@ object schemaCheckingBetweenDataFrames extends SparkOpener{
       resultColCount match {case value if value == numOfColumns => println("Schema matched") case _ => println("Schema did not match") }
     }
     else
-      println("Number of colum's did not match")
+      println("Number of column's did not match")
   }
 //  dfSchemaChecker(srcDF,destDF)
+  //spark-submit --class org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-cores 1 --driver-memory 1g SparkLearning-1.0-SNAPSHOT.jar  srcDFPath=hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car3.txt destDFPath=hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car2.txt srcDFBasePath=hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/ destDFBasePath=hdfs://localhost/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/
 }
