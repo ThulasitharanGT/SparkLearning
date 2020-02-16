@@ -44,4 +44,31 @@ object hbaseSparkReadWrite extends SparkOpener{
 
   }
 
+  /*spark-shell --packages com.hortonworks:shc-core:1.1.1-2.1-s_2.11,com.hortonworks:shc:1.1.1-2.1-s_2.11  --repositories https://repository.apache.org/content/repositories/releases
+
+import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.execution.datasources.hbase.HBaseTableCatalog
+
+def withCatalog(catalog:String): DataFrame =spark.read.options(Map(HBaseTableCatalog.tableCatalog->catalog)).format("org.apache.spark.sql.execution.datasources.hbase").load
+
+def carCatalog = s"""{
+        "table":{"namespace":"default", "name":"cardata"},
+        "rowkey":"key",
+        "columns":{
+        "vehicle_id":{"cf":"rowkey", "col":"key", "type":"string"},
+        "alloy_wheels":{"cf":"hardware", "col":"alloy_wheels", "type":"string"},
+        "anti_Lock_break":{"cf":"hardware", "col":"anti_Lock_break", "type":"string"},
+        "electronic_breakforce_distribution":{"cf":"software", "col":"electronic_breakforce_distribution", "type":"string"},
+        "terrain_mode":{"cf":"software", "col":"terrain_mode", "type":"string"},
+        "traction_control":{"cf":"software", "col":"traction_control", "type":"string"},
+        "stability_control":{"cf":"software", "col":"stability_control", "type":"string"},
+        "cruize_control":{"cf":"software", "col":"cruize_control", "type":"string"},
+        "make":{"cf":"other", "col":"make", "type":"string"},
+        "model":{"cf":"other", "col":"model", "type":"string"},
+        "variant":{"cf":"other", "col":"variant", "type":"string"}
+        }
+        }""".stripMargin
+
+val hbaseDf=withCatalog(carCatalog)*/
+
 }
