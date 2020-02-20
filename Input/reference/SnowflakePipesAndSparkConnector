@@ -1,0 +1,43 @@
+
+create a stage , ​
+create a pipe pointing that stage. (external location's cant directly be piped into snowflake.)​
+use show stages -- use the ARN from your stage and add it to the event's in your bucket.(create event for files load when created). in stage use the folder location of your data.​
+​
+​
+CREATE OR REPLACE STAGE  first_pipe_Stage_for_sss​
+URL='s3://nbcu-mig-dev/thulasitharan_dev/pipeFolder'​
+CREDENTIALS = ( AWS_KEY_ID = 'AKIAVZXTRLTQEZGUJWKO' AWS_SECRET_KEY = 'zON1t5rX1ksj+xORt25ldzRgicLJROKDAzxppJ/T' )​
+COPY_OPTIONS = ( ON_ERROR = CONTINUE  ) ​
+COMMENT = 'first_pipe_Stage_for_sss' ​
+   ​
+CREATE OR REPLACE PIPE first_pipe ​
+AUTO_INGEST =  TRUE  ​
+COMMENT = 'first_pipe' ​
+AS copy into  demo_db.public.tempstagetest from @first_pipe_Stage_for_sss​
+FILE_FORMAT = (TYPE = 'CSV'  field_optionally_enclosed_by='\"'  RECORD_DELIMITER = '\n' FIELD_DELIMITER = '|'   )​
+​
+​
+show pipes;​
+show stages; -- pipe will have an ARN, that ARN must be added to bucket on create delta data load, (data atomatically loaded while created)​
+​
+val df4=spark.read.format("com.databricks.spark.csv").option("delimiter","\001").option("header","true").option("basePath","s3a://nbcu-backup/data/clean/time_machine/youtube_tv/daily/daily_events/").load("s3a://nbcu-backup/data/clean/time_machine/youtube_tv/daily/daily_events/")​
+​
+df4.write.mode("append").option("delimiter","|").option("header","true").csv("s3a://nbcu-mig-dev/thulasitharan_dev/pipeFolder/")​
+​
+​
+   ​
+spark-shell --packages org.apache.hadoop:hadoop-aws:2.7.3,net.snowflake:spark-snowflake_2.11:2.5.9-spark_2.4,net.snowflake:snowflake-jdbc:3.12.0​
+​
+import net.snowflake.spark.snowflake​
+​
+https://nbcu.us-east-1.snowflakecomputing.com/​
+​
+val snowflakeDF=spark.read.format("net.snowflake.spark.snowflake").option("sfURL", "nbcu.us-east-1.snowflakecomputing.com").option("sfAccount",  "nbcu").option("sfUser" , "206643136").option("sfPassword", "Thulz@1996").option("sfDatabase", "DEMO_DB").option("sfSchema", "PUBLIC").option("sfWarehouse" , "NBCU_DATA_INTEG_PROD_DI_WH2").option("sfRole", "NBCU_DATA_INTEG_META_DI_PROD").option("region_id",  "us-east-1").option("dbtable", "tempstagetest_2").load()​
+​
+val snowflakeDF_Query=spark.read.format("net.snowflake.spark.snowflake").option("sfURL", "nbcu.us-east-1.snowflakecomputing.com").option("sfAccount",  "nbcu").option("sfUser" , "206643136").option("sfPassword", "Thulz@1996").option("sfDatabase", "DEMO_DB").option("sfSchema", "PUBLIC").option("sfWarehouse" , "NBCU_DATA_INTEG_PROD_DI_WH2").option("sfRole", "NBCU_DATA_INTEG_META_DI_PROD").option("region_id",  "us-east-1").option("query", "SELECT * FROM tempstagetest_2").load() //using query  instead of loading dbTable option​
+​
+val snowflakeDF_Query1=spark.read.format("net.snowflake.spark.snowflake").option("sfURL", "nbcu.us-east-1.snowflakecomputing.com").option("sfAccount",  "nbcu").option("sfUser" , "206643136").option("sfPassword", "Thulz@1996").option("sfDatabase", "DEMO_DB").option("sfSchema", "PUBLIC").option("sfWarehouse" , "NBCU_DATA_INTEG_PROD_DI_WH2").option("sfRole", "NBCU_DATA_INTEG_META_DI_PROD").option("region_id",  "us-east-1").option("query", "SELECT * FROM tempstagetest_2 where brand='bravo'").load() //using query  instead of loading dbTable option for filtering record's any query is supported.​
+​
+val df4=spark.read.format("com.databricks.spark.csv").option("delimiter","\001").option("header","true").option("basePath","s3a://nbcu-backup/data/clean/time_machine/youtube_tv/daily/daily_events/").load("s3a://nbcu-backup/data/clean/time_machine/youtube_tv/daily/daily_events/")​
+​
+df4.write.mode("append").format("net.snowflake.spark.snowflake").option("sfURL", "nbcu.us-east-1.snowflakecomputing.com").option("sfAccount",  "nbcu").option("sfUser" , "206643136").option("sfPassword", "Thulz@1996").option("sfDatabase", "DEMO_DB").option("sfSchema", "PUBLIC").option("sfWarehouse" , "NBCU_DATA_INTEG_PROD_DI_WH2").option("sfRole", "NBCU_DATA_INTEG_META_DI_PROD").option("region_id",  "us-east-1").option("dbtable", "tempstagetest_3") -- fully load's the data and then creats a snow flake table. ie- table wont be created untill the df is written fully DDL wont be shown.
