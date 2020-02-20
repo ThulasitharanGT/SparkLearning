@@ -101,6 +101,19 @@ year is non negative
 
 /*
 
+Result explanation.
+
+*df count is less than 3000000
+*Minimum value for miles is not 100
+*Maximum value for miles is not 5000
+*Vehicle_id has no null's or is not empty
+*Vehicle_id is unique
+*number_of_owners has values other than "2","3","4"
+*month has no null's or is not empty
+*brand has values other than "Lambhorghini", "Konegzegg", "Ferrari", "Pagani", "Jeep"
+*year has no -ve values
+
+
 +------------+
 |       brand|
 +------------+
@@ -148,7 +161,7 @@ val resultDataFrame = checkResultsAsDataFrame(spark, verificationResult)
 
 
 import com.amazon.deequ.suggestions.{ConstraintSuggestionRunner, Rules}
-import spark.implicits._ 
+import spark.implicits._ //for toDF
 
 val suggestionResult =ConstraintSuggestionRunner().onData(df).addConstraintRules(Rules.DEFAULT).run()
 
