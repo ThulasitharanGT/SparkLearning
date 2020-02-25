@@ -6,7 +6,7 @@ use show stages -- use the ARN from your stage and add it to the event's in your
 ​
 CREATE OR REPLACE STAGE  first_pipe_Stage_for_sss​
 URL='s3://nbcu-mig-dev/thulasitharan_dev/pipeFolder'​
-CREDENTIALS = ( AWS_KEY_ID = 'AKIAVZXTRLTQEZGUJWKO' AWS_SECRET_KEY = 'zON1t5rX1ksj+xORt25ldzRgicLJROKDAzxppJ/T' )​
+CREDENTIALS = ( AWS_KEY_ID = 'xxxx' AWS_SECRET_KEY = 'yyyy' )​
 COPY_OPTIONS = ( ON_ERROR = CONTINUE  ) ​
 COMMENT = 'first_pipe_Stage_for_sss' ​
    ​
@@ -14,7 +14,7 @@ CREATE OR REPLACE PIPE first_pipe ​
 AUTO_INGEST =  TRUE  ​
 COMMENT = 'first_pipe' ​
 AS copy into  demo_db.public.tempstagetest from @first_pipe_Stage_for_sss​
-FILE_FORMAT = (TYPE = 'CSV'  field_optionally_enclosed_by='\"'  RECORD_DELIMITER = '\n' FIELD_DELIMITER = '|'   )​
+FILE_FORMAT = (TYPE = 'CSV'  field_optionally_enclosed_by='"'  RECORD_DELIMITER = '\n' FIELD_DELIMITER = '|'   )​
 ​
 ​
 show pipes;​
