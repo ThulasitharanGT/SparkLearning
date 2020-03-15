@@ -1,0 +1,85 @@
+truncate table "SNOWFLAKE_STUDY_DATABASE"."SNOWFLAKE_STUDY_SCHEMA"."CSV_DATA_TABLE"
+Create database SNOWFLAKE_STUDY_DATABASE
+
+Create schema SNOWFLAKE_STUDY_SCHEMA
+
+create table sample_table (policyID VARCHAR(16777216) ,statecode VARCHAR(16777216) ,county VARCHAR(16777216) ,
+eq_site_limit VARCHAR(16777216) ,hu_site_limit VARCHAR(16777216) ,fl_site_limit VARCHAR(16777216) ,
+fr_site_limit VARCHAR(16777216) ,tiv_2011 VARCHAR(16777216) ,tiv_2012 VARCHAR(16777216) ,
+eq_site_deductible VARCHAR(16777216) ,hu_site_deductible VARCHAR(16777216) ,
+fl_site_deductible VARCHAR(16777216) ,fr_site_deductible VARCHAR(16777216) ,
+point_latitude VARCHAR(16777216) ,point_longitude VARCHAR(16777216) 
+,line VARCHAR(16777216),construction VARCHAR(16777216) ,point_granularity  VARCHAR(16777216) );
+
+// no s3 account
+copy into sample_table from 'http://spatialkeydocs.s3.amazonaws.com/FL_insurance_sample.csv.zip' //only works on s3 smileyface
+FILE_FORMAT = (type=csv compression=AUTO )
+on_error=continue
+
+select get_ddl('table','SNOWFLAKE_STUDY_DATABASE.SNOWFLAKE_STUDY_SCHEMA.CSV_DATA_TABLE');
+select get_ddl('table','SNOWFLAKE_STUDY_DATABASE.SNOWFLAKE_STUDY_SCHEMA.XML_DATA_TABLE');
+
+list @~;
+
+select SYSTEM$CLUSTERING_DEPTH( 'SNOWFLAKE_STUDY_DATABASE.SNOWFLAKE_STUDY_SCHEMA.XML_DATA_TABLE' ,'(CDROM,_CORRUPT_RECORD)');
+select SYSTEM$CLUSTERING_INFORMATION( 'SNOWFLAKE_STUDY_DATABASE.SNOWFLAKE_STUDY_SCHEMA.XML_DATA_TABLE' ,'(CDROM,_CORRUPT_RECORD)');
+
+/*
+
+SYSTEM$CLUSTERING_DEPTH( 'SNOWFLAKE_STUDY_DATABASE.SNOWFLAKE_STUDY_SCHEMA.XML_DATA_TABLE' ,'(CDROM,_CORRUPT_RECORD)')
+5
+
+SYSTEM$CLUSTERING_INFORMATION( 'SNOWFLAKE_STUDY_DATABASE.SNOWFLAKE_STUDY_SCHEMA.XML_DATA_TABLE' ,'(CDROM,_CORRUPT_RECORD)')
+{    "cluster_by_keys" : "LINEAR(CDROM,_CORRUPT_RECORD)",    "notes" : "Clustering key columns contain high cardinality key CDROM, _CORRUPT_RECORD which might result in expensive re-clustering. Please refer to https://docs.snowflake.net/manuals/user-guide/tables-clustering-keys.html for more information.",    "total_partition_count" : 5,    "total_constant_partition_count" : 0,    "average_overlaps" : 4.0,    "average_depth" : 5.0,    "partition_depth_histogram" : {      "00000" : 0,      "00001" : 0,      "00002" : 0,      "00003" : 0,      "00004" : 0,      "00005" : 5,      "00006" : 0,      "00007" : 0,      "00008" : 0,      "00009" : 0,      "00010" : 0,      "00011" : 0,      "00012" : 0,      "00013" : 0,      "00014" : 0,      "00015" : 0,      "00016" : 0    }  }
+*/
+
+SHOW FILE FORMATS ;
+
+CREATE  OR REPLACE  FILE FORMAT  CSV_FORMAT_1
+TYPE = CSV  RECORD_DELIMITER = '\n' 
+FIELD_DELIMITER = '|' FIELD_OPTIONALLY_ENCLOSED_BY ='"'
+ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE
+EMPTY_FIELD_AS_NULL =FALSE;
+
+CREATE  OR REPLACE  FILE FORMAT  JSON_FORMAT_1
+TYPE = JSON ;
+
+CREATE OR REPLACE  STAGE  stage_CSV_1_source_1
+url='s3://temp_Bucket' // keys must also be added
+FILE_FORMAT = (  FORMAT_NAME = CSV_FORMAT_1) 
+COPY_OPTIONS = (ON_ERROR=CONTINUE)
+COMMENT = 'stage_CSV_1_source_1'  ; // consider source 1 for a table
+
+CREATE OR REPLACE  STAGE  stage_CSV_1_source_2
+url='s3://temp_Bucket2' // keys must also be added
+FILE_FORMAT = (  FORMAT_NAME = CSV_FORMAT_1) 
+COPY_OPTIONS = (ON_ERROR=CONTINUE)
+COMMENT = 'stage_CSV_1_source_2'  ; // consider source 2 for the same table
+
+CREATE OR REPLACE  STAGE  stage_JSON_1
+FILE_FORMAT = (  FORMAT_NAME = JSON_FORMAT_1) 
+COPY_OPTIONS = ( copyOptions ) 
+COMMENT = 'stage_JSON_1' ;
+
+CREATE OR REPLACE pipe pipe_csv_1_source_1
+// URL must be given in stage
+COMMENT = 'pipe_csv_1_source_1' 
+as  copy into SNOWFLAKE_STUDY_DATABASE.SNOWFLAKE_STUDY_SCHEMA.CSV_DATA_TABLE from @stage_CSV_1_source_1;
+// ingesting for source 1 into a table. Error due to fake bucket in stage
+
+CREATE OR REPLACE pipe pipe_csv_1_source_2
+// URL must be given in stage
+COMMENT = 'pipe_csv_1_source_2' 
+as  copy into SNOWFLAKE_STUDY_DATABASE.SNOWFLAKE_STUDY_SCHEMA.CSV_DATA_TABLE from @stage_CSV_1_source_2;
+// ingesting for source 2 into a table. Error due to fake bucket in stage . Works if correct bucket is given
+
+select current_warehouse(),
+current_user(),
+current_schema(),
+current_role(),
+current_database(),
+current_version();
+
+//drop table CSV_DATA_TABLE;
+select count(*) from CSV_DATA_TABLE;
+select count(*) from XML_DATA_TABLE;

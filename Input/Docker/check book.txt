@@ -1,0 +1,106 @@
+mkdir -p /root/temp/dockerTest/
+mkdir -p /root/temp/dockerTest/Input
+cd /root/temp/dockerTest/
+vi Dockerfile
+
+// worked issue un spark submit
+Dockerfile content's:
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt-get install -y openjdk-8-jdk
+RUN apt-get update
+RUN apt-get install git -y
+RUN apt-get update
+RUN apt-get install wget -y
+RUN pwd
+RUN wget "https://downloads.apache.org/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz"
+RUN tar -xzvf spark-2.4.5-bin-hadoop2.7.tgz
+RUN rm spark-2.4.5-bin-hadoop2.7.tgz
+RUN pwd
+RUN mkdir -p /usr/inputFiles/
+RUN cd /usr/inputFiles/
+RUN wget "https://introcs.cs.princeton.edu/java/data/sdss6949386.csv" 
+RUN apt-get install -y python3-pip python3-dev
+RUN apt-get update
+RUN pip3 install --upgrade pip
+RUN cd /usr/local/bin
+RUN ln -s /usr/bin/python3 python
+RUN pip install pyspark
+COPY ./test.py ./spark-2.4.5-bin-hadoop2.7/bin/test.py
+RUN ls ./spark-2.4.5-bin-hadoop2.7/bin/
+RUN ./spark-2.4.5-bin-hadoop2.7/bin/spark-submit --num-executors 1 --executor-cores 2 --executor-memory 1g --driver-cores 1 --driver-memory 1g test.py
+--------------
+
+
+docker run --rm -it -p 4040:4040 -v $(pwd)/test.py:/test.py gettyimages/spark bin/spark-submit /test.py -- mounting a folder and a sigle file
+
+docker run --rm -it -p 4040:4040 -v $(pwd):/temp gettyimages/spark bin/spark-submit /temp/test.py  -- mounting an entire folder
+
+--------------------
+RUN rm /usr/soft/bin/temp/spark-2.4.5-bin-hadoop2.7.tgz
+
+RUN apt-get install -y python3-pip python3-dev
+RUN apt-get update
+RUN pip3 install --upgrade pip
+RUN cd /usr/local/bin
+RUN ln -s /usr/bin/python3 python
+
+
+RUN mkdir -p /usr/soft/bin/temp/
+RUN cd /usr/soft/bin/temp/
+RUN wget "https://downloads.apache.org/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz"
+RUN tar -xzvf spark-2.4.5-bin-hadoop2.7.tgz
+RUN rm -r spark-2.4.5-bin-hadoop2.7.tgz
+
+
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt-get install -y openjdk-8-jdk
+RUN apt-get update
+RUN apt-get install git -y
+RUN apt-get update
+RUN apt-get install wget -y
+RUN mkdir -p /usr/soft/bin/temp/
+RUN cd /usr/soft/bin/temp/
+RUN wget "https://downloads.apache.org/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz"
+RUN tar -xzvf spark-2.4.5-bin-hadoop2.7.tgz
+RUN ls /usr/soft/bin/temp/spark-2.4.5-bin-hadoop2.7/bin/
+RUN ls /usr/soft/bin/temp/
+RUN mkdir -p /usr/inputFiles/
+RUN cd /usr/inputFiles/
+RUN wget "https://introcs.cs.princeton.edu/java/data/sdss6949386.csv" 
+RUN apt-get install -y python3-pip python3-dev
+RUN apt-get update
+RUN pip3 install --upgrade pip
+RUN cd /usr/local/bin
+RUN ln -s /usr/bin/python3 python
+RUN pip install pyspark
+COPY ./Input/test.py /usr/soft/bin/temp/spark-2.4.5-bin-hadoop2.7/bin/test.py
+RUN ls /usr/soft/bin/temp/spark-2.4.5-bin-hadoop2.7/bin/
+RUN ./usr/soft/bin/temp/spark-2.4.5-bin-hadoop2.7/bin/spark-submit --num-executors 1 --executor-cores 2 --executor-memory 1g --driver-cores 1 --driver-memory 1g test.py
+
+---------------
+
+
+mkdir -p /root/temp/inputFiles/
+cd /root/temp/inputFiles/
+
+docker build -t tempimage:v1 .
+
+docker run -t -i 8532cf052196
+
+docker cp /root/temp/inputFiles/test.py  44d69b54706d:/usr/soft/inputFilesConatiner/test.py
+
+
+cd ..
+docker build --v /root/temp/inputFiles/:/usr/soft/inputFilesConatiner/ dockerfile  
+
+docker build -v /root/temp/inputFiles/:/usr/soft/inputFilesConatiner/ dockerTest  
+
+
+-- docker build -t
+docker run -t -i 980a75d6345d -- id given when docker image built
+ 
+docker run -t -i ed6fcc222a69 
+
+

@@ -1,0 +1,42 @@
+Working file:
+
+Dockerfile:
+
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt-get install -y openjdk-8-jdk
+RUN apt-get update
+RUN apt-get install git -y
+RUN apt-get update
+RUN apt-get install wget -y
+RUN wget "https://downloads.apache.org/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz"
+RUN tar -xzvf spark-2.4.5-bin-hadoop2.7.tgz
+RUN rm spark-2.4.5-bin-hadoop2.7.tgz
+RUN apt-get install -y python3-pip python3-dev
+RUN apt-get update
+RUN pip3 install --upgrade pip
+RUN ln -s /usr/bin/python3 /usr/bin/python
+RUN pip install pyspark
+ENV SPARK_HOME /spark-2.4.5-bin-hadoop2.7/
+ENV PATH $PATH:$SPARK_HOME/bin
+CMD spark-submit --num-executors 1 --executor-cores 2 --executor-memory 1g --driver-cores 1 --driver-memory 1g /temp/test.py
+
+building:
+
+docker build -t temp:t1 .
+
+running:
+
+docker run -t -i -v $(pwd):/temp  b347b383d369
+
+
+-------
+
+pre built spak image.
+
+https://github.com/gettyimages/docker-spark/blob/master/Dockerfile
+
+docker run --rm -it -p 4040:4040 -v $(pwd)/test.py:/test.py gettyimages/spark bin/spark-submit /test.py -- mounting a folder and a sigle file
+
+docker run --rm -it -p 4040:4040 -v $(pwd):/temp gettyimages/spark bin/spark-submit /temp/test.py  -- mounting an entire folder
+
