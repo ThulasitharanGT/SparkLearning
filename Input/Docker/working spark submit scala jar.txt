@@ -1,0 +1,36 @@
+//getting jar
+
+wget "https://github.com/ThulasitharanGT/KafkaGradleTest/blob/master/src/main/KafkaGradleTest-1.0-SNAPSHOT-all.jar?raw=true"
+mv 'KafkaGradleTest-1.0-SNAPSHOT-all.jar?raw=true' KafkaGradleTest-1.0-SNAPSHOT-all.jar
+
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt-get install -y openjdk-8-jdk
+RUN apt-get update
+RUN apt-get install git -y
+RUN apt-get update
+RUN apt-get install wget -y
+RUN wget "https://downloads.apache.org/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz"
+RUN tar -xzvf spark-2.4.5-bin-hadoop2.7.tgz
+RUN rm spark-2.4.5-bin-hadoop2.7.tgz
+ENV SPARK_HOME /spark-2.4.5-bin-hadoop2.7/
+ENV PATH $PATH:$SPARK_HOME/bin
+RUN cp $SPARK_HOME/conf/log4j.properties.template $SPARK_HOME/conf/log4j.properties
+RUN wget "https://github.com/ThulasitharanGT/KafkaGradleTest/blob/master/src/main/KafkaGradleTest-1.0-SNAPSHOT-all.jar?raw=true"
+RUN mv 'KafkaGradleTest-1.0-SNAPSHOT-all.jar?raw=true' KafkaGradleTest-1.0-SNAPSHOT-all.jar
+RUN wget "https://introcs.cs.princeton.edu/java/data/sdss6949386.csv" 
+CMD spark-submit --class com.dockerTemp.readingCsvFileForDocker  --num-executors 1 --executor-cores 2 --executor-memory 1g --driver-cores 1 --driver-memory 1g --packages log4j:log4j:1.2.17 KafkaGradleTest-1.0-SNAPSHOT-all.jar /temp/sdss6949386.csv
+
+
+CMD spark-submit --class com.dockerTemp.readingCsvFileForDocker  --num-executors 1 --executor-cores 2 --executor-memory 1g --driver-cores 1 --driver-memory 1g --packages log4j:log4j:1.2.17 KafkaGradleTest-1.0-SNAPSHOT-all.jar ./sdss6949386.csv  # docker run -t -i b347b383d369 -- first spark submit alone
+
+CMD spark-submit --class com.dockerTemp.readingCsvFileForDocker  --num-executors 1 --executor-cores 2 --executor-memory 1g --driver-cores 1 --driver-memory 1g --packages log4j:log4j:1.2.17 KafkaGradleTest-1.0-SNAPSHOT-all.jar /temp/sdss6949386.csv #docker run -t -i -v $(pwd):/temp  b347b383d369 -- first and second spark submit alone
+
+docker build -t temp:t1 .
+
+docker run -t -i b347b383d369 -- first spark submit alone
+
+docker run -t -i -v $(pwd):/temp  b347b383d369 -- first and second spark submit alone
+
+
+log4j:log4j:1.2.17
