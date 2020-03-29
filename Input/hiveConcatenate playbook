@@ -1,0 +1,281 @@
+val deltaTableInput1=spark.read.format("com.databricks.spark.csv").option("header","true").option("delimiter","|").option("inferSchema","true").load("/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car3.txt").selectExpr("Vehicle_id","model","brand","year","month","miles","CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time")
+
+
+val deltaTableInput2=spark.read.format("com.databricks.spark.csv").option("header","true").option("delimiter","|").option("inferSchema","true").load("/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car2.txt")
+
+val deltaTableInput3=spark.read.format("com.databricks.spark.csv").option("header","true").option("delimiter","|").option("inferSchema","true").load("/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car4.txt").selectExpr("Vehicle_id","model","brand","year","month","miles","CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time")
+
+val deltaTableInputExtraColumn_droppedInHere=spark.read.format("com.databricks.spark.csv").option("header","true").option("delimiter","|").option("inferSchema","true").load("/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car_ExtraColumn_schema.txt").selectExpr("Vehicle_id","model","brand","year","month","miles","CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time")
+
+
+
+deltaTableInput1.printSchema
+root
+ |-- Vehicle_id: string (nullable = true)
+ |-- model: string (nullable = true)
+ |-- brand: string (nullable = true)
+ |-- year: integer (nullable = true)
+ |-- month: integer (nullable = true)
+ |-- miles: integer (nullable = true)
+ |-- intake_date_time: timestamp (nullable = true)
+
+
+
+hdfs dfs -mkdir -p /user/raptor/testing/hadoop/hive/managed/
+hdfs dfs -mkdir -p /user/raptor/testing/hadoop/hive/external/
+
+create table car_test.car_data_table1 
+(Vehicle_id STRING,
+miles INT,
+intake_date_time TIMESTAMP)
+PARTITIONED BY
+(
+brand STRING,
+model STRING,
+year INT,
+month INT
+)
+STORED AS PARQUET
+LOCATION
+'/user/raptor/testing/hadoop/hive/managed/car_data_table1/'
+;
+
+create table car_test.car_data_table2 
+(Vehicle_id STRING,
+miles INT,
+intake_date_time TIMESTAMP)
+PARTITIONED BY
+(
+brand STRING,
+model STRING,
+year INT,
+month INT
+)
+STORED AS PARQUET
+LOCATION
+'/user/raptor/testing/hadoop/hive/managed/car_data_table2/'
+;
+create table car_test.car_data_table3 
+(Vehicle_id STRING,
+miles INT,
+intake_date_time TIMESTAMP)
+PARTITIONED BY
+(
+brand STRING,
+model STRING,
+year INT,
+month INT
+)
+STORED AS PARQUET
+LOCATION
+'/user/raptor/testing/hadoop/hive/managed/car_data_table3/'
+;
+create table car_test.car_data_table_droppedInHere 
+(Vehicle_id STRING,
+miles INT,
+intake_date_time TIMESTAMP)
+PARTITIONED BY
+(
+brand STRING,
+model STRING,
+year INT,
+month INT
+)
+STORED AS PARQUET
+LOCATION
+'/user/raptor/testing/hadoop/hive/managed/car_data_table_droppedInHere/'
+;
+// orc table 
+create table car_test.car_data_table_orc_total
+(Vehicle_id STRING,
+miles INT,
+intake_date_time TIMESTAMP)
+PARTITIONED BY
+(
+brand STRING,
+model STRING,
+year INT,
+month INT
+)
+STORED AS ORC
+LOCATION
+'/user/raptor/testing/hadoop/hive/managed/car_data_table_orc_total'
+;
+
+to run hdfs commands in hive:
+----------------------------
+! hdfs dfs -ls /user/raptor/testing/hadoop/hive/managed/ ;
+
+Syntax:
+-------
+! command ;
+
+
+deltaTableInput1.write.mode("append").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/hive/managed/car_data_table1/")
+
+deltaTableInput2.write.mode("append").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/hive/managed/car_data_table2/")
+
+deltaTableInput3.write.mode("append").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/hive/managed/car_data_table3/")
+
+deltaTableInputExtraColumn_droppedInHere.write.mode("append").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/hive/managed/car_data_table_droppedInHere/")
+
+
+select * from car_test.car_data_table1;  - 0 record's fetched.
+select * from car_test.car_data_table_orc_total;  - 0 record's fetched.
+
+need to do msck repair , cause external souce is directly writing data to hdfs on table path.
+
+msck repair table car_test.car_data_table1;  
+msck repair table car_test.car_data_table2;  
+msck repair table car_test.car_data_table3;  
+msck repair table car_test.car_data_table_droppedInHere;  
+
+set hive.exec.dynamic.partition.mode=nonstrict;
+
+insert into car_test.car_data_table_orc_total partition(brand,model,year,month) select * from car_test.car_data_table1;
+
+
+! hdfs dfs -ls /user/raptor/testing/hadoop/hive/managed/car_data_table_orc_total/brand=Lambhorghini/model=Merchilago/year=2014/month=6/ ; 
+
+insert into car_test.car_data_table_orc_total partition(brand,model,year,month) select * from car_test.car_data_table2;
+
+! hdfs dfs -ls /user/raptor/testing/hadoop/hive/managed/car_data_table_orc_total/brand=Lambhorghini/model=Merchilago/year=2014/month=6/ ; 
+
+insert into car_test.car_data_table_orc_total partition(brand,model,year,month) select * from car_test.car_data_table3;
+
+insert into car_test.car_data_table_orc_total partition(brand,model,year,month) select * from car_test.car_data_table_droppedInHere;
+
+Before :
+
+hive> ! hdfs dfs -ls /user/raptor/testing/hadoop/hive/managed/car_data_table_orc_total/brand=Lambhorghini/model=Merchilago/year=2014/month=6/ ; 
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/home/raptor/Softwares/apache-hive-2.1.1-bin/lib/log4j-slf4j-impl-2.4.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/home/raptor/Softwares/hadoop-2.7.3/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Found 2 items
+-rwxr-xr-x   1 raptor supergroup        483 2020-03-27 10:30 /user/raptor/testing/hadoop/hive/managed/car_data_table_orc_total/brand=Lambhorghini/model=Merchilago/year=2014/month=6/000000_0
+-rwxr-xr-x   1 raptor supergroup        444 2020-03-27 10:32 /user/raptor/testing/hadoop/hive/managed/car_data_table_orc_total/brand=Lambhorghini/model=Merchilago/year=2014/month=6/000000_0_copy_1
+hive> select * from car_data_table_orc_total limit 5;
+
+
+
+alter table car_test.car_data_table_orc_total partition (brand='Lambhorghini',model='Merchilago',year=2014,month=6 ) concatenate; -- Only orc supports concatenate
+
+after:
+
+hive> ! hdfs dfs -ls /user/raptor/testing/hadoop/hive/managed/car_data_table_orc_total/brand=Lambhorghini/model=Merchilago/year=2014/month=6/ ; 
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/home/raptor/Softwares/apache-hive-2.1.1-bin/lib/log4j-slf4j-impl-2.4.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/home/raptor/Softwares/hadoop-2.7.3/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Found 1 items
+-rwxr-xr-x   1 raptor supergroup        741 2020-03-27 10:36 /user/raptor/testing/hadoop/hive/managed/car_data_table_orc_total/brand=Lambhorghini/model=Merchilago/year=2014/month=6/000000_0
+
+
+
+
+
+deltaTableInput1.write.mode("append").format("orc").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/hive/managed/car_data_table_orc/")
+
+select * from car_test.car_data_table;  - 0 record's fetched.
+select * from car_test.car_data_table_orc;  - 0 record's fetched.
+
+Need's msck repair or alter table add partition if not exists;
+set hive.msck.path.valdation=ignore;
+msck repair table car_test.car_data_table;
+msck repair table car_test.car_data_table_orc;
+
+deltaTableInput2.write.mode("append").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/hive/managed/car_data_table/")
+deltaTableInput2.write.mode("append").format("orc").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/hive/managed/car_data_table_orc/")
+
+// reccursive listing
+! hdfs dfs -ls -R /user/raptor/testing/hadoop/hive/managed/car_data_table/brand=Ford/model=Endeavour/year=2010/;
+
+// path with 2 file's
+hdfs dfs -ls /user/raptor/testing/hadoop/hive/managed/car_data_table/brand=Lambhorghini/model=Merchilago/year=2014/month=6/ 
+
+!hdfs dfs -ls /user/raptor/testing/hadoop/hive/managed/car_data_table_orc/brand=Lambhorghini/model=Merchilago/year=2014/month=6/ 
+
+set hive.exec.dynamic.partition=true;
+set hive.exec.dynamic.partition.mode=nonstrict;
+alter table car_test.car_data_table partition (brand='Lambhorghini',model='Merchilago',year=2014,month=6 ) concatenate; -- Only orc supports concatenate
+alter table car_test.car_data_table_orc partition (brand='Lambhorghini',model='Merchilago',year=2014,month=6 ) concatenate;
+
+deltaTableInput3.write.mode("append").partitionBy("brand","model","year","month").save("/user/raptor/testing/hadoop/hive/managed/car_data_table/")
+
+
+``````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+ORC test
+
+drop table car_test.car_data_table_orc_temp ;
+create table car_test.car_data_table_orc_temp 
+(Vehicle_id STRING,
+miles INT,
+intake_date_time TIMESTAMP,
+brand STRING,
+model STRING)
+PARTITIONED BY
+(
+year INT,
+month INT
+) 
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '~'
+LINES TERMINATED BY '\n'
+STORED AS ORC
+LOCATION
+'/user/raptor/testing/hadoop/hive/managed/car_data_table_orc_temp';
+
+to run hdfs commands in hive:
+----------------------------
+! hdfs dfs -ls /user/raptor/testing/hadoop/hive/managed/ ;
+
+Syntax:
+-------
+! command ;
+
+spark-shell --conf spark.sql.catalogImplementation=hive hive.metastore.uris=jdbc:mysql://localhost:3306/metastore?createDatabaseIfNotExist=true
+
+spark.conf.set("hive.metastore.uris","jdbc:mysql://localhost:3306/metastore?createDatabaseIfNotExist=true")
+spark.conf.set("spark.sql.catalogImplementation","hive")
+
+val spark = SparkSession
+  .builder()
+  .appName("Spark Hive Example")
+  .config("spark.sql.warehouse.dir", warehouseLocation)
+  .config("hive.metastore.uris","jdbc:mysql://localhost:3306/metastore?createDatabaseIfNotExist=true")
+  .config("spark.sql.catalogImplementation","hive")
+  .enableHiveSupport()
+  .getOrCreate()
+
+
+
+spark.sql("select * from car_test.car_data_table").show
+
+deltaTableInput1.select("Vehicle_id","miles","intake_date_time","brand","model","year","month").write.mode("append").format("orc").option("delimiter","~").partitionBy("year","month").save("/user/raptor/testing/hadoop/hive/managed/car_data_table_orc_temp/")
+
+select * from car_test.car_data_table;  - 0 record's fetched.
+select * from car_test.car_data_table_orc;  - 0 record's fetched.
+
+Need's msck repair or alter table add partition if not exists;
+set hive.msck.path.valdation=ignore;
+msck repair table car_test.car_data_table_orc_temp;
+
+deltaTableInput2.write.mode("append").format("orc").partitionBy("year","month").save("/user/raptor/testing/hadoop/hive/managed/car_data_table_orc_temp/")
+
+// reccursive listing
+! hdfs dfs -ls -R /user/raptor/testing/hadoop/hive/managed/car_data_table/brand=Ford/model=Endeavour/year=2010/;
+
+// path with 2 file's
+hdfs dfs -ls /user/raptor/testing/hadoop/hive/managed/car_data_table/brand=Lambhorghini/model=Merchilago/year=2014/month=6/ 
+
+!hdfs dfs -ls /user/raptor/testing/hadoop/hive/managed/car_data_table_orc/brand=Lambhorghini/model=Merchilago/year=2014/month=6/ 
+
+set hive.exec.dynamic.partition=true;
+set hive.exec.dynamic.partition.mode=nonstrict;
+alter table car_test.car_data_table partition (brand='Lambhorghini',model='Merchilago',year=2014,month=6 ) concatenate; -- Only orc supports concatenate
+alter table car_test.car_data_table_orc partition (brand='Lambhorghini',model='Merchilago',year=2014,month=6 ) concatenate;
+
+
