@@ -123,7 +123,7 @@ deltaTableInputExtraColumn_droppedInHere.write.mode("append").partitionBy("brand
 select * from car_test.car_data_table1;  - 0 record's fetched.
 select * from car_test.car_data_table_orc_total;  - 0 record's fetched.
 
-need to do msck repair , cause external souce is directly writing data to hdfs on table path.
+need to do msck repair , cause external source is directly writing data to hdfs on table path.
 
 msck repair table car_test.car_data_table1;  
 msck repair table car_test.car_data_table2;  
@@ -241,6 +241,9 @@ spark-shell --conf spark.sql.catalogImplementation=hive hive.metastore.uris=jdbc
 spark.conf.set("hive.metastore.uris","jdbc:mysql://localhost:3306/metastore?createDatabaseIfNotExist=true")
 spark.conf.set("spark.sql.catalogImplementation","hive")
 
+
+//// trying through spark
+
 val spark = SparkSession
   .builder()
   .appName("Spark Hive Example")
@@ -250,7 +253,20 @@ val spark = SparkSession
   .enableHiveSupport()
   .getOrCreate()
 
+service mysql status
+service mysql stop
+service mysql start
 
+240
+set_path
+
+/etc/init.d/mysql start
+
+
+cd /home/raptor/IdeaProjects/SparkLearning/build/libs/
+spark-submit --class org.controller.hiveTesting.hiveTestExample --num-executors 1 --executor-cores 2 --driver-cores 1 --driver-memory 1g --executor-memory 1g --packages mysql:mysql-connector-java:8.0.19 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar warehouseLocation=/user/raptor/tmp/hive/warehouse/ db=car_test table=car_data_table_orc_total hiveUri=jdbc:mysql://localhost:3306/metastore
+
+///////////////////
 
 spark.sql("select * from car_test.car_data_table").show
 

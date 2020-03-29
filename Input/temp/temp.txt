@@ -1,0 +1,11 @@
+
+
+
+package org.apache.spark
+import org.apache.spark.sql.SparkSession
+object jacek {
+  def open(spark: SparkSession) = {
+    spark.sharedState.externalCatalog.asInstanceOf[org.apache.spark.sql.hive.HiveExternalCatalog].client
+  }
+}
+

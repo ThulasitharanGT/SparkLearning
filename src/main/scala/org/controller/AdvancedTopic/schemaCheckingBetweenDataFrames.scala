@@ -23,7 +23,7 @@ object schemaCheckingBetweenDataFrames extends SparkOpener{
     inputMap.put(projectConstants.basePathArgConstant,srcDFBasePath)
     inputMap.put(projectConstants.filePathArgValue,srcDFPath)
     val srcDF=readWriteUtil.readDF(spark,inputMap).selectExpr("Vehicle_id","model","brand","year","month","miles","CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time")
-    // schema wont match if select expr is coommented abve as it's invalid date format and will be considered a string
+    // schema wont match if select expr is commented above as it's invalid date format and will be considered a string
     inputMap.put(projectConstants.basePathArgConstant,destDFBasePath)
     inputMap.put(projectConstants.filePathArgValue,destDFPath)
     val destDF=readWriteUtil.readDF(spark,inputMap)
