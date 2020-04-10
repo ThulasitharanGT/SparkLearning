@@ -1,0 +1,65 @@
+val df=spark.read.option("header","true").option("delimiter","|").option("inferSchema","true").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/temp/cumulative_sum_eg_input.txt")
+
+import org.apache.spark.sql.expressions.Window
+import org.apache.spark.sql.functions._
+
+df.withColumn("cumSum",avg("Quantity").over(Window.partitionBy($"Product_Code").orderBy($"Inventory_Date"))).orderBy("Product_Code","Inventory_Date").show
+
+df.withColumn("cumSum",sum("Quantity").over(Window.partitionBy($"Product_Code").orderBy($"Inventory_Date"))).orderBy("Product_Code","Inventory_Date").show
+
+//custom way:
+============
+case class inventoryCumSum (productCode:String,quantity:Int,inventoryDate:String,cumSum:Int)
+import scala.collection.mutable.ListBuffer
+val resultListBuffer:ListBuffer[inventoryCumSum]= ListBuffer[inventoryCumSum]()
+//val distinctProductCode=(df.select("Product_Code").distinct.collect).map(x => x.toString.substring(1,x.toString.length-1)) //.collect reurns array of row, so take the value and index out of row using (index)
+val distinctProductCode=(df.select("Product_Code").distinct.collect).map(_(0))
+for (productCode <- distinctProductCode)
+{
+val currentProductCodeDF=df.filter(s"Product_Code='${productCode}'").orderBy("Inventory_Date").collect
+var cumSumVar=0
+for(currentProductCodeDFRow <- currentProductCodeDF)
+{
+cumSumVar=cumSumVar+currentProductCodeDFRow(1).toString.toInt
+resultListBuffer+=inventoryCumSum(currentProductCodeDFRow(0).toString,currentProductCodeDFRow(1).toString.toInt,currentProductCodeDFRow(2).toString,cumSumVar)
+}
+}
+
+resultListBuffer.toSeq.toDF.orderBy("productCode","inventoryDate").show
+
+comparison
+========
+
+resultListBuffer.toSeq.toDF.orderBy("productCode","inventoryDate").intersect(df.withColumn("cumSum",sum("Quantity").over(Window.partitionBy($"Product_Code").orderBy($"Inventory_Date"))).orderBy("Product_Code","Inventory_Date")).count
+resultListBuffer.toSeq.toDF.orderBy("productCode","inventoryDate").count
+df.withColumn("cumSum",sum("Quantity").over(Window.partitionBy($"Product_Code").orderBy($"Inventory_Date"))).orderBy("Product_Code","Inventory_Date").count
+
+
+avg try//
+===========
+case class inventoryCumAvg (productCode:String,quantity:Int,inventoryDate:String,cumAvg:Double)
+import scala.collection.mutable.ListBuffer
+val resultListBufferAvg:ListBuffer[inventoryCumAvg]= ListBuffer[inventoryCumAvg]()
+//val distinctProductCode=(df.select("Product_Code").distinct.collect).map(x => x.toString.substring(1,x.toString.length-1)) //.collect reurns array of row, so take the value and index out of row using (index)
+val distinctProductCode=(df.select("Product_Code").distinct.collect).map(_(0))
+for (productCode <- distinctProductCode)
+{
+val currentProductCodeDF=df.filter(s"Product_Code='${productCode}'").orderBy("Inventory_Date").collect
+var cumSumVar:Double=0
+var cumAvgVar:Double=0
+var productCodeRecordnumber=1
+for(currentProductCodeDFRow <- currentProductCodeDF)
+{
+cumSumVar=cumSumVar+currentProductCodeDFRow(1).toString.toInt
+cumAvgVar=cumSumVar/productCodeRecordnumber
+resultListBufferAvg+=inventoryCumAvg(currentProductCodeDFRow(0).toString,currentProductCodeDFRow(1).toString.toInt,currentProductCodeDFRow(2).toString,cumAvgVar)
+productCodeRecordnumber=productCodeRecordnumber+1
+}
+}
+
+resultListBufferAvg.toSeq.toDF.orderBy("productCode","inventoryDate").show
+
+df.withColumn("cumSum",avg("Quantity").over(Window.partitionBy($"Product_Code").orderBy($"Inventory_Date"))).orderBy("Product_Code","Inventory_Date").count
+resultListBufferAvg.toSeq.toDF.orderBy("productCode","inventoryDate").count
+df.withColumn("cumSum",avg("Quantity").over(Window.partitionBy($"Product_Code").orderBy($"Inventory_Date"))).orderBy("Product_Code","Inventory_Date").intersect(resultListBufferAvg.toSeq.toDF.orderBy("productCode","inventoryDate")).count
+
