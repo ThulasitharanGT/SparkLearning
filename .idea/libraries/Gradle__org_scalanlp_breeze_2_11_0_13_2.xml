@@ -4,8 +4,6 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalanlp/breeze_2.11/0.13.2/4ead72f6bff9a6b7f2c16ca840f55db2b78b3922/breeze_2.11-0.13.2.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalanlp/breeze_2.11/0.13.2/f3cb058d8cba042da18e57fdccec9ec30af03042/breeze_2.11-0.13.2-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

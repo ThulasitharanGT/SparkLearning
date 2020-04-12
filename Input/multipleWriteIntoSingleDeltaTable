@@ -1,0 +1,45 @@
+spark-submit --class org.controller.kafkaStreamExample.dataPullFromKafka --driver-memory 1g --driver-cores 1 --executor-memory 1g --executor-cores 1 --deploy-mode client --packages org.apache.kafka:kafka-clients:2.3.1,org.apache.kafka:kafka_2.11:2.3.1,org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.4 /home/raptor/IdeaProjects/SparkLearning/build/libs parkLearning-1.0SNAPSHOT.jar keySerializer=org.apache.kafka.common.serialization.StringSerializer valueSerializer=org.apache.kafka.common.serialization.StringSerializer bootStrapServer=localhost:9092,localhost:9093,localhost:9094 topicName=carPerformanceMetricSensor checkPointLocationWrite=hdfs://localhost/user/raptor/kafka/stream/checkpointCarSensorDataFromStreamWrite/ checkPointLocationRead=hdfs://localhost/user/raptor/kafka/stream/checkpointCarSensorDataFromStreamRead/ outputPath=hdfs://localhost/user/raptor/kafka/stream/temp/consoleCarAndDriverSensorDataFromStreamDataLake/
+
+
+spark-submit --class org.controller.kafkaStreamExample.dataPullFromKafka --driver-memory 1g --driver-cores 1 --executor-memory 1g --executor-cores 1 --deploy-mode client --packages org.apache.kafka:kafka-clients:2.3.1,org.apache.kafka:kafka_2.11:2.3.1,org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.4 /home/raptor/IdeaProjects/SparkLearning/build/libs parkLearning-1.0SNAPSHOT.jar keySerializer=org.apache.kafka.common.serialization.StringSerializer valueSerializer=org.apache.kafka.common.serialization.StringSerializer bootStrapServer=localhost:9092,localhost:9093,localhost:9094 topicName=driverPerformanceMetricSensor checkPointLocationWrite=hdfs://localhost/user/raptor/kafka/stream/checkpointDriverSensorDataFromStreamWrite/ checkPointLocationRead=hdfs://localhost/user/raptor/kafka/stream/checkpointDriverSensorDataFromStreamRead/ outputPath=hdfs://localhost/user/raptor/kafka/stream/temp/consoleCarAndDriverSensorDataFromStreamDataLake/
+
+//create a topic with 10 partitions
+//post a set of message
+
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/createTopic.sh carPerformanceMetricSensor 10 3 
+
+
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh TCS 10 carPerformanceMetricSensor 2019 1000 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh Tyre 10 carPerformanceMetricSensor 2019 150 Spain-Barcelona T1 
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh SCS 10 carPerformanceMetricSensor 2019 200 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh DRS 10 carPerformanceMetricSensor 2019 10 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh ERS 10 carPerformanceMetricSensor 2019 2000 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh Battery 10 carPerformanceMetricSensor 2019 2000 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh Brake 10 carPerformanceMetricSensor 2019 2500 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh PU 10 carPerformanceMetricSensor 2019 4000 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh HP-OUT 10 carPerformanceMetricSensor 2019 3000 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh Power-delivery 10 carPerformanceMetricSensor 2019 2600 Spain-Barcelona T1
+
+
+//create another topic with 10 partitions
+//post anoter set of message
+
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/createTopic.sh driverPerformanceMetricSensor 10 4
+
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh TCS 10 driverPerformanceMetricSensor 2019 1000 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh Tyre 10 driverPerformanceMetricSensor 2019 150 Spain-Barcelona T1 
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh SCS 10 driverPerformanceMetricSensor 2019 200 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh DRS 10 driverPerformanceMetricSensor 2019 10 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh ERS 10 driverPerformanceMetricSensor 2019 2000 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh Battery 10 driverPerformanceMetricSensor 2019 2000 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh Brake 10 driverPerformanceMetricSensor 2019 2500 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh PU 10 driverPerformanceMetricSensor 2019 4000 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh HP-OUT 10 driverPerformanceMetricSensor 2019 3000 Spain-Barcelona T1
+sh /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts/randomMsgProducer.sh Power-delivery 10 driverPerformanceMetricSensor 2019 2600 Spain-Barcelona T1
+
+read 2 steams from 2 different spark sessions
+write it to same output path.
+
+
+
+

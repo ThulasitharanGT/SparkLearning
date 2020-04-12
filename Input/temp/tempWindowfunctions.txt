@@ -1,5 +1,8 @@
 val df=spark.read.option("header","true").option("delimiter","|").option("inferSchema","true").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/temp/cumulative_sum_eg_input.txt")
 
+df.createOrReplaceTempView("inventory")
+spark.sql("select Product_Code,Quantity,Inventory_Date, sum(Quantity) over (partition by Product_Code order by Inventory_Date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) cumSum from inventory   order by Product_Code,Inventory_Date").show(false)
+
 import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.functions._
 
@@ -62,4 +65,26 @@ resultListBufferAvg.toSeq.toDF.orderBy("productCode","inventoryDate").show
 df.withColumn("cumSum",avg("Quantity").over(Window.partitionBy($"Product_Code").orderBy($"Inventory_Date"))).orderBy("Product_Code","Inventory_Date").count
 resultListBufferAvg.toSeq.toDF.orderBy("productCode","inventoryDate").count
 df.withColumn("cumSum",avg("Quantity").over(Window.partitionBy($"Product_Code").orderBy($"Inventory_Date"))).orderBy("Product_Code","Inventory_Date").intersect(resultListBufferAvg.toSeq.toDF.orderBy("productCode","inventoryDate")).count
+
+
+
+
+=========================+++++++++++++++++++++++++++++++++++++============================================++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++================
+
+
+val transactionDF=spark.read.option("header","true").option("delimiter","|").option("inferSchema","true").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/temp/rank_input_1.txt")
+
+import org.apache.spark.sql.expressions.Window
+import org.apache.spark.sql.functions._
+
+transactionDF.withColumn("rowNum",rank.over(Window.partitionBy("Account_number").orderBy(desc("transaction_time")))).selectExpr("Account_number","transaction_time","Transaction_id")
+
+transactionDF.withColumn("rowNum",rank.over(Window.partitionBy("Account_number").orderBy(desc("transaction_time")))).filter("rowNum=1").drop("rowNum","transaction_time").orderBy("Account_number").show
+
+//top 5 highest current balance account.
+transactionDF.withColumn("rowNum",rank.over(Window.partitionBy("Account_number").orderBy(desc("transaction_time")))).filter("rowNum=1").drop("rowNum","transaction_time").orderBy("Account_number").withColumn("highestBalance",rank.over(Window.orderBy(desc("balance")))).where("highestBalance <=5").drop("highestBalance").show
+
+
+
+
 

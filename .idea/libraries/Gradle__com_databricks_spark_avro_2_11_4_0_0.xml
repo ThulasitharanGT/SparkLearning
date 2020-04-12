@@ -4,8 +4,6 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.databricks/spark-avro_2.11/4.0.0/77b2fb4c18d8819dd63020f707a8b65dc3528dc7/spark-avro_2.11-4.0.0.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.databricks/spark-avro_2.11/4.0.0/36e98f9c5bd19bba6643dfa9a3f11defd5a59853/spark-avro_2.11-4.0.0-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

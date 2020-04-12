@@ -4,8 +4,6 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.parquet/parquet-jackson/1.10.0/9bf803cc835be1ea52d5f656682309153153468b/parquet-jackson-1.10.0.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.parquet/parquet-jackson/1.10.0/54bccc402250ec7bb31e17700759a26e011e5ce9/parquet-jackson-1.10.0-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

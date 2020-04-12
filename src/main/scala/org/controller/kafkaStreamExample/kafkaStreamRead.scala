@@ -46,6 +46,7 @@ object kafkaStreamRead extends SparkOpener{
     inputMap.put(projectConstants.subscribeArg,topicName)// topic name
     inputMap.put(projectConstants.startingOffsetsArg,"earliest")
     inputMap.put(projectConstants.fileFormatArg,projectConstants.kafkaFormat)
+    // add     inputMap.put(projectConstants.checkPointLocationArg,checkPointLocation) if works
     val readStreamDF = readWriteUtil.readStreamFunction(spark,inputMap).selectExpr("*","split(value,'~') as valueSplitted").drop("value").selectExpr("offset", "topic", "timestamp", "cast(valueSplitted[0] as string)as value", "cast(valueSplitted[1] as string) as date", "timestampType", "partition", "cast (key  as string) as key")
     // spark.readStream.format(projectConstants.kafkaFormat).option(projectConstants.kafkaBootStrapServersArg, bootStrapServer).option(projectConstants.kafkaValueDeserializerArg,valueDeserializer).option(projectConstants.kafkaKeyDeserializerArg,keyDeserializer).option("startingOffsets", "earliest").option("subscribe", topicName).load().selectExpr("*","split(value,'~') as valueSplitted").drop("value").selectExpr("offset", "topic", "timestamp", "cast(valueSplitted[0] as string)as value", "cast(valueSplitted[1] as string) as date", "timestampType", "partition", "cast (key  as string) as key")
     inputMap.put(projectConstants.fileFormatArg,projectConstants.deltaFormat)

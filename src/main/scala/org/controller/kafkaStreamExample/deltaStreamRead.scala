@@ -27,6 +27,6 @@ def main(args:Array[String]):Unit={
   val queryStreamStartDF=deltaSteamDF.writeStream.outputMode("append").format("console").option("checkpointLocation",checkPointLocation).option("path",outputPath)
   println("--------------------->stream write object created<------------------------")
   queryStreamStartDF.start().awaitTermination()
-    // check ignoreChanges  and ignoreDeletes remove from stream table whele reading it in another session
+    // check ignoreChanges  and ignoreDeletes remove from stream table while reading it in another session
 }
 }

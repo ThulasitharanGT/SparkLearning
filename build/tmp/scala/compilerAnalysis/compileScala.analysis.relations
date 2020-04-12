@@ -145,6 +145,9 @@ products:
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> build/classes/scala/main/org/controller/hiveTesting/hiveTestExample$$anonfun$main$1.class
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> build/classes/scala/main/org/controller/hiveTesting/hiveTestExample$.class
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> build/classes/scala/main/org/controller/hiveTesting/hiveTestExample.class
+   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/dataPullFromKafka$$anonfun$main$1.class
+   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/dataPullFromKafka$.class
+   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/dataPullFromKafka.class
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/deltaStreamRead$$anonfun$main$1.class
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/deltaStreamRead$.class
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/deltaStreamRead.class
@@ -353,6 +356,10 @@ binary dependencies:
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.0/9d000df2535f94f029a59950cf439f84e68c8bfc/spark-catalyst_2.11-2.4.0.jar
+   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
+   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.0/9d000df2535f94f029a59950cf439f84e68c8bfc/spark-catalyst_2.11-2.4.0.jar
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.0/2eebc2356fa310b7cc0308b672b08cecfe85eb70/spark-core_2.11-2.4.0.jar
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.0/f80846e90008699e46e8678fa166f24a7a449927/spark-sql_2.11-2.4.0.jar
@@ -502,6 +509,9 @@ source dependencies:
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> src/main/scala/org/util/readWriteUtil.scala
+   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> src/main/scala/org/constants/projectConstants.scala
+   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> src/main/scala/org/constants/projectConstants.scala
@@ -687,6 +697,9 @@ class names:
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> org.controller.hiveTesting.hiveTestExample
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> org.controller.hiveTesting.hiveTestExample$
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> org.controller.hiveTesting.hiveTestExample$$anonfun$main$1
+   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> org.controller.kafkaStreamExample.dataPullFromKafka
+   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> org.controller.kafkaStreamExample.dataPullFromKafka$
+   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> org.controller.kafkaStreamExample.dataPullFromKafka$$anonfun$main$1
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> org.controller.kafkaStreamExample.deltaStreamRead
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> org.controller.kafkaStreamExample.deltaStreamRead$
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> org.controller.kafkaStreamExample.deltaStreamRead$$anonfun$main$1

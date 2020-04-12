@@ -4,8 +4,6 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.parquet/parquet-encoding/1.10.0/ed6c12835d22ef15f2bd3de0100ed4be1dc769c9/parquet-encoding-1.10.0.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.parquet/parquet-encoding/1.10.0/f38b9f86895976c06a2b7e9b8f822269ecbc64ab/parquet-encoding-1.10.0-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

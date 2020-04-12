@@ -1,7 +1,6 @@
 <component name="libraryTable">
   <library name="Gradle: org.apache.hbase:hbase-client:1.4.12">
     <CLASSES>
-      <root url="file://$APPLICATION_HOME_DIR$/Could not resolve org.apache.hbase:hbase-client:1.4.12." />
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-client/1.4.12/4505890582f14e7396c267f4ed8a32d36703262/hbase-client-1.4.12.jar!/" />
     </CLASSES>
     <JAVADOC />
