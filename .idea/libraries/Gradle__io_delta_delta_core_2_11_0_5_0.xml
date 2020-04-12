@@ -4,6 +4,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.5.0/428433056d5812912bf1af2058348351eee0fb4e/delta-core_2.11-0.5.0.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.5.0/3ce6842e77d6c8358e8d53706237154aeaa851a7/delta-core_2.11-0.5.0-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

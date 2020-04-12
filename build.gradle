@@ -71,19 +71,29 @@ dependencies {
     compile 'org.scala-lang:scala-reflect:2.11.8'
     compile 'org.scala-lang:scala-compiler:2.11.8'
     compile 'org.scala-lang.modules:scala-parser-combinators_2.11:1.1.2'
+    compile group: 'io.delta', name: 'delta-core_2.11', version: '0.5.0'
+    compile 'com.databricks:spark-avro_2.11:4.0.0'
     compile 'org.scala-lang.modules:scala-swing_2.11:2.0.3'
+
+    compile 'org.apache.spark:spark-mllib_2.11:2.4.5'
+    compile 'org.apache.spark:spark-sql_2.11:2.4.5'
+    compile 'org.apache.spark:spark-graphx_2.11:2.4.5'
+    compile 'org.apache.spark:spark-launcher_2.11:2.4.5'
+    compile 'org.apache.spark:spark-catalyst_2.11:2.4.5'
+    compile 'org.apache.spark:spark-streaming_2.11:2.4.5'
+    compile 'org.apache.spark:spark-core_2.11:2.4.5'
+    compile 'org.apache.spark:spark-hive_2.11:2.4.5'
+
+/*
     compile 'org.apache.spark:spark-mllib_2.11:2.4.0'
     compile 'org.apache.spark:spark-sql_2.11:2.4.0'
     compile 'org.apache.spark:spark-graphx_2.11:2.4.0'
     compile 'org.apache.spark:spark-launcher_2.11:2.4.0'
     compile 'org.apache.spark:spark-catalyst_2.11:2.4.0'
     compile 'org.apache.spark:spark-streaming_2.11:2.4.0'
-    compile group: 'io.delta', name: 'delta-core_2.11', version: '0.5.0'
     compile 'org.apache.spark:spark-core_2.11:2.4.0'
     compile 'org.apache.spark:spark-hive_2.11:2.4.0'
-    compile 'com.databricks:spark-avro_2.11:4.0.0'
-
-
+ */
     compile 'org.apache.avro:avro-mapred:1.8.2'
     compile 'org.apache.avro:avro:1.8.2'
     compile 'org.apache.avro:avro-compiler:1.8.2'

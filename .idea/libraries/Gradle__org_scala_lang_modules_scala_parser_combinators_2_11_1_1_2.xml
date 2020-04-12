@@ -4,6 +4,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-parser-combinators_2.11/1.1.2/d57a6718e8085bfdc97d8af347b62ccef794120a/scala-parser-combinators_2.11-1.1.2.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-parser-combinators_2.11/1.1.2/d4916242d4689c10606c21a350b02aa7e4ce299d/scala-parser-combinators_2.11-1.1.2-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>
