@@ -16,9 +16,8 @@ object readWriteUtil {
         inputMap.put(projectConstants.fileTypeArgConstant,projectConstants.fileTypeCsvValue)
         inputMap.put(projectConstants.headerArgConstant,projectConstants.stringFalse)
         val  df = readDF(spark,inputMap)
-        val columnNames=inputMap(projectConstants.columnNameArg)
-        val columnNameArray:Array[String]=columnNames.split(inputMap(projectConstants.columnNameSepArg))
-        val columnNameSeq=columnNameArray.toSeq
+      //  val columnNames=inputMap(projectConstants.columnNameArg)
+        val columnNameSeq=inputMap(projectConstants.columnNameArg).split(inputMap(projectConstants.columnNameSepArg)).toSeq
         dfTemp=df.toDF(columnNameSeq:_*)
         }
       case value if value== projectConstants.fileTypeJsonValue => dfTemp= spark.read.json(inputMap(projectConstants.filePathArgValue))
@@ -67,7 +66,7 @@ object readWriteUtil {
 
   def readRdd(spark:SparkSession,inputMap:collection.mutable.Map[String,String])=
     {
-      spark.sparkContext.textFile(inputMap(projectConstants.fileTypeArgConstant),inputMap(projectConstants.rddPartitionArg).toInt)
+      spark.sparkContext.textFile(inputMap(projectConstants.filePathArgValue),inputMap(projectConstants.rddPartitionArg).toInt)
 
     }
 

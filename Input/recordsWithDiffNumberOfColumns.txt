@@ -1,0 +1,6 @@
+Dodge~RAM~2000~Pickup~company~Corporate
+Dodge~DART~1000~Sedan~Personal
+Dodge~Viper~2000~Race~company~Corporate
+Dodge~Charger~1000~Sedan~Personal
+Dodge~Challenger~2000~Drag~company~Corporate
+Dodge~Durango~1000~SUV~Personal
