@@ -27,5 +27,11 @@ def main (args:Array[String]):Unit ={
   val dfExploded=df.selectExpr("explode(split(_c0,'~')) as col")
   dfExploded.show(false)
 }
+  /*
+  cd /home/raptor/IdeaProjects/SparkLearning/build/libs/
+
+spark-submit --class org.controller.explodeExample --driver-cores 2 --driver-memory 1g --executor-memory 1g --num-executors 2 --executor-cores 2  SparkLearning-1.0-SNAPSHOT.jar basePath=file:///home/raptor/IdeaProjects/SparkLearning/Input/  fileName=multipleRecordSchema.txt
+
+   */
 
 }
