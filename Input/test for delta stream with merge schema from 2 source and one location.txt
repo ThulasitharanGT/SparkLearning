@@ -1,0 +1,91 @@
+cd /home/raptor/IdeaProjects/KafkaGradleTest/kafkaPipeLineScripts
+
+sh createTopic.sh SkySportsF1 10 3
+sh createTopic.sh F1TV 10 3
+
+// replicte abov in spark larning
+-----------
+sh randomMsgProducer.sh SCS 5 SkySportsF1 2019-12-20 100 Spain Q1
+sh randomMsgProducer.sh TCS 5 SkySportsF1 2019-12-20 100 Spain Q1
+sh randomMsgProducer.sh DRS 5 SkySportsF1 2019-12-20 100 Spain Q1
+sh randomMsgProducer.sh TYPE 5 SkySportsF1 2019-12-20 100 Spain Q1
+sh randomMsgProducer.sh FWING 5 SkySportsF1 2019-12-20 100 Spain Q1
+sh randomMsgProducer.sh FLOOR 5 SkySportsF1 2019-12-20 100 Spain Q1
+sh randomMsgProducer.sh RWING 5 SkySportsF1 2019-12-20 100 Spain Q1
+sh randomMsgProducer.sh SCS 5 SkySportsF1 2019-12-21 100 Spain Q2
+sh randomMsgProducer.sh TCS 5 SkySportsF1 2019-12-21 100 Spain Q2
+sh randomMsgProducer.sh DRS 5 SkySportsF1 2019-12-21 100 Spain Q2
+sh randomMsgProducer.sh TYPE 5 SkySportsF1 2019-12-21 100 Spain Q2
+sh randomMsgProducer.sh FWING 5 SkySportsF1 2019-12-21 100 Spain Q2
+sh randomMsgProducer.sh FLOOR 5 SkySportsF1 2019-12-21 100 Spain Q2
+sh randomMsgProducer.sh RWING 5 SkySportsF1 2019-12-21 100 Spain Q2
+
+
+sh randomMsgProducer.sh SCS 5 F1TV 2019-12-20~soft 100 Spain Q1
+sh randomMsgProducer.sh TCS 5 F1TV 2019-12-20~soft 100 Spain Q1
+sh randomMsgProducer.sh TYRE 5 F1TV 2019-12-20~soft 100 Spain Q1
+sh randomMsgProducer.sh FWING 5 F1TV 2019-12-20~soft 100 Spain Q1
+sh randomMsgProducer.sh RWING 5 F1TV 2019-12-20~soft 100 Spain Q1
+sh randomMsgProducer.sh FLOOR 5 F1TV 2019-12-20~soft 100 Spain Q1
+sh randomMsgProducer.sh DRS 5 F1TV 2019-12-20~soft 100 Spain Q1
+sh randomMsgProducer.sh ERS 5 F1TV 2019-12-20~soft 100 Spain Q1
+sh randomMsgProducer.sh SCS 5 F1TV 2019-12-20~medium 100 Spain Q1
+sh randomMsgProducer.sh TCS 5 F1TV 2019-12-20~medium 100 Spain Q1
+sh randomMsgProducer.sh TYRE 5 F1TV 2019-12-20~medium 100 Spain Q1
+sh randomMsgProducer.sh FWING 5 F1TV 2019-12-20~medium 100 Spain Q1
+sh randomMsgProducer.sh RWING 5 F1TV 2019-12-20~medium 100 Spain Q1
+sh randomMsgProducer.sh FLOOR 5 F1TV 2019-12-20~medium 100 Spain Q1
+sh randomMsgProducer.sh DRS 5 F1TV 2019-12-20~medium 100 Spain Q1
+sh randomMsgProducer.sh ERS 5 F1TV 2019-12-20~medium 100 Spain Q1
+
+-----------------------
+sh randomMsgProducer.sh SCS 5 SkySportsF1 2019-12-20 100 Italy Q1
+sh randomMsgProducer.sh TCS 5 SkySportsF1 2019-12-20 100 Italy Q1
+sh randomMsgProducer.sh DRS 5 SkySportsF1 2019-12-20 100 Italy Q1
+sh randomMsgProducer.sh TYPE 5 SkySportsF1 2019-12-20 100 Italy Q1
+sh randomMsgProducer.sh FWING 5 SkySportsF1 2019-12-20 100 Italy Q1
+sh randomMsgProducer.sh FLOOR 5 SkySportsF1 2019-12-20 100 Italy Q1
+sh randomMsgProducer.sh RWING 5 SkySportsF1 2019-12-20 100 Italy Q1
+sh randomMsgProducer.sh SCS 5 SkySportsF1 2019-12-21 100 Italy Q2
+sh randomMsgProducer.sh TCS 5 SkySportsF1 2019-12-21 100 Italy Q2
+sh randomMsgProducer.sh DRS 5 SkySportsF1 2019-12-21 100 Italy Q2
+sh randomMsgProducer.sh TYPE 5 SkySportsF1 2019-12-21 100 Italy Q2
+sh randomMsgProducer.sh FWING 5 SkySportsF1 2019-12-21 100 Italy Q2
+sh randomMsgProducer.sh FLOOR 5 SkySportsF1 2019-12-21 100 Italy Q2
+sh randomMsgProducer.sh RWING 5 SkySportsF1 2019-12-21 100 Italy Q2
+
+
+sh randomMsgProducer.sh SCS 5 F1TV 2019-12-20~soft 100 Italy Q1
+sh randomMsgProducer.sh TCS 5 F1TV 2019-12-20~soft 100 Italy Q1
+sh randomMsgProducer.sh TYRE 5 F1TV 2019-12-20~soft 100 Italy Q1
+sh randomMsgProducer.sh FWING 5 F1TV 2019-12-20~soft 100 Italy Q1
+sh randomMsgProducer.sh RWING 5 F1TV 2019-12-20~soft 100 Italy Q1
+sh randomMsgProducer.sh FLOOR 5 F1TV 2019-12-20~soft 100 Italy Q1
+sh randomMsgProducer.sh DRS 5 F1TV 2019-12-20~soft 100 Italy Q1
+sh randomMsgProducer.sh ERS 5 F1TV 2019-12-20~soft 100 Italy Q1
+sh randomMsgProducer.sh SCS 5 F1TV 2019-12-20~medium 100 Italy Q1
+sh randomMsgProducer.sh TCS 5 F1TV 2019-12-20~medium 100 Italy Q1
+sh randomMsgProducer.sh TYRE 5 F1TV 2019-12-20~medium 100 Italy Q1
+sh randomMsgProducer.sh FWING 5 F1TV 2019-12-20~medium 100 Italy Q1
+sh randomMsgProducer.sh RWING 5 F1TV 2019-12-20~medium 100 Italy Q1
+sh randomMsgProducer.sh FLOOR 5 F1TV 2019-12-20~medium 100 Italy Q1
+sh randomMsgProducer.sh DRS 5 F1TV 2019-12-20~medium 100 Italy Q1
+sh randomMsgProducer.sh ERS 5 F1TV 2019-12-20~medium 100 Italy Q1
+
+
+spark-submit --class org.controller.kafkaStreamExample.pullFromKafkaMergeSchemaOption --driver-memory 1g --executor-memory 1g --executor-cores 2 --driver-cores 2 --num-executors 1 --packages io.delta:delta-core_2.11:0.5.0,org.apache.kafka:kafka-clients:2.3.1,org.apache.kafka:kafka_2.11:2.3.1,org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar bootStrapServers=localhost:9092,localhost:9093,localhost:9094 inputCheckPointLocation=hdfs://localhost/user/raptor/kafka/stream/kafkaSkySportsF1ReadCheckPoint/ outputCheckPointLocation=hdfs://localhost/user/raptor/kafka/stream/kafkaSkySportsF1WriteCheckPoint/ outputPath=hdfs://localhost/user/raptor/kafka/output/kafkaDeltaF1Datalake/ kafkaKeyDeserializer=org.apache.kafka.common.serialization.StringSerializer  kafkaValueDeserializer=org.apache.kafka.common.serialization.StringSerializer startingOffset=earliest topic=SkySportsF1 outputMode=append mergeSchema=false overWriteSchema=false outputWriteFormat=delta
+
+
+
+
+spark-submit --class org.controller.kafkaStreamExample.pullFromKafkaMergeSchemaOption --driver-memory 1g --executor-memory 1g --executor-cores 2 --driver-cores 2 --num-executors 1 --packages io.delta:delta-core_2.11:0.5.0,org.apache.kafka:kafka-clients:2.3.1,org.apache.kafka:kafka_2.11:2.3.1,org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar bootStrapServers=localhost:9092,localhost:9093,localhost:9094 inputCheckPointLocation=hdfs://localhost/user/raptor/kafka/stream/kafkaF1TVReadCheckPoint/ outputCheckPointLocation=hdfs://localhost/user/raptor/kafka/stream/kafkaF1TVWriteCheckPoint/ outputPath=hdfs://localhost/user/raptor/kafka/output/kafkaDeltaF1Datalake/ kafkaKeyDeserializer=org.apache.kafka.common.serialization.StringSerializer  kafkaValueDeserializer=org.apache.kafka.common.serialization.StringSerializer startingOffset=earliest topic=F1TV outputMode=append mergeSchema=true overWriteSchema=false outputWriteFormat=delta
+
+
+//
+val deltaDF=spark.read.format("delta").load("/user/raptor/kafka/output/kafkaDeltaF1Datalake/")
+
+import io.delta.tables._
+
+val deltaTable=DeltaTable.forPath(spark,"/user/raptor/kafka/output/kafkaDeltaF1Datalake/")
+
+deltaTable.history.show

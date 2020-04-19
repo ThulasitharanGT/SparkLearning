@@ -161,6 +161,9 @@ products:
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead$$anonfun$main$1.class
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead$.class
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead.class
+   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption$$anonfun$main$1.class
+   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption$.class
+   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.class
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/streamAggregationStats$$anonfun$main$1.class
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/streamAggregationStats$.class
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/streamAggregationStats.class
@@ -382,6 +385,10 @@ binary dependencies:
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
@@ -534,6 +541,9 @@ source dependencies:
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> src/main/scala/org/util/readWriteUtil.scala
+   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> src/main/scala/org/constants/projectConstants.scala
+   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> src/main/scala/org/util/readWriteUtil.scala
@@ -730,6 +740,9 @@ class names:
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead$
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead$$anonfun$main$1
+   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> org.controller.kafkaStreamExample.pullFromKafkaMergeSchemaOption
+   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> org.controller.kafkaStreamExample.pullFromKafkaMergeSchemaOption$
+   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> org.controller.kafkaStreamExample.pullFromKafkaMergeSchemaOption$$anonfun$main$1
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> org.controller.kafkaStreamExample.streamAggregationStats
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> org.controller.kafkaStreamExample.streamAggregationStats$
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> org.controller.kafkaStreamExample.streamAggregationStats$$anonfun$main$1

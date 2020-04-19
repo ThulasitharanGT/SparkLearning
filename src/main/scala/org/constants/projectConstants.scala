@@ -11,6 +11,7 @@ object projectConstants {
   val kafkaKeyDeserializerArg="key.deserializer"
   val deltaReplaceWhereClause="replaceWhere"
   val deltaMergeSchemaClause="mergeSchema"
+  val deltaOverWriteSchemaClause="overwriteSchema"
   val checkPointLocationArg="checkpointLocation"
   val pathArg="path"
   val startingOffsetsArg="startingOffsets"
