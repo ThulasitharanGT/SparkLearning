@@ -1,0 +1,12 @@
+val carInputDF=spark.read.option("header","true").option("delimiter","|").option("inferSchema","true").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/LeadLagInput.txt")
+
+
+carInputDF.withColumn("leadCar",lead("numberOfCars",1,0).over(Window.partitionBy("make").orderBy("model"))).show // pushes current to above row. lead("numberOfCars",1,0) 1 is number of rows to be shifted. ) is the default value id no value is specified ending row or row's  will be null
+
+
+carInputDF.withColumn("lagCar",lag("numberOfCars",1,0).over(Window.partitionBy("make").orderBy("model"))).show // pushes current to below row. lag("numberOfCars",1,0) 1 is number of rows to be shifted. ) is the default value id no value is specified starting row or row's  will be null
+
+carInputDF.withColumn("leadCar",cume_dist.over(Window.partitionBy("make").orderBy("numberOfCars"))).show // for a particular make what percentage of numberOfCars is present compared to all the number of car values (ie) like percent rank 0 to 1 value will be returned. 
+carInputDF.withColumn("leadCar",cume_dist.over(Window.orderBy("make"))).show // 2 make's so .5 (ie)50 percent one make and 50 percent another make
+carInputDF.withColumn("leadCar",cume_dist.over(Window.orderBy("model"))).show // 2 model's so .5 (ie)50 percent one make and 50 percent another make
+carInputDF.withColumn("leadCar",cume_dist.over(Window.orderBy("variant"))).show // many variant so 0 to 1 value's will be high

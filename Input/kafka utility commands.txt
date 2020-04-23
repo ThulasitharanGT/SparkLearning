@@ -1,0 +1,16 @@
+zookeeperIp=localhost:3039 isSecure=false sessionTimeOutMilliSecs=200000 connectionTimeOutMilliSecs=15000 maxInFlightRequests=20  metricGroup=myGroup metricType=myType topicName=CarSensor   topicPartitions=10 topicReplicationFactor=3
+
+spark-submit --class org.util.kafka.createTopic --num-executors 1 --executor-memory 1g --driver-memory 1g --driver-cores 1 --executor-cores 2 --deploy-mode client --master yarn --packages org.apache.kafka:kafka-clients:2.3.1,org.apache.kafka:kafka_2.11:2.3.1 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar zookeeperIp=localhost:3039 isSecure=false sessionTimeOutMilliSecs=200000 connectionTimeOutMilliSecs=15000 maxInFlightRequests=20  metricGroup=myGroup metricType=myType topicName=temp1 topicPartitions=11 topicReplicationFactor=3
+
+spark-submit --class org.util.kafka.deleteTopic --num-executors 1 --executor-memory 1g --driver-memory 1g --driver-cores 1 --executor-cores 2 --deploy-mode client --master yarn --packages org.apache.kafka:kafka-clients:2.3.1,org.apache.kafka:kafka_2.11:2.3.1 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar zookeeperIp=localhost:3039 isSecure=false sessionTimeOutMilliSecs=200000 connectionTimeOutMilliSecs=15000 maxInFlightRequests=20  metricGroup=myGroup metricType=myType topicName=temp1 sleepMsForKafkaToDeleteTopic=60000
+
+ // for zookeeper connection
+    /* val topicName="CarSensor"
+     val zookeeperIp="localhost:3039"
+     val isSecure=false
+     val sessionTimeOutMilliSecs=200000
+     val connectionTimeOutMilliSecs=15000
+     val maxInFlightRequests=20
+     lazy val time=Time.SYSTEM
+     val metricGroup="myGroup"
+     val metricType="myType"*/

@@ -1,0 +1,78 @@
+
+
+
+
+RUN mv 'KafkaGradleTest-1.0-SNAPSHOT-all.jar?raw=true' KafkaGradleTest-1.0-SNAPSHOT-all.jar
+
+KafkaGradleTest-1.0-SNAPSHOT-all.jar
+
+
+mkdir dockerTemp
+mkdir -p /dockerTemp/input
+cd /dockerTemp/input
+wget "https://introcs.cs.princeton.edu/java/data/sdss6949386.csv"
+wget "https://introcs.cs.princeton.edu/java/data/sdss1738478.csv"
+cd ..
+
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt-get install -y openjdk-8-jdk
+RUN apt-get update
+RUN apt-get install git -y
+RUN apt-get update
+RUN apt-get install wget -y
+RUN wget "https://downloads.apache.org/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz"
+RUN tar -xzvf spark-2.4.5-bin-hadoop2.7.tgz
+RUN rm spark-2.4.5-bin-hadoop2.7.tgz
+ENV SPARK_HOME /spark-2.4.5-bin-hadoop2.7/
+ENV PATH $PATH:$SPARK_HOME/bin
+ENV RAWVALUE ?raw=true
+RUN cp $SPARK_HOME/conf/log4j.properties.template $SPARK_HOME/conf/log4j.properties
+ARG GIT_LINK
+ARG JAR_NAME 
+ARG FILE_NAME
+ARG CLASS_NAME
+ARG NUM_RECORDS
+ARG NUM_EXECUTORS
+ARG EXECUTOR_CORES
+ARG EXECUTOR_MEMORY
+ARG DRIVER_CORES
+ARG DRIVER_MEMORY
+ARG DEPLOY_MODE
+ENV GITLINK $GIT_LINK
+ENV JARNAME $JAR_NAME 
+ENV FILENAME $FILE_NAME
+ENV CLASSNAME $CLASS_NAME 
+ENV NUMRECORDS $NUM_RECORDS 
+ENV NUMEXECUTORS $NUM_EXECUTORS 
+ENV EXECUTORCORES $EXECUTOR_CORES 
+ENV EXECUTORMEMORY $EXECUTOR_MEMORY 
+ENV DRIVERCORES $DRIVER_CORES 
+ENV DRIVERMEMORY $DRIVER_MEMORY 
+ENV DEPLOYMODE $DEPLOY_MODE 
+RUN wget -O $JAR_NAME "$GITLINK$JARNAME$RAWVALUE"
+CMD ls .
+CMD spark-submit --class  $CLASSNAME --num-executors $NUMEXECUTORS --driver-memory $DRIVERMEMORY --driver-cores $DRIVERCORES --executor-cores $EXECUTORCORES --executor-memory $EXECUTORMEMORY --deploy-mode $DEPLOYMODE $JARNAME /input/$FILENAME $NUMRECORDS
+
+
+docker build --build-arg JAR_NAME=KafkaGradleTest-1.0-SNAPSHOT-all.jar --build-arg FILE_NAME=sdss6949386.csv  --build-arg GIT_LINK=https://github.com/ThulasitharanGT/KafkaGradleTest/blob/master/build/libs/ --build-arg CLASS_NAME=com.dockerTemp.readingCsvFileForDocker  --build-arg NUM_RECORDS=10 --build-arg NUM_EXECUTORS=2 --build-arg EXECUTOR_CORES=2 --build-arg EXECUTOR_MEMORY=2g --build-arg DRIVER_CORES=2 --build-arg DRIVER_MEMORY=1g --build-arg DEPLOY_MODE=client .     //passig arg's while bilding
+
+//cd24a123194e
+
+docker build --build-arg JAR_NAME=KafkaGradleTest-1.0-SNAPSHOT-all.jar --build-arg FILE_NAME=sdss1738478.csv  --build-arg GIT_LINK=https://github.com/ThulasitharanGT/KafkaGradleTest/blob/master/build/libs/ --build-arg CLASS_NAME=com.dockerTemp.readingCsvFileForDocker  --build-arg NUM_RECORDS=10 --build-arg NUM_EXECUTORS=2 --build-arg EXECUTOR_CORES=2 --build-arg EXECUTOR_MEMORY=2g --build-arg DRIVER_CORES=2 --build-arg DRIVER_MEMORY=1g --build-arg DEPLOY_MODE=client . 
+
+//868fcff832ff
+
+docker run -t -i -v $(pwd)/input:/input cd24a123194e 
+docker run -t -i -v $(pwd)/input:/input 868fcff832ff
+
+same docker file 2 build with 2 argument.
+
+
+// two parameters alone
+
+docker build --build-arg JAR_NAME=KafkaGradleTest-1.0-SNAPSHOT-all.jar --build-arg FILE_NAME=sdss6949386.csv
+
+docker run -t -i -v $(pwd)/input:/input -e "JAR_NAME=KafkaGradleTest-1.0-SNAPSHOT-all.jar" -e "FILE_NAME=sdss6949386.csv" 72713d2c5c4d  //env arg is optional, it's set while building
+
+docker run -t -i -v $(pwd)/input:/input 72713d2c5c4d  // this is enough

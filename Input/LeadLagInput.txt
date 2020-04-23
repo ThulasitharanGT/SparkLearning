@@ -1,0 +1,17 @@
+make|model|variant|month|numberOfCars
+Suzuki|Baleno|Delta 1.2|Janaury|200
+Suzuki|Baleno|Zeta 1.2|Janaury|400
+Suzuki|Baleno|Alpha 1.2|Janaury|600
+Suzuki|Baleno|Sigma 1.2|Janaury|100
+Suzuki|Baleno|Delta 1.2|February|100
+Suzuki|Baleno|Zeta 1.2|February|400
+Suzuki|Baleno|Alpha 1.2|February|800
+Suzuki|Baleno|Sigma 1.2|February|100
+Volswogan|Polo|Trendline|February|400
+Volswogan|Polo|Comfortline|February|200
+Volswogan|Polo|Highline|February|840
+Volswogan|Polo|GT|February|150
+Volswogan|Polo|Trendline|Janaury|350
+Volswogan|Polo|Comfortline|Janaury|100
+Volswogan|Polo|Highline|Janaury|240
+Volswogan|Polo|GT|Janaury|350
