@@ -1,0 +1,5 @@
+vehicleId|make|model|variant|year|valuePurchased
+VVW003|volswogen|Polo|Comfortline|2011|250000
+VF003|Ford|Focus|Durajet|2015|240000
+VMS001|Maruthi Suzuki|Baleno|Delta 1.2|2015|220000
+VH003|Honda|Jazz|S|2014|350000

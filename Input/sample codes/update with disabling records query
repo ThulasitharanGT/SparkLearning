@@ -1,0 +1,15 @@
+spark-shell --packages io.delta:delta-core_2.11:0.5.0
+
+
+val baseCarsDF=spark.read.option("header","true").option("inferSchema","true").option("delimiter","|").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/baseCars.txt").withColumn("expired",lit(null).cast("string"))
+val batchCarsDF=spark.read.option("header","true").option("inferSchema","true").option("delimiter","|").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/batchCars.txt")
+
+baseCarsDF.write.mode("overwrite").format("delta").partitionBy("year","make").save("/user/raptor/data/carsDeltalake/")
+
+baseCarsDF.write.mode("overwrite").partitionBy("year","make").save("/user/raptor/data/carsDeltalake/")
+
+val baseCarsDeltaDF=spark.read.format("delta").load("/user/raptor/data/carsDeltalake/")
+
+batchCarsDF.withColumn("mergeKey",lit(null)).union(batchCarsDF.as("batch").withColumn("mergeKey",col("vehicleId")).join(baseCarsDeltaDF.as("base"),"vehicleId").where("base.expired is null").selectExpr("batch.*","mergeKey")).show
+
+val unionedBatchDF= batchCarsDF.withColumn("mergeKey",lit(null)).union(batchCarsDF.withColumn("mergeKey",col("vehicleId")))

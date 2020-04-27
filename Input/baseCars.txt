@@ -1,0 +1,9 @@
+vehicleId|make|model|variant|year|valuePurchased
+VVW001|volswogen|Polo|Trendline|2011|250000
+VF001|Ford|Focus|Durajet|2013|200000
+VMS001|Maruthi Suzuki|Baleno|Delta 1.2|2015|200000
+VH001|Honda|Jazz|SV|2014|350000
+VVW002|volswogen|Polo|Highline|2013|230000
+VF002|Ford|Focus|Quadrajet|2011|150000
+VMS002|Maruthi Suzuki|Baleno|Zeta 1.2|2017|300000
+VH002|Honda|Jazz|VX|2015|250000
