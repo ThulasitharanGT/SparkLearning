@@ -5,10 +5,10 @@ package org.controller.splittingTime
 //import java.sql.Timestamp
 import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
-
+import java.sql.Timestamp
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.{ListBuffer,ArrayBuffer}
 //import java.util.Date
 import org.constants.projectConstants
 import org.util.{SparkOpener,readWriteUtil}
@@ -52,13 +52,34 @@ val sc =spark.sparkContext
       ,max("M14").as("M14")
       ,max("M15").as("M15")).withColumn("totalMins",col("M1")+col("M2")+col("M3")+col("M4")+col("M5")+col("M6")+col("M7")+col("M8")+col("M9")+col("M10")+col("M11")+col("M12")+col("M13")+col("M14")+col("M15")).orderBy("StateID","VehicleID","Model","StartQhr")
     finalDf.show
+
+    val tripRecordCaseClassSplitted =TripRecord.flatMap(SplittingCaseClass(_)).toDF
+    val finalDfCaseClass=tripRecordCaseClassSplitted.drop("totalMinutes").groupBy("StateID","VehicleID","Model","StartQhr").agg(
+      max("M1").as("M1")
+      ,max("M2").as("M2")
+      ,max("M3").as("M3")
+      ,max("M4").as("M4")
+      ,max("M5").as("M5")
+      ,max("M6").as("M6")
+      ,max("M7").as("M7")
+      ,max("M8").as("M8")
+      ,max("M9").as("M9")
+      ,max("M10").as("M10")
+      ,max("M11").as("M11")
+      ,max("M12").as("M12")
+      ,max("M13").as("M13")
+      ,max("M14").as("M14")
+      ,max("M15").as("M15")).withColumn("totalMins",col("M1")+col("M2")+col("M3")+col("M4")+col("M5")+col("M6")+col("M7")+col("M8")+col("M9")+col("M10")+col("M11")+col("M12")+col("M13")+col("M14")+col("M15")).orderBy("StateID","VehicleID","Model","StartQhr")
+    finalDfCaseClass.show
+
+
   }
 
-
+// uses listBuffer and returns list of string
   def Splitting(TripRecord:Row) =
   {
     val dateFormat="YYYY-MM-DD HH:mm:ss"
-    var OutputList= new ListBuffer[List[String]]
+    val OutputList= new ListBuffer[List[String]]
     val startTimeSource=TripRecord.getString(3)
     val endTimeSource=TripRecord.getString(4)
     val startTime=DateTime.parse(startTimeSource,DateTimeFormat.forPattern(dateFormat))
@@ -101,6 +122,55 @@ val sc =spark.sparkContext
       newStartTime=newEndTime
     }
     OutputList.toList
+  }
+
+//uses arrayBuffer[Case classes] -- case class for schema
+  def SplittingCaseClass(TripRecord:Row) =
+  {
+    val dateFormat="YYYY-MM-DD HH:mm:ss"
+    val outputArrayBuffer= new ArrayBuffer[TripRecordCaseClass]
+    val startTimeSource=TripRecord.getString(3)
+    val endTimeSource=TripRecord.getString(4)
+    val startTime=DateTime.parse(startTimeSource,DateTimeFormat.forPattern(dateFormat))
+    val endTime=DateTime.parse(endTimeSource,DateTimeFormat.forPattern(dateFormat))
+    var newStartTime=startTime
+    var startMinute=0
+    var endMinute=15
+    val minuteArray=new Array[Int](15)
+    var splitNeeded=true
+    while(splitNeeded)
+    {
+      var totalMinute=0
+      startMinute=newStartTime.getMinuteOfDay%15
+      var newEndTime=newStartTime.plusMinutes(15-startMinute)
+      newStartTime.getMinuteOfDay%15 match
+      {
+        case 0 => newStartTime=newStartTime
+        case _ => newStartTime=newStartTime.minusMinutes(startMinute)
+      }
+      endMinute=newEndTime.getMinuteOfDay%15
+      /*if(newEndTime.compareTo(endTime) > 0)
+       {
+         splitNeeded=false
+         newEndTime=endTime
+         endMinute=endTime.getMinuteOfDay%15
+       }*/
+      newEndTime.compareTo(endTime) match
+      {
+        case value if value>0 => splitNeeded=false;newEndTime=endTime;endMinute=endTime.getMinuteOfDay%15
+        case _ =>   splitNeeded=true
+      }
+      if (splitNeeded || (endMinute ==0))
+        endMinute=15
+      for (i <- 0 to 14 )
+        i match {
+          case value if value >= startMinute && value < endMinute => minuteArray(i)=1;totalMinute+=1
+          case _ =>minuteArray(i)=0
+        }
+      outputArrayBuffer+=TripRecordCaseClass(TripRecord.getString(0),TripRecord.getString(1),TripRecord.getString(2),new Timestamp(newStartTime.getMillis),minuteArray(0).toInt,minuteArray(1).toInt,minuteArray(2).toInt,minuteArray(3).toInt,minuteArray(4).toInt,minuteArray(5).toInt,minuteArray(6).toInt,minuteArray(7).toInt,minuteArray(8).toInt,minuteArray(9).toInt,minuteArray(10).toInt,minuteArray(11).toInt,minuteArray(12).toInt,minuteArray(13).toInt,minuteArray(14).toInt,totalMinute.toInt)
+      newStartTime=newEndTime
+    }
+    outputArrayBuffer
   }
 
 /*  val oneMinutesInMilliSeonds=60000

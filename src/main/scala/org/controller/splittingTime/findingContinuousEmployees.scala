@@ -76,7 +76,7 @@ val spark=SparkSessionLoc("emploees Prog")
           val prevEndDateYear=previousEndDate.getYear()
           val prevEndDateDay=previousEndDate.dayOfYear().getAsText()
           prevEndDateYear match {
-            case value if value == prevEndDateExpectedYear  => prevEndDateExpectedDay match {case value if value == prevEndDateDay =>  finalResultLB+=currentEmpArray(i) ; case _ => println("Not continuous date for Emp ID ="+empIdCurrent+" between prevEndDateDay="+prevEndDateDay+" and prevEndDateExpectedDay="+prevEndDateExpectedDay);finalResultLBExclusion+=currentEmpArray(i)  }
+            case value if value == prevEndDateExpectedYear  => prevEndDateExpectedDay match {case value if value == prevEndDateDay =>  finalResultLB+=currentEmpArray(i); case _ => println("Not continuous date for Emp ID ="+empIdCurrent+" between prevEndDateDay="+prevEndDateDay+" and prevEndDateExpectedDay="+prevEndDateExpectedDay);finalResultLBExclusion+=currentEmpArray(i)  }
             case _ => println("Not continuous year for Emp ID ="+empIdCurrent+" between prevEndDateDay="+prevEndDateDay+" and prevEndDateExpectedDay="+prevEndDateExpectedDay);finalResultLBExclusion+=currentEmpArray(i)
           }
         }

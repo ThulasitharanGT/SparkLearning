@@ -201,8 +201,12 @@ products:
    src/main/scala/org/controller/splittingTime/SplitFunction.scala -> build/classes/scala/main/org/controller/splittingTime/SplitFunction$$anonfun$Splitting$1.class
    src/main/scala/org/controller/splittingTime/SplitFunction.scala -> build/classes/scala/main/org/controller/splittingTime/SplitFunction.class
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$$anonfun$1.class
+   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$$anonfun$2.class
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$$anonfun$Splitting$1.class
+   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$$anonfun$SplittingCaseClass$1.class
+   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$$typecreator11$1.class
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$$typecreator3$1.class
+   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$$typecreator4$1.class
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$.class
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain.class
    src/main/scala/org/controller/splittingTime/TripRecordCaseClass.scala -> build/classes/scala/main/org/controller/splittingTime/TripRecordCaseClass$.class
@@ -238,6 +242,9 @@ products:
    src/main/scala/org/controller/wordCountDFExample.scala -> build/classes/scala/main/org/controller/wordCountDFExample.class
    src/main/scala/org/util/SparkOpener.scala -> build/classes/scala/main/org/util/SparkOpener$class.class
    src/main/scala/org/util/SparkOpener.scala -> build/classes/scala/main/org/util/SparkOpener.class
+   src/main/scala/org/util/kafka/checkIfTopicExists.scala -> build/classes/scala/main/org/util/kafka/checkIfTopicExists$$anonfun$main$1.class
+   src/main/scala/org/util/kafka/checkIfTopicExists.scala -> build/classes/scala/main/org/util/kafka/checkIfTopicExists$.class
+   src/main/scala/org/util/kafka/checkIfTopicExists.scala -> build/classes/scala/main/org/util/kafka/checkIfTopicExists.class
    src/main/scala/org/util/kafka/createTopic.scala -> build/classes/scala/main/org/util/kafka/createTopic$$anonfun$main$1.class
    src/main/scala/org/util/kafka/createTopic.scala -> build/classes/scala/main/org/util/kafka/createTopic$$anonfun$main$2.class
    src/main/scala/org/util/kafka/createTopic.scala -> build/classes/scala/main/org/util/kafka/createTopic$.class
@@ -479,6 +486,10 @@ binary dependencies:
    src/main/scala/org/util/SparkOpener.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/util/SparkOpener.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
    src/main/scala/org/util/SparkOpener.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/util/kafka/checkIfTopicExists.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/2.3.1/21664b0318d201ec412f9b02357b07ba94009c87/kafka-clients-2.3.1.jar
+   src/main/scala/org/util/kafka/checkIfTopicExists.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka_2.11/2.3.1/17255386d7e983ae82a0e82a0e5be0058e834842/kafka_2.11-2.3.1.jar
+   src/main/scala/org/util/kafka/checkIfTopicExists.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/util/kafka/checkIfTopicExists.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/util/kafka/createTopic.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/2.3.1/21664b0318d201ec412f9b02357b07ba94009c87/kafka-clients-2.3.1.jar
    src/main/scala/org/util/kafka/createTopic.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka_2.11/2.3.1/17255386d7e983ae82a0e82a0e5be0058e834842/kafka_2.11-2.3.1.jar
    src/main/scala/org/util/kafka/createTopic.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
@@ -581,6 +592,7 @@ source dependencies:
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> src/main/scala/org/constants/projectConstants.scala
+   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> src/main/scala/org/controller/splittingTime/TripRecordCaseClass.scala
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> src/main/scala/org/constants/projectConstants.scala
@@ -596,6 +608,7 @@ source dependencies:
    src/main/scala/org/controller/windowFunctionEg.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/windowFunctionEg.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/wordCountDFExample.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/util/kafka/checkIfTopicExists.scala -> src/main/scala/org/util/kafka/kafkaUtilMethods.scala
    src/main/scala/org/util/kafka/createTopic.scala -> src/main/scala/org/util/kafka/kafkaUtilMethods.scala
    src/main/scala/org/util/kafka/deleteTopic.scala -> src/main/scala/org/util/kafka/kafkaUtilMethods.scala
    src/main/scala/org/util/readWriteUtil.scala -> src/main/scala/org/constants/projectConstants.scala
@@ -805,8 +818,12 @@ class names:
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$$anonfun$1
+   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$$anonfun$2
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$$anonfun$Splitting$1
+   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$$anonfun$SplittingCaseClass$1
+   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$$typecreator11$1
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$$typecreator3$1
+   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$$typecreator4$1
    src/main/scala/org/controller/splittingTime/TripRecordCaseClass.scala -> org.controller.splittingTime.TripRecordCaseClass
    src/main/scala/org/controller/splittingTime/TripRecordCaseClass.scala -> org.controller.splittingTime.TripRecordCaseClass$
    src/main/scala/org/controller/splittingTime/empCaseClass.scala -> org.controller.splittingTime.empCaseClass
@@ -840,6 +857,9 @@ class names:
    src/main/scala/org/controller/wordCountDFExample.scala -> org.controller.wordCountDFExample$
    src/main/scala/org/util/SparkOpener.scala -> org.util.SparkOpener
    src/main/scala/org/util/SparkOpener.scala -> org.util.SparkOpener$class
+   src/main/scala/org/util/kafka/checkIfTopicExists.scala -> org.util.kafka.checkIfTopicExists
+   src/main/scala/org/util/kafka/checkIfTopicExists.scala -> org.util.kafka.checkIfTopicExists$
+   src/main/scala/org/util/kafka/checkIfTopicExists.scala -> org.util.kafka.checkIfTopicExists$$anonfun$main$1
    src/main/scala/org/util/kafka/createTopic.scala -> org.util.kafka.createTopic
    src/main/scala/org/util/kafka/createTopic.scala -> org.util.kafka.createTopic$
    src/main/scala/org/util/kafka/createTopic.scala -> org.util.kafka.createTopic$$anonfun$main$1

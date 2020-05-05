@@ -10,6 +10,39 @@ baseCarsDF.write.mode("overwrite").partitionBy("year","make").save("/user/raptor
 
 val baseCarsDeltaDF=spark.read.format("delta").load("/user/raptor/data/carsDeltalake/")
 
-batchCarsDF.withColumn("mergeKey",lit(null)).union(batchCarsDF.as("batch").withColumn("mergeKey",col("vehicleId")).join(baseCarsDeltaDF.as("base"),"vehicleId").where("base.expired is null").selectExpr("batch.*","mergeKey")).show
+val unionedDFwithMergeKey=batchCarsDF.withColumn("mergeKey",lit(null)).withColumn("expired", lit(null).cast("string")).union(batchCarsDF.as("batch").withColumn("mergeKey",col("vehicleId")).join(baseCarsDeltaDF.as("base"),Seq("vehicleId")).where("base.expired is null").selectExpr("batch.*","mergeKey").withColumn("expired", lit(dateTimeFormatter.format(localDateTimeNow))))
 
-val unionedBatchDF= batchCarsDF.withColumn("mergeKey",lit(null)).union(batchCarsDF.withColumn("mergeKey",col("vehicleId")))
+//batchCarsDF.withColumn("mergeKey",lit(null)).union(batchCarsDF.as("batch").withColumn("mergeKey",col("vehicleId")).join(baseCarsDeltaDF.as("base"),"vehicleId").where("base.expired is null").selectExpr("batch.*","mergeKey")).show
+
+
+import io.delta.tables._
+
+import java.time.format.DateTimeFormatter  
+import java.time.LocalDateTime
+import org.apache.spark.sql.functions._
+
+val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+lazy val localDateTimeNow = LocalDateTime.now
+println(dateTimeFormatter.format(localDateTimeNow))
+   
+DeltaTable.forPath(spark,"/user/raptor/data/carsDeltalake/").as("base").merge(unionedDFwithMergeKey.as("batch"),"base.vehicleId = batch.mergeKey and base.expired is null ").whenMatched.updateExpr(Map ("expired" -> "batch.expired" )).whenNotMatched.insertExpr(Map("vehicleId" -> "batch.vehicleId",
+"make" -> "batch.make",
+"model" -> "batch.model",
+"variant" -> "batch.variant",
+"year" -> "batch.year",
+"valuePurchased" -> "batch.valuePurchased",
+"expired" -> "batch.expired")).execute
+
+// we cant do a lit() in updateExpr or insertExpr in delta merge
+/*
+ spark.read.format("delta").option("versionAsOf","1").load("/user/raptor/data/carsDeltalake/").count
+res29: Long = 12                                                                
+
+scala> spark.read.format("delta").option("versionAsOf","0").load("/user/raptor/data/carsDeltalake/").count
+res30: Long = 8                                                                 
+
+scala> batchCarsDF.count
+res31: Long = 4
+
+*/
+
