@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.scalatest:scalatest-funspec_2.11:3.3.0-SNAP2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalatest/scalatest-funspec_2.11/3.3.0-SNAP2/65bd6130764483605c83e2458977f98437a7a204/scalatest-funspec_2.11-3.3.0-SNAP2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalatest/scalatest-funspec_2.11/3.3.0-SNAP2/3cc59443737666fa1505881ad9755bc79351d8c/scalatest-funspec_2.11-3.3.0-SNAP2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

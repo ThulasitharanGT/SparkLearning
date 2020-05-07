@@ -1,0 +1,1 @@
+spark.read.option("inferSchema","true").option("header","true").option("delimiter","|").csv("file:////home/raptor/IdeaProjects/SparkLearning/Input/availCarWithNull.txt").na.fill("its a null)

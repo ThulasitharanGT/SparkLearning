@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.scalatest:scalatest-featurespec_2.11:3.3.0-SNAP2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalatest/scalatest-featurespec_2.11/3.3.0-SNAP2/6bef53cffcb264cd3be66027776a5a32dc796c88/scalatest-featurespec_2.11-3.3.0-SNAP2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalatest/scalatest-featurespec_2.11/3.3.0-SNAP2/dcafd49cbb60112a2c9c6934692b91bfd7bd16de/scalatest-featurespec_2.11-3.3.0-SNAP2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

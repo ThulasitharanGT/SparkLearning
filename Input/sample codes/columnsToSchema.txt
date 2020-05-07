@@ -1,0 +1,48 @@
+import org.apache.spark.sql.types.DataTypes._
+
+import org.apache.spark.sql.types.StructType
+
+import org.apache.spark.sql.types._
+
+import collection.mutable.ArrayBuffer
+
+val tempDF=spark.read.load("file:///home/raptor/IdeaProjects/SparkLearning/Input/tablePartitioned")
+val tempDtypes=tempDF.dtypes.map(x=> x.toString.substring(1,x.toString.size-1))
+val arrayBufferStructField: ArrayBuffer[StructField]=ArrayBuffer[StructField]()
+
+for (dtype <- tempDtypes)
+arrayBufferStructField+=StructField(dtype.split(",")(0),typeConverter(dtype.split(",")(1)) ,false)
+
+var structTypeTemp=new StructType(arrayBufferStructField.toArray)
+
+
+
+
+//StructField(res21(0).split(",")(0),typeConverter(res21(0).split(",")(1)) ,false)
+
+
+
+def typeConverter(typeInString:String):org.apache.spark.sql.types.DataType={
+typeInString match {
+case value if value.equals("ByteType") => org.apache.spark.sql.types.ByteType
+case value if value.equals("ShortType") => org.apache.spark.sql.types.ShortType
+case value if value.equals("IntegerType") => org.apache.spark.sql.types.IntegerType
+case value if value.equals("LongType") => org.apache.spark.sql.types.LongType
+case value if value.equals("FloatType") => org.apache.spark.sql.types.FloatType
+case value if value.equals("DoubleType") => org.apache.spark.sql.types.DoubleType
+//case value if value.equals("DecimalType") => org.apache.spark.sql.types.DecimalType
+case value if value.equals("StringType") => org.apache.spark.sql.types.StringType
+case value if value.equals("BinaryType") => org.apache.spark.sql.types.BinaryType
+case value if value.equals("BooleanType") => org.apache.spark.sql.types.BooleanType
+case value if value.equals("TimestampType") => org.apache.spark.sql.types.TimestampType
+case value if value.equals("DateType") => org.apache.spark.sql.types.DateType
+//case value if value.equals("ArrayType") => org.apache.spark.sql.types.ArrayType
+//case value if value.equals("MapType") => org.apache.spark.sql.types.MapType
+//case value if value.equals("StructType") => org.apache.spark.sql.types.StructType
+//case value if value.equals("StructField") => org.apache.spark.sql.types.StructField
+case _ => org.apache.spark.sql.types.StringType
+}
+}
+
+import org.apache.spark.sql.types.DataTypes._
+val schemaWithMap = new StructType( Array(StructField("map", createMapType(LongType, StringType), false)))

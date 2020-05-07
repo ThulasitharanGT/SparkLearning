@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.scalatest:scalatest-compatible:3.3.0-SNAP2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalatest/scalatest-compatible/3.3.0-SNAP2/b5acc62c0c294aee67e99737bd507686d202ec89/scalatest-compatible-3.3.0-SNAP2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalatest/scalatest-compatible/3.3.0-SNAP2/f7b2819d80c9e7f9841713bd1b0c5b49d4a4a81f/scalatest-compatible-3.3.0-SNAP2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

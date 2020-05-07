@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.scalatest:scalatest-freespec_2.11:3.3.0-SNAP2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalatest/scalatest-freespec_2.11/3.3.0-SNAP2/104bdec0a7578f93e76dca2f156c53de4ad00bed/scalatest-freespec_2.11-3.3.0-SNAP2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalatest/scalatest-freespec_2.11/3.3.0-SNAP2/93d80a3bc6002965a61f118c10ee1223a493085e/scalatest-freespec_2.11-3.3.0-SNAP2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

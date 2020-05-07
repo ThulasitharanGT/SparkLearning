@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.scalatest:scalatest-shouldmatchers_2.11:3.3.0-SNAP2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalatest/scalatest-shouldmatchers_2.11/3.3.0-SNAP2/f01a241d77aa92fa6af586efe74e17eb7ebaabbf/scalatest-shouldmatchers_2.11-3.3.0-SNAP2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scalatest/scalatest-shouldmatchers_2.11/3.3.0-SNAP2/b0cbb2a695a5b8cd5a4a36b6ca214904822a5471/scalatest-shouldmatchers_2.11-3.3.0-SNAP2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
