@@ -1,0 +1,45 @@
+docker run -t -i ubuntu:latest
+apt-get update 
+apt-get install -y vim
+apt-get update 
+
+apt-get install python -y
+apt-get install python-pip -y
+apt-get update 
+ln -s /usr/bin/python python 
+python -m pip install awscli --upgrade --user
+
+//RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata
+
+apt-get update 
+export TZ=US/Mountain
+export DEBIAN_FRONTEND=noninteractive
+apt-get install -y openjdk-8-jdk 
+apt-get update 
+apt-get install git -y
+apt-get update
+apt-get install wget -y
+apt-get update 
+mkdir /usr/local/bin/temp
+cd /usr/local/bin/temp
+#wget "http://us.mirrors.quenda.co/apache/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz"
+wget "http://apache.osuosl.org/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz"
+tar -xzvf spark-2.4.5-bin-hadoop2.7.tgz
+rm spark-2.4.5-bin-hadoop2.7.tgz
+
+export PATH=~/.local/bin:$PATH
+export SPARK_HOME=/usr/local/bin/temp/spark-2.4.5-bin-hadoop2.7
+PATH=$PATH:$SPARK_HOME/bin
+
+tzdata
+----------------
+
+apt-get update 
+export DEBIAN_FRONTEND=noninteractive
+apt-get install -y -s openjdk-8-jdk 
+rm -rf /var/lib/apt/lists/*
+apt-get update 
+apt-get install -y python3-pip python3-dev 
+cd /usr/local/bin 
+ln -s /usr/bin/python3 /usr/bin/python 
+pip3 install --upgrade pip 

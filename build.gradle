@@ -157,7 +157,9 @@ dependencies {
     compile group: 'org.apache.hadoop', name: 'hadoop-auth', version: '2.7.3'
     compile group: 'org.apache.hadoop', name: 'hadoop-yarn-common', version: '2.7.3'
 
-
+    compile "org.twitter4j:twitter4j-core:4.0.4"
+    compile "org.twitter4j:twitter4j-stream:4.0.4"
+    compile "org.apache.bahir:spark-streaming-twitter_2.11:2.4.0"
 
 
 }

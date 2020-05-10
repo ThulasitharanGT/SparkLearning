@@ -44,11 +44,13 @@
     <orderEntry type="library" name="Gradle: org.json4s:json4s-core_2.11:3.5.3" level="project" />
     <orderEntry type="library" name="Gradle: org.scala-lang.modules:scala-xml_2.11:1.2.0" level="project" />
     <orderEntry type="library" name="Gradle: com.twitter:chill_2.11:0.9.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.bahir:spark-streaming-twitter_2.11:2.4.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-tags_2.12:2.4.0" level="project" />
     <orderEntry type="library" name="Gradle: com.chuusai:shapeless_2.11:2.3.2" level="project" />
     <orderEntry type="library" name="Gradle: org.typelevel:macro-compat_2.11:1.1.1" level="project" />
     <orderEntry type="library" name="Gradle: org.json4s:json4s-ast_2.11:3.5.3" level="project" />
     <orderEntry type="library" name="Gradle: org.json4s:json4s-scalap_2.11:3.5.3" level="project" />
-    <orderEntry type="library" name="Gradle: org.scala-lang:scala-library:2.11.12" level="project" />
+    <orderEntry type="library" name="Gradle: org.scala-lang:scala-library:2.12.7" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.avro:avro-mapred:1.8.2" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.avro:avro-mapred:hadoop2:1.8.2" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.avro:avro-compiler:1.8.2" level="project" />
@@ -88,6 +90,8 @@
     <orderEntry type="library" name="Gradle: org.apache.hadoop:hadoop-yarn-api:2.7.4" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.hadoop:hadoop-annotations:2.7.4" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.hadoop:hadoop-auth:2.7.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.twitter4j:twitter4j-stream:4.0.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.twitter4j:twitter4j-core:4.0.6" level="project" />
     <orderEntry type="library" name="Gradle: com.github.luben:zstd-jni:1.4.0-1" level="project" />
     <orderEntry type="library" name="Gradle: org.lz4:lz4-java:1.6.0" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.parquet:parquet-hadoop:1.10.1" level="project" />

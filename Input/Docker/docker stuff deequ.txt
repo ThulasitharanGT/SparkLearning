@@ -1,0 +1,39 @@
+import org.apache.spark.sql.SparkSession
+import com.amazon.deequ.suggestions.{ ConstraintSuggestionRunner, Rules }
+import org.apache.spark.sql.Dataset
+import com.amazon.deequ.profiles.{ColumnProfilerRunner, NumericColumnProfile}
+import com.amazon.deequ.suggestions.{ ConstraintSuggestionRunner, Rules }
+object Dqueue {
+def main(args: Array[String]): Unit = {
+val spark = SparkSession.builder().appName("scalaDemo2").master("local[1]").getOrCreate()
+spark.sparkContext.setLogLevel("ERROR") // set INFO while running in production
+import spark.implicits._
+val df = spark.read.option("header", "true").option("mode", "DROPMALFORMED").csv("/usr/inputFiles/sdss6949386.csv")
+val suggestionResultd =ConstraintSuggestionRunner().onData(df).addConstraintRules(Rules.DEFAULT).run // Rule is set as default, feel free to explore other mode’s.
+val suggestionDataFrame = suggestionResultd.constraintSuggestions.flatMap{ case (column, suggestions) => suggestions.map ( constraint => (column, constraint.description, constraint.codeForConstraint) )}.toSeq.toDF("columnName","constraintDescription","codeForConstraintImpementation")
+}
+}
+------------------------
+spark.createDataFrame(Seq(("jhon,ann"),("pill,ann"),("pill,jhon"))).toDF("numSalesReps").withColumn("numSalesReps","size(split(sales_reps,','))")
+
+import org.apache.spark.sql.functions._
+List(("jhon,ann",2111,2017),("pill,ann",3444,2017),("pill,jhon",1890,2018)).toSeq.toDF("sales_reps","commission","year").withColumn("numSalesReps",size(split(col("sales_reps"),","))).withColumn("SalesRep",explode(split(col("sales_reps"),","))).withColumn("commisionEach",col("commission")/col("numSalesReps")).groupBy("SalesRep").pivot("year").agg(sum("commisionEach")).drop("sales_reps").drop("commission").show
+
+------------------
+spark-shell --packages com.amazon.deequ:deequ:1.0.2
+
+apt-get install vim -y
+apt-get update
+apt-get install git -y
+apt-get update
+apt-get install wget -y
+wget "https://downloads.apache.org/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz"
+tar -xzvf spark-2.4.5-bin-hadoop2.7.tgz
+rm spark-2.4.5-bin-hadoop2.7.tgz
+mkdir -p /usr/inputFiles/
+cd /usr/inputFiles/
+wget "https://introcs.cs.princeton.edu/java/data/sdss6949386.csv" 
+
+export SPARK_HOME=/spark-2.4.5-bin-hadoop2.7/
+export PATH=$PATH:$SPARK_HOME/bin
+
