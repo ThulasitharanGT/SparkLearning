@@ -114,6 +114,6 @@ object testScalaObj {
       val PROVIDER_VALUE_MAP_DF=spark.read.jdbc(slfshConnect,PROVIDER_VALUE_MAP_String,prop)
       val windowFunctionVar= Window.partitionBy($"pvdr_id",$"SVC_LOCN_ID").orderBy($"AUD_LAST_UPDT_TM".desc)
       val result_4=pvdrDF.as("PVDR").join(PVDR_SVC_LOCN_SPLY_DF.filter("PVDR_CTC_ROLE_TYPE_CD <> 'HBP'").as("PSLS"),Seq("PVDR_ID"),"inner").select("PVDR.PVDR_ID","PSLS.HLCR_SPLY_TAXN_CD","PSLS.PVDR_CTC_ROLE_TYPE_CD").withColumn("rnum",row_number.over(windowFunctionVar)).filter($"rnum"===1).drop("rnum").as("PSLS_out").join(PROVIDER_SPEC_DF.as("ps"),$"PSLS_out.HLCR_SPLY_TAXN_CD"===$"ps.Code","inner").selectExpr("ps.id as id","PSLS_out.PVDR_ID as PVDR_ID","PSLS_out.PVDR_CTC_ROLE_TYPE_CD as PVDR_CTC_ROLE_TYPE_CD").as("ps_out").join(PROVIDER_VALUE_MAP_DF.filter("MAP_TYPE = 'FB_CVO_EXTRACT_RULE'").as("pvm"),$"pvm.Portico_Value"===$"ps_out.id" && $"ps_out.PVDR_CTC_ROLE_TYPE_CD"===$"pvm.FMG_CODE","inner")
-
+      result_4.union(result_3).union(result_2).union(result_1)
     }
 }

@@ -5,25 +5,13 @@ products:
    src/main/scala/org/constants/projectConstants.scala -> build/classes/scala/main/org/constants/projectConstants.class
    src/main/scala/org/controller/AdvancedTopic/CaseClassCar.scala -> build/classes/scala/main/org/controller/AdvancedTopic/CaseClassCar$.class
    src/main/scala/org/controller/AdvancedTopic/CaseClassCar.scala -> build/classes/scala/main/org/controller/AdvancedTopic/CaseClassCar.class
-   src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> build/classes/scala/main/org/controller/AdvancedTopic/CaseClassTest$$anonfun$1.class
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> build/classes/scala/main/org/controller/AdvancedTopic/CaseClassTest$$typecreator4$1.class
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> build/classes/scala/main/org/controller/AdvancedTopic/CaseClassTest$.class
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> build/classes/scala/main/org/controller/AdvancedTopic/CaseClassTest.class
-   src/main/scala/org/controller/AdvancedTopic/FunctionTry.scala -> build/classes/scala/main/org/controller/AdvancedTopic/FunctionTry$$anonfun$1.class
-   src/main/scala/org/controller/AdvancedTopic/FunctionTry.scala -> build/classes/scala/main/org/controller/AdvancedTopic/FunctionTry$$anonfun$RetFun$1.class
-   src/main/scala/org/controller/AdvancedTopic/FunctionTry.scala -> build/classes/scala/main/org/controller/AdvancedTopic/FunctionTry$$anonfun$main$1.class
-   src/main/scala/org/controller/AdvancedTopic/FunctionTry.scala -> build/classes/scala/main/org/controller/AdvancedTopic/FunctionTry$$anonfun$main$2.class
    src/main/scala/org/controller/AdvancedTopic/FunctionTry.scala -> build/classes/scala/main/org/controller/AdvancedTopic/FunctionTry$.class
    src/main/scala/org/controller/AdvancedTopic/FunctionTry.scala -> build/classes/scala/main/org/controller/AdvancedTopic/FunctionTry.class
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> build/classes/scala/main/org/controller/AdvancedTopic/HigherOrderExample$$anonfun$HighFun$1.class
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> build/classes/scala/main/org/controller/AdvancedTopic/HigherOrderExample$$anonfun$HighFunAdvanced$1.class
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> build/classes/scala/main/org/controller/AdvancedTopic/HigherOrderExample$$anonfun$HighFunAdvanced$2.class
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> build/classes/scala/main/org/controller/AdvancedTopic/HigherOrderExample$$anonfun$main$1.class
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> build/classes/scala/main/org/controller/AdvancedTopic/HigherOrderExample$$anonfun$main$2.class
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> build/classes/scala/main/org/controller/AdvancedTopic/HigherOrderExample$$anonfun$main$3.class
    src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> build/classes/scala/main/org/controller/AdvancedTopic/HigherOrderExample$.class
    src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> build/classes/scala/main/org/controller/AdvancedTopic/HigherOrderExample.class
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderFunExample.scala -> build/classes/scala/main/org/controller/AdvancedTopic/HigherOrderFunExample$$anonfun$main$1.class
    src/main/scala/org/controller/AdvancedTopic/HigherOrderFunExample.scala -> build/classes/scala/main/org/controller/AdvancedTopic/HigherOrderFunExample$.class
    src/main/scala/org/controller/AdvancedTopic/HigherOrderFunExample.scala -> build/classes/scala/main/org/controller/AdvancedTopic/HigherOrderFunExample.class
    src/main/scala/org/controller/AdvancedTopic/MatchCaseEG.scala -> build/classes/scala/main/org/controller/AdvancedTopic/MatchCaseEG$.class
@@ -32,26 +20,10 @@ products:
    src/main/scala/org/controller/AdvancedTopic/TailRecursion.scala -> build/classes/scala/main/org/controller/AdvancedTopic/TailRecursion.class
    src/main/scala/org/controller/AdvancedTopic/TripReferenceCaseClass.scala -> build/classes/scala/main/org/controller/AdvancedTopic/TripReferenceCaseClass$.class
    src/main/scala/org/controller/AdvancedTopic/TripReferenceCaseClass.scala -> build/classes/scala/main/org/controller/AdvancedTopic/TripReferenceCaseClass.class
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> build/classes/scala/main/org/controller/AdvancedTopic/addingColumnToParquetFileInProd$$anonfun$1.class
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> build/classes/scala/main/org/controller/AdvancedTopic/addingColumnToParquetFileInProd$$anonfun$main$1.class
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> build/classes/scala/main/org/controller/AdvancedTopic/addingColumnToParquetFileInProd$$anonfun$main$2.class
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> build/classes/scala/main/org/controller/AdvancedTopic/addingColumnToParquetFileInProd$$anonfun$main$3.class
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> build/classes/scala/main/org/controller/AdvancedTopic/addingColumnToParquetFileInProd$$anonfun$main$4.class
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> build/classes/scala/main/org/controller/AdvancedTopic/addingColumnToParquetFileInProd$$anonfun$main$5.class
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> build/classes/scala/main/org/controller/AdvancedTopic/addingColumnToParquetFileInProd$.class
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> build/classes/scala/main/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.class
-   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer$$anonfun$main$1.class
-   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer$$anonfun$main$2.class
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer$.class
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer.class
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$1.class
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$2.class
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$3.class
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$4.class
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$dfSchemaChecker$1.class
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$dfSchemaChecker$2.class
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$dfSchemaChecker$3.class
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$$anonfun$main$1.class
    src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$.class
    src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.class
    src/main/scala/org/controller/FunctionClass.scala -> build/classes/scala/main/org/controller/FunctionClass$.class
@@ -66,17 +38,8 @@ products:
    src/main/scala/org/controller/ScalaMysqlExample.scala -> build/classes/scala/main/org/controller/ScalaMysqlExample.class
    src/main/scala/org/controller/SplittingOneColumnToMultiple.scala -> build/classes/scala/main/org/controller/SplittingOneColumnToMultiple$.class
    src/main/scala/org/controller/SplittingOneColumnToMultiple.scala -> build/classes/scala/main/org/controller/SplittingOneColumnToMultiple.class
-   src/main/scala/org/controller/TrimbleProblem.scala -> build/classes/scala/main/org/controller/TrimbleProblem$$anonfun$checker$1.class
-   src/main/scala/org/controller/TrimbleProblem.scala -> build/classes/scala/main/org/controller/TrimbleProblem$$anonfun$main$1.class
-   src/main/scala/org/controller/TrimbleProblem.scala -> build/classes/scala/main/org/controller/TrimbleProblem$$anonfun$main$2$$anonfun$apply$mcVI$sp$1.class
-   src/main/scala/org/controller/TrimbleProblem.scala -> build/classes/scala/main/org/controller/TrimbleProblem$$anonfun$main$2.class
-   src/main/scala/org/controller/TrimbleProblem.scala -> build/classes/scala/main/org/controller/TrimbleProblem$$anonfun$main$3.class
-   src/main/scala/org/controller/TrimbleProblem.scala -> build/classes/scala/main/org/controller/TrimbleProblem$$anonfun$prime$1.class
    src/main/scala/org/controller/TrimbleProblem.scala -> build/classes/scala/main/org/controller/TrimbleProblem$.class
    src/main/scala/org/controller/TrimbleProblem.scala -> build/classes/scala/main/org/controller/TrimbleProblem.class
-   src/main/scala/org/controller/UDFNewTry.scala -> build/classes/scala/main/org/controller/UDFNewTry$$anonfun$main$1.class
-   src/main/scala/org/controller/UDFNewTry.scala -> build/classes/scala/main/org/controller/UDFNewTry$$anonfun$main$2.class
-   src/main/scala/org/controller/UDFNewTry.scala -> build/classes/scala/main/org/controller/UDFNewTry$$anonfun$main$3.class
    src/main/scala/org/controller/UDFNewTry.scala -> build/classes/scala/main/org/controller/UDFNewTry$$typecreator1$1.class
    src/main/scala/org/controller/UDFNewTry.scala -> build/classes/scala/main/org/controller/UDFNewTry$$typecreator2$1.class
    src/main/scala/org/controller/UDFNewTry.scala -> build/classes/scala/main/org/controller/UDFNewTry$$typecreator3$1.class
@@ -86,26 +49,16 @@ products:
    src/main/scala/org/controller/UDFNewTry.scala -> build/classes/scala/main/org/controller/UDFNewTry$$typecreator7$1.class
    src/main/scala/org/controller/UDFNewTry.scala -> build/classes/scala/main/org/controller/UDFNewTry$.class
    src/main/scala/org/controller/UDFNewTry.scala -> build/classes/scala/main/org/controller/UDFNewTry.class
-   src/main/scala/org/controller/UDFOnSurvey.scala -> build/classes/scala/main/org/controller/UDFOnSurvey$$anonfun$1.class
-   src/main/scala/org/controller/UDFOnSurvey.scala -> build/classes/scala/main/org/controller/UDFOnSurvey$$anonfun$2.class
-   src/main/scala/org/controller/UDFOnSurvey.scala -> build/classes/scala/main/org/controller/UDFOnSurvey$$anonfun$3.class
-   src/main/scala/org/controller/UDFOnSurvey.scala -> build/classes/scala/main/org/controller/UDFOnSurvey$$anonfun$4.class
-   src/main/scala/org/controller/UDFOnSurvey.scala -> build/classes/scala/main/org/controller/UDFOnSurvey$$anonfun$5.class
    src/main/scala/org/controller/UDFOnSurvey.scala -> build/classes/scala/main/org/controller/UDFOnSurvey$$typecreator1$1.class
    src/main/scala/org/controller/UDFOnSurvey.scala -> build/classes/scala/main/org/controller/UDFOnSurvey$$typecreator2$1.class
    src/main/scala/org/controller/UDFOnSurvey.scala -> build/classes/scala/main/org/controller/UDFOnSurvey$$typecreator3$1.class
    src/main/scala/org/controller/UDFOnSurvey.scala -> build/classes/scala/main/org/controller/UDFOnSurvey$$typecreator4$1.class
    src/main/scala/org/controller/UDFOnSurvey.scala -> build/classes/scala/main/org/controller/UDFOnSurvey$.class
    src/main/scala/org/controller/UDFOnSurvey.scala -> build/classes/scala/main/org/controller/UDFOnSurvey.class
-   src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample$$anonfun$main$1.class
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample$.class
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample.class
-   src/main/scala/org/controller/breakExample.scala -> build/classes/scala/main/org/controller/breakExample$$anonfun$main$1$$anonfun$apply$mcVI$sp$1.class
-   src/main/scala/org/controller/breakExample.scala -> build/classes/scala/main/org/controller/breakExample$$anonfun$main$1.class
    src/main/scala/org/controller/breakExample.scala -> build/classes/scala/main/org/controller/breakExample$.class
    src/main/scala/org/controller/breakExample.scala -> build/classes/scala/main/org/controller/breakExample.class
-   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaHadoopJobTest$$anonfun$hasColumn$1$1.class
-   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaHadoopJobTest$$anonfun$main$1.class
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaHadoopJobTest$.class
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaHadoopJobTest.class
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaLakeHadoopEg$.class
@@ -116,97 +69,59 @@ products:
    src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaReadAsDeltaTable.class
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaTableRead$.class
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> build/classes/scala/main/org/controller/deltaLakeEG/deltaTableRead.class
-   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> build/classes/scala/main/org/controller/deltaLakeEG/fixBronzeToSilver$$anonfun$main$1.class
    src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> build/classes/scala/main/org/controller/deltaLakeEG/fixBronzeToSilver$.class
    src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> build/classes/scala/main/org/controller/deltaLakeEG/fixBronzeToSilver.class
-   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> build/classes/scala/main/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze$$anonfun$main$1.class
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> build/classes/scala/main/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze$.class
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> build/classes/scala/main/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.class
-   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> build/classes/scala/main/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze$$anonfun$main$1.class
    src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> build/classes/scala/main/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze$.class
    src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> build/classes/scala/main/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.class
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> build/classes/scala/main/org/controller/deltaLakeEG/readingFilesUsingStringSchema$.class
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> build/classes/scala/main/org/controller/deltaLakeEG/readingFilesUsingStringSchema.class
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> build/classes/scala/main/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable$.class
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> build/classes/scala/main/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.class
-   src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> build/classes/scala/main/org/controller/deltaLakeEG/shellScriptSystemCommand$$anonfun$1.class
-   src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> build/classes/scala/main/org/controller/deltaLakeEG/shellScriptSystemCommand$$anonfun$main$1$$anonfun$apply$mcV$sp$1.class
-   src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> build/classes/scala/main/org/controller/deltaLakeEG/shellScriptSystemCommand$$anonfun$main$1.class
-   src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> build/classes/scala/main/org/controller/deltaLakeEG/shellScriptSystemCommand$$anonfun$main$2.class
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> build/classes/scala/main/org/controller/deltaLakeEG/shellScriptSystemCommand$.class
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> build/classes/scala/main/org/controller/deltaLakeEG/shellScriptSystemCommand.class
-   src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> build/classes/scala/main/org/controller/deltaLakeEG/streamUsingRateExample$$anonfun$main$1.class
-   src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> build/classes/scala/main/org/controller/deltaLakeEG/streamUsingRateExample$$anonfun$randomStringGenerator$1.class
    src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> build/classes/scala/main/org/controller/deltaLakeEG/streamUsingRateExample$.class
    src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> build/classes/scala/main/org/controller/deltaLakeEG/streamUsingRateExample.class
-   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> build/classes/scala/main/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline$$anonfun$main$1$$anonfun$apply$mcV$sp$1.class
-   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> build/classes/scala/main/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline$$anonfun$main$1.class
-   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> build/classes/scala/main/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline$$anonfun$main$2.class
    src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> build/classes/scala/main/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline$.class
    src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> build/classes/scala/main/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.class
-   src/main/scala/org/controller/explodeExample.scala -> build/classes/scala/main/org/controller/explodeExample$$anonfun$main$1.class
    src/main/scala/org/controller/explodeExample.scala -> build/classes/scala/main/org/controller/explodeExample$.class
    src/main/scala/org/controller/explodeExample.scala -> build/classes/scala/main/org/controller/explodeExample.class
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> build/classes/scala/main/org/controller/hbaseSpark/hbaseSparkReadWrite$.class
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> build/classes/scala/main/org/controller/hbaseSpark/hbaseSparkReadWrite.class
-   src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> build/classes/scala/main/org/controller/hiveTesting/hiveTestExample$$anonfun$main$1.class
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> build/classes/scala/main/org/controller/hiveTesting/hiveTestExample$.class
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> build/classes/scala/main/org/controller/hiveTesting/hiveTestExample.class
-   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/dataPullFromKafka$$anonfun$main$1.class
    src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/dataPullFromKafka$.class
    src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/dataPullFromKafka.class
-   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/deltaStreamRead$$anonfun$main$1.class
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/deltaStreamRead$.class
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/deltaStreamRead.class
-   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead$$anonfun$main$1.class
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead$.class
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead.class
-   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption$$anonfun$main$1.class
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption$.class
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.class
-   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/streamAggregationStats$$anonfun$main$1.class
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/streamAggregationStats$.class
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/streamAggregationStats.class
-   src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript$$anonfun$main$1$$anonfun$apply$mcV$sp$1.class
-   src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript$$anonfun$main$1.class
-   src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript$$anonfun$main$2.class
    src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript$.class
    src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.class
    src/main/scala/org/controller/mailBeanClass.scala -> build/classes/scala/main/org/controller/mailBeanClass.class
    src/main/scala/org/controller/mailExample.scala -> build/classes/scala/main/org/controller/mailExample$.class
    src/main/scala/org/controller/mailExample.scala -> build/classes/scala/main/org/controller/mailExample.class
-   src/main/scala/org/controller/mergingAndSortingArrays.scala -> build/classes/scala/main/org/controller/mergingAndSortingArrays$$anonfun$1.class
-   src/main/scala/org/controller/mergingAndSortingArrays.scala -> build/classes/scala/main/org/controller/mergingAndSortingArrays$$anonfun$main$1.class
    src/main/scala/org/controller/mergingAndSortingArrays.scala -> build/classes/scala/main/org/controller/mergingAndSortingArrays$.class
    src/main/scala/org/controller/mergingAndSortingArrays.scala -> build/classes/scala/main/org/controller/mergingAndSortingArrays.class
-   src/main/scala/org/controller/partitionedTableRead.scala -> build/classes/scala/main/org/controller/partitionedTableRead$$anonfun$reqCarDetailsLoad$1$$anonfun$apply$1.class
-   src/main/scala/org/controller/partitionedTableRead.scala -> build/classes/scala/main/org/controller/partitionedTableRead$$anonfun$reqCarDetailsLoad$1.class
    src/main/scala/org/controller/partitionedTableRead.scala -> build/classes/scala/main/org/controller/partitionedTableRead$.class
    src/main/scala/org/controller/partitionedTableRead.scala -> build/classes/scala/main/org/controller/partitionedTableRead.class
    src/main/scala/org/controller/rankEmployeeTest.scala -> build/classes/scala/main/org/controller/rankEmployeeTest$.class
    src/main/scala/org/controller/rankEmployeeTest.scala -> build/classes/scala/main/org/controller/rankEmployeeTest.class
-   src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> build/classes/scala/main/org/controller/scDotTextFileMethodOfFirstAndLastLine$$anonfun$main$1.class
-   src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> build/classes/scala/main/org/controller/scDotTextFileMethodOfFirstAndLastLine$$anonfun$main$2.class
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> build/classes/scala/main/org/controller/scDotTextFileMethodOfFirstAndLastLine$$typecreator1$1.class
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> build/classes/scala/main/org/controller/scDotTextFileMethodOfFirstAndLastLine$.class
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> build/classes/scala/main/org/controller/scDotTextFileMethodOfFirstAndLastLine.class
    src/main/scala/org/controller/seqOverTry.scala -> build/classes/scala/main/org/controller/seqOverTry$.class
    src/main/scala/org/controller/seqOverTry.scala -> build/classes/scala/main/org/controller/seqOverTry.class
-   src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> build/classes/scala/main/org/controller/splittingDifferentColumnRecords$$anonfun$1.class
-   src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> build/classes/scala/main/org/controller/splittingDifferentColumnRecords$$anonfun$2.class
-   src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> build/classes/scala/main/org/controller/splittingDifferentColumnRecords$$anonfun$3.class
-   src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> build/classes/scala/main/org/controller/splittingDifferentColumnRecords$$anonfun$4.class
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> build/classes/scala/main/org/controller/splittingDifferentColumnRecords$.class
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> build/classes/scala/main/org/controller/splittingDifferentColumnRecords.class
-   src/main/scala/org/controller/splittingTime/SplitFunction.scala -> build/classes/scala/main/org/controller/splittingTime/SplitFunction$$anonfun$Splitting$1.class
    src/main/scala/org/controller/splittingTime/SplitFunction.scala -> build/classes/scala/main/org/controller/splittingTime/SplitFunction.class
-   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$$anonfun$1.class
-   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$$anonfun$2.class
-   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$$anonfun$Splitting$1.class
-   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$$anonfun$SplittingCaseClass$1.class
-   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$$typecreator11$1.class
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$$typecreator3$1.class
-   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$$typecreator4$1.class
+   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$$typecreator7$1.class
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain$.class
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> build/classes/scala/main/org/controller/splittingTime/SplittingTimeMain.class
    src/main/scala/org/controller/splittingTime/TripRecordCaseClass.scala -> build/classes/scala/main/org/controller/splittingTime/TripRecordCaseClass$.class
@@ -215,41 +130,35 @@ products:
    src/main/scala/org/controller/splittingTime/empCaseClass.scala -> build/classes/scala/main/org/controller/splittingTime/empCaseClass.class
    src/main/scala/org/controller/splittingTime/empCaseClassWithWeekend.scala -> build/classes/scala/main/org/controller/splittingTime/empCaseClassWithWeekend$.class
    src/main/scala/org/controller/splittingTime/empCaseClassWithWeekend.scala -> build/classes/scala/main/org/controller/splittingTime/empCaseClassWithWeekend.class
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$$anonfun$1.class
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$$anonfun$2.class
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$$anonfun$3.class
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$$anonfun$4.class
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$$anonfun$5.class
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$$anonfun$main$1$$anonfun$apply$1.class
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$$anonfun$main$1.class
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$$typecreator13$1.class
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$$typecreator5$1.class
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees$.class
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployees.class
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployeesWithGap$$anonfun$1.class
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployeesWithGap$$anonfun$main$1$$anonfun$apply$1.class
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployeesWithGap$$anonfun$main$1.class
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployeesWithGap$$typecreator13$1.class
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployeesWithGap$$typecreator5$1.class
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployeesWithGap$.class
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> build/classes/scala/main/org/controller/splittingTime/findingContinuousEmployeesWithGap.class
-   src/main/scala/org/controller/udfCheck.scala -> build/classes/scala/main/org/controller/udfCheck$$anonfun$main$1.class
    src/main/scala/org/controller/udfCheck.scala -> build/classes/scala/main/org/controller/udfCheck$.class
    src/main/scala/org/controller/udfCheck.scala -> build/classes/scala/main/org/controller/udfCheck.class
    src/main/scala/org/controller/windowFunctionEg.scala -> build/classes/scala/main/org/controller/windowFunctionEg$.class
    src/main/scala/org/controller/windowFunctionEg.scala -> build/classes/scala/main/org/controller/windowFunctionEg.class
    src/main/scala/org/controller/wordCountDFExample.scala -> build/classes/scala/main/org/controller/wordCountDFExample$.class
    src/main/scala/org/controller/wordCountDFExample.scala -> build/classes/scala/main/org/controller/wordCountDFExample.class
-   src/main/scala/org/util/SparkOpener.scala -> build/classes/scala/main/org/util/SparkOpener$class.class
+   src/main/scala/org/temp/stringTestObj.scala -> build/classes/scala/main/temp/stringTestObj$.class
+   src/main/scala/org/temp/stringTestObj.scala -> build/classes/scala/main/temp/stringTestObj.class
+   src/main/scala/org/temp/testScalaObj.scala -> build/classes/scala/main/temp/testScalaObj$.class
+   src/main/scala/org/temp/testScalaObj.scala -> build/classes/scala/main/temp/testScalaObj.class
+   src/main/scala/org/temp/testScalaObjV2.scala -> build/classes/scala/main/temp/testScalaObjV2$.class
+   src/main/scala/org/temp/testScalaObjV2.scala -> build/classes/scala/main/temp/testScalaObjV2.class
+   src/main/scala/org/temp/twitterResult.scala -> build/classes/scala/main/temp/twitterResult$.class
+   src/main/scala/org/temp/twitterResult.scala -> build/classes/scala/main/temp/twitterResult.class
+   src/main/scala/org/temp/twitterTemp.scala -> build/classes/scala/main/temp/twitterTemp$.class
+   src/main/scala/org/temp/twitterTemp.scala -> build/classes/scala/main/temp/twitterTemp.class
    src/main/scala/org/util/SparkOpener.scala -> build/classes/scala/main/org/util/SparkOpener.class
-   src/main/scala/org/util/kafka/checkIfTopicExists.scala -> build/classes/scala/main/org/util/kafka/checkIfTopicExists$$anonfun$main$1.class
    src/main/scala/org/util/kafka/checkIfTopicExists.scala -> build/classes/scala/main/org/util/kafka/checkIfTopicExists$.class
    src/main/scala/org/util/kafka/checkIfTopicExists.scala -> build/classes/scala/main/org/util/kafka/checkIfTopicExists.class
-   src/main/scala/org/util/kafka/createTopic.scala -> build/classes/scala/main/org/util/kafka/createTopic$$anonfun$main$1.class
-   src/main/scala/org/util/kafka/createTopic.scala -> build/classes/scala/main/org/util/kafka/createTopic$$anonfun$main$2.class
    src/main/scala/org/util/kafka/createTopic.scala -> build/classes/scala/main/org/util/kafka/createTopic$.class
    src/main/scala/org/util/kafka/createTopic.scala -> build/classes/scala/main/org/util/kafka/createTopic.class
-   src/main/scala/org/util/kafka/deleteTopic.scala -> build/classes/scala/main/org/util/kafka/deleteTopic$$anonfun$main$1.class
    src/main/scala/org/util/kafka/deleteTopic.scala -> build/classes/scala/main/org/util/kafka/deleteTopic$.class
    src/main/scala/org/util/kafka/deleteTopic.scala -> build/classes/scala/main/org/util/kafka/deleteTopic.class
    src/main/scala/org/util/kafka/kafkaUtilMethods.scala -> build/classes/scala/main/org/util/kafka/kafkaUtilMethods$.class
@@ -259,254 +168,279 @@ products:
    src/main/scala/org/util/readWriteUtil.scala -> build/classes/scala/main/org/util/readWriteUtil.class
 binary dependencies:
    src/main/scala/org/constants/PathConstants.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/constants/projectConstants.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/constants/projectConstants.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/constants/projectConstants.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/AdvancedTopic/CaseClassCar.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/CaseClassCar.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/AdvancedTopic/CaseClassCar.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/AdvancedTopic/FunctionTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/FunctionTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/AdvancedTopic/FunctionTry.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderFunExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/HigherOrderFunExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/AdvancedTopic/HigherOrderFunExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/AdvancedTopic/MatchCaseEG.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/MatchCaseEG.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/AdvancedTopic/MatchCaseEG.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/AdvancedTopic/TailRecursion.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/TailRecursion.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/AdvancedTopic/TailRecursion.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/AdvancedTopic/TripReferenceCaseClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/TripReferenceCaseClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/AdvancedTopic/TripReferenceCaseClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/FunctionClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/FunctionClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/FunctionClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/FunctionClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/PivotExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/PivotExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/PivotExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/PivotExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/RankFunctionTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/RankFunctionTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/RankFunctionTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/RankFunctionTest.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/RevenueClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/RevenueClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/RevenueClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/RevenueClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/ScalaMysqlExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/ScalaMysqlExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/ScalaMysqlExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/ScalaMysqlExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/ScalaMysqlExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/SplittingOneColumnToMultiple.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/SplittingOneColumnToMultiple.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/SplittingOneColumnToMultiple.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/SplittingOneColumnToMultiple.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/TrimbleProblem.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/TrimbleProblem.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/TrimbleProblem.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/UDFNewTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/UDFNewTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/UDFNewTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/UDFNewTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/UDFNewTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/UDFNewTry.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/UDFOnSurvey.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/UDFOnSurvey.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/UDFOnSurvey.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/UDFOnSurvey.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/UDFOnSurvey.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/ZipExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/ZipExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/ZipExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/breakExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/breakExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/breakExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.5.0/428433056d5812912bf1af2058348351eee0fb4e/delta-core_2.11-0.5.0.jar
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.5.0/428433056d5812912bf1af2058348351eee0fb4e/delta-core_2.11-0.5.0.jar
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/deltaLakeNewColumnTableTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/deltaLakeNewColumnTableTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/deltaLakeEG/deltaLakeNewColumnTableTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/deltaLakeNewColumnTableTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/deltaLakeNewColumnTableTry.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.5.0/428433056d5812912bf1af2058348351eee0fb4e/delta-core_2.11-0.5.0.jar
    src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.5.0/428433056d5812912bf1af2058348351eee0fb4e/delta-core_2.11-0.5.0.jar
    src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.5.0/428433056d5812912bf1af2058348351eee0fb4e/delta-core_2.11-0.5.0.jar
    src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
    src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/explodeExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/explodeExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/explodeExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/explodeExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-client/1.4.12/4505890582f14e7396c267f4ed8a32d36703262/hbase-client-1.4.12.jar
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-common/1.4.12/e3ce0d78286afc4dbca4b2824e7abcd9c4b33e84/hbase-common-1.4.12.jar
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-server/1.4.12/1fcef61b34156e6ce0217ee56b8f63867c9a0fb4/hbase-server-1.4.12.jar
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/mailBeanClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/mailBeanClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/mailBeanClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/mailExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/javax.mail/javax.mail-api/1.6.2/17a8151bab44f9c94f34c10db70d95ba3c830eda/javax.mail-api-1.6.2.jar
-   src/main/scala/org/controller/mailExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/mailExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/mailExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/mergingAndSortingArrays.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/mergingAndSortingArrays.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/mergingAndSortingArrays.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/partitionedTableRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/partitionedTableRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/partitionedTableRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/partitionedTableRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/partitionedTableRead.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-mllib_2.11/2.4.5/983484a5a0f316426ad5c2de030e82dd5ad5ef7a/spark-mllib_2.11-2.4.5.jar
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/seqOverTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/seqOverTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/seqOverTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/seqOverTry.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/splittingTime/SplitFunction.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
    src/main/scala/org/controller/splittingTime/SplitFunction.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
-   src/main/scala/org/controller/splittingTime/SplitFunction.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/splittingTime/SplitFunction.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/splittingTime/SplitFunction.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/splittingTime/TripRecordCaseClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/splittingTime/TripRecordCaseClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/splittingTime/TripRecordCaseClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/splittingTime/empCaseClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/splittingTime/empCaseClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/splittingTime/empCaseClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/splittingTime/empCaseClassWithWeekend.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/splittingTime/empCaseClassWithWeekend.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/splittingTime/empCaseClassWithWeekend.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/udfCheck.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/udfCheck.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/udfCheck.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/udfCheck.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/udfCheck.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/udfCheck.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/windowFunctionEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/windowFunctionEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/windowFunctionEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/windowFunctionEg.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/wordCountDFExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/wordCountDFExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/controller/wordCountDFExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/wordCountDFExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/temp/stringTestObj.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/temp/stringTestObj.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/temp/testScalaObj.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/5af35056b4d257e4b64b9e8069c0746e8b08629f/log4j-1.2.17.jar
+   src/main/scala/org/temp/testScalaObj.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/temp/testScalaObj.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
+   src/main/scala/org/temp/testScalaObj.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/temp/testScalaObj.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/temp/testScalaObj.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/temp/testScalaObjV2.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/5af35056b4d257e4b64b9e8069c0746e8b08629f/log4j-1.2.17.jar
+   src/main/scala/org/temp/testScalaObjV2.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/temp/testScalaObjV2.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
+   src/main/scala/org/temp/testScalaObjV2.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/temp/testScalaObjV2.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/temp/testScalaObjV2.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/temp/twitterResult.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/temp/twitterResult.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/5af35056b4d257e4b64b9e8069c0746e8b08629f/log4j-1.2.17.jar
+   src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.bahir/spark-streaming-twitter_2.11/2.4.0/e924820db2f2325153a254436e7349f65ab6c854/spark-streaming-twitter_2.11-2.4.0.jar
+   src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
+   src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-streaming_2.11/2.4.5/8a1cc984df65037ed539615025bd7b05a7c56b5c/spark-streaming_2.11-2.4.5.jar
+   src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.twitter4j/twitter4j-core/4.0.6/f3722af4568b96ee66739267e13211b8b66ac7d4/twitter4j-core-4.0.6.jar
+   src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/util/SparkOpener.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/util/SparkOpener.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/util/SparkOpener.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/util/SparkOpener.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/util/SparkOpener.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/util/kafka/checkIfTopicExists.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/2.3.1/21664b0318d201ec412f9b02357b07ba94009c87/kafka-clients-2.3.1.jar
    src/main/scala/org/util/kafka/checkIfTopicExists.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka_2.11/2.3.1/17255386d7e983ae82a0e82a0e5be0058e834842/kafka_2.11-2.3.1.jar
-   src/main/scala/org/util/kafka/checkIfTopicExists.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/util/kafka/checkIfTopicExists.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/util/kafka/checkIfTopicExists.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/util/kafka/createTopic.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/2.3.1/21664b0318d201ec412f9b02357b07ba94009c87/kafka-clients-2.3.1.jar
    src/main/scala/org/util/kafka/createTopic.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka_2.11/2.3.1/17255386d7e983ae82a0e82a0e5be0058e834842/kafka_2.11-2.3.1.jar
-   src/main/scala/org/util/kafka/createTopic.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/util/kafka/createTopic.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/util/kafka/createTopic.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/util/kafka/deleteTopic.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/2.3.1/21664b0318d201ec412f9b02357b07ba94009c87/kafka-clients-2.3.1.jar
    src/main/scala/org/util/kafka/deleteTopic.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka_2.11/2.3.1/17255386d7e983ae82a0e82a0e5be0058e834842/kafka_2.11-2.3.1.jar
-   src/main/scala/org/util/kafka/deleteTopic.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/util/kafka/deleteTopic.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/util/kafka/deleteTopic.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/util/kafka/kafkaUtilMethods.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/2.3.1/21664b0318d201ec412f9b02357b07ba94009c87/kafka-clients-2.3.1.jar
    src/main/scala/org/util/kafka/kafkaUtilMethods.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka_2.11/2.3.1/17255386d7e983ae82a0e82a0e5be0058e834842/kafka_2.11-2.3.1.jar
-   src/main/scala/org/util/kafka/kafkaUtilMethods.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/util/kafka/kafkaUtilMethods.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/util/kafka/kafkaUtilMethods.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.5.0/428433056d5812912bf1af2058348351eee0fb4e/delta-core_2.11-0.5.0.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.11.12/bf5534e6fec3d665bd6419c952a929a8bdd4b591/scala-library-2.11.12.jar
+   src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.m2/repository/com/hortonworks/shc-core/1.1.1-2.1-s_2.11/shc-core-1.1.1-2.1-s_2.11.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
@@ -608,6 +542,7 @@ source dependencies:
    src/main/scala/org/controller/windowFunctionEg.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/windowFunctionEg.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/wordCountDFExample.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/temp/twitterTemp.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/util/kafka/checkIfTopicExists.scala -> src/main/scala/org/util/kafka/kafkaUtilMethods.scala
    src/main/scala/org/util/kafka/createTopic.scala -> src/main/scala/org/util/kafka/kafkaUtilMethods.scala
    src/main/scala/org/util/kafka/deleteTopic.scala -> src/main/scala/org/util/kafka/kafkaUtilMethods.scala
@@ -622,25 +557,13 @@ class names:
    src/main/scala/org/controller/AdvancedTopic/CaseClassCar.scala -> org.controller.AdvancedTopic.CaseClassCar$
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> org.controller.AdvancedTopic.CaseClassTest
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> org.controller.AdvancedTopic.CaseClassTest$
-   src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> org.controller.AdvancedTopic.CaseClassTest$$anonfun$1
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> org.controller.AdvancedTopic.CaseClassTest$$typecreator4$1
    src/main/scala/org/controller/AdvancedTopic/FunctionTry.scala -> org.controller.AdvancedTopic.FunctionTry
    src/main/scala/org/controller/AdvancedTopic/FunctionTry.scala -> org.controller.AdvancedTopic.FunctionTry$
-   src/main/scala/org/controller/AdvancedTopic/FunctionTry.scala -> org.controller.AdvancedTopic.FunctionTry$$anonfun$1
-   src/main/scala/org/controller/AdvancedTopic/FunctionTry.scala -> org.controller.AdvancedTopic.FunctionTry$$anonfun$RetFun$1
-   src/main/scala/org/controller/AdvancedTopic/FunctionTry.scala -> org.controller.AdvancedTopic.FunctionTry$$anonfun$main$1
-   src/main/scala/org/controller/AdvancedTopic/FunctionTry.scala -> org.controller.AdvancedTopic.FunctionTry$$anonfun$main$2
    src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> org.controller.AdvancedTopic.HigherOrderExample
    src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> org.controller.AdvancedTopic.HigherOrderExample$
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> org.controller.AdvancedTopic.HigherOrderExample$$anonfun$HighFun$1
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> org.controller.AdvancedTopic.HigherOrderExample$$anonfun$HighFunAdvanced$1
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> org.controller.AdvancedTopic.HigherOrderExample$$anonfun$HighFunAdvanced$2
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> org.controller.AdvancedTopic.HigherOrderExample$$anonfun$main$1
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> org.controller.AdvancedTopic.HigherOrderExample$$anonfun$main$2
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderExample.scala -> org.controller.AdvancedTopic.HigherOrderExample$$anonfun$main$3
    src/main/scala/org/controller/AdvancedTopic/HigherOrderFunExample.scala -> org.controller.AdvancedTopic.HigherOrderFunExample
    src/main/scala/org/controller/AdvancedTopic/HigherOrderFunExample.scala -> org.controller.AdvancedTopic.HigherOrderFunExample$
-   src/main/scala/org/controller/AdvancedTopic/HigherOrderFunExample.scala -> org.controller.AdvancedTopic.HigherOrderFunExample$$anonfun$main$1
    src/main/scala/org/controller/AdvancedTopic/MatchCaseEG.scala -> org.controller.AdvancedTopic.MatchCaseEG
    src/main/scala/org/controller/AdvancedTopic/MatchCaseEG.scala -> org.controller.AdvancedTopic.MatchCaseEG$
    src/main/scala/org/controller/AdvancedTopic/TailRecursion.scala -> org.controller.AdvancedTopic.TailRecursion
@@ -649,26 +572,10 @@ class names:
    src/main/scala/org/controller/AdvancedTopic/TripReferenceCaseClass.scala -> org.controller.AdvancedTopic.TripReferenceCaseClass$
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> org.controller.AdvancedTopic.addingColumnToParquetFileInProd
    src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> org.controller.AdvancedTopic.addingColumnToParquetFileInProd$
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> org.controller.AdvancedTopic.addingColumnToParquetFileInProd$$anonfun$1
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> org.controller.AdvancedTopic.addingColumnToParquetFileInProd$$anonfun$main$1
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> org.controller.AdvancedTopic.addingColumnToParquetFileInProd$$anonfun$main$2
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> org.controller.AdvancedTopic.addingColumnToParquetFileInProd$$anonfun$main$3
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> org.controller.AdvancedTopic.addingColumnToParquetFileInProd$$anonfun$main$4
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> org.controller.AdvancedTopic.addingColumnToParquetFileInProd$$anonfun$main$5
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer$
-   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer$$anonfun$main$1
-   src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer$$anonfun$main$2
    src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames
    src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$1
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$2
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$3
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$4
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$dfSchemaChecker$1
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$dfSchemaChecker$2
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$dfSchemaChecker$3
-   src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames$$anonfun$main$1
    src/main/scala/org/controller/FunctionClass.scala -> org.controller.FunctionClass
    src/main/scala/org/controller/FunctionClass.scala -> org.controller.FunctionClass$
    src/main/scala/org/controller/PivotExample.scala -> org.controller.PivotExample
@@ -683,17 +590,8 @@ class names:
    src/main/scala/org/controller/SplittingOneColumnToMultiple.scala -> org.controller.SplittingOneColumnToMultiple$
    src/main/scala/org/controller/TrimbleProblem.scala -> org.controller.TrimbleProblem
    src/main/scala/org/controller/TrimbleProblem.scala -> org.controller.TrimbleProblem$
-   src/main/scala/org/controller/TrimbleProblem.scala -> org.controller.TrimbleProblem$$anonfun$checker$1
-   src/main/scala/org/controller/TrimbleProblem.scala -> org.controller.TrimbleProblem$$anonfun$main$1
-   src/main/scala/org/controller/TrimbleProblem.scala -> org.controller.TrimbleProblem$$anonfun$main$2
-   src/main/scala/org/controller/TrimbleProblem.scala -> org.controller.TrimbleProblem$$anonfun$main$2$$anonfun$apply$mcVI$sp$1
-   src/main/scala/org/controller/TrimbleProblem.scala -> org.controller.TrimbleProblem$$anonfun$main$3
-   src/main/scala/org/controller/TrimbleProblem.scala -> org.controller.TrimbleProblem$$anonfun$prime$1
    src/main/scala/org/controller/UDFNewTry.scala -> org.controller.UDFNewTry
    src/main/scala/org/controller/UDFNewTry.scala -> org.controller.UDFNewTry$
-   src/main/scala/org/controller/UDFNewTry.scala -> org.controller.UDFNewTry$$anonfun$main$1
-   src/main/scala/org/controller/UDFNewTry.scala -> org.controller.UDFNewTry$$anonfun$main$2
-   src/main/scala/org/controller/UDFNewTry.scala -> org.controller.UDFNewTry$$anonfun$main$3
    src/main/scala/org/controller/UDFNewTry.scala -> org.controller.UDFNewTry$$typecreator1$1
    src/main/scala/org/controller/UDFNewTry.scala -> org.controller.UDFNewTry$$typecreator2$1
    src/main/scala/org/controller/UDFNewTry.scala -> org.controller.UDFNewTry$$typecreator3$1
@@ -703,26 +601,16 @@ class names:
    src/main/scala/org/controller/UDFNewTry.scala -> org.controller.UDFNewTry$$typecreator7$1
    src/main/scala/org/controller/UDFOnSurvey.scala -> org.controller.UDFOnSurvey
    src/main/scala/org/controller/UDFOnSurvey.scala -> org.controller.UDFOnSurvey$
-   src/main/scala/org/controller/UDFOnSurvey.scala -> org.controller.UDFOnSurvey$$anonfun$1
-   src/main/scala/org/controller/UDFOnSurvey.scala -> org.controller.UDFOnSurvey$$anonfun$2
-   src/main/scala/org/controller/UDFOnSurvey.scala -> org.controller.UDFOnSurvey$$anonfun$3
-   src/main/scala/org/controller/UDFOnSurvey.scala -> org.controller.UDFOnSurvey$$anonfun$4
-   src/main/scala/org/controller/UDFOnSurvey.scala -> org.controller.UDFOnSurvey$$anonfun$5
    src/main/scala/org/controller/UDFOnSurvey.scala -> org.controller.UDFOnSurvey$$typecreator1$1
    src/main/scala/org/controller/UDFOnSurvey.scala -> org.controller.UDFOnSurvey$$typecreator2$1
    src/main/scala/org/controller/UDFOnSurvey.scala -> org.controller.UDFOnSurvey$$typecreator3$1
    src/main/scala/org/controller/UDFOnSurvey.scala -> org.controller.UDFOnSurvey$$typecreator4$1
    src/main/scala/org/controller/ZipExample.scala -> org.controller.ZipExample
    src/main/scala/org/controller/ZipExample.scala -> org.controller.ZipExample$
-   src/main/scala/org/controller/ZipExample.scala -> org.controller.ZipExample$$anonfun$main$1
    src/main/scala/org/controller/breakExample.scala -> org.controller.breakExample
    src/main/scala/org/controller/breakExample.scala -> org.controller.breakExample$
-   src/main/scala/org/controller/breakExample.scala -> org.controller.breakExample$$anonfun$main$1
-   src/main/scala/org/controller/breakExample.scala -> org.controller.breakExample$$anonfun$main$1$$anonfun$apply$mcVI$sp$1
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> org.controller.deltaLakeEG.deltaHadoopJobTest
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> org.controller.deltaLakeEG.deltaHadoopJobTest$
-   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> org.controller.deltaLakeEG.deltaHadoopJobTest$$anonfun$hasColumn$1$1
-   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> org.controller.deltaLakeEG.deltaHadoopJobTest$$anonfun$main$1
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> org.controller.deltaLakeEG.deltaLakeHadoopEg
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> org.controller.deltaLakeEG.deltaLakeHadoopEg$
    src/main/scala/org/controller/deltaLakeEG/deltaLakeNewColumnTableTry.scala -> org.controller.deltaLakeEG.deltaLakeNewColumnTableTry
@@ -733,97 +621,59 @@ class names:
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> org.controller.deltaLakeEG.deltaTableRead$
    src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> org.controller.deltaLakeEG.fixBronzeToSilver
    src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> org.controller.deltaLakeEG.fixBronzeToSilver$
-   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> org.controller.deltaLakeEG.fixBronzeToSilver$$anonfun$main$1
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> org.controller.deltaLakeEG.mergingSchemaNewColumnInBronze
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> org.controller.deltaLakeEG.mergingSchemaNewColumnInBronze$
-   src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> org.controller.deltaLakeEG.mergingSchemaNewColumnInBronze$$anonfun$main$1
    src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> org.controller.deltaLakeEG.pushingStreamedDataToDeltaBronze
    src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> org.controller.deltaLakeEG.pushingStreamedDataToDeltaBronze$
-   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> org.controller.deltaLakeEG.pushingStreamedDataToDeltaBronze$$anonfun$main$1
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> org.controller.deltaLakeEG.readingFilesUsingStringSchema
    src/main/scala/org/controller/deltaLakeEG/readingFilesUsingStringSchema.scala -> org.controller.deltaLakeEG.readingFilesUsingStringSchema$
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> org.controller.deltaLakeEG.readingfileAndSavingAsDeltaTable
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> org.controller.deltaLakeEG.readingfileAndSavingAsDeltaTable$
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand$
-   src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand$$anonfun$1
-   src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand$$anonfun$main$1
-   src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand$$anonfun$main$1$$anonfun$apply$mcV$sp$1
-   src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> org.controller.deltaLakeEG.shellScriptSystemCommand$$anonfun$main$2
    src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> org.controller.deltaLakeEG.streamUsingRateExample
    src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> org.controller.deltaLakeEG.streamUsingRateExample$
-   src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> org.controller.deltaLakeEG.streamUsingRateExample$$anonfun$main$1
-   src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> org.controller.deltaLakeEG.streamUsingRateExample$$anonfun$randomStringGenerator$1
    src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> org.controller.deltaLakeEG.systemCommandRunningForStreamingPipeline
    src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> org.controller.deltaLakeEG.systemCommandRunningForStreamingPipeline$
-   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> org.controller.deltaLakeEG.systemCommandRunningForStreamingPipeline$$anonfun$main$1
-   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> org.controller.deltaLakeEG.systemCommandRunningForStreamingPipeline$$anonfun$main$1$$anonfun$apply$mcV$sp$1
-   src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> org.controller.deltaLakeEG.systemCommandRunningForStreamingPipeline$$anonfun$main$2
    src/main/scala/org/controller/explodeExample.scala -> org.controller.explodeExample
    src/main/scala/org/controller/explodeExample.scala -> org.controller.explodeExample$
-   src/main/scala/org/controller/explodeExample.scala -> org.controller.explodeExample$$anonfun$main$1
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> org.controller.hbaseSpark.hbaseSparkReadWrite
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> org.controller.hbaseSpark.hbaseSparkReadWrite$
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> org.controller.hiveTesting.hiveTestExample
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> org.controller.hiveTesting.hiveTestExample$
-   src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> org.controller.hiveTesting.hiveTestExample$$anonfun$main$1
    src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> org.controller.kafkaStreamExample.dataPullFromKafka
    src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> org.controller.kafkaStreamExample.dataPullFromKafka$
-   src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> org.controller.kafkaStreamExample.dataPullFromKafka$$anonfun$main$1
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> org.controller.kafkaStreamExample.deltaStreamRead
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> org.controller.kafkaStreamExample.deltaStreamRead$
-   src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> org.controller.kafkaStreamExample.deltaStreamRead$$anonfun$main$1
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead$
-   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead$$anonfun$main$1
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> org.controller.kafkaStreamExample.pullFromKafkaMergeSchemaOption
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> org.controller.kafkaStreamExample.pullFromKafkaMergeSchemaOption$
-   src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> org.controller.kafkaStreamExample.pullFromKafkaMergeSchemaOption$$anonfun$main$1
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> org.controller.kafkaStreamExample.streamAggregationStats
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> org.controller.kafkaStreamExample.streamAggregationStats$
-   src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> org.controller.kafkaStreamExample.streamAggregationStats$$anonfun$main$1
    src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> org.controller.kafkaStreamExample.systemCommandRunnerForShellScript
    src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> org.controller.kafkaStreamExample.systemCommandRunnerForShellScript$
-   src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> org.controller.kafkaStreamExample.systemCommandRunnerForShellScript$$anonfun$main$1
-   src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> org.controller.kafkaStreamExample.systemCommandRunnerForShellScript$$anonfun$main$1$$anonfun$apply$mcV$sp$1
-   src/main/scala/org/controller/kafkaStreamExample/systemCommandRunnerForShellScript.scala -> org.controller.kafkaStreamExample.systemCommandRunnerForShellScript$$anonfun$main$2
    src/main/scala/org/controller/mailBeanClass.scala -> org.controller.mailBeanClass
    src/main/scala/org/controller/mailExample.scala -> org.controller.mailExample
    src/main/scala/org/controller/mailExample.scala -> org.controller.mailExample$
    src/main/scala/org/controller/mergingAndSortingArrays.scala -> org.controller.mergingAndSortingArrays
    src/main/scala/org/controller/mergingAndSortingArrays.scala -> org.controller.mergingAndSortingArrays$
-   src/main/scala/org/controller/mergingAndSortingArrays.scala -> org.controller.mergingAndSortingArrays$$anonfun$1
-   src/main/scala/org/controller/mergingAndSortingArrays.scala -> org.controller.mergingAndSortingArrays$$anonfun$main$1
    src/main/scala/org/controller/partitionedTableRead.scala -> org.controller.partitionedTableRead
    src/main/scala/org/controller/partitionedTableRead.scala -> org.controller.partitionedTableRead$
-   src/main/scala/org/controller/partitionedTableRead.scala -> org.controller.partitionedTableRead$$anonfun$reqCarDetailsLoad$1
-   src/main/scala/org/controller/partitionedTableRead.scala -> org.controller.partitionedTableRead$$anonfun$reqCarDetailsLoad$1$$anonfun$apply$1
    src/main/scala/org/controller/rankEmployeeTest.scala -> org.controller.rankEmployeeTest
    src/main/scala/org/controller/rankEmployeeTest.scala -> org.controller.rankEmployeeTest$
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> org.controller.scDotTextFileMethodOfFirstAndLastLine
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> org.controller.scDotTextFileMethodOfFirstAndLastLine$
-   src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> org.controller.scDotTextFileMethodOfFirstAndLastLine$$anonfun$main$1
-   src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> org.controller.scDotTextFileMethodOfFirstAndLastLine$$anonfun$main$2
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> org.controller.scDotTextFileMethodOfFirstAndLastLine$$typecreator1$1
    src/main/scala/org/controller/seqOverTry.scala -> org.controller.seqOverTry
    src/main/scala/org/controller/seqOverTry.scala -> org.controller.seqOverTry$
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> org.controller.splittingDifferentColumnRecords
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> org.controller.splittingDifferentColumnRecords$
-   src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> org.controller.splittingDifferentColumnRecords$$anonfun$1
-   src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> org.controller.splittingDifferentColumnRecords$$anonfun$2
-   src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> org.controller.splittingDifferentColumnRecords$$anonfun$3
-   src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> org.controller.splittingDifferentColumnRecords$$anonfun$4
    src/main/scala/org/controller/splittingTime/SplitFunction.scala -> org.controller.splittingTime.SplitFunction
-   src/main/scala/org/controller/splittingTime/SplitFunction.scala -> org.controller.splittingTime.SplitFunction$$anonfun$Splitting$1
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$
-   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$$anonfun$1
-   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$$anonfun$2
-   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$$anonfun$Splitting$1
-   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$$anonfun$SplittingCaseClass$1
-   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$$typecreator11$1
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$$typecreator3$1
-   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$$typecreator4$1
+   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> org.controller.splittingTime.SplittingTimeMain$$typecreator7$1
    src/main/scala/org/controller/splittingTime/TripRecordCaseClass.scala -> org.controller.splittingTime.TripRecordCaseClass
    src/main/scala/org/controller/splittingTime/TripRecordCaseClass.scala -> org.controller.splittingTime.TripRecordCaseClass$
    src/main/scala/org/controller/splittingTime/empCaseClass.scala -> org.controller.splittingTime.empCaseClass
@@ -832,41 +682,35 @@ class names:
    src/main/scala/org/controller/splittingTime/empCaseClassWithWeekend.scala -> org.controller.splittingTime.empCaseClassWithWeekend$
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees$
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees$$anonfun$1
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees$$anonfun$2
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees$$anonfun$3
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees$$anonfun$4
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees$$anonfun$5
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees$$anonfun$main$1
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees$$anonfun$main$1$$anonfun$apply$1
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees$$typecreator13$1
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> org.controller.splittingTime.findingContinuousEmployees$$typecreator5$1
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> org.controller.splittingTime.findingContinuousEmployeesWithGap
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> org.controller.splittingTime.findingContinuousEmployeesWithGap$
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> org.controller.splittingTime.findingContinuousEmployeesWithGap$$anonfun$1
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> org.controller.splittingTime.findingContinuousEmployeesWithGap$$anonfun$main$1
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> org.controller.splittingTime.findingContinuousEmployeesWithGap$$anonfun$main$1$$anonfun$apply$1
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> org.controller.splittingTime.findingContinuousEmployeesWithGap$$typecreator13$1
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> org.controller.splittingTime.findingContinuousEmployeesWithGap$$typecreator5$1
    src/main/scala/org/controller/udfCheck.scala -> org.controller.udfCheck
    src/main/scala/org/controller/udfCheck.scala -> org.controller.udfCheck$
-   src/main/scala/org/controller/udfCheck.scala -> org.controller.udfCheck$$anonfun$main$1
    src/main/scala/org/controller/windowFunctionEg.scala -> org.controller.windowFunctionEg
    src/main/scala/org/controller/windowFunctionEg.scala -> org.controller.windowFunctionEg$
    src/main/scala/org/controller/wordCountDFExample.scala -> org.controller.wordCountDFExample
    src/main/scala/org/controller/wordCountDFExample.scala -> org.controller.wordCountDFExample$
+   src/main/scala/org/temp/stringTestObj.scala -> temp.stringTestObj
+   src/main/scala/org/temp/stringTestObj.scala -> temp.stringTestObj$
+   src/main/scala/org/temp/testScalaObj.scala -> temp.testScalaObj
+   src/main/scala/org/temp/testScalaObj.scala -> temp.testScalaObj$
+   src/main/scala/org/temp/testScalaObjV2.scala -> temp.testScalaObjV2
+   src/main/scala/org/temp/testScalaObjV2.scala -> temp.testScalaObjV2$
+   src/main/scala/org/temp/twitterResult.scala -> temp.twitterResult
+   src/main/scala/org/temp/twitterResult.scala -> temp.twitterResult$
+   src/main/scala/org/temp/twitterTemp.scala -> temp.twitterTemp
+   src/main/scala/org/temp/twitterTemp.scala -> temp.twitterTemp$
    src/main/scala/org/util/SparkOpener.scala -> org.util.SparkOpener
-   src/main/scala/org/util/SparkOpener.scala -> org.util.SparkOpener$class
    src/main/scala/org/util/kafka/checkIfTopicExists.scala -> org.util.kafka.checkIfTopicExists
    src/main/scala/org/util/kafka/checkIfTopicExists.scala -> org.util.kafka.checkIfTopicExists$
-   src/main/scala/org/util/kafka/checkIfTopicExists.scala -> org.util.kafka.checkIfTopicExists$$anonfun$main$1
    src/main/scala/org/util/kafka/createTopic.scala -> org.util.kafka.createTopic
    src/main/scala/org/util/kafka/createTopic.scala -> org.util.kafka.createTopic$
-   src/main/scala/org/util/kafka/createTopic.scala -> org.util.kafka.createTopic$$anonfun$main$1
-   src/main/scala/org/util/kafka/createTopic.scala -> org.util.kafka.createTopic$$anonfun$main$2
    src/main/scala/org/util/kafka/deleteTopic.scala -> org.util.kafka.deleteTopic
    src/main/scala/org/util/kafka/deleteTopic.scala -> org.util.kafka.deleteTopic$
-   src/main/scala/org/util/kafka/deleteTopic.scala -> org.util.kafka.deleteTopic$$anonfun$main$1
    src/main/scala/org/util/kafka/kafkaUtilMethods.scala -> org.util.kafka.kafkaUtilMethods
    src/main/scala/org/util/kafka/kafkaUtilMethods.scala -> org.util.kafka.kafkaUtilMethods$
    src/main/scala/org/util/readWriteUtil.scala -> org.util.readWriteUtil

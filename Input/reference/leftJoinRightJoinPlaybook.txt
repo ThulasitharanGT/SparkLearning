@@ -1,0 +1,56 @@
+
+
+case class empDetails(empID:Int,empName:String)
+case class empDept(empID:Int,empDept:String)
+case class deptDetails(deptAcronym:String,deptDescription:String)
+
+
+import scala.collection.mutable.ArrayBuffer
+
+val empDetailsArrayBuffer:ArrayBuffer[empDetails]=ArrayBuffer[empDetails]()
+empDetailsArrayBuffer+=empDetails(1,"Antonty")
+empDetailsArrayBuffer+=empDetails(2,"Ann")
+empDetailsArrayBuffer+=empDetails(3,"Blake")
+
+val empDetailsDF=empDetailsArrayBuffer.toDF
+
+
+
+val empDeptArrayBuffer:ArrayBuffer[empDept]=ArrayBuffer[empDept]()
+empDeptArrayBuffer+=empDept(1,"ME")
+empDeptArrayBuffer+=empDept(2,"AE")
+
+val empDeptDF=empDeptArrayBuffer.toDF
+
+empDeptDF.join(empDetailsDF,Seq("empID"),"left").show
+empDeptDF.join(empDetailsDF,Seq("empID"),"right").show
+
+import org.apache.spark.sql.expressions._
+
+val rownumberWindow=row_number.over(Window.orderBy("empID"))
+
+empDeptDF.orderBy("empID").withColumn("rowNumber",rownumberWindow).join(empDetailsDF.orderBy("empID").withColumn("rowNumber",rownumberWindow),Seq("rowNumber")).show
+
+
+val empDetailsArrayBuffer1:ArrayBuffer[empDetails]=ArrayBuffer[empDetails]()
+empDetailsArrayBuffer1+=empDetails(1,"Antonty")
+empDetailsArrayBuffer1+=empDetails(2,"Ann")
+empDetailsArrayBuffer1+=empDetails(3,"Blake")
+empDetailsArrayBuffer1+=empDetails(4,"Boss")
+
+val empDetailsDF1=empDetailsArrayBuffer1.toDF
+
+
+val empDetailsArrayBuffer2:ArrayBuffer[empDetails]=ArrayBuffer[empDetails]()
+empDetailsArrayBuffer2+=empDetails(1,"Alpha")
+empDetailsArrayBuffer2+=empDetails(2,"Ann")
+empDetailsArrayBuffer2+=empDetails(4,"Boss")
+empDetailsArrayBuffer2+=empDetails(5,"Camaron")
+
+val empDetailsDF2=empDetailsArrayBuffer2.toDF
+
+empDetailsDF1.join(empDetailsDF2,Seq("empID"),"full").show // gives you matched records
+
+empDetailsDF1.join(empDetailsDF2,Seq("empID"),"left").show // gives you all records present in left and records present in left not present in right as null
+
+empDetailsDF1.join(empDetailsDF2,Seq("empID"),"right").show // gives you all records present in right and records present in right not present in left as null
