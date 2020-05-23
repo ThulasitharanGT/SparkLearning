@@ -2,7 +2,7 @@ package org.controller.deltaLakeEG
 import java.util.concurrent.ThreadLocalRandom
 import org.apache.spark.sql.functions._
 import org.util.SparkOpener
-
+//org.controller.deltaLakeEG.streamUsingRateExample
 object streamUsingRateExample extends SparkOpener {
   val spark=SparkSessionLoc("temp")
   val listOfChars = ('a' to 'z') ++ ('A' to 'Z')
@@ -36,9 +36,10 @@ object streamUsingRateExample extends SparkOpener {
         case _=> println("invalid option")
        }
       val streamDF=spark.readStream.format("rate").option("rowsPerSecond",5).load.withColumn("stringValue",lit(randomStringGenerator(100))).withColumn("intValue",lit(randomNumber)).withColumn("SnapshotDate",lit(snapshotDateCurrent))
-      val query=streamDF.writeStream.format("delta").option("mergeSchema","true").option("checkpointLocation",checkPointPath).option("maxFilesPerTrigger","2").option("path",outputPath).start
-      query.awaitTermination
-
+      //val query=streamDF.writeStream.format("delta").option("mergeSchema","true").option("checkpointLocation",checkPointPath).option("maxFilesPerTrigger","2").option("path",outputPath).start
+     val query=streamDF.writeStream.format("parquet").option("checkpointLocation",checkPointPath).option("maxFilesPerTrigger","2").option("path",outputPath).start
+       query.awaitTermination
+//format delta throwing error for docker
       /*
       //first stream
 spark-submit --class org.controller.deltaLakeEG.streamUsingRateExample --packages io.delta:delta-core_2.11:0.5.0 --num-executors 1 --executor-memory 1g --driver-cores 1 --driver-memory 1g --deploy-mode client --master yarn /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar checkPointPath=hdfs://localhost/user/raptor/kafka/stream/checkPoint1RateTry/ outputPath=hdfs://localhost/user/raptor/kafka/stream/dataRateTry/ snapshotDateInfo=today snapshotDate=0

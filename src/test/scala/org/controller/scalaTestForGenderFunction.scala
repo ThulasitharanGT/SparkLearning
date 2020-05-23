@@ -1,5 +1,5 @@
 package org.controller
-
+/*
 import org.scalatest.{FlatSpec,Matchers}
 import org.controller.UDFOnSurvey._
 
@@ -9,3 +9,5 @@ class scalaTestForGenderFunction extends FlatSpec with Matchers {
   }
 
 }
+
+ */

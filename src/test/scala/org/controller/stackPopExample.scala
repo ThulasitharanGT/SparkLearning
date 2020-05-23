@@ -1,7 +1,8 @@
 package org.controller
 import collection.mutable.Stack
-import org.scalatest.FlatSpec
-class stackPopExample extends FlatSpec  {
+//import org.scalatest.FlatSpec
+class stackPopExample { // extends FlatSpec  {
+  /*
   "A Stack" should "pop values in last-in-first-out order" in {
     val stack = new Stack[Int]
     stack.push(1)
@@ -17,4 +18,6 @@ class stackPopExample extends FlatSpec  {
     }
   }
 
+
+   */
 }

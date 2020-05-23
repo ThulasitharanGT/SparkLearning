@@ -87,6 +87,11 @@ products:
    src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> build/classes/scala/main/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.class
    src/main/scala/org/controller/explodeExample.scala -> build/classes/scala/main/org/controller/explodeExample$.class
    src/main/scala/org/controller/explodeExample.scala -> build/classes/scala/main/org/controller/explodeExample.class
+   src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala -> build/classes/scala/main/org/controller/forDocker/dataFrameInfiniteLoop$.class
+   src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala -> build/classes/scala/main/org/controller/forDocker/dataFrameInfiniteLoop.class
+   src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> build/classes/scala/main/org/controller/forDocker/writingDFinInfiniteLoop$$typecreator5$1.class
+   src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> build/classes/scala/main/org/controller/forDocker/writingDFinInfiniteLoop$.class
+   src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> build/classes/scala/main/org/controller/forDocker/writingDFinInfiniteLoop.class
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> build/classes/scala/main/org/controller/hbaseSpark/hbaseSparkReadWrite$.class
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> build/classes/scala/main/org/controller/hbaseSpark/hbaseSparkReadWrite.class
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> build/classes/scala/main/org/controller/hiveTesting/hiveTestExample$.class
@@ -288,6 +293,13 @@ binary dependencies:
    src/main/scala/org/controller/explodeExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/explodeExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/explodeExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-client/1.4.12/4505890582f14e7396c267f4ed8a32d36703262/hbase-client-1.4.12.jar
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-common/1.4.12/e3ce0d78286afc4dbca4b2824e7abcd9c4b33e84/hbase-common-1.4.12.jar
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-server/1.4.12/1fcef61b34156e6ce0217ee56b8f63867c9a0fb4/hbase-server-1.4.12.jar
@@ -496,6 +508,8 @@ source dependencies:
    src/main/scala/org/controller/explodeExample.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/explodeExample.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/explodeExample.scala -> src/main/scala/org/util/readWriteUtil.scala
+   src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala
+   src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> src/main/scala/org/util/readWriteUtil.scala
@@ -637,6 +651,11 @@ class names:
    src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> org.controller.deltaLakeEG.systemCommandRunningForStreamingPipeline$
    src/main/scala/org/controller/explodeExample.scala -> org.controller.explodeExample
    src/main/scala/org/controller/explodeExample.scala -> org.controller.explodeExample$
+   src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala -> org.controller.forDocker.dataFrameInfiniteLoop
+   src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala -> org.controller.forDocker.dataFrameInfiniteLoop$
+   src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> org.controller.forDocker.writingDFinInfiniteLoop
+   src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> org.controller.forDocker.writingDFinInfiniteLoop$
+   src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> org.controller.forDocker.writingDFinInfiniteLoop$$typecreator5$1
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> org.controller.hbaseSpark.hbaseSparkReadWrite
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> org.controller.hbaseSpark.hbaseSparkReadWrite$
    src/main/scala/org/controller/hiveTesting/hiveTestExample.scala -> org.controller.hiveTesting.hiveTestExample

@@ -19,52 +19,34 @@
     <orderEntry type="library" name="Gradle: org.apache.spark:spark-sql_2.11:2.4.5" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.spark:spark-catalyst_2.11:2.4.5" level="project" />
     <orderEntry type="library" name="Gradle: org.scala-lang.modules:scala-parser-combinators_2.11:1.1.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest_2.11:3.3.0-SNAP2" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest-featurespec_2.11:3.3.0-SNAP2" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest-flatspec_2.11:3.3.0-SNAP2" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest-freespec_2.11:3.3.0-SNAP2" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest-funsuite_2.11:3.3.0-SNAP2" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest-funspec_2.11:3.3.0-SNAP2" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest-propspec_2.11:3.3.0-SNAP2" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest-refspec_2.11:3.3.0-SNAP2" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest-wordspec_2.11:3.3.0-SNAP2" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest-diagrams_2.11:3.3.0-SNAP2" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest-shouldmatchers_2.11:3.3.0-SNAP2" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest-mustmatchers_2.11:3.3.0-SNAP2" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest-matchers-core_2.11:3.3.0-SNAP2" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest-core_2.11:3.3.0-SNAP2" level="project" />
     <orderEntry type="library" name="Gradle: io.delta:delta-core_2.11:0.5.0" level="project" />
     <orderEntry type="library" name="Gradle: com.databricks:spark-avro_2.11:4.0.0" level="project" />
     <orderEntry type="library" name="Gradle: org.scala-lang.modules:scala-swing_2.11:2.0.3" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.spark:spark-streaming_2.11:2.4.5" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.spark:spark-graphx_2.11:2.4.5" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.spark:spark-core_2.11:2.4.5" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest_2.12:3.2.0-SNAP10" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.module:jackson-module-scala_2.11:2.10.0" level="project" />
     <orderEntry type="library" name="Gradle: com.typesafe.scala-logging:scala-logging_2.11:3.9.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-launcher_2.11:2.4.5" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.spark:spark-mllib-local_2.11:2.4.5" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-sketch_2.11:2.4.5" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-unsafe_2.11:2.4.5" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-kvstore_2.11:2.4.5" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-tags_2.11:2.4.5" level="project" />
-    <orderEntry type="library" name="Gradle: org.json4s:json4s-jackson_2.11:3.5.3" level="project" />
-    <orderEntry type="library" name="Gradle: org.json4s:json4s-core_2.11:3.5.3" level="project" />
-    <orderEntry type="library" name="Gradle: org.scala-lang.modules:scala-xml_2.11:1.2.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalactic:scalactic_2.11:3.3.0-SNAP2" level="project" />
     <orderEntry type="library" name="Gradle: org.scalanlp:breeze_2.11:0.13.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.twitter:chill_2.11:0.9.3" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.bahir:spark-streaming-twitter_2.11:2.4.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-tags_2.12:2.4.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalactic:scalactic_2.12:3.2.0-SNAP10" level="project" />
     <orderEntry type="library" name="Gradle: org.scalanlp:breeze-macros_2.11:0.13.2" level="project" />
     <orderEntry type="library" name="Gradle: org.spire-math:spire_2.11:0.13.0" level="project" />
     <orderEntry type="library" name="Gradle: org.spire-math:spire-macros_2.11:0.13.0" level="project" />
     <orderEntry type="library" name="Gradle: org.typelevel:machinist_2.11:0.6.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.scala-lang:scala-reflect:2.12.4" level="project" />
-    <orderEntry type="library" name="Gradle: org.scala-lang.modules:scala-xml_2.12:1.0.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.scala-lang:scala-reflect:2.11.12" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.module:jackson-module-scala_2.11:2.10.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-launcher_2.11:2.4.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-sketch_2.11:2.4.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-unsafe_2.11:2.4.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-kvstore_2.11:2.4.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-tags_2.11:2.4.5" level="project" />
+    <orderEntry type="library" name="Gradle: com.twitter:chill_2.11:0.9.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.json4s:json4s-jackson_2.11:3.5.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.bahir:spark-streaming-twitter_2.11:2.4.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-tags_2.12:2.4.0" level="project" />
     <orderEntry type="library" name="Gradle: com.chuusai:shapeless_2.11:2.3.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.json4s:json4s-core_2.11:3.5.3" level="project" />
     <orderEntry type="library" name="Gradle: org.typelevel:macro-compat_2.11:1.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.scala-lang.modules:scala-xml_2.11:1.0.6" level="project" />
     <orderEntry type="library" name="Gradle: org.json4s:json4s-ast_2.11:3.5.3" level="project" />
     <orderEntry type="library" name="Gradle: org.json4s:json4s-scalap_2.11:3.5.3" level="project" />
     <orderEntry type="library" name="Gradle: org.scala-lang:scala-library:2.12.7" level="project" />
@@ -159,7 +141,6 @@
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.10.0" level="project" />
     <orderEntry type="library" name="Gradle: net.sf.jopt-simple:jopt-simple:5.0.4" level="project" />
     <orderEntry type="library" name="Gradle: org.spark-project.spark:unused:1.0.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.scalatest:scalatest-compatible:3.3.0-SNAP2" level="project" />
     <orderEntry type="library" name="Gradle: org.antlr:antlr4:4.7" level="project" />
     <orderEntry type="library" name="Gradle: org.antlr:antlr4-runtime:4.7" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-math3:3.4.1" level="project" />
