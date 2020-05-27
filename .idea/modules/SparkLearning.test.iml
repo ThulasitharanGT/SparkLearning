@@ -91,13 +91,15 @@
     <orderEntry type="library" name="Gradle: org.apache.hadoop:hadoop-auth:2.7.4" level="project" />
     <orderEntry type="library" name="Gradle: org.twitter4j:twitter4j-stream:4.0.6" level="project" />
     <orderEntry type="library" name="Gradle: org.twitter4j:twitter4j-core:4.0.6" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.curator:curator-recipes:2.7.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.curator:curator-framework:2.7.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.curator:curator-client:2.7.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.tephra:tephra-hbase-compat-1.1:0.9.0-incubating" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.tephra:tephra-core:0.9.0-incubating" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.twill:twill-core:0.6.0-incubating" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.twill:twill-discovery-core:0.6.0-incubating" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.6" level="project" />
+    <orderEntry type="library" name="Gradle: com.twitter:hbc-core:2.2.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.curator:curator-recipes:2.7.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.curator:curator-framework:2.7.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.curator:curator-client:2.7.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.twill:twill-zookeeper:0.6.0-incubating" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.zookeeper:zookeeper:3.4.14" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-log4j12:1.7.26" level="project" />
@@ -207,7 +209,8 @@
     <orderEntry type="library" name="Gradle: commons-beanutils:commons-beanutils-core:1.8.0" level="project" />
     <orderEntry type="library" name="Gradle: commons-beanutils:commons-beanutils:1.7.0" level="project" />
     <orderEntry type="library" name="Gradle: commons-logging:commons-logging:1.2" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.guava:guava:16.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.twitter:joauth:6.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.guava:guava:15.0" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.htrace:htrace-core:3.1.0-incubating" level="project" />
     <orderEntry type="library" name="Gradle: org.jruby.joni:joni:2.1.2" level="project" />
     <orderEntry type="library" name="Gradle: org.jruby.jcodings:jcodings:1.0.8" level="project" />
@@ -282,7 +285,6 @@
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-csv:1.0" level="project" />
     <orderEntry type="library" name="Gradle: xmlenc:xmlenc:0.52" level="project" />
     <orderEntry type="library" name="Gradle: javax.servlet.jsp:jsp-api:2.1" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.2.4" level="project" />
     <orderEntry type="library" name="Gradle: com.jcraft:jsch:0.1.54" level="project" />
     <orderEntry type="library" name="Gradle: commons-daemon:commons-daemon:1.0.13" level="project" />
     <orderEntry type="library" name="Gradle: xerces:xercesImpl:2.9.1" level="project" />

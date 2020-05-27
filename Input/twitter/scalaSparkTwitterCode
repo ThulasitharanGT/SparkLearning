@@ -1,0 +1,68 @@
+//4.0.7 does'nt work
+spark-shell --packages org.twitter4j:twitter4j-core:4.0.4,org.twitter4j:twitter4j-stream:4.0.4,org.apache.bahir:spark-streaming-twitter_2.11:2.4.0
+
+//org.apache.spark:spark-streaming-twitter_2.10:1.6.3
+
+
+
+
+//need to try with replication
+
+
+import org.apache.spark.streaming._
+import twitter4j.conf.ConfigurationBuilder
+import twitter4j.auth.OAuthAuthorization
+import twitter4j.Status
+import org.apache.spark.streaming.twitter.TwitterUtils
+import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.log4j.{Level, Logger}
+import org.apache.spark.storage.StorageLevel
+
+val conf = new SparkConf()
+val ssc = new StreamingContext(sc, Seconds(3600))
+//keys
+val consumerKey="UO5DiXtq33DksC03pUEL9ilz0"
+val consumerSecret="5OlifhEZjPOSiukouZJYxdlY4pVYKx7KtnOO2QU6m7oXQ987sL"
+val accessToken="2931317574-JMMr2oKwdX4yBLmDGhySizkTWDtF1eJfNsPDTX3"
+val accessTokenSecret="vRS7yH3nFgAu0h0U3rKnTfvYVPLZVKiSXNatQultPMfZ9"
+val cb = new ConfigurationBuilder
+cb.setDebugEnabled(true).setOAuthConsumerKey(consumerKey).setOAuthConsumerSecret(consumerSecret).setOAuthAccessToken(accessToken).setOAuthAccessTokenSecret(accessTokenSecret)
+val auth = new OAuthAuthorization(cb.build)
+val tweets = TwitterUtils.createStream(ssc, Some(auth))//,StorageLevel.MEMORY_AND_DISK_2)
+val statuses = tweets.map(_.toString)
+ssc.checkpoint("/user/twitter/checkpoint/")
+statuses.print
+ssc.start()
+
+ssc.stop()
+---------------------------
+
+import org.apache.spark._
+import org.apache.spark.SparkContext._
+import org.apache.spark.streaming._
+import org.apache.spark.storage.StorageLevel
+import org.apache.spark.streaming.StreamingContext._
+import org.apache.log4j.Level
+import org.apache.spark.streaming.twitter._
+import twitter4j.TwitterFactory
+import twitter4j.auth.OAuthAuthorization
+import twitter4j.conf.ConfigurationBuilder
+
+val conf = new SparkConf()
+val ssc = new StreamingContext(sc, Seconds(3600))
+//keys
+val consumerKey="UO5DiXtq33DksC03pUEL9ilz0"
+val consumerSecret="5OlifhEZjPOSiukouZJYxdlY4pVYKx7KtnOO2QU6m7oXQ987sL"
+val accessToken="2931317574-JMMr2oKwdX4yBLmDGhySizkTWDtF1eJfNsPDTX3"
+val accessTokenSecret="vRS7yH3nFgAu0h0U3rKnTfvYVPLZVKiSXNatQultPMfZ9"
+val filters: Seq[String] = Seq("car")
+val cb = new ConfigurationBuilder().setDebugEnabled(true).setOAuthConsumerKey(consumerKey).setOAuthConsumerSecret(consumerSecret).setOAuthAccessToken(accessToken).setOAuthAccessTokenSecret(accessTokenSecret).build()
+val twitter_auth = new TwitterFactory(cb)
+val authVariable = new OAuthAuthorization(cb)
+val atwitter: Option[twitter4j.auth.Authorization] = Some(twitter_auth.getInstance(authVariable).getAuthorization())
+val tweets = TwitterUtils.createStream(ssc, atwitter, filters, StorageLevel.MEMORY_AND_DISK_SER_2)
+val statuses = tweets.map(_.getText().toString)
+ssc.checkpoint("/user/twitter/checkpoint/")
+//statuses.print
+statuses.saveAsTextFiles("/user/twitter/tweets/", "json")
+ssc.start()
