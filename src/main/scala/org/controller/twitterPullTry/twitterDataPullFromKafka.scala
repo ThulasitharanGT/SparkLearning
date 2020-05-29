@@ -5,8 +5,8 @@ import org.apache.spark.sql.functions._
 import java.util.{Calendar, Date, Properties}
 import java.text.SimpleDateFormat
 import java.sql.Timestamp
-import org.util.SparkOpener
-
+import org.util.{SparkOpener,readWriteUtil}
+import org.constants.projectConstants._
 object twitterDataPullFromKafka extends SparkOpener{
 
   val KafkaTopic= "bigdata-tweets"
@@ -19,7 +19,35 @@ object twitterDataPullFromKafka extends SparkOpener{
 
   def main(args:Array[String]):Unit={
 
+    val inputMap:collection.mutable.Map[String,String]= collection.mutable.Map[String,String]()
+    for (arg <- args)
+      {
+        val keyPart=arg.split("=",2)(0)
+        val valPart=arg.split("=",2)(1)
+        inputMap.put(keyPart,valPart)
+      }
+    val initialColumnsFromStreamSplittingTweets=Seq("CAST (key AS STRING) key",s"split(CAST (value AS STRING),'${tweetDelimiter}') value","CAST (topic AS STRING) topic","CAST (partition AS INT) partition","CAST (offset AS INT) offset","CAST (timestamp  AS timestamp) timestamp","CAST (timestampType AS INT) timestampType")
+    val tweetColumnsSelectExprSelectingTweetsAndSplittingUser=Seq("CAST (key as long) key","topic","partition","offset","timestamp","timestampType","value[0] as tweetId","value[1] as tweetText","value[2] as tweetLang",s" split(value[3],'${userDelimiter}') as userInfoArray","value[4] as tweetReTweetCount","value[5] as tweetFavoriteCount")
+    val tweetFinalColumnsSelectExprSelectingTweetsAndUser=Seq("key","topic","partition","offset","timestamp","timestampType","tweetId","tweetText","tweetLang","userInfoArray[0] as userId","userInfoArray[1] as userName","userInfoArray[2] as userScreenName","userInfoArray[3] as userLocation","userInfoArray[4] as userFollowersCount","tweetReTweetCount","tweetFavoriteCount")
 
+    inputMap.put(fileFormatArg,kafkaFormat)
+    inputMap.put(checkPointLocationArg,inputMap("checkPointLocationRead"))
+    inputMap.put(kafkaBootStrapServersArg,inputMap(kafkaBootStrapServersArg))
+    inputMap.put(kafkaValueDeserializerArg,inputMap(kafkaValueDeserializerArg))
+    inputMap.put(kafkaKeyDeserializerArg,inputMap(kafkaKeyDeserializerArg))
+    inputMap.put(startingOffsetsArg,inputMap(startingOffsetsArg))
+    inputMap.put(subscribeArg,inputMap("topic"))
+    val readStreamDF=readWriteUtil.readStreamFunction(spark,inputMap).selectExpr(initialColumnsFromStreamSplittingTweets:_*).selectExpr(tweetColumnsSelectExprSelectingTweetsAndSplittingUser:_*).selectExpr(tweetFinalColumnsSelectExprSelectingTweetsAndUser:_*)
+    inputMap.put(outputModeArg,inputMap("outputMode"))
+    inputMap.put(fileFormatArg,inputMap("outputFileFormat"))
+    inputMap.put(checkPointLocationArg,inputMap("checkPointLocationWrite"))
+    inputMap.put(pathArg,inputMap("outputLocation"))
+    val writeStreamDf=readWriteUtil.writeStreamFunction(spark,inputMap,readStreamDF)
+    writeStreamDf.start.awaitTermination
+
+    // spark-submit --class org.controller.twitterPullTry.twitterDataPullFromKafka --driver-memory 1g --executor-memory 1g --driver-cores 2 --executor-cores 2 --num-executors 2 --deploy-mode client /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar topic=bigdata-tweets startingOffsets=earliest outputMode=append outputFileFormat=parquet checkPointLocationWrite=/user/raptor/kafka/checkpoint/twitterWriteCheckpoint outputLocation=/user/raptor/kafka/output/twitterTweets/ checkPointLocationRead=/user/raptor/kafka/checkpoint/twitterReadCheckpoint  kafka.bootstrap.servers= value.deserializer=org.apache.kafka.common.serialization.StringDeserializer key.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+
+/*  Tried out of the box
     // reading entire data from stream with all kafka metadata
     spark.readStream.format("kafka").option("kafka.bootstrap.servers",KafkaServers).option("subscribe", KafkaTopic).option("startingOffsets","earliest").load.selectExpr("CAST (key AS long) key","CAST (value AS Tweet) value","CAST (topic AS STRING) topic","CAST (partition AS INT) partition","CAST (offset AS INT) offset","CAST (timestamp  AS timestamp) timestamp","CAST (timestampType AS INT) timestampType").writeStream.format("console").option("checkpointLocation","/use/temp/someLocation2/").start
     val dateValue1=dateFormat.format(Calendar.getInstance().getTime())
@@ -45,7 +73,7 @@ object twitterDataPullFromKafka extends SparkOpener{
     // writing to parquet file
     spark.readStream.format("kafka").option("kafka.bootstrap.servers",KafkaServers).option("subscribe", KafkaTopic).option("startingOffsets","earliest").load.selectExpr(initialColumnsFromStream:_*).selectExpr(tweetColumnsSelectExpr:_*).selectExpr(tweetFinalColumnsSelectExpr:_*).writeStream.format("parquet").option("checkpointLocation",s"/use/temp/someLocation${dateValue}/").start(s"/use/temp/outputLocation${dateValue}")
 
-
+*/
 
   }
 
