@@ -1,5 +1,5 @@
 package org.controller.twitterPullTry
-
+import org.constants.projectConstants._
 
 /*
 Pulled data from twitter need's to be replicated twice in order to be saved. So using kafka with 2 broker's . creating a topic with replication 2 in order to solve this problem
@@ -41,8 +41,8 @@ object twitterKafka {
     properties.put(ProducerConfig.ACKS_CONFIG, "1")
     properties.put(ProducerConfig.LINGER_MS_CONFIG, "500")
     properties.put(ProducerConfig.RETRIES_CONFIG, "0")
-    properties.put("key.serializer", "org.apache.kafka.common.serialization.LongSerializer")
-    properties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+    properties.put(kafkaKeySerializerArg, "org.apache.kafka.common.serialization.LongSerializer")
+    properties.put(kafkaValueSerializerArg, "org.apache.kafka.common.serialization.StringSerializer")
     val kafkaProducer=new KafkaProducer[Long, String](properties)
     kafkaProducer
   }
@@ -60,7 +60,7 @@ object twitterKafka {
     client.connect()
     try  {
       val producer = getProducer()
-      while (true) {
+      while (booleanTrue) {
         val tweet:Tweet = gson.fromJson(queue.take,classOf[Tweet])   //.fromJson(queue.take(), Tweet.class)
         println(s"Fetched tweet id ${tweet.id}")
         println(s"Tweet Msg = ${tweet.text}")
@@ -69,7 +69,7 @@ object twitterKafka {
         //val msg = tweet.toString()
         // val msg = s"""{"id":${tweet.id},"text":"${tweet.text}","lang":"${tweet.lang}","user":"${tweet.user}","retweetCount":${tweet.retweetCount},"favoriteCount":${tweet.favoriteCount}}"""
         val msg = s"""${tweet.id}${tweetDelimiter}${tweet.text}${tweetDelimiter}${tweet.lang}${tweetDelimiter}${tweet.user.id}${userDelimiter}${tweet.user.name}${userDelimiter}${tweet.user.screenName}${userDelimiter}${tweet.user.location}${userDelimiter}${tweet.user.followersCount}${tweetDelimiter}${tweet.retweetCount}${tweetDelimiter}${tweet.favoriteCount}"""
-        println(s"Kafka Msg = ${msg}") // goeas as a single message and is splitted in stream
+        println(s"Kafka Msg = ${msg}") // goes as a single message and is splitted while reading stream
         val record = new ProducerRecord[Long, String](KafkaTopic, key, msg)
         producer.send(record, callback)
       }

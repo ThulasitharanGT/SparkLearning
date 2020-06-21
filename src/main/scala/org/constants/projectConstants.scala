@@ -9,6 +9,8 @@ object projectConstants {
   val kafkaBootStrapServersArg="kafka.bootstrap.servers"
   val kafkaValueDeserializerArg="value.deserializer"
   val kafkaKeyDeserializerArg="key.deserializer"
+  val kafkaValueSerializerArg="value.serializer"
+  val kafkaKeySerializerArg="key.serializer"
   val deltaReplaceWhereClause="replaceWhere"
   val deltaMergeSchemaClause="mergeSchema"
   val deltaOverWriteSchemaClause="overwriteSchema"
