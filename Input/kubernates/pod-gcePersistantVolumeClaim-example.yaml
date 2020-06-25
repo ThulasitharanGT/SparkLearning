@@ -1,0 +1,20 @@
+# pod-gcePersistantVolumeClaim-example.yaml  [persistant volume claim] - wont work just a reference  (persistant volume created -> persisted volume claim reuested -> persisted volume assigned for mount and use -> released after mount and use)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: pod-gce-persistant-volume-claim-path  # used to claim this volume
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: pod_gce_persistant_volume_claim_path  #this spec is used in selector
+         tier: service
+         environment: dev
+spec:
+    resources:
+      requests:
+        storage: 15Gi
+    accessModes:
+      - ReadWriteOnce
+    storageClassName: slow
+    gcePersistantDisk :
+      pdName: #persistent disk name created in google cloud    
+      fsType: ext4 # format in which disk needs to be formatted. (when disk is created it won't be formatted with any file system,it'll be a raw disk)

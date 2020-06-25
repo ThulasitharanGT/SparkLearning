@@ -1,0 +1,23 @@
+# ngnix-service-nodeport.yaml
+apiVersion: v1
+kind: Service
+metadata:
+    name: nginx-service-nodeport
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: nginx_service_nodeport  #this spec is used in selector
+         tier: service
+         environment: dev
+spec:
+    type: NodePort
+    ports:
+    - nodePort: 31000
+      port: 80
+      targetPort: 80 # containerPort of the container in pod which is running
+    # set based selector, can be used to select multiple options in single selection
+    selector:  # set based selectors are only vailable in apps/v1 type
+    #  matchLabels:
+        app: nginx
+    #  matchExpressions:  
+    #   - {key: environment, operator: In, values: [dev]}
+    #   - {key: tier, operator: NotIn, values: [frontend,backend]}

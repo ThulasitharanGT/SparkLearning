@@ -1,0 +1,80 @@
+
+mkdir dockerTemp
+#mkdir -p /dockerTemp/input
+#cd /dockerTemp/input
+#wget "https://introcs.cs.princeton.edu/java/data/sdss6949386.csv"
+#wget "https://introcs.cs.princeton.edu/java/data/sdss1738478.csv"
+#cd ..
+
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt-get install -y openjdk-8-jdk
+RUN apt-get update
+RUN apt-get install git -y
+RUN apt-get update
+RUN apt-get install wget -y
+RUN wget "https://downloads.apache.org/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz"
+RUN tar -xzvf spark-2.4.5-bin-hadoop2.7.tgz
+RUN rm spark-2.4.5-bin-hadoop2.7.tgz
+ENV SPARK_HOME /spark-2.4.5-bin-hadoop2.7/
+ENV PATH $PATH:$SPARK_HOME/bin
+ENV RAWVALUE ?raw=true
+RUN cp $SPARK_HOME/conf/log4j.properties.template $SPARK_HOME/conf/log4j.properties
+ARG GIT_LINK
+ARG JAR_NAME 
+ARG FILE_NAME
+ARG FILE_PATH
+ARG CLASS_NAME
+ARG NUM_RECORDS
+ARG NUM_EXECUTORS
+ARG EXECUTOR_CORES
+ARG EXECUTOR_MEMORY
+ARG DRIVER_CORES
+ARG DRIVER_MEMORY
+ARG DEPLOY_MODE
+ENV GITLINK $GIT_LINK
+ENV JARNAME $JAR_NAME 
+ENV FILENAME $FILE_NAME
+ENV CLASSNAME $CLASS_NAME 
+ENV NUMRECORDS $NUM_RECORDS 
+ENV NUMEXECUTORS $NUM_EXECUTORS 
+ENV EXECUTORCORES $EXECUTOR_CORES 
+ENV EXECUTORMEMORY $EXECUTOR_MEMORY 
+ENV DRIVERCORES $DRIVER_CORES 
+ENV DRIVERMEMORY $DRIVER_MEMORY 
+ENV DEPLOYMODE $DEPLOY_MODE 
+ENV FILEPATH $FILE_PATH
+RUN wget -O $JAR_NAME "$GITLINK$JARNAME$RAWVALUE"
+RUN wget "$FILEPATH"
+CMD ls .
+CMD spark-submit --class  $CLASSNAME --num-executors $NUMEXECUTORS --driver-memory $DRIVERMEMORY --driver-cores $DRIVERCORES --executor-cores $EXECUTORCORES --executor-memory $EXECUTORMEMORY --deploy-mode $DEPLOYMODE $JARNAME ./$FILENAME $NUMRECORDS
+
+docker build --build-arg JAR_NAME=KafkaGradleTest-1.0-SNAPSHOT-all.jar --build-arg FILE_NAME=sdss6949386.csv  --build-arg GIT_LINK=https://github.com/ThulasitharanGT/KafkaGradleTest/blob/master/build/libs/ --build-arg CLASS_NAME=com.dockerTemp.readingCsvFileForDocker  --build-arg NUM_RECORDS=10 --build-arg NUM_EXECUTORS=2 --build-arg EXECUTOR_CORES=2 --build-arg EXECUTOR_MEMORY=2g --build-arg DRIVER_CORES=2 --build-arg DRIVER_MEMORY=1g --build-arg DEPLOY_MODE=client --build-arg FILE_PATH=https://introcs.cs.princeton.edu/java/data/sdss6949386.csv .     //passig arg's while bilding
+
+docker run 5f3b232a2853
+
+
+docker tag 5f3b232a2853 thulz06/streambatch-csv:v1
+
+docker push thulz06/streambatch-csv
+
+docker pull thulz06/streambatch-csv:v1
+
+
+-------------------------------------------------------------------
+docker login --username=thulz06  or docker login -u=thulz06 
+
+docker images
+
+REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
+streamspark         v1                  0045ce92ea7b        12 seconds ago       1.11GB
+
+docker tag 0045ce92ea7b thulz06/streamspark:v1
+
+docker push thulz06/streamspark
+===========================================
+docker login --username=thulz06 
+
+docker pull thulz06/streamspark:v1
+// will run without login
+docker run -t -i thulz06/streamspark:v1

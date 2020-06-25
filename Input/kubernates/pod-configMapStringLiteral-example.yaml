@@ -1,0 +1,28 @@
+# pod-configMapStringLiteral-example.yaml  
+apiVersion: v1
+kind: Pod
+metadata:
+    name: pod-config-map-string-literal  
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: pod_config_map_string_literal  #this spec is used in selector
+         tier: service
+         environment: dev
+spec:
+    containers:
+    - name: busybox
+      image: k8s.gcr.io/busybox
+      command: [ "/bin/sh" , "-c" ,"env"]
+      env :
+        - name: power_unit_manufacturer
+          valueFrom :
+            configMapKeyRef :
+              name: configmap-cli # name of string literal config
+              key: redbull.engine # key for the config properties
+        - name: team_sponsor
+          valueFrom :
+            configMapKeyRef :
+              name: configmap-cli # name of string literal config   , We can use different configmap name here if it's from different configmap
+              key: redbull.sponsor # key for the config properties
+    restartPolicy: Never
+      

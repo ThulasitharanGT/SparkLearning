@@ -1,0 +1,23 @@
+# pod-gcePersistantDisk-example.yaml   - wont work just a reference 
+apiVersion: v1
+kind: Pod
+metadata:
+    name: pod-gce-persistant-disk-path
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: pod_gce_persistant_path  #this spec is used in selector
+         tier: service
+         environment: dev
+spec:
+    containers:
+    -   name: redis-container   
+        image : redis
+        volumeMounts:
+        - mountPath: /test-vol     # this is the directory name inside the pod
+          name: test-volume     #    <--|  used here
+    volumes:                    #       |
+    -   name: test-volume       #    ---|  this name is 
+        gcePersistantDisk :
+          pdName: #persistent disk name created in google cloud
+          fsType: ext4 # format in which disk needs to be formatted. (when disk is created it won't be formatted with any file system,it'll be a raw disk)          
+          #path: /c/Users         # thisis the path of c users that is mounted to minikube VM , got it from minikube shell

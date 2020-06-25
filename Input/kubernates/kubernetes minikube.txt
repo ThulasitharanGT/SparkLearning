@@ -1,0 +1,315 @@
+for minikube 
+
+
+
+
+=======================================================
+Minikube
+=======================================================
+
+
+
+#kickstarting environment
+
+cd C:\VM\kubernetesMinikube
+.\minikube-windows-amd64.exe start
+.\minikube-windows-amd64.exe status
+.\kubectl.exe get nodes
+
+.\kubectl.exe run kubernetes-bootcamp --image=thulz06/streamspark:v1 // runing docker image . kubernetes-bootcamp is the name of the pod
+
+.\kubectl.exe get pods -o wide | grep kubernetes-bootcamp
+
+.\kubectl.exe get node -o wide | grep minikube    (name of the appication file in c folder)
+
+.\kubectl.exe delete pods kubernetes-bootcamp
+.\minikube-windows-amd64.exe stop
+
+/// minekube ssh 
+.\minikube-windows-amd64.exe ssh
+
+df -hl
+
+# to mount a dir to cluster
+minikube mount /D/study/:/d/files/
+
+.\minikube-windows-amd64.exe mount D:\\study\:/d/files/
+
+.\minikube-windows-amd64.exe mount D:\\study\kubernates\propertyfiles\:/d/files/
+
+
+to exit type exit.
+
+/c/Users  # home dir 
+
+///
+
+----------
+#pod
+.\kubectl.exe create -f D:\study\kubernates\ngnix-pod.yml
+# .\kubectl.exe get pods 
+# .\kubectl.exe get pods -o wide
+.\kubectl.exe delete pods ngnix-pod 
+(or)
+.\kubectl.exe delete -f D:\study\kubernates\ngnix-pod.yml
+.\kubectl.exe create -f D:\study\kubernates\ngnix-replication-controller.yaml
+# .\kubectl.exe get pods 
+# filtering pods
+# .\kubectl.exe get pods -l app=ngnix   # equality based selector's are supported in replication controller
+
+#replication controller
+
+
+.\kubectl.exe delete -f D:\study\kubernates\ngnix-replication-controller.yaml
+# .\kubectl.exe scala rc ngnix-rc --replicas=5
+# .\kubectl.exe get nodes
+# .\kubectl.exe get nodes -o wide
+
+# .\kubectl.exe get pods -l environment in(dev)
+
+#replica set
+
+.\kubectl.exe create -f D:\study\kubernates\ngnix-replication-set.yaml
+.\kubectl.exe get pods -l tier=server
+.\kubectl.exe delete -f D:\study\kubernates\ngnix-replication-set.yaml
+.\kubectl.exe get rs nginx-rs
+.\kubectl.exe get rs nginx-rs -o wide
+
+
+# deployment
+
+.\kubectl.exe create -f D:\study\kubernates\ngnix-deployment.yaml
+.\kubectl.exe get deploy -l app=nginx_deploy
+.\kubectl.exe get rs -l app=nginx
+.\kubectl.exe get po -l app=nginx # use pod name
+.\kubectl.exe describe deploy -l app=nginx_deploy
+
+# updating image version from 1.7.9 to 1.9.1
+
+# type 1 - directly suppling command through cli
+.\kubectl.exe set image deploy nginx-deployment nginx-container=nginx:1.9.1
+# nginx_deploy - deployment name, nginx-container - contaner name in spec described for pod
+
+#.\kubectl.exe set image deploy nginx-deployment nginx-container=nginx:1.7.9
+
+
+# type 2 - using vi editor in cli
+
+.\kubectl.exe edit deploy nginx-deployment
+#checking deployment status
+.\kubectl.exe rollout status deployment/nginx-deployment
+
+# rollback
+.\kubectl.exe set image deploy nginx-deployment nginx-container=nginx:1.79 --record
+.\kubectl.exe rollout status deployment/nginx-deployment
+.\kubectl.exe rollout history deployment/nginx-deployment #will record history if you give --record in set command
+.\kubectl.exe rollout undo deployment/nginx-deployment
+
+# increasing number of replicas
+.\kubectl.exe scale deployment nginx-deployment --replicas=5
+.\kubectl.exe get deployment  nginx-deployment
+.\kubectl.exe describe deploy nginx-deployment
+
+
+# nodeport service: exposes nodeIP to the outside world and we can set a port in thich pod will post the service we ask it to.
+
+.\kubectl.exe create -f D:\study\kubernates\ngnix-deployment.yaml
+.\kubectl.exe create -f D:\study\kubernates\ngnix-service-nodeport.yaml  # uses pods from deployment
+.\kubectl.exe get service #-l app=nginx # gives you ip assigned for the service
+.\kubectl.exe get pods -o wide # gives you pod ip's
+.\kubectl.exe describe service nginx-service-nodeport  # describes the service
+.\kubectl.exe get nodes -o wide  # node ip from here
+.\kubectl.exe delete -f D:\study\kubernates\ngnix-service-nodeport.yaml
+.\kubectl.exe delete -f D:\study\kubernates\ngnix-deployment.yaml
+
+
+Service IP = http://10.104.73.116:80 -- not working
+pod IP = 
+http://172.17.0.6:80  -- not working
+http://172.17.0.4:80  -- not working
+http://172.17.0.5:80  -- not working
+
+node IP = http://192.168.99.100:31000  -- working
+
+
+# load balancer service: it route's the request to container having resource to serve for that request.
+
+.\kubectl.exe create -f D:\study\kubernates\ngnix-deployment.yaml
+.\kubectl.exe create -f D:\study\kubernates\ngnix-service-loadbalancer.yaml
+.\kubectl.exe get service  # external ip is not getting created in minikube. It needs to run in some cloud playform like google cloud.
+
+# cluster ip demo
+
+# one front end, one backend db master, 3 backend db slave and 1 front end (should be 2 but load balancer wont work in minikube so one)
+
+.\kubectl.exe create -f D:\study\kubernates\redis-master-service-deployment.yaml
+.\kubectl.exe create -f D:\study\kubernates\redis-slave-service-deployment.yaml
+.\kubectl.exe create -f D:\study\kubernates\geustbook-frontend-service-deployment.yaml
+.\kubectl.exe create -f D:\study\kubernates\redis-master-service-clusterIP.yaml
+.\kubectl.exe create -f D:\study\kubernates\redis-slave-service-clusterIP.yaml
+.\kubectl.exe create -f D:\study\kubernates\frontend-service-nodeport.yaml
+
+.\kubectl.exe create -f D:\study\kubernates\backend-master-service-nodeport.yaml 
+
+
+.\kubectl.exe delete -f D:\study\kubernates\geustbook-frontend-service-deployment.yaml
+.\kubectl.exe delete -f D:\study\kubernates\redis-slave-service-deployment.yaml
+.\kubectl.exe delete -f D:\study\kubernates\redis-master-service-deployment.yaml
+.\kubectl.exe delete -f D:\study\kubernates\redis-master-service-clusterIP.yaml
+.\kubectl.exe delete -f D:\study\kubernates\redis-slave-service-clusterIP.yaml
+.\kubectl.exe delete -f D:\study\kubernates\frontend-service-nodeport.yaml
+
+.\kubectl.exe delete -f D:\study\kubernates\backend-master-service-nodeport.yaml
+
+.\kubectl.exe describe service frontend_service_nodeport # get the port from here
+.\kubectl.exe get nodes -o wide # get the ip from here
+.\kubectl.exe get pods -l tier=backend
+.\kubectl.exe get pods -l tier=frontend
+.\kubectl.exe get services -l tier=frontend 
+.\kubectl.exe get services -l tier=backend
+
+.\kubectl.exe describe service redis-master-cluster-ip
+.\kubectl.exe describe service redis-slave-cluster-ip
+
+
+http://192.168.99.100:32000  # frontend
+http://192.168.99.100:32001  # backend master , doesnt have a webpage to welcome it seems
+
+
+# volumes
+
+# 1. empty dir (scope of a pod's lifetime)
+
+.\kubectl.exe create -f D:\study\kubernates\pod-emptyDir-example.yaml
+
+.\kubectl.exe delete -f D:\study\kubernates\pod-emptyDir-example.yaml
+
+
+# 2. host path (scope of a node's lifetime)
+
+.\kubectl.exe create -f D:\study\kubernates\pod-hostPath-example.yaml
+
+.\kubectl.exe exec pod-host-path df /test-vol
+.\kubectl.exe exec pod-host-path ls /test-vol
+.\kubectl.exe exec pod-host-path cat /test-vol/Avail_car.txt
+.\kubectl.exe exec pod-host-path -it -- /bin/sh
+
+
+# to check the mounted path of minikube shell
+
+.\kubectl.exe delete -f D:\study\kubernates\pod-hostPath-example.yaml   #/c/Users
+
+
+#Storage class
+
+# look metadata files
+.\kubectl.exe get storageclass
+
+# config map's.It's like properties file in scala.  
+# multiple file's: 
+# config files from here D:\study\kubernates\propertyfiles
+
+.\kubectl.exe get storageclass
+
+.\kubectl.exe create configmap configmap-temp --from-file=D:\\study\kubernates\propertyfiles\
+
+.\kubectl.exe get configmap -o wide
+
+.\kubectl.exe get configmap configmap-temp -o yaml
+
+.\kubectl.exe delete configmap configmap-temp 
+
+# single file: 
+
+.\kubectl.exe create configmap configmap-redis --from-file=D:\\study\kubernates\propertyfiles\redis-config
+
+.\kubectl.exe create -f D:\study\kubernates\pod-configMapSingleFile-example.yaml 
+
+.\kubectl.exe exec pod-config-map-single-file cat /redis-master/redis.conf   #mounted successfully
+
+.\kubectl.exe exec -it pod-config-map-single-file redis-cli   -> gets you into redis CLI
+--> CONFIG GET maxmemory # this config printed
+--> CONFIG GET maxmemory-policy  # this config printed
+
+.\kubectl.exe delete -f D:\study\kubernates\pod-configMapSingleFile-example.yaml 
+.\kubectl.exe delete configmap configmap-redis 
+
+
+# string literal: 
+
+.\kubectl.exe create configmap configmap-cli --from-literal=redbull.engine=honda --from-literal=redbull.sponsor=citrix
+
+.\kubectl.exe create -f D:\study\kubernates\pod-configMapStringLiteral-example.yaml
+
+.\kubectl.exe logs pod-config-map-string-literal | findstr power 
+.\kubectl.exe logs pod-config-map-string-literal | findstr sponsor 
+
+.\kubectl.exe delete -f D:\study\kubernates\pod-configMapStringLiteral-example.yaml
+
+.\kubectl.exe delete configmap configmap-cli 
+
+
+# deaomon set, used to select a set of nodes and run a copy of pod in each of the nodes in that group 
+
+.\kubectl.exe create -f D:\study\kubernates\deamonset.yaml
+
+.\kubectl.exe delete -f D:\study\kubernates\deamonset.yaml
+
+
+# secret's. Used to manage the user name, passwords and token for the aplication pods to consume and run it.
+# will be mounted as volume or used as environment variable.
+
+# 3 types 
+# generic -> created from file or directory or literal value (--from-file or --from-literal)
+# docker registry
+# tls
+
+# 1. generic 
+.\kubectl.exe create secret generic user-cred --from-file D:\\study\kubernates\secrets\ 
+.\kubectl.exe describe secret user-cred
+.\kubectl.exe delete secret user-cred 
+
+#manually creating secrets
+# we need to encrypt to base64 and then create the secrets using yaml file
+
+.\kubectl.exe create -f D:\\study\kubernates\secrets.yaml
+.\kubectl.exe get secret my-secret -o yaml
+.\kubectl.exe delete -f D:\\study\kubernates\secrets.yaml
+
+# mounting secrets as volume
+.\kubectl.exe create -f D:\\study\kubernates\secrets.yaml
+.\kubectl.exe create -f D:\\study\kubernates\pod-secrets-volume-example.yaml
+.\kubectl.exe exec pod-secrets-volume-example ls /info/cred/
+.\kubectl.exe exec pod-secrets-volume-example cat /info/cred/password
+.\kubectl.exe exec pod-secrets-volume-example cat /info/cred/username
+.\kubectl.exe delete -f D:\\study\kubernates\pod-secrets-volume-example.yaml
+.\kubectl.exe delete -f D:\\study\kubernates\secrets.yaml
+
+# using secrets as environment variable
+
+.\kubectl.exe create -f D:\\study\kubernates\secrets.yaml
+.\kubectl.exe create -f D:\\study\kubernates\pod-secrets-environment-example.yaml
+.\kubectl.exe logs pod-secrets-environment | findstr user # wont have in logs
+.\kubectl.exe exec pod-secrets-environment env |  findstr user
+.\kubectl.exe exec pod-secrets-environment env |  findstr pass
+.\kubectl.exe delete -f D:\\study\kubernates\pod-secrets-environment-example.yaml
+.\kubectl.exe delete -f D:\\study\kubernates\secrets.yaml
+
+# jobs in kubernetes
+# run to completion(jobs) or scheduled (cron job)
+#Run on completion
+
+.\kubectl.exe create -f D:\\study\kubernates\pod-job-example.yaml
+
+.\kubectl.exe get pods
+#NAME                  READY   STATUS      RESTARTS   AGE
+#countdown-job-86lsr   0/1     Completed   0          41s
+
+.\kubectl.exe logs countdown-job-86lsr
+
+.\kubectl.exe delete -f D:\\study\kubernates\pod-job-example.yaml
+
+#------------------------ own image try
+
+.\kubectl.exe create -f D:\\study\kubernates\pod-job-own-example.yaml
+

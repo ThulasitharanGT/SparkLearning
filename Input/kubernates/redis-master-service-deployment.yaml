@@ -1,0 +1,37 @@
+# redis-master-service-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: redis-master-service-deployment
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: redis_master_deployment  #this spec is used in selector
+         tier: backend
+         role: master
+         environment: dev
+spec:
+    replicas: 1
+    selector: # set based selector, can be used to select multiple options in single selection
+      matchLabels:
+        app: redis                                                          #  <----
+      matchExpressions:                                                     #      |
+        - {key: environment, operator: In, values: [dev]}                   #      |
+        - {key: tier, operator: NotIn, values: [frontend,service]}          #      |
+    template :                                                              #      |
+        metadata:                                                           #      |
+            name: redis                                              #      |
+            labels:                                                         #      |
+                app: redis  #this spec is used in selector                  #  ----- (pod name)
+                tier: backend
+                role: master
+                environment : dev
+        spec:
+            containers:
+            -   name: master                                       # container inside Pod   ,we can have multiple container inside pod
+                image : k8s.gcr.io/redis:e2e
+                resources:
+                  requests:
+                    cpu: 100m
+                    memory: 100Mi
+                ports:
+                -   containerPort: 6379   

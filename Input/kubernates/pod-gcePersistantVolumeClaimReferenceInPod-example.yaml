@@ -1,0 +1,23 @@
+# pod-gcePersistantVolumeClaimReferenceInPod-example.yaml  [persistant volume usage (3rd step)] - wont work just a reference  (persistant volume created -> persisted volume claim reuested -> persisted volume assigned for mount and use -> released after mount and use)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: pod-gce-persistant-volume-claim-reference-in-pod-path
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: pod_gce_persistant_volume_claim_reference_in_pod_path  #this spec is used in selector
+         tier: service
+         environment: dev
+spec:
+    containers:
+    -   name: redis-container 
+        image : redis
+        volumeMounts:
+        - mountPath: /test-vol
+          name: test-volume   
+    volumes:                  
+    -   name: test-volume
+        persistantVolumeClaim:
+          claimName: pod-gce-persistant-volume-claim-path  # name of PersistentVolumeClaim
+    
+    

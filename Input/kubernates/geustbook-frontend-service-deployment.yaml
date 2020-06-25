@@ -1,0 +1,37 @@
+# geustbook-frontend-service-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: geustbook-frontend-service-deployment
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: geustbook_frontend_deployment  #this spec is used in selector
+         tier: frontend
+         role: input
+         environment: dev
+spec:
+    replicas: 1
+    selector: # set based selector, can be used to select multiple options in single selection
+      matchLabels:
+        app: geustbook                                                      #  <----
+      matchExpressions:                                                     #      |
+        - {key: environment, operator: In, values: [dev]}                   #      |
+        - {key: tier, operator: NotIn, values: [backend,service]}           #      |
+    template :                                                              #      |
+        metadata:                                                           #      |
+            name: geustbook                                                 #      |
+            labels:                                                         #      |
+                app: geustbook  #this spec is used in selector                  #  ----- (pod name)
+                tier: frontend
+                role: input
+                environment : dev
+        spec:
+            containers:
+            -   name: input                                       # container inside Pod   ,we can have multiple container inside pod
+                image : gcr.io/google_samples/gb-frontend:v4 #gcr.io/google-samples/gb-frontend-amd64:v5
+                resources:
+                  requests:
+                    cpu: 100m
+                    memory: 100Mi
+                ports:
+                -   containerPort: 80   

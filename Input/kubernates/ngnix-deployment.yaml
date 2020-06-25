@@ -1,0 +1,31 @@
+# ngnix-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: nginx-deployment
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: nginx_deploy  #this spec is used in selector
+         tier: deployment
+         environment: dev
+spec:
+    replicas: 3
+    selector: # set based selector, can be used to select multiple options in single selection
+      matchLabels:
+        app: nginx                                                          #  <----
+      matchExpressions:                                                     #      |
+        - {key: environment, operator: In, values: [dev]}                   #      |
+        - {key: tier, operator: NotIn, values: [frontend,backend]}          #      |
+    template :                                                              #      |
+        metadata:                                                           #      |
+            name: nginx-pod                                                 #      |
+            labels:                                                         #      |
+                app: nginx  #this spec is used in selector                  #  ----- (pod name)
+                tier: server
+                environment : dev
+        spec:
+            containers:
+            -   name: nginx-container                                       # container inside Pod   ,we can have multiple container inside pod
+                image : nginx:1.7.9
+                ports:
+                -   containerPort: 80   

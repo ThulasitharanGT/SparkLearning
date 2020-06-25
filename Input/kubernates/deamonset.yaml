@@ -1,0 +1,37 @@
+# deamonset.yaml  , used to select a set of noeds and run a copy pod in each of the nodes in that group (like replication set or replica set with replication factor 1)
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+    name: pod-deamonset  
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: pod_deamonset  #this spec is used in selector
+         tier: service
+         environment: dev
+spec:
+    template:
+      metadata:
+        labels:
+          name: fluentd                                                 #------|
+      spec:                                                             #      |
+        containers:                                                     #      |
+        - name: fluentd                                                 #      |
+          image: gcr.io/google-containers/fluentd-elasticsearch:1.20    #      |
+    selector:                                                           #      |
+      matchLabels:                                                      #      |
+        name: fluentd                                                   #<-----|
+     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

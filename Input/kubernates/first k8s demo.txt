@@ -1,0 +1,159 @@
+wget -o SparkLearning-1.0-SNAPSHOT.jar "https://github.com/ThulasitharanGT/KafkaGradleTest/blob/master/checkpointStream/checkpoint/SparkLearning-1.0-SNAPSHOT.jar?raw=true"
+
+
+https://github.com/ThulasitharanGT/KafkaGradleTest/blob/master/checkpointStream/checkpoint/sources/SparkLearning-1.0-SNAPSHOT.jar
+
+//org.controller.deltaLakeEG.streamUsingRateExample
+//org.controller.forDocker.writingDFinInfiniteLoop
+
+docker build --build-arg CHECKPOINT_PATH=/user/spark/checkpoint --build-arg OUTPUT_PATH=/user/spark/output --build-arg SNAPSHOTDATE_INFO=today --build-arg SNAPSHOT_DATE=0  --build-arg GIT_LINK=https://github.com/ThulasitharanGT/KafkaGradleTest/blob/master/checkpointStream/ --build-arg JAR_NAME=SparkLearning-1.0-SNAPSHOT.jar  --build-arg CLASS_NAME=org.controller.deltaLakeEG.streamUsingRateExample  --build-arg NUM_EXECUTORS=1  --build-arg EXECUTOR_CORES=2  --build-arg EXECUTOR_MEMORY=1g  --build-arg DRIVER_CORES=2  --build-arg DRIVER_MEMORY=1g  --build-arg DEPLOY_MODE=client --build-arg SPARK_VERSION_INFO=spark-3.0.0-preview2 -t streamspark:v1 .
+
+docker run -t -i streamspark:v1
+
+Dockerfile
+--------------
+
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt-get install apt-utils -y
+RUN apt-get update
+ENV TZ US/Mountain
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get install -y openjdk-8-jdk
+RUN apt-get update
+RUN apt-get install git -y
+RUN apt-get update
+RUN apt-get install wget -y
+ARG SPARK_VERSION_INFO
+ENV SPARKVERSIONINFO $SPARK_VERSION_INFO
+RUN wget "https://archive.apache.org/dist/spark/$SPARKVERSIONINFO/$SPARKVERSIONINFO-bin-hadoop2.7.tgz"
+RUN tar -xzvf $SPARKVERSIONINFO-bin-hadoop2.7.tgz
+RUN rm $SPARKVERSIONINFO-bin-hadoop2.7.tgz
+ENV SPARK_HOME /$SPARKVERSIONINFO-bin-hadoop2.7/
+ENV PATH $PATH:$SPARK_HOME/bin
+ENV RAWVALUE ?raw=true
+CMD mkdir -p OUTPUTPATH
+CMD mkdir -p CHECKPOINTPATH
+RUN cp $SPARK_HOME/conf/log4j.properties.template $SPARK_HOME/conf/log4j.properties
+ARG CHECKPOINT_PATH
+ARG OUTPUT_PATH
+ARG SNAPSHOTDATE_INFO
+ARG SNAPSHOT_DATE
+ARG GIT_LINK
+ARG JAR_NAME 
+ARG CLASS_NAME
+ARG NUM_EXECUTORS
+ARG EXECUTOR_CORES
+ARG EXECUTOR_MEMORY
+ARG DRIVER_CORES
+ARG DRIVER_MEMORY
+ARG DEPLOY_MODE
+ENV SNAPSHOTDATE $SNAPSHOT_DATE
+ENV SNAPSHOTDATEINFO $SNAPSHOTDATE_INFO
+ENV OUTPUTPATH $OUTPUT_PATH
+ENV CHECKPOINTPATH $CHECKPOINT_PATH
+ENV GITLINK $GIT_LINK
+ENV JARNAME $JAR_NAME 
+ENV CLASSNAME $CLASS_NAME 
+ENV NUMEXECUTORS $NUM_EXECUTORS 
+ENV EXECUTORCORES $EXECUTOR_CORES 
+ENV EXECUTORMEMORY $EXECUTOR_MEMORY 
+ENV DRIVERCORES $DRIVER_CORES 
+ENV DRIVERMEMORY $DRIVER_MEMORY 
+ENV DEPLOYMODE $DEPLOY_MODE
+RUN wget -O $JARNAME "$GITLINK$JARNAME$RAWVALUE"
+CMD spark-submit --packages io.delta:delta-core_2.12:0.5.0 --class  $CLASSNAME --num-executors $NUMEXECUTORS --driver-memory $DRIVERMEMORY --driver-cores $DRIVERCORES --executor-cores $EXECUTORCORES --executor-memory $EXECUTORMEMORY --deploy-mode $DEPLOYMODE $JARNAME checkPointPath=$CHECKPOINTPATH checkPointPath=$CHECKPOINTPATH outputPath=$OUTPUTPATH snapshotDate=$SNAPSHOTDATE snapshotDateInfo=$SNAPSHOTDATEINFO
+
+
+
+spark-submit --class org.controller.forDocker.writingDFinInfiniteLoop --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-memory 1g --driver-cores 1 --deploy-mode client --master yarn /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar outputPath=hdfs://localhost/user/raptor/testing
+
+
+spark-submit --packages io.delta:delta-core_2.11:0.5.0 --class  $CLASSNAME --num-executors $NUMEXECUTORS --driver-memory $DRIVERMEMORY --driver-cores $DRIVERCORES --executor-cores $EXECUTORCORES --executor-memory $EXECUTORMEMORY --deploy-mode $DEPLOYMODE $JARNAME checkPointPath=$CHECKPOINTPATH checkPointPath=$CHECKPOINTPATH outputPath=$OUTPUTPATH snapshotDate=$SNAPSHOTDATE
+
+------
+
+docker login --username=thulz06 
+
+docker images
+
+REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
+streamspark         v1                  0045ce92ea7b        12 seconds ago       1.11GB
+
+docker tag 0045ce92ea7b thulz06/streamspark:v1
+
+docker push thulz06/streamspark
+===========================================
+docker login --username=thulz06 
+
+docker pull thulz06/streamspark:v1
+// will run without login
+docker run -t -i thulz06/streamspark:v1
+
+======= kubernates
+
+
+docker run -i -t ubuntu:latest
+apt-get update
+apt-get install gnupg -y   # any one of these is required gnupg,gnupg2 or gnupg1
+apt-get update
+apt-get install sudo -y
+
+
+apt-get update
+export DEBIAN_FRONTEND="noninteractive"
+apt-get install docker -y
+
+swapoff -a
+setenforce 0
+sed -i 's/enforcing/disabled/g' /etc/selinux/config
+
+
+
+
+apt-get update
+apt-get install vim -y
+/*
+docker run -i -t ubuntu:latest
+apt-get update
+apt-get install vim -y
+apt-get update
+apt-get install git -y
+apt-get update
+apt-get install wget -y
+apt-get update
+*/
+vi /etc/apt/sources.list.d/kubernetes.list
+deb http://apt.kubernetes.io/ kubernetes-xenial main
+
+apt-get update && apt-get install -y apt-transport-https curl
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+cat <<EOF | tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+apt-get update
+apt-get install -y kubelet kubeadm kubectl
+apt-mark hold kubelet kubeadm kubectl
+-------------------
+
+
+
+cat <<EOF > /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables =1
+net.bridge.bridge-nf-call-iptables =1
+EOF
+
+// no working
+cat <<EOF | tee /proc/sys/net/bridge/bridge-nf-call-iptables
+1
+EOF
+==============================================
+kubeadm -- used to create and manage kubernetes architecture on cluster. Master and note setup.
+kubectl -- for creating,deleting,describing and managing node,pod or any component.
+
+To initialize kubernates on master node. 
+kubeadm init --pod-network-cidr=10.24.0.0/16
+kubeadm init --ignore-preflight-errors=cri
+
+apt-get install --reinstall systemd
+	  

@@ -1,0 +1,25 @@
+# pod-configMapSingleFile-example.yaml  
+apiVersion: v1
+kind: Pod
+metadata:
+    name: pod-config-map-single-file  
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: pod_config_map_single_file  #this spec is used in selector
+         tier: service
+         environment: dev
+spec:
+    containers:
+    - name: redis
+      image: redis
+      volumeMounts:
+      - mountPath: /redis-master
+        name: config    #  <--|
+    volumes:            #     |
+      - name: config    #  ---|  this name to be given while specifying in volume mounts
+        configMap:
+          name: configmap-redis  # name of the config map 
+          items: 
+          - key: redis-config # file name from local path 
+            path: redis.conf
+          

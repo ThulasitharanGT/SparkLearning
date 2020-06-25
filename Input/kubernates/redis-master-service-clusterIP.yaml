@@ -1,0 +1,26 @@
+# redis-master-service-clusterIP.yaml
+apiVersion: v1
+kind: Service
+metadata:
+    name: redis-master-cluster-ip
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: redis  #this spec is used in selector
+         tier: backend
+         role: master
+         environment: dev
+spec:
+    type: ClusterIP
+    ports:
+    - port: 6379 # the - is very important
+      targetPort: 6379 # containerPort of the container in pod which is running
+    # set based selector, can be used to select multiple options in single selection
+    selector:  # set based selectors are only vailable in apps/v1 version
+    #  matchLabels:
+        app: redis
+        tier: backend
+        role: master
+        environment: dev
+    #  matchExpressions:  
+    #   - {key: environment, operator: In, values: [dev]}
+    #   - {key: tier, operator: NotIn, values: [frontend,backend]}

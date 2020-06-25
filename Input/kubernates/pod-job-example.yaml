@@ -1,0 +1,24 @@
+# pod-job-example.yaml  
+apiVersion: batch/v1
+kind: Job
+metadata:
+    name: countdown-job
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: countdown_job  #this spec is used in selector
+         tier: service
+         environment: dev
+spec:
+    template:
+      metadata:
+        name: countdown0counter
+      spec:
+        containers:
+        - name: countdown0counter      
+          image: centos:7
+          command:
+           - "bin/bash"
+           - "-c"
+           - "for i in 9 8 7 6 5 4 3 2 1 ; do echo $i ; done"
+        restartPolicy: Never
+      

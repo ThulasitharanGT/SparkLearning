@@ -1,0 +1,29 @@
+# ngnix-replication-controller.yaml
+apiVersion: v1
+kind: ReplicationController
+metadata:
+    name: nginx-rc
+    labels:
+         app: nginx_rc  #this spec is used in selector
+         tier: replicationcontroller
+         environment: dev
+    # label not required for RC unlesss if it's being reffered somewhere else.
+spec:
+    replicas: 3
+    selector: #equality based selector, oncly can select one option in one selection 
+        app: nginx
+        tier: server
+        environment: dev
+    template:
+        metadata:
+            name: nginx-pod
+            labels:
+                app: nginx  #this spec is used in selector
+                tier: server
+                environment: dev
+        spec:
+            containers:
+            -   name: nginx-container
+                image : nginx
+                ports:
+                -   containerPort: 80   

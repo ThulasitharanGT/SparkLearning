@@ -1,0 +1,8 @@
+# pod-gceDynamicPersistantVolumeStorageClass-example.yaml  [persistant volume creation] - wont work just a reference  (storage class (contains metadata about creating the disk requested by used) -> persisted volume claim reuested -> persisted volume assigned for mount and use -> released after mount and use) # this is static (in dynamic the volume will get created when a request is raised)
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+    name: fast
+provisioner: kubernetes.io/gce-pd
+parameters: 
+  type: pd-ssd  # volume is dynamically created to the exact volume requested

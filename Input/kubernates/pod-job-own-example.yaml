@@ -1,0 +1,20 @@
+# pod-job-own-example.yaml  
+apiVersion: batch/v1
+kind: Job
+metadata:
+    name: spark-job
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: spark_job  #this spec is used in selector
+         tier: service
+         environment: dev
+spec:
+    template:
+      metadata:
+        name: sparkdisplay
+      spec:
+        containers:
+        - name: sparkdisplay      
+          image: thulz06/streambatch-csv:v1
+        restartPolicy: Never
+      

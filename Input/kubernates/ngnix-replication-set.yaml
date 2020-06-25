@@ -1,0 +1,37 @@
+# ngnix-replication-set.yaml
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+    name: nginx-rs
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: nginx_rs  #this spec is used in selector
+         tier: replicaset
+         environment: dev
+spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: nginx
+      matchExpressions:  
+        - {key: environment, operator: In, values: [dev]}
+        - {key: tier, operator: NotIn, values: [frontend,backend]}
+    #selector: # set based selector, can be used to select multiple options in single selection
+    #     matchLabels :
+    #        app : nginx
+    #     matchExpressions :   # match expressions are not working  
+    #     #-{key:environment,operator:In,values:[dev]}
+    #     #-{key: tier, operator: NotIn, values: [frontend,backend]}   
+    template :
+        metadata:
+            name: nginx-pod
+            labels:
+                app: nginx  #this spec is used in selector
+                tier: server
+                environment : dev
+        spec:
+            containers:
+            -   name: nginx-container
+                image : nginx
+                ports:
+                -   containerPort: 80   

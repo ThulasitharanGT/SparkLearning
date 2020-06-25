@@ -1,0 +1,17 @@
+# pod-gceDynamicPersistantVolumeClaim-example.yaml  [persistant volume claim] - wont work just a reference  (storage class (contains metadata about creating the disk requested by used)-> persisted volume claim reuested -> persisted volume assigned for mount and use -> released after mount and use)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: pod-gce-dynamic-persistant-volume-claim-path  # used to claim this volume
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: pod_gce_dynamic_persistant_volume_claim_path  #this spec is used in selector
+         tier: service
+         environment: dev
+spec:
+    resources:
+      requests:
+        storage: 15Gi # dynamically created to this exact volume
+    accessModes:
+      - ReadWriteOnce
+    storageClassName: slow # type given in storage class

@@ -1,0 +1,17 @@
+# pod-emptyDir-example.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+    name: pod-empty-dir
+    # label not required for RC unlesss if it's being reffered somewhere else.
+    labels:
+         app: pod_empty_dir  #this spec is used in selector
+         tier: service
+         environment: dev
+spec:
+    containers:
+    -   name: web-container   
+        image : k8s.gcr.io/test-webserver
+    volumes:
+    -   name: cache
+        emptyDir: {}
