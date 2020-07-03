@@ -1,0 +1,40 @@
+create external table car_test.deriverDetails
+(
+name string,
+number int,
+teamname string,
+address string
+)
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY ','
+ESCAPED BY '\"'
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE
+LOCATION '/user/raptor/data/tempComma/';
+------------- above wont work it doesn't have option to enclosed by quotes
+
+
+create external table car_test.deriverDetails
+(
+name string,
+number int,
+teamname string,
+address string
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+     "SEPARATORCHAR" = ",",
+     "QUOTECHAR"     = "\""
+)    
+STORED AS TEXTFILE
+LOCATION '/user/raptor/data/tempComma/';
+------------- they found openCSV serde to use encloded by character
+
+
+     "ESCAPECHAR"    = "\""
+
+
+
+
+
+ hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/sampleCodes/hiveCommaInput.txt /user/raptor/data/tempComma/
