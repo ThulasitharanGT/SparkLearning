@@ -1,0 +1,155 @@
+create  'formula_one_cars','team','driver','other'
+
+
+put 'formula_one_cars','v001_H','team:name','redbull'
+put 'formula_one_cars','v001_H','team:title_sponsor','astonmartin'
+put 'formula_one_cars','v001_H','team:cost_sponsor','tag heuer'
+put 'formula_one_cars','v001_H','team:engine_manufacturer','Honda'
+put 'formula_one_cars','v001_H','team:operating_budget','150000000'
+
+put 'formula_one_cars','v001_H','driver:name','Max Verstappen'
+put 'formula_one_cars','v001_H','driver:number','33'
+put 'formula_one_cars','v001_H','driver:sponsor','car next'
+put 'formula_one_cars','v001_H','driver:performance_rating','100'
+put 'formula_one_cars','v001_H','driver:contract','yes'
+
+put 'formula_one_cars','v001_H','other:race_strategy','Strat-1'
+put 'formula_one_cars','v001_H','other:engine_mode','5'
+put 'formula_one_cars','v001_H','other:High_output_mode','12'
+put 'formula_one_cars','v001_H','other:overtake_availability','25'
+
+put 'formula_one_cars','v002_H','team:name','redbull'
+put 'formula_one_cars','v002_H','team:title_sponsor','astonmartin'
+put 'formula_one_cars','v002_H','team:cost_sponsor','tag heuer'
+put 'formula_one_cars','v002_H','team:engine_manufacturer','Honda'
+put 'formula_one_cars','v002_H','team:operating_budget','150000000'
+
+put 'formula_one_cars','v002_H','driver:name','Alex Albon'
+put 'formula_one_cars','v002_H','driver:number','33'
+put 'formula_one_cars','v002_H','driver:sponsor','Moose cynder'
+put 'formula_one_cars','v002_H','driver:performance_rating','90'
+put 'formula_one_cars','v002_H','driver:contract','yes'
+
+put 'formula_one_cars','v002_H','other:race_strategy','Strat-7'
+put 'formula_one_cars','v002_H','other:engine_mode','3'
+put 'formula_one_cars','v002_H','other:High_output_mode','11'
+put 'formula_one_cars','v002_H','other:overtake_availability','24'
+
+
+put 'formula_one_cars','v003_H','team:name','Mclaren'
+put 'formula_one_cars','v003_H','team:title_sponsor','Dell'
+put 'formula_one_cars','v003_H','team:cost_sponsor','Hushki'
+put 'formula_one_cars','v003_H','team:engine_manufacturer','Renault'
+put 'formula_one_cars','v003_H','team:operating_budget','50000000'
+
+put 'formula_one_cars','v003_H','driver:name','Carlos Sainz'
+put 'formula_one_cars','v003_H','driver:number','55'
+put 'formula_one_cars','v003_H','driver:sponsor','splunk'
+put 'formula_one_cars','v003_H','driver:performance_rating','90'
+put 'formula_one_cars','v003_H','driver:contract','yes'
+
+put 'formula_one_cars','v003_H','other:race_strategy','Strat-6'
+put 'formula_one_cars','v003_H','other:engine_mode','7'
+put 'formula_one_cars','v003_H','other:High_output_mode','10'
+put 'formula_one_cars','v003_H','other:overtake_availability','30'
+
+
+put 'formula_one_cars','v004_H','team:name','Mclaren'
+put 'formula_one_cars','v004_H','team:title_sponsor','Dell'
+put 'formula_one_cars','v004_H','team:cost_sponsor','Hushki'
+put 'formula_one_cars','v004_H','team:engine_manufacturer','Renault'
+put 'formula_one_cars','v004_H','team:operating_budget','50000000'
+
+put 'formula_one_cars','v004_H','driver:name','Lando Norris'
+put 'formula_one_cars','v004_H','driver:number','4'
+put 'formula_one_cars','v004_H','driver:sponsor','Arrows'
+put 'formula_one_cars','v004_H','driver:performance_rating','89'
+put 'formula_one_cars','v004_H','driver:contract','yes'
+
+put 'formula_one_cars','v004_H','other:race_strategy','Strat-3'
+put 'formula_one_cars','v004_H','other:engine_mode','5'
+put 'formula_one_cars','v004_H','other:High_output_mode','10'
+put 'formula_one_cars','v004_H','other:overtake_availability','30'
+
+
+//replace jars in spark json 4s jackson jars
+
+spark-shell --packages com.hortonworks:shc:1.1.1-2.1-s_2.11,com.hortonworks:shc-core:1.1.1-2.1-s_2.11,com.yammer.metrics:metrics-core:2.2.0  --repositories https://repository.apache.org/content/repositories/releases  --files /home/raptor/Softwares/hbase-1.2.5/conf/hbase-site.xml 
+
+
+
+import org.apache.spark.sql.execution.datasources.hbase._
+import spark.implicits._
+import org.apache.hadoop.hbase.client.{HBaseAdmin, Result}
+import org.apache.hadoop.hbase.{ HBaseConfiguration, HTableDescriptor }
+import org.apache.hadoop.hbase.mapreduce.TableInputFormat
+import org.apache.hadoop.hbase.io.ImmutableBytesWritable
+
+def f1CarCatalog = s"""{
+"table":{"namespace":"default", "name":"formula_one_cars"},
+"rowkey":"key",
+"columns":{
+"car_id":{"cf":"rowkey", "col":"key", "type":"string"},
+"team_name":{"cf":"team", "col":"name", "type":"string"},
+"team_title_sponsor":{"cf":"team", "col":"title_sponsor", "type":"string"},
+"team_cost_sponsor":{"cf":"team", "col":"cost_sponsor", "type":"string"},
+"team_engine_manufacturer":{"cf":"team", "col":"engine_manufacturer", "type":"float"},
+"driver_name":{"cf":"driver", "col":"name", "type":"string"},
+"driver_number":{"cf":"driver", "col":"number", "type":"integer"},
+"driver_sponsor":{"cf":"driver", "col":"sponsor", "type":"string"},
+"driver_performance_rating":{"cf":"driver", "col":"performance_rating", "type":"float"},
+"driver_contract":{"cf":"driver", "col":"contract", "type":"string"},
+"race_strategy":{"cf":"other", "col":"race_strategy", "type":"string"},
+"engine_mode":{"cf":"other", "col":"engine_mode", "type":"integer"},
+"High_output_mode":{"cf":"other", "col":"High_output_mode", "type":"integer"},
+"overtake_availability":{"cf":"other", "col":"overtake_availability", "type":"integer"}
+}
+}""".stripMargin
+
+
+/*string
+
+def f1CarCatalog = s"""{
+"table":{"namespace":"default", "name":"formula_one_cars"},
+"rowkey":"key",
+"columns":{
+"car_id":{"cf":"rowkey", "col":"key", "type":"string"},
+"team_name":{"cf":"team", "col":"name", "type":"string"},
+"team_title_sponsor":{"cf":"team", "col":"title_sponsor", "type":"string"},
+"team_cost_sponsor":{"cf":"team", "col":"cost_sponsor", "type":"string"},
+"team_engine_manufacturer":{"cf":"team", "col":"engine_manufacturer", "type":"string"},
+"driver_name":{"cf":"driver", "col":"name", "type":"string"},
+"driver_number":{"cf":"driver", "col":"number", "type":"string"},
+
+"driver_sponsor":{"cf":"driver", "col":"sponsor", "type":"string"},
+"driver_performance_rating":{"cf":"driver", "col":"performance_rating", "type":"string"},
+"driver_contract":{"cf":"driver", "col":"contract", "type":"string"},
+"race_strategy":{"cf":"other", "col":"race_strategy", "type":"string"},
+"engine_mode":{"cf":"other", "col":"engine_mode", "type":"string"},
+"High_output_mode":{"cf":"other", "col":"High_output_mode", "type":"string"},
+"overtake_availability":{"cf":"other", "col":"overtake_availability", "type":"string"}
+}
+*/
+
+def readHbaseDF(catalog:String)=spark.read.options(Map(HBaseTableCatalog.tableCatalog->catalog)).format("org.apache.spark.sql.execution.datasources.hbase").load()
+
+val f1DetailsDF=readHbaseDF(f1CarCatalog)
+
+// not working
+
+read a df with 3.2.10 jackson jars in spark path, then try to write into a parquet table. //not working
+
+read a df with 3.2.10 jackson jars in spark path,  then try to write into a csv table // convert it ito a parquet table by inserting into a parquet table.
+
+
+create external table test_parquet(driver string,team string , number int, tyres string) stored as parquet location '/user/raptor/hadoop/checkHbase/Parquet';
+create external table test_textfile(driver string,team string , number int, tyres string) stored as TEXTFILE location '/user/raptor/hadoop/checkHbase/textfile';
+
+
+spark.read.option("header","true").option("delimiter","|").option("inferSchema","true").csv("/user/raptor/data/oneColumnSkip/fourColumnThreeReadInput.txt")
+res0: org.apache.spark.sql.DataFrame = [driver: string, team: string ... 2 more fields]
+
+res0.write.mode("append").insertInto("default.test_textfile")
+
+insert into test_parquet select * from test_textfile;
+

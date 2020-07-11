@@ -1,0 +1,14 @@
+create external table car_test.driverDetails
+(
+name string,
+teamname string,
+number int
+)
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE
+LOCATION '/user/raptor/data/oneColumnSkip/'
+tblproperties ("skip.header.line.count"="1");
+
+hdfs dfs -put /home/raptor/IdeaProjects/SparkLearning/Input/sampleCodes/fourColumnThreeReadInput.txt /user/raptor/data/oneColumnSkip/ 
