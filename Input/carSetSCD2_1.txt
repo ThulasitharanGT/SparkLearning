@@ -1,0 +1,6 @@
+make|model|variant|startDate|endDate
+suzuki|Baleno|Delta 1.2|2016-10-05|
+honda|Jazz|SV|2013-10-05|
+volkwogan|Polo|ComfortLine 1.2|2014-11-06|
+ford|figo|durajet|2012-10-01|
+fiat|punto|abarth|2015-11-05|

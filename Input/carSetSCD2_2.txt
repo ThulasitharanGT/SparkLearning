@@ -1,0 +1,3 @@
+make|model|variant|startDate|endDate
+honda|Jazz|SVT|2016-10-05|
+ford|figo|Turbojet|2014-10-01|

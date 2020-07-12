@@ -1,0 +1,74 @@
+1st set:
+========
+val baseDF=spark.read.format("com.databricks.spark.csv").option("delimiter","|").option("header","true").option("inferSchema","true").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_1.txt")
+
+val batchDF=spark.read.format("com.databricks.spark.csv").option("delimiter","|").option("header","true").option("inferSchema","true").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_2.txt")
+
+/*
+batchDF.createOrReplaceTempView("batch_vw")
+
+val baseProcessDF=baseDF.where("make in (select distinct make from batch_vw ) ")
+*/
+
+val baseProcessDF=baseDF.as("base").join(batchDF.as("batch"),baseDF("make")===batchDF("make"),"right").select("base.*")
+
+val baseProcessFinalDF=baseProcessDF.as("base").join(batchDF.as("batch"),baseProcessDF("make")===batchDF("make"),"left").filter("base.enddate is null").selectExpr("base.make","base.model","base.variant","base.startDate","date_add(batch.startDate,-1) as endDate")
+
+
+val baseFinalToUnionDF=baseDF.as("base").join(baseProcessFinalDF.as("batch"),baseDF("make")===baseProcessFinalDF("make"),"left").filter("batch.make is null  or base.enddate is not null").selectExpr("base.make","base.model","base.variant","base.startDate","base.endDate")
+
+val baseFinalDF=baseFinalToUnionDF.union(batchDF).union(baseProcessFinalDF).orderBy("make","model","startDate")
+
+2nd:
+============
+
+val baseDF=baseFinalDF
+
+val batchDF=spark.read.format("com.databricks.spark.csv").option("delimiter","|").option("header","true").option("inferSchema","true").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_3.txt")
+
+/*
+batchDF.createOrReplaceTempView("batch_vw")
+
+val baseProcessDF=baseDF.where("make in (select distinct make from batch_vw ) ")
+*/
+
+val baseProcessDF=baseDF.as("base").join(batchDF.as("batch"),baseDF("make")===batchDF("make"),"right").select("base.*")
+
+val baseProcessFinalDF=baseProcessDF.as("base").join(batchDF.as("batch"),baseProcessDF("make")===batchDF("make"),"left").filter("base.enddate is null").selectExpr("base.make","base.model","base.variant","base.startDate","date_add(batch.startDate,-1) as endDate")
+
+
+val baseFinalToUnionDF=baseDF.as("base").join(baseProcessFinalDF.as("batch"),baseDF("make")===baseProcessFinalDF("make"),"left").filter("batch.make is null or base.enddate is not null").selectExpr("base.make","base.model","base.variant","base.startDate","base.endDate")
+
+val baseFinalDF=baseFinalToUnionDF.union(batchDF).union(baseProcessFinalDF).orderBy("make","model","startDate")
+
+/// using lead
+=================
+
+firstbatch
+----------
+
+val baseDF=spark.read.format("com.databricks.spark.csv").option("delimiter","|").option("header","true").option("inferSchema","true").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_1.txt")
+
+val batchDF=spark.read.format("com.databricks.spark.csv").option("delimiter","|").option("header","true").option("inferSchema","true").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_2.txt")
+
+val baseProcessDF=baseDF.union(batchDF).as("base").join(batchDF.as("batch"),baseDF("make")===batchDF("make"),"right").orderBy("base.make","base.model").selectExpr("base.make","base.model","base.variant","base.startdate","lead(date_add(base.startdate,-1),1) over (partition by base.make,base.model order by base.startdate) as enddate")
+
+
+val finalDF= baseDF.as("base").join(baseProcessDF.as("batch"),baseDF("make")===baseProcessDF("make"),"left").filter("batch.make is null").selectExpr("base.*").union(baseDF.as("base").join(baseProcessDF.as("batch"),baseDF("make")===baseProcessDF("make"),"left").filter("batch.make is not null").selectExpr("batch.*")).orderBy("make","model","startDate")
+
+
+second batch:
+------------
+
+val baseDF=finalDF
+
+val batchDF=spark.read.format("com.databricks.spark.csv").option("delimiter","|").option("header","true").option("inferSchema","true").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_3.txt")
+
+val baseProcessDF=baseDF.union(batchDF).as("base").join(batchDF.as("batch"),baseDF("make")===batchDF("make"),"right").orderBy("base.make","base.model").selectExpr("base.make","base.model","base.variant","base.startdate","lead(date_add(base.startdate,-1),1) over (partition by base.make,base.model order by base.startdate) as enddate")
+
+
+val finalDF= baseDF.as("base").join(baseProcessDF.as("batch"),baseDF("make")===baseProcessDF("make"),"left").filter("batch.make is null").selectExpr(" base.*").distinct.union(baseDF.as("base").join(baseProcessDF.as("batch"),baseDF("make")===baseProcessDF("make"),"left").filter("batch.make is not null").selectExpr("batch.*").distinct).orderBy("make","model","startDate")
+
+
+
+
