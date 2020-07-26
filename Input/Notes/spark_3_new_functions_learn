@@ -1,0 +1,328 @@
+val inputMap=collection.mutable.Map[Int,String]()
+inputMap.put(1,"v1")
+inputMap.put(2,"v2")
+inputMap.put(3,"v3")
+inputMap.put(4,"v4")
+
+val df:DataFrame=Seq(("firstCol",inputMap)).toDF("string_col","map_col") //save the map as a column, meaning the map must be a cell in all rows
+
+df.withColumn("map_values_out",map_values(df.col("map_col"))).show(1,false) //returns the values of the map //map_values
+
+df.withColumn("map_values_out",map_values(df.col("map_col"))).printSchema // returns keys as array of value type
+
+
+df.withColumn("map_keys_out",map_keys(df.col("map_col"))).show(1,false) //returns the values of the map //map_keys
+
+df.withColumn("map_keys_out",map_keys(df.col("map_col"))).printSchema // returns keys as array of key type
+
+
+val inputMapFilter=collection.mutable.Map[Int,Boolean]()
+inputMapFilter.put(1,true)
+inputMapFilter.put(2,false)
+inputMapFilter.put(3,true)
+inputMapFilter.put(4,false)
+
+val df_map_filter:DataFrame=Seq(("firstCol",inputMapFilter)).toDF("string_col","map_col") //save the map as a column, meaning the map must be a cell in all rows
+
+
+def map_filter_support(a:org.apache.spark.sql.Column,b:org.apache.spark.sql.Column):org.apache.spark.sql.Column= lit(s"${a}${b}")
+
+
+//map_filter(df.col("map_col"),map_filter_support(df.withColumn("map_keys_out",map_keys(df.col("map_col"))).selectExpr("explode(map_keys_out) as map_keys_out").col("map_keys_out"),df.withColumn("map_values_out",map_values(df.col("map_col"))).selectExpr("explode(map_values_out) as map_values_out").col("map_values_out")) )
+
+
+df.withColumn("map_filter_out",map_filter(df.col("map_col"),map_filter_support)) // throws error , requires boolean column
+
+
+df_map_filter.withColumn("map_filter_out",map_filter(df_map_filter.col("map_col"),map_filter_support))
+
+
+// from blog
+
+
+from_csv:
+--------
+
+import org.apache.spark.sql.types._
+
+val studentInfo = "1,Jerin,CSE"::"2,Jerlin,ECE"::"3,Arun,CSE"::Nil //declares a list -- nil must come at the end
+val schema = new StructType().add("Id",IntegerType).add("Name",StringType).add("Dept",StringType)
+val options = Map("delimiter" ->",")
+val studentDF = studentInfo.toDF("Student_Info").withColumn("csv_struct",from_csv('Student_Info, schema,options))  // ' is more important
+studentDF.show()
+studentDF.selectExpr("csv_struct.id").show(false)
+
+to_csv:
+-------
+import scala.collection.JavaConverters._
+
+studentDF.withColumn("csv_string",to_csv($"csv_struct",Map.empty[String, String].asJava)).show(false)
+
+
+schema_of_csv: // returns schema of a csv column
+--------------
+
+studentDF.withColumn("schema",schema_of_csv("csv_struct")).show
+
+for_all: // checks for all element but and's the result
+--------
+import org.apache.spark.sql.Column
+val seqDF = Seq(Seq(2,4,6),Seq(5,10,3)).toDF("int_array")
+seqDF.withColumn("flag",forall(col("int_array"),(x:Column)=>(lit(x%2==0)))).show // true must come for first row, but false is getting yielded
+
+// need to pass df too
+def func_name (colName:String):org.apache.spark.sql.DataFrame = //int_array is the column name in this scn
+{
+val temp=seqDF.withColumn("rowNum",row_number().over(Window.orderBy("int_array")))
+val intermediateDF=seqDF.withColumn("rowNum",row_number().over(Window.orderBy("int_array"))).withColumn("int_array_exploded",explode(col("int_array"))).withColumn("int_array_even",lit(col("int_array_exploded")%2)).withColumn("result",when($"int_array_even" === 0,lit(true)).otherwise(lit(false))).groupBy("rowNum").agg(countDistinct("result").as("final_result")).filter("final_result=1").as("result").join(temp.as("temp"),Seq("rowNum")).selectExpr("result.rowNum","temp.int_array").withColumn("result",lit(true))
+val finalIntermediateDF=temp.except(intermediateDF.drop("result").selectExpr("int_array","rowNum")).withColumn("result",lit(false)).union(intermediateDF.selectExpr("int_array","rowNum","result")).orderBy("rowNum").drop("rowNum")
+finalIntermediateDF
+}
+
+transform:
+----------
+val df = Seq((Seq(2,4,6)),(Seq(5,10,3))).toDF("num_array")
+df.withColumn("num_array",transform($"num_array",x=>x+1)).show //applies the function to each element in the array and returns it.
+
+// need to pass df too
+def funApplier(colName:org.apache.spark.sql.Column,f:(Int)=>Int):org.apache.spark.sql.DataFrame=
+{
+val arrayBufferOriginal:collection.mutable.ArrayBuffer[Int]=collection.mutable.ArrayBuffer[Int]()
+val arrayBufferModified:collection.mutable.ArrayBuffer[Int]=collection.mutable.ArrayBuffer[Int]()
+val arrayBufferFinal:collection.mutable.ArrayBuffer[Array[Int]]=collection.mutable.ArrayBuffer[Array[Int]]()
+val listOfValues=df.select(colName).collect.map(_(0)).toList.map(x=>x.asInstanceOf[Seq[Int]])  //to convert Any to some datatype,use as .instanceOf(targetType)// better to convert wrappedArray to Seq
+for(singleArray<- listOfValues)
+{
+arrayBufferOriginal.clear
+arrayBufferModified.clear
+for(valueOfArray <- singleArray)
+{
+arrayBufferOriginal+=valueOfArray
+arrayBufferModified+=f(valueOfArray)
+}
+arrayBufferFinal+=arrayBufferModified.toArray
+}
+arrayBufferFinal.toSeq.toDF("result")
+}
+
+
+def funTemp(i:Int)={i+1}
+
+funApplier(df.col("num_array"),funTemp).show(false)
+
+
+overlay:
+-------
+
+val greetingMsg = "Hello Arun"::"Hello Mohit Chawla"::"Hello Shaurya"::Nil
+val greetingDF = greetingMsg.toDF("greet_msg")
+greetingDF.withColumn("greet_msg",overlay($"greet_msg",lit("World"),lit("7"),lit("12"))).show
+greetingDF.withColumn("greet_msg",overlay($"greet_msg",lit("World"),lit("7"))).show // kinda replace but with index
+
+
+split://limited split
+------
+
+val num = "one~two~three"::"four~five"::"six~seven~eight~nine"::Nil
+val numDF = num.toDF("numbers")
+numDF.withColumn("numbers",split($"numbers","~",2)).show //less than the given number(so 2 means maximum is 1), basically number of values returnes will be equal to the number specified in there.
+
+numDF.withColumn("numbers",split($"numbers","~",2)).show // zero is all possible apperances
+
+map entries: // processing map values , returns key value array
+------------
+
+val df = Seq(Map(1->"x",2->"y"),Map(3->"a",4->"b")).toDF("key_values")
+df.withColumn("key_value_array",map_entries($"key_values")).show
+
+map_zip_with: //merging two maps into a single map , much more like group by key or reduce by key in mapR
+-------------
+
+val df = Seq((Map("EID_1"->10000,"EID_2"->25000),Map("EID_1"->1000,"EID_2"->2500)))   .toDF("emp_sales_dept1","emp_sales_dept2")
+df.withColumn("total_emp_sales",map_zip_with($"emp_sales_dept1",$"emp_sales_dept2",(k,v1,v2)=>(v1+v2))).show(false)
+
+map_filter// to filter values in map with certain criteria.
+------------
+
+val df = Seq(Map("EID_1"->10000,"EID_2"->25000),Map("EID_1"->1000,"EID_2"->2500)).toDF("emp_sales")
+df.withColumn("filtered_sales",map_filter($"emp_sales",(k,v)=>(v>20000))).show //only eid_2 in first row satisfies the condition
+
+
+transform_values://manipulating values in Map  
+-----------------
+
+val df = Seq((Map("EID_1"->10000,"EID_2"->25000)),(Map("EID_1"->1000,"EID_2"->2500))).toDF("emp_sales")
+df.withColumn("emp_sales_updated",transform_values($"emp_sales",(k,v)=>(v+5000))).show(false)
+
+
+transform_keys: // manipulating keys in Map 
+----------------
+
+val df = Seq((Map("EID_1"->10000,"EID_2"->25000)),(Map("EID_1"->1000,"EID_2"->2500))).toDF("emp_sales")
+df.withColumn("emp_sales_updated",transform_keys($"emp_sales",(k,v)=>lit(concat(k,v)))).show(false)
+
+df.withColumn("emp_sales_updated",transform_keys($"emp_sales",(k,v)=>lit(concat(k,concat(lit("_"),v))))).show(false)
+
+df.withColumn("emp_sales_updated",transform_keys($"emp_sales",(k,v)=>lit(s"${k}_${v}"))).show(false) // this must work but it does'nt some random value for k and v gets assigned.
+
+df.withColumn("emp_sales_updated", transform_keys($"emp_sales", (k, v) => concat(k,lit("_XYZ")))).show
+
+date sub (hive):
+---------------
+import java.sql.Timestamp
+
+val df = Seq((1, Timestamp.valueOf("2020-01-01 23:00:01")),(2, Timestamp.valueOf("2020-01-02 12:40:32")),(3, Timestamp.valueOf("2020-01-03 09:54:00")),(4, Timestamp.valueOf("2020-01-04 10:12:43"))).toDF("typeId","eventDateTime")
+
+df.withColumn("Adjusted_Date",date_sub($"eventDateTime",1)).show()
+
+date add (hive):
+---------------
+val df = Seq((1, Timestamp.valueOf("2020-01-01 23:00:01")),(2, Timestamp.valueOf("2020-01-02 12:40:32")),(3, Timestamp.valueOf("2020-01-03 09:54:00")),(4, Timestamp.valueOf("2020-01-04 10:12:43"))).toDF("typeId","eventDateTime")
+
+df.withColumn("Adjusted_Date",date_add($"eventDateTime",1)).show()
+
+add_months (hive):
+------------------
+
+val df = Seq((1, Timestamp.valueOf("2020-01-01 23:00:01")),(2, Timestamp.valueOf("2020-01-02 12:40:32")),(3, Timestamp.valueOf("2020-01-03 09:54:00")),(4, Timestamp.valueOf("2020-01-04 10:12:43"))).toDF("typeId","eventDateTime")
+
+df.withColumn("Adjusted_Date",add_months($"eventDateTime",1)).show()
+df.withColumn("Adjusted_Date",add_months($"eventDateTime",-1)).show()
+
+
+zip_with : //merging arrays with expressions
+---------
+val df = Seq((Seq(2,4,6),Seq(5,10,3))).toDF("array_1","array_2")
+df.withColumn("merged_array",zip_with($"array_1",$"array_2",(x,y)=>(x+y))) .show
+df.withColumn("merged_array",zip_with($"array_1",$"array_2",(x,y)=>(x-y))) .show
+
+exists: // checks for all element but or's the result
+------
+val df= Seq((Seq(2,4,6)),(Seq(5,10,3))).toDF("num_array")
+df.withColumn("flag",exists($"num_array", x =>lit(x%2===0))).show
+df.withColumn("flag",exists($"num_array", x =>lit(x>7))).show
+
+filter:// filtering array with a condition
+-------
+val df = Seq((Seq(2,4,6)),(Seq(5,10,3))).toDF("num_array")
+df.withColumn("even_array",filter($"num_array", x =>lit(x%2===0))).show
+
+//usually this way
+Seq(10,11,12).map(x => if(x%10==0) {x}).filter(! _.toString.contains("(")).map(_.toString.toInt)
+
+// still contains empty value
+Seq(10,11,12).map(x => if(x%10==0) {x}).map(x=>Try{x.asInstanceOf[Int]}.isSuccess match {case true => x.asInstanceOf[Int] case _ => println("empty")})
+
+aggregate:
+----------
+
+val df = Seq((Seq(2,4,6),3),(Seq(5,10,3),8)).toDF("num_array","constant")
+df.withColumn("reduced_array",aggregate($"num_array", $"constant",(x,y)=>x+y,x => x*2)).show
+
+df.withColumn("reduced_array",aggregate($"num_array", $"constant",(x,y)=>x+y)).show 
+
+df.withColumn("reduced_array",aggregate($"num_array", $"constant",(x,y)=>x+y,x => x*2)).show // first (x,y)=>x+y is applied, then the second function is applied.
+df.withColumn("reduced_array",aggregate($"num_array", $"constant",(x,y)=>x+y,z => z*2)).show // same as above second function variable name is temp, total output of the first function is returnes as a value and we can use the value with any variable name in second function , else the function is kept as it is.
+
+df.withColumn("reduced_array",aggregate($"num_array", $"constant",(x,y)=>x+y,_*2)).show 
+
+spark sql functions:
+--------------------
+
+
+val df = Seq((1),(2),(4)).toDF("num")
+df.createOrReplaceTempView("table")
+
+spark.sql("select count_if(num %2==0) from table").show//processes all the rows in a column
+
+spark.sql("select acosh(num) from table").show
+
+spark.sql("select asinh(num) from table").show
+
+spark.sql("select atanh(num) from table").show
+
+val df2 = Seq((0x11001100,0xf0002343,2),(0x00011011,0xf0005643,3),(0x11001100,0xf000563,5)).toDF("num1","num2","num3")
+df2.createOrReplaceTempView("table2")
+
+spark.sql("select bit_and(num1) from table2").show // only works on octal and hexa decimal numbers,processes all the rows in a column
+spark.sql("select bit_and(num2) from table2").show // only works on octal and hexa decimal numbers,processes all the rows in a column
+
+spark.sql("select bit_or(num1) from table2").show // only works on octal and hexa decimal numbers,processes all the rows in a column
+spark.sql("select bit_or(num2) from table2").show // only works on octal and hexa decimal numbers,processes all the rows in a column
+
+spark.sql("select bit_xor(num1) from table2").show // only works on octal and hexa decimal numbers,processes all the rows in a column
+spark.sql("select bit_xor(num2) from table2").show // only works on octal and hexa decimal numbers ,processes all the rows in a column
+
+
+spark.sql("select bit_count(num1),bit_count(num2),bit_count(num3) from table2").show // only works on octal and hexa decimal numbers
+
+
+spark.sql("select bool_and(num1),bool_or(num2),bit_count(num3) from table2").show // only works on octal and hexa decimal numbers
+
+spark.sql("select bit_count(num1),bit_count(num2),bit_count(num3) from table2").show // only works on octal and hexa decimal numbers
+
+
+spark.sql("select bool_and(num3/2==0) from table2").show //processes all the rows in a column
+spark.sql("select bool_and(num3%2==0) from table2").show //processes all the rows in a column
+
+spark.sql("select bool_or(num3/2==0) from table2").show //processes all the rows in a column
+spark.sql("select bool_or(num3%2==0) from table2").show //processes all the rows in a column
+
+
+val dfTime = Seq((1, Timestamp.valueOf("2020-01-01 23:00:01")),(2, Timestamp.valueOf("2020-01-02 12:40:32")),(3, Timestamp.valueOf("2020-01-03 09:54:00")),(4, Timestamp.valueOf("2020-01-04 10:12:43"))).toDF("typeId","eventDateTime")
+dfTime.createOrReplaceTempView("timetable")
+
+spark.sql("select date_part('year',eventDateTime) from timetable").show
+spark.sql("select date_part('day',eventDateTime) from timetable").show
+spark.sql("select date_part('months',eventDateTime) from timetable").show 
+spark.sql("select date_part('QUARTER',eventDateTime) from timetable").show // more options see below
+
+
+/* https://github.com/apache/spark/pull/25410/files 
+
+["MILLENNIUM", ("MILLENNIA", "MIL", "MILS"),
+                 "CENTURY", ("CENTURIES", "C", "CENT"),
+                 "DECADE", ("DECADES", "DEC", "DECS"),
+                 "YEAR", ("Y", "YEARS", "YR", "YRS"),
+                 "ISOYEAR",
+                 "QUARTER", ("QTR"),
+                 "MONTH", ("MON", "MONS", "MONTHS"),
+                 "WEEK", ("W", "WEEKS"),
+                 "DAY", ("D", "DAYS"),
+                 "DAYOFWEEK",
+                 "DOW",
+                 "ISODOW",
+                 "DOY",
+                 "HOUR", ("H", "HOURS", "HR", "HRS"),
+                 "MINUTE", ("M", "MIN", "MINS", "MINUTES"),
+                 "SECOND", ("S", "SEC", "SECONDS", "SECS"),
+                 "MILLISECONDS", ("MSEC", "MSECS", "MILLISECON", "MSECONDS", "MS"),
+                 "MICROSECONDS", ("USEC", "USECS", "USECONDS", "MICROSECON", "US"),
+                 "EPOCH"]
+                 */
+                 
+spark.sql("select div(num2,num1) from table2").show 
+              
+spark.sql("select every(num3%2==0) from table2").show  // This function returns true, if the given expression evaluates true for all the column values
+spark.sql("select some(num3%2==0) from table2").show   //This function returns true, if the given expression evaluates true for atlease one column value
+
+
+
+spark.sql("SELECT make_timestamp(2020, 01, 7,12,23, 30)").show
+
+spark.sql("SELECT make_interval(2020,07,21,12,34,56)").show(false) //gives it in number format
+
+spark.sql("SELECT make_date(2020, 01, 7)").show
+
+
+var df = Seq((1,1),(2,1),(4,3),(5,1)).toDF("x","y")
+df.createOrReplaceTempView("table")
+
+spark.sql("select max_by(x,y) from table").show //Compares two columns and returns the value of left column which is associated with the maximum value of right column
+
+spark.sql("select min_by(x,y) from table").show //Compares two columns and returns the value of left column which is associated with the minimum value of right column // last hit gets recognized
+
+spark.sql("select typeof(x) from table").show
+
+spark.sql("select version").show
+
