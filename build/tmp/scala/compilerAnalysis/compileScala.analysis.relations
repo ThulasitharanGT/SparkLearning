@@ -581,6 +581,7 @@ source dependencies:
    src/main/scala/org/controller/twitterPullTry/twitterDataPullFromKafka.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/twitterPullTry/twitterDataPullFromKafka.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/twitterPullTry/twitterDataPullFromKafka.scala -> src/main/scala/org/util/readWriteUtil.scala
+   src/main/scala/org/controller/twitterPullTry/twitterKafka.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/twitterPullTry/twitterKafka.scala -> src/main/scala/org/controller/twitterPullTry/BasicCallback.scala
    src/main/scala/org/controller/twitterPullTry/twitterKafka.scala -> src/main/scala/org/controller/twitterPullTry/Tweet.scala
    src/main/scala/org/controller/twitterPullTry/twitterKafka.scala -> src/main/scala/org/controller/twitterPullTry/User.scala
