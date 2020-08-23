@@ -1,6 +1,0 @@
-aws s3 cp s3://nbcu-mig-dev/thulasitharan_dev/jar/terajdbc4.jar $SPARK_HOME/jars/
-aws s3 cp s3://nbcu-mig-dev/thulasitharan_dev/jar/tdgssconfig.jar $SPARK_HOME/jars/​
-​
-import com.teradata.jdbc.TeraDriver;
-
-val df = spark.read.format("jdbc").options("url","tdprodla.tfayd.com,TMODE=TERA").options("user","ForecastManagerService").options("password","FM99Service").options("dbtable" ,"PROG_SCHD_VMBI.FRCST_SCHEDULE_EXTRACT").options("driver","com.teradata.jdbc.TeraDriver").load()
