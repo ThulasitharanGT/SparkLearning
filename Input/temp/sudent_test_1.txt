@@ -1,8 +1,0 @@
-Studentid|Subject|Marks
-1|English|80
-1|Maths|70
-1|Science|75
-1|English|85
-2|English|35
-3|English|100
-3|Maths|39

@@ -1,0 +1,45 @@
+val customerNestedDF=spark.read.format("com.databricks.spark.xml").option("rootTag","consumers").option("rowTag","consumer").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/sampleData/customerNested.xml")
+
+root
+ |-- amount: struct (nullable = true)
+ |    |-- _paymentMethod: string (nullable = true)
+ |    |-- coupon: double (nullable = true)
+ |    |-- paid: double (nullable = true)
+ |    |-- paymentMethod: string (nullable = true)
+ |    |-- throughMeans: double (nullable = true)
+ |-- consumer_id: string (nullable = true)
+ |-- order_id: string (nullable = true)
+
+
+val selectExprColumns=Seq("amount.coupon as amountFromCoupon","amount.paid as amountPaid","case when amount.paymentMethod is null then amount._paymentMethod else  amount.paymentMethod end as paymentMethod","case when amount._delivered is null then 'NA' else amount._delivered  end deliveredBy","amount.throughMeans as apartFromCoupon","consumer_id","order_id")
+
+val customerNestedFinalDF=customerNestedDF.selectExpr(selectExprColumns:_*)//.show(false)
+
+//customerNestedDF.createOrReplaceTempView("cust_nest")
+
+//spark.sql("select amount._delivered from cust_nest").show
+
+val ordersDF=spark.read.format("com.databricks.spark.xml").option("rootTag","orders").option("rowTag","order").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/sampleData/ordersTemp.xml")
+
+val ordersSelectExpression=Seq("content_exploded._VALUE as content_id","content_exploded._quantity as quantity","id as order_id")
+
+val ordersFinalDF=ordersDF.withColumn("content_exploded",explode(ordersDF.col("contents.content"))).selectExpr(ordersSelectExpression:_*)//.show(false)
+
+val contentsDF=spark.read.format("com.databricks.spark.xml").option("rootTag","contents").option("rowTag","content").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/sampleData/contentsTemp.xml")
+
+val contentsSelectExpression=Seq("_category as content_category","name as content_name")
+
+val contentsFinalDF=contentsDF.selectExpr(contentsSelectExpression:_*)//.show(false)
+
+
+val categoryDF=spark.read.format("com.databricks.spark.xml").option("rootTag","categories").option("rowTag","category").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/sampleData/categoryTemp.xml")
+
+val categorySelectExpression=Seq("name as category_name","type as category_type")
+
+val categoryFinalDF=categoryDF.selectExpr(categorySelectExpression:_*)//.show(false)
+
+customerNestedFinalDF.join(ordersFinalDF,Seq("order_id")).show(false)
+
+customerNestedFinalDF.join(ordersFinalDF,Seq("order_id")).as("customer_orders").join(contentsFinalDF,col("customer_orders.content_id")===contentsFinalDF.col("content_name")).as("customer_orders_category").join(categoryFinalDF,col("customer_orders_category.content_category")===categoryFinalDF.col("category_name")).show(false)
+
+categoryFinalDF.join(contentsFinalDF,categoryFinalDF.col("category_name")===contentsFinalDF.col("content_category")).show(false)

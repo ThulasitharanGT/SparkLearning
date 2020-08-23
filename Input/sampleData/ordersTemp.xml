@@ -1,0 +1,35 @@
+<orders>
+<order>
+<id>O_001</id>
+<contents>
+<content quantity='3'>con_001</content>
+<content quantity='1'>con_002</content>
+<content quantity='2'>con_003</content>
+<content quantity='1'>con_004</content>
+</contents>
+</order>
+<order>
+<id>O_002</id>
+<contents>
+<content quantity='3'>con_006</content>
+<content quantity='1'>con_004</content>
+<content quantity='2'>con_002</content>
+</contents>
+</order>
+<order>
+<id>O_003</id>
+<contents>
+<content quantity='7'>con_002</content>
+<content quantity='4'>con_003</content>
+<content quantity='2'>con_001</content>
+</contents>
+</order>
+<order>
+<id>O_004</id>
+<contents>
+<content quantity='1'>con_006</content>
+<content quantity='1'>con_003</content>
+<content quantity='1'>con_001</content>
+</contents>
+</order>
+</orders>

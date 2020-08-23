@@ -1,0 +1,30 @@
+<consumers>
+<consumer>
+<consumer_id>C_001</consumer_id>
+<order_id>O_001</order_id>
+<amount>200.00</amount>
+</consumer>
+<consumer>
+<consumer_id>C_002</consumer_id>
+<order_id>O_002</order_id>
+<!---<amount total="100.00" >
+<amount_final>100.00</amount_final>
+<amount_paid>100.00</amount_paid>
+</amount> --->
+<!---<amount> 100.00</amount> 
+<amount_final>100.00</amount_final>
+<amount_paid>100.00</amount_paid>
+ --->
+<amount> 100.00</amount> 
+</consumer>
+<consumer>
+<consumer_id>C_003</consumer_id>
+<order_id>O_003</order_id>
+<amount>540.00</amount>
+</consumer>
+<consumer>
+<consumer_id>C_004</consumer_id>
+<order_id>O_004</order_id>
+<amount>220.00</amount>
+</consumer>
+</consumers>
