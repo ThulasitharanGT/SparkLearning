@@ -1,0 +1,31 @@
+
+
+"/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car2.txt","/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car3.txt","/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car4.txt","/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car5.txt","/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car6.txt"
+
+import sys.process._
+
+val totalFiles="hdfs dfs -ls /user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/"!!
+val totalFilesList=totalFiles.split("\n")
+val totalFilesListFinal=totalFilesList.slice(1,totalFilesList.size).map(x => x.substring(x.indexOf("/"),x.length))
+
+val totalFilesFinalList= totalFilesListFinal.map(x => x match {case value if (value.contains("Extra") || value.contains("diff")) => println("contains") case _ => x }).map(_.toString).filter(_ != "()")
+
+
+var df:org.apache.spark.sql.DataFrame=null
+for (filePath<-  totalFilesFinalList)
+if(df==null)
+df=spark.read.option("inferSchema","true").option("header","true").option("delimiter","|").csv(filePath).select("Vehicle_id","model","brand","year","month","miles","intake_date_time")
+else
+df=df.union(spark.read.option("inferSchema","true").option("header","true").option("delimiter","|").csv(filePath).select("Vehicle_id","model","brand","year","month","miles","intake_date_time"))
+
+
+df.repartition(col("month")).rdd.partitions.size // default partition size will be 200
+res10: Int = 200
+
+df.repartition(100).rdd.partitions.size // default partition size is 100, we can specify the number partitions 
+
+
+df.repartition(5,col("month")).rdd.partitions.size   // default partition size will be 200, we can override it with number and then it'll put all the same column values and put it in the  same partition 
+
+df.repartition(df.select("month").distinct.count.toInt,col("month")).rdd.partitions.size
+

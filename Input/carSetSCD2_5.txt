@@ -1,0 +1,2 @@
+make|model|variant|startDate|endDate
+ford|free-style|Boosterjet|2020-10-01|2020-11-01

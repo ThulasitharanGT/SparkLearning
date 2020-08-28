@@ -1,0 +1,4 @@
+make|model|variant|startDate|endDate
+honda|Jazz|SVS|2020-11-05|
+ford|figo|Boosterjet|2018-10-01|
+ford|free-style|Boosterjet|2019-10-01|

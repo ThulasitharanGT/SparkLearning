@@ -19,10 +19,18 @@ val baseFinalToUnionDF=baseDF.as("base").join(baseProcessFinalDF.as("batch"),bas
 
 val baseFinalDF=baseFinalToUnionDF.union(batchDF).union(baseProcessFinalDF).orderBy("make","model","startDate")
 
+// val baseDF=baseFinalDF
+/*
+
+val batchDF=spark.read.format("com.databricks.spark.csv").option("delimiter","|").option("header","true").option("inferSchema","true").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_4.txt")
+val batchDF=spark.read.format("com.databricks.spark.csv").option("delimiter","|").option("header","true").option("inferSchema","true").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_5.txt")
+val batchDF=spark.read.format("com.databricks.spark.csv").option("delimiter","|").option("header","true").option("inferSchema","true").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_6.txt")
+
+
+*/
 2nd:
 ============
 
-val baseDF=baseFinalDF
 
 val batchDF=spark.read.format("com.databricks.spark.csv").option("delimiter","|").option("header","true").option("inferSchema","true").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_3.txt")
 
