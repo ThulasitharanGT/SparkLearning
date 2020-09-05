@@ -1,0 +1,60 @@
+case class Team(name:String,nationality:String)
+case class driverDetails(name:String,number:Int,nationality:String,team:Team)
+
+object driverAssigner{
+def apply(driverInfo:driverDetails)=s"${driverInfo.name}_${driverInfo.number}@${driverInfo.team.name}"
+def unapply(driverName:String): Option[String]={
+val splittedDetails: Array[String] = driverName.split("@")
+if (splittedDetails.tail.nonEmpty) Some(splittedDetails.head) else None
+}
+}
+
+val redBull=Team("Redbull","Britain")
+val maxVerstappen=driverDetails("M.Verstappen",33,"Dutch",redBull)
+val driver1=driverAssigner(maxVerstappen)
+driver1(1)
+driver1(2) // both yields same
+
+
+val pierreGasly=driverDetails("",10,"french",redBull)
+val driver2=driverAssigner(pierreGasly)
+driver2(1)
+
+/*
+val tep="Verstappen"
+tep: String = Verstappen
+
+scala> val tepList=tep.toList.toArray.map(_.toString)
+tepList: Array[String] = Array(V, e, r, s, t, a, p, p, e, n)
+
+scala> tepList.tail
+res22: Array[String] = Array(e, r, s, t, a, p, p, e, n)
+
+scala> tepList.head
+res23: String = V
+
+ Some(tepList.head)
+res14: Some[String] = Some(M)
+
+scala> Some(tepList.head).getOrElse(1)
+res15: Any = M
+
+scala> Some(tepList.head).getOrElse(5)
+res16: Any = M
+
+scala> Some(tepList.head).getOrElse(0)
+res17: Any = M
+
+scala> Some(tepList.head).getOrElse(-3)
+res18: Any = M
+
+scala> Some(tepList).getOrElse(-3)
+res19: Any = Array(M, ., V, e, r, s, t, a, p, p, e, n)
+
+scala> Some(tepList)//.getOrElse(-3)
+res20: Some[Array[String]] = Some([Ljava.lang.String;@52f85a6c)
+
+scala> Some(tepList).getOrElse(3)
+res21: Any = Array(M, ., V, e, r, s, t, a, p, p, e, n)
+
+*/

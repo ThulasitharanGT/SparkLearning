@@ -1,0 +1,277 @@
+Write a function boolean sumOf2(int[] arr, int sum) which returns true if there is a pair of numbers in arr that add up to sum.
+
+val arrayTemp=Array(1,2,3,4,5)
+val tempSum=34
+
+import scala.util.control.Breaks._
+
+def sumOf2(arrInput:Array[Int],sum:Int):Boolean ={
+var result=false
+breakable
+{
+  for(arryIndex <- 0 to arrInput.size-1)
+  { 
+     val base=arrInput(arryIndex)
+     for(arrVal <- arrInput)
+     {
+        if(arrVal+base == sum)
+        {
+        result=true
+        break
+        }
+     }
+  }
+}
+result
+}
+
+sumOf2(arrayTemp,tempSum)
+// works till here, do it using map
+//(n+1)*n
+
+// whole scan
+def sumOf2MapAndArray(arrInput:Array[Int],sum:Int):Boolean ={
+val mapHash=collection.mutable.LinkedHashMap[Int,Int]()
+for(arr <- arrInput)
+mapHash.put(arr,sum-arr)
+val mapkeys= mapHash.keys
+var result=false
+for(keyVal <- mapkeys )
+if (arrInput.contains(mapHash(keyVal)))
+result=true
+result
+}
+
+sumOf2MapAndArray(arrayTemp,tempSum)
+
+def sumOf2Map(arrInput:Array[Int],sum:Int):Boolean ={  // map.exist scans partially
+val mapHash=collection.mutable.LinkedHashMap[Int,Int]()
+for(arr <- arrInput)
+mapHash.put(arr,sum-arr)
+val mapkeys= mapHash.keys
+var result=false
+// map check
+breakable{
+for(keyVal <- mapkeys )
+if (mapHash.exists(x => x._1 == (mapHash(keyVal)) ) )  //_1 is for key, _2 will check val
+{
+result=true
+break
+}
+}
+result
+}
+
+sumOf2Map(arrayTemp,tempSum)
+
+
+
+// map .exists() (scan can the value of map)
+
+1,2,3,4,5
+
+8
+
+1,7
+2,6
+3,5
+4,4
+5,3
+
+1,2,3,4,5
+
+map(1)
+7
+
+map(2)
+6
+
+
+
+answer 
+// Creating map 
+        val m1 = Map("geeks" -> 5, "for" -> 3) 
+          
+        // Applying exists method 
+        val result = m1.exists(x => x._1 == "for" && x._2 == 3)  // _1 in a x is key and _2 is value
+          
+        // Displays output 
+        println(result) 
+		
+		
+2)  // how many times an array was rotated (sorted array was rotated, how mant times was it rotated?)
+
+// returns index , full scan
+
+val arrayInput=Array(6,7,8,9,1,2,3,5)
+val arrayInput=Array(1,2,3,5,6,7,8,9)
+
+import scala.util.control.Breaks._
+def arrayfunction(arrInput:Array[Int]):Int=
+{
+var result= -1
+breakable
+{
+for( i <- 0 to arrInput.size-2)
+if(arrInput(i) > arrInput(i+1))
+{
+result=i+1 // index starts from 0
+break
+}
+}
+result
+}
+
+//partial scan 
+val tempArray=Array(6,7,8,1,2,3,4,5)
+
+val tempArray=Array(9,10,23,24,35,1,2,3,4,5,6,7,8)
+
+val tempArray=Array(2,3,4,5,6,7,8,9,10,23,24,35,1)
+
+val tempArray=Array(1,2,3,4,5,6,7,8,9,10,23,24,35)
+
+rotationNumerFinder(tempArray)(0,tempArray.size-1)
+
+def rotationNumerFinder(arr:Array[Int])(low:Int=0,high:Int= arr.size-1):Int=
+{
+val middle=low+((high - low)/2)
+println(s"middle = ${middle}")
+println(s"low+high = ${low+high}")
+high-low match { // if virtual(index) array is reduced to only 2 elements, check if first is bigger else it's not rotated.
+case 1 => if (arr(low) > arr(high)) middle+1 else -1 //stablizing the index by adding middle to give correct index in the array , -1 if array is sorted
+case _ => arr(middle) match
+{
+case value if value > arr(arr.size-1) => {println(s"arr(${middle}) >  arr(${arr.size-1}) \n middle = ${middle} \n high = ${high} \n calling rotationNumerFinder(arr)(${middle},${high}) ") ;rotationNumerFinder(arr)(middle,high)}  // if array(middle) is greater than last element of array middle => low and go right
+case value if value < arr(arr.size-1) => {println(s"arr(${middle}) <  arr(${arr.size-1}) \n middle = ${middle} \n high = ${high} \n calling rotationNumerFinder(arr)(${low},${middle}) ");rotationNumerFinder(arr)(low,middle)}  // if array(middle) is lesser than last element of array middle => high and go left
+}
+}
+}
+
+
+rotationNumerFinder(tempArray)(0,tempArray.size-1) match {case value if value == -1  => println(s"Array is restored in correct order.") case _ => case _ => prntln(s"Number of times rotated ${rotationNumerFinder(tempArray)(0,tempArray.size-1)}" }
+
+
+
+3) // find mail id's who has not logged for past 7 days and who has never logged in 
+
+users table
+user id, first name , last name, email, hashed pwd
+
+
+user login History
+id, start login time 
+
+select email from users_tble where id in ( select id from (select id, max(start_login_time) from user_login group by id  having max(start_login_time) <=(current_timestmp -7)) a union all (select a.id from users a left join userHistory b on a.id=b.id where b.id is null) b)
+
+select a.id from users a left join userHistory b on a.id=b.id where b.id is null; // never logged in 
+
+
+select a.id from users b left join (select id, max(start_login_time) as max_start_login_time from user_login group by id  )  b on a.id=b.id  where b.id is null  or b.max_start_login_time <=(current_timestmp -7) ;
+
+
+
+
+val userTable=Seq((1,"cool","buddy","cool.buddy@gmail.com","hashed"),(2,"cool2","buddy","cool1.buddy@gmail.com","hashed"),(3,"cool3","buddy","cool2.buddy@gmail.com","hashed"),(4,"cool4","buddy","cool3.buddy@gmail.com","hashed")).toDF("id","F_Name","L_Name","Email","pwdHashed")
+
+val historyTable=Seq((1,"2020-08-28 10:11:12"),(1,"2020-07-28 10:11:12"),(2,"2020-07-28 10:11:12")).toDF("id","login_time")
+
+userTable.as("user").join(historyTable.groupBy("id").agg(max("login_time").as("max_login_time")).as("history"),col("user.id")===col("history.id"),"Left").where("history.id is null or to_date(history.max_login_time)<= date_add(current_date(), -7)")
+
+---------------------------------------------------
+
+
+binary search 
+/// check's if element is present , slices the array
+import scala.util.control.Breaks._
+import scala.util.Try
+
+val arrayInput=Array(1,2,3,5,6,7,8,9)
+val numToSearch=4
+
+binarySearchArray(arrayInput,numToSearch)
+
+// working
+def binarySearchArray(arrayInput:Array[Int],numToSearch:Int):Boolean=
+{
+val middle=arrayInput.size/2
+arrayInput.size match {
+case value if value > 2 => numToSearch match
+{
+case value if value > arrayInput(middle) =>  binarySearchArray(arrayInput.slice(middle,arrayInput.size-1),numToSearch)
+case value if value < arrayInput(middle) =>  binarySearchArray(arrayInput.slice(0,middle),numToSearch)
+case value if value == arrayInput(middle) => true
+case _ => false
+}
+case value if value == 2 => if (arrayInput(0)== numToSearch || arrayInput(1)== numToSearch ) true else false
+case value if value == 1  => if (arrayInput(0)== numToSearch) true else false
+}
+}
+
+// binary search - to avoid full scan , slices the index
+
+val arrayInput=Array(1,2,3,5,6,7,8,9)
+
+def RecursiveBinarySearch(arr: Array[Int],Element_to_Search: Int)(low: Int = 0,high: Int = arr.length - 1): Int = 
+{
+    // If element not found                                
+    if (low > high)  
+        return -1
+    // Getting the middle element 
+    val middle = low + (high - low) / 2  
+    // If element found 
+    if (arr(middle) == Element_to_Search) 
+        return middle    
+    // Searching in the left half 
+    else if (arr(middle) > Element_to_Search) 
+        return RecursiveBinarySearch(arr,Element_to_Search)(low, middle - 1)     
+    // Searching in the right half 
+    else
+        return RecursiveBinarySearch(arr,Element_to_Search)(middle + 1, high) 
+}
+
+val arrayInput=Array(1,2,3,5,6,7,8,9)
+val numToSearch=5
+val recursiveBinarySearch=RecursiveBinarySearch(_:Array[Int],_:Int)()
+recursiveBinarySearch(arrayInput,numToSearch)
+ 
+def FunctionalBinarySearch(arr: Array[Int],Element_to_Search: Int): Int =
+{  
+    def BinarySearch(arr: Array[Int],Element_to_Search: Int,low: Int, high: Int): Int =
+    {
+	// If element not found 
+        if (low > high) 
+            return -1    
+        // Getting middle index 
+        var middle = low + (high - low) / 2      
+        // Pattern matching 
+        arr match
+        { 
+// If element found , return the index 
+            case(arr:Array[Int]) if (arr(middle) ==Element_to_Search) => middle  
+            // Call the function for the second half 
+            case(arr:Array[Int]) if (arr(middle) < Element_to_Search) => BinarySearch(arr,Element_to_Search,middle + 1, high) 
+                  
+            // Call the function for the first half  
+            case(arr:Array[Int]) if (arr(middle) > Element_to_Search) => BinarySearch(arr,Element_to_Search,low, middle - 1) 
+        } 
+    }  
+// Calling the Binary Search function 
+    BinarySearch(arr, Element_to_Search, 0, arr.length - 1) 
+} 
+
+import scala.util.control.Breaks._
+// first occuring brakable block is exited
+breakable
+{
+for (i <- 0 to 9)
+{
+breakable{
+if (i==2)
+break
+println(i)
+}
+if (i ==3)
+break
+}
+}

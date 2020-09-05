@@ -1,0 +1,52 @@
+Remove Duplicate using your favorite language
+[1,2,2,3,3,3,4,4,4,4,5,5,5,5,5]
+
+
+val numList=(1,2,2,3,3,3,4,4,4,4,5,5,5,5,5)
+val reqResult=numList.distinct
+
+SQL Basics
+email :
+abc@gmail.com
+123@google.com
+abc@yahoo.com
+123@yahoo.co.in
+abc@Live.com
+123@outlook.com
+
+Expected output
+Google=2
+Yahoo=2
+Outlook=2
+
+select domain,count(*) from (select case when substring(email,indexof('@')+1,indexof('//.')-1) = '*Gmail*' or 'Google' then 'Google' when substring(email,indexof('@')+1,indexof('//.')-1)='Live' or 'outlook' then 'outlook' else substring(email,indexof('@')+1,indexof('//.')-1) end as domain,* from table order by substring(email,indexof('@')+1,indexof('//.')-1) ) a  group by domain ;
+
+
+
+Create DF based on
+{
+"data": [
+[1, "Ashok", "Bigdata"],
+[2, "Nagaraj", "Development"],
+[7, "Priya", "Development"],
+[4, "Pranav", "Bigdata"],
+[5, "Ram", "Testing"],
+[6, "Ravi", "Testing"]
+]
+}
+
+import org.apache.spark.sql.functions._
+
+val df=spark.read.json("file pah").withColumn("val_temp",explode("data")).selectExpr("val_temp[0] as id","val_temp[1] as name","val_temp[3] as domain")
+df.write.mode("append").saveAsTable("")
+
+df.createOrReplaceTempView("df_table")
+spark.catalog
+
+create or replace table db.table(
+co1 string,
+col2 BIGINT)
+stored as textfile
+location'';
+
+

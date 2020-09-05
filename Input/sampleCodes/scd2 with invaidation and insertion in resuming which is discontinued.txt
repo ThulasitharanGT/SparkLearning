@@ -1,0 +1,37 @@
+val baseDF=spark.read.option("header","true").option("inferSchema","true").option("delimiter","|").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_1.txt")
+
+val batchDF=spark.read.option("header","true").option("inferSchema","true").option("delimiter","|").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_2.txt")
+
+// scd 2 invalidating and adding entry if alread invalidated
+
+import org.apache.spark.sql.expressions._
+
+//baseDF.withColumn("rn",dense_rank().over(Window.partitionBy("make","model","variant").orderBy("startDate"))).as("base")
+
+val intermediateBatchDF=baseDF.withColumn("rn",dense_rank().over(Window.partitionBy("make","model","variant").orderBy(desc("startDate")))).as("base").join(batchDF.as("batch"),$"base.make"===$"batch.make" && $"base.model"===$"batch.model" && $"base.variant"===$"batch.variant","left").where("base.rn =1 ").selectExpr("base.make","base.model","base.variant","base.startDate","case when base.endDate is null and batch.startDate is not null then date_add(batch.startDate,-1) when batch.startDate is null and base.endDate is null then batch.endDate else  base.endDate end  as endDate")
+
+val  intermediateBaseDF=baseDF.withColumn("rn",dense_rank().over(Window.partitionBy("make","model","variant").orderBy(desc("startDate")))).as("base").where("base.rn !=1 and  base.endDate is not null").drop("rn") //checking in already present old records are invalidated
+
+
+//second try
+
+val baseDF=intermediateBatchDF.union(intermediateBaseDF).union(batchDF.filter("startDate is not null")) // current invalidated record's, already invalidated record's and incoming batch records
+
+
+val batchDF=spark.read.option("header","true").option("inferSchema","true").option("delimiter","|").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_3.txt")
+
+val batchDF=spark.read.option("header","true").option("inferSchema","true").option("delimiter","|").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_4.txt")
+
+val batchDF=spark.read.option("header","true").option("inferSchema","true").option("delimiter","|").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_5.txt")
+
+val batchDF=spark.read.option("header","true").option("inferSchema","true").option("delimiter","|").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_6.txt")
+
+val batchDF=spark.read.option("header","true").option("inferSchema","true").option("delimiter","|").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/carSetSCD2_7.txt")
+
+
+// give a record with end date in batch .and then try to re join the car in next batch.
+
+baseDF.orderBy("make","model","variant","startDate").show(false) 
+
+
+use rank to avoid duplicates // without rank, when we join with batch for incoming record combination it will yield the same record in batch for all records in base for a particular matching criteria.

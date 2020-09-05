@@ -1,0 +1,159 @@
+Q1:
+----
+
+id, dept, salary
+1 100 20000
+2 100 30000
+3 100 40000
+4 200 30000
+5 200 50000 
+6 200 60000
+write a query to give 3rd highest salary in each department
+
+select id,dept,salary, rank over (partition by dept order by salary desc ) as rank_salary from table where rank_salary=3; // use having , dense rank ust be used
+
+correct ans :
+------------
+select id,dept,salary, dense_rank over (partition by dept order by salary desc ) as rank_salary from table having rank_salary=3; // use having , dense rank ust be used
+
+duplicate check:
+----------------
+select id, dept, salary, count(*) from table group by id, dept, salary having count(*) >1;
+
+rank 
+
+id, dept, salary , dense_rank
+1 100 20000  1
+2 100 30000  2
+3 100 40000  3
+4 200 30000  1
+5 200 50000  2
+6 200 60000  3
+
+
+id, dept, salary , dense rank, rank
+1 100 20000  1   1
+8 100 20000  1   1
+2 100 30000  2   3
+3 100 40000  3   4
+4 200 30000  1   1
+5 200 50000  2   2
+6 200 60000  3   3
+
+/*
+
+Q2:
+---
+input: 123456
+output : 162534
+
+input : 1234567
+output : 1726354
+1234567
+
+1 2 3 4
+7 6 5
+---------------------
+///val input="123456"
+val input="1234567"
+val inputCount=input.size
+val inputSizeSplit=inputCount%2
+var indexToSplit=0
+var input1=""
+var input2=""
+inputSizeSplit match {
+case 1 => {input2=input.substring((inputCount/2)+1,input.size);input1=input.substring(0,(inputCount/2)+1)}
+case 0 => {input2=input.substring(inputCount/2,input.size);input1=input.substring(0,inputCount/2)}
+case _ => println("Error. please check")
+}
+
+val input1List=input1.toList
+//val input2List=input2.reverse.toList
+val input2List=input2.toList
+
+var outPutString=""
+var input1Index=0
+var input2Index=input2.size -1
+
+import scala.util.control.Breaks._
+
+breakable
+{
+if(inputSizeSplit==1)
+while(true)
+if (input2Index >= 0 )
+{outPutString=outPutString+input1List(input1Index)+input2List(input2Index);input1Index=input1Index+1;input2Index=input2Index-1}
+else 
+{outPutString=outPutString+input1List(input1Index);input1Index=input1Index+1;break}
+}
+
+
+breakable
+{
+if(inputSizeSplit==0)
+while(true)
+if(input2Index >=0)
+{outPutString=outPutString+input1List(input1Index)+input2List(input2Index);input1Index=input1Index+1;input2Index=input2Index-1}
+else 
+break
+}
+
+
+println(outPutString)
+
+*/
+
+------------------------------------
+
+1 to 7 
+
+1 
+7
+
+if index is same  then append once.
+
+do to list, and take from index.
+
+val input="1234567"
+//val input="123456"
+val inputList=input.toList
+var startIndexFront=0
+var startIndexRear=inputList.size -1
+var outPutString=""
+val oddOrEven=(inputList.size)%2
+import scala.util.control.Breaks._
+
+breakable
+{
+if(oddOrEven == 1)
+while (true)
+if (startIndexFront != startIndexRear)
+{
+outPutString=outPutString+inputList(startIndexFront)+inputList(startIndexRear)
+startIndexFront=startIndexFront+1
+startIndexRear=startIndexRear-1
+}
+else
+{
+outPutString=outPutString+inputList(startIndexFront)
+break
+}
+else
+while(true)
+if(startIndexFront<startIndexRear)
+{
+//println(s"startIndexFront =${startIndexFront}")
+//println(s"startIndexRear =${startIndexRear}")
+//println(s"outPutString before =${outPutString}")
+outPutString=outPutString+inputList(startIndexFront)+inputList(startIndexRear)
+//println(s"outPutString after =${outPutString}")
+startIndexFront=startIndexFront+1
+startIndexRear=startIndexRear-1
+}
+else 
+break
+}
+
+
+
+

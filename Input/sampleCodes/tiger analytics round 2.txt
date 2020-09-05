@@ -1,0 +1,125 @@
+//shuffle induces stage in spark
+
+// when we create an object for a case cass , apply method is done in the case class object automatically
+
+10 node cluster -- 16GB Ram and 8 cores
+dynamic allocation to trrue
+SS1:
+  EM - 12gb
+  EC - 3
+SS2:
+  EM - 4gb
+  EC - 1
+  
+  
+  
+mobile_handset_code|pings
+a1|Chengalpattu
+a1|Chengalpattu
+a1|Chengalpattu
+a1|Chengalpattu
+a1|Chennai
+a1|Chennai
+a1|Chennai
+a1|Chennai
+a1|Chennai
+a1|Chennai
+a1|Chengalpattu
+a1|Chengalpattu
+a1|Chengalpattu
+a1|Chengalpattu
+a1|Chennai
+a1|Chennai
+a1|Chennai
+a1|Pondy
+a1|Pondy
+a1|Pondy
+a2|Bangalore
+a2|Bangalore
+a2|Bangalore
+a2|Bangalore
+a2|Bangalore
+a2|Bangalore
+a2|Bangalore
+a2|Mysuru
+a2|Mysuru
+a2|Mysuru
+a2|Mysuru
+a2|Mysuru
+a2|Bangalore
+a2|Bangalore
+a2|Bangalore
+a2|Bangalore
+a2|Bangalore
+
+Aggregate:
+mobile-handset-code number-ofpings max-seen-location
+a1                   22              Chennai
+
+
+import org.apache.spark.sql.functions._
+
+val df1=df.groupBy("mobile-handset-code").agg(count("pings").as("number-ofpings"))
+
+val df2=df.groupBy("mobile-handset-code","seen-location").agg(count("seen-location").as("seen-location_total"))
+
+val df3= df2.select("mobile-handset-code","seen-location").withcolumn("max-seen-location",rank.over("seen-location_total").partitionBy("mobile-handset-code").orderBy("seen-location_total").desc).filter("")
+
+import spark.implicits._
+
+df1.join(df3,Seq("mobile-handset-code")).show
+
+
+
+
+
+
+
+------------
+
+df.groupby("userID","ChannelName","showName")//.agg(min("starttime"),max("endTime"))
+
+
+df.as("a").join(df.as("b"),Seq("userID","ChannelName","showName"))
+
+val userList=df.select("userID").distinct.collect.map(_(0).toString)
+for(user <- userList)
+{
+val tempDf=df.filter(s"userID='${user}'").orderBy("userID","ChannelName","showName","starttime")
+val userLeadDF=df.select("*").withColumn("leadColumn",Window.lead("starttime",1)).withColumn("indexColumn",0)
+val userDF=userLeadDF.selectExpr("*","case when leadColumn<endTime")
+}
+
+--------------------------------------------------------------------------------------
+c1,c2,c3,c4 <-- csv file
+
+input
+mm/dd/yyyy
+yyyy/mm/dd
+
+output
+yyyy-MM-dd
+
+import java.util.Date
+import java.text.SimpleDateFormat
+
+
+val monthFirst="mm/dd/yyyy"
+val yearFirst="yyyy/mm/dd"
+val outPut="yyyy-MM-dd"
+//val input="10/22/2019"
+val checkNumber=input.indexOf("/")
+val outPutDateFormat= new SimpleDateFormat(outPut)
+val monthFirstDateFormat= new SimpleDateFormat(monthFirst)
+val yearFirstDateFormat= new SimpleDateFormat(yearFirst)
+val dateFormat=new Date("10/22/2019")
+var outputString=""
+checkNumber match {
+case value if value== 2 =>{ val dateInput=outPutDateFormat.format(input,monthFirstDateFormat); outputString=dateFormat.format(dateInput,monthFirstDateFormat)}
+case value if value== 4 =>{ val dateInput=dateFormat.fotmat(input,yearFirstDateFormat); outputString=dateFormat.format(dateInput,yearFirstDateFormat)}
+case _ => exception
+}
+outputString
+
+
+
