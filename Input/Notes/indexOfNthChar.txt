@@ -1,0 +1,36 @@
+//scala
+
+// throw's -1 if the value isn't present for nth time, even if it is present till n-1 th time.
+ // throw's index if the value is present for nth time
+
+def indexOfWithNumber(tempString:String,valueString:String,numberOfOccurance:Int):Int={
+var stabilizeIndex=0 
+var tempSubString=tempString 
+var tempIndex=tempString.indexOf(valueString) 
+breakable
+{
+for ( i <- 1 to numberOfOccurance)
+if ((tempSubString.indexOf(valueString) != -1) && (tempIndex != -1))
+{
+tempIndex=tempSubString.indexOf(valueString)
+tempSubString=tempSubString.substring(tempIndex+1,tempSubString.size) // ADJUSTING FOR 0th index
+stabilizeIndex=stabilizeIndex+tempIndex+1 // ADJUSTING FOR 0th index
+}
+else
+{ 
+stabilizeIndex= -1
+tempIndex= 0
+break
+}
+}
+stabilizeIndex match { case value if value <= -1 => -1 case _ => stabilizeIndex-1 } // reverting for adjusting 0 previously
+}
+
+
+indexOfWithNumber("bbcfgtbgft","b",3) // 6
+indexOfWithNumber("bbcfgtbgft","b",2) //1
+indexOfWithNumber("bbcfgtbgft","b",4) //-1
+
+indexOfWithNumber("bbcfgtbcgft","bc",1)  //1
+indexOfWithNumber("bbcfgtbcgft","bc",4) //-1
+indexOfWithNumber("bbcfgtbcgft","bc",2) //6
