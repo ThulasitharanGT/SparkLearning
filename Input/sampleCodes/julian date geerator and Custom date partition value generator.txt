@@ -1,0 +1,81 @@
+
+import java.util.Calendar
+import java.util.Date
+
+lazy val today = Calendar.getInstance()
+lazy val year = today.get(Calendar.YEAR)
+lazy val month = today.get(Calendar.MONTH)+1
+lazy val day = today.get(Calendar.DAY_OF_MONTH)
+lazy val hour = today.get(Calendar.HOUR_OF_DAY)
+lazy val minute = today.get(Calendar.MINUTE)
+lazy val second = today.get(Calendar.SECOND)
+lazy val date = new Date()
+
+val extra = (100.0 * year) + month - 190002.5
+
+val julianDate=(367.0 * year) -  (Math.floor(7.0 * (year + Math.floor((month + 9.0) / 12.0)) / 4.0)) +  Math.floor((275.0 * month) / 9.0) +   day + ((hour + ((minute + (second / 60.0)) / 60.0)) / 24.0) +   1721013.5 - ((0.5 * extra) / Math.abs(extra)) + 0.5
+
+
+
+//leap year check 
+def isLeap(year:Int):Boolean =
+{
+var isLeap=false
+if(year % 4 == 0)
+if( year % 100 == 0)
+if ( year % 400 == 0)
+isLeap = true
+else
+isLeap = false
+else
+isLeap = true
+else
+isLeap = false
+isLeap
+}
+
+val dateFormat="YYYY-MM-DD HH:mm:ss"
+val dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+val date = new Date()
+val tempString=dateFormatter.format(date)
+val jodTime=DateTime.parse(tempString,DateTimeFormat.forPattern(dateFormat))
+jodTime.getYear()
+
+==========================
+//get the day value for partition the format is yyyy[day of year]
+
+def isLeap(year:Int):Boolean =
+{
+var isLeap=false
+if(year % 4 == 0)
+if( year % 100 == 0)
+if ( year % 400 == 0)
+isLeap = true
+else
+isLeap = false
+else
+isLeap = true
+else
+isLeap = false
+isLeap
+}
+
+val oldPartitionValue="2020366" // yyyy (day of year)
+val oldPartitionYearValue=oldPartitionValue.substring(0,4).toInt
+val oldPartitionDayValue=oldPartitionValue.substring(5,oldPartitionValue.size).toInt
+var partitionValue=""
+isLeap(oldPartitionYearValue) match      // getDayOfYear will wotk, but cluster is giving jan 1 as default date, do it's custom code
+{
+case false => oldPartitionDayValue match
+{
+case value if value < 365 => partitionValue=s"${oldPartitionYearValue}${value+1}"
+case value if value == 365 => partitionValue=s"${oldPartitionYearValue +1}1"
+}
+case true => oldPartitionValue.substring(4,oldPartitionValue.size).toInt match
+{
+case value if value < 366 => partitionValue=s"${oldPartitionYearValue}${value+1}"
+case value if value == 366 => partitionValue= s"${oldPartitionYearValue +1}1"
+}
+}
+
+println(partitionValue)
