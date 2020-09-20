@@ -20,8 +20,6 @@ products:
    src/main/scala/org/controller/AdvancedTopic/TailRecursion.scala -> build/classes/scala/main/org/controller/AdvancedTopic/TailRecursion.class
    src/main/scala/org/controller/AdvancedTopic/TripReferenceCaseClass.scala -> build/classes/scala/main/org/controller/AdvancedTopic/TripReferenceCaseClass$.class
    src/main/scala/org/controller/AdvancedTopic/TripReferenceCaseClass.scala -> build/classes/scala/main/org/controller/AdvancedTopic/TripReferenceCaseClass.class
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> build/classes/scala/main/org/controller/AdvancedTopic/addingColumnToParquetFileInProd$.class
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> build/classes/scala/main/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.class
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer$.class
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> build/classes/scala/main/org/controller/AdvancedTopic/listToListBuffer.class
    src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> build/classes/scala/main/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames$.class
@@ -203,10 +201,6 @@ binary dependencies:
    src/main/scala/org/controller/AdvancedTopic/TailRecursion.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/AdvancedTopic/TripReferenceCaseClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/AdvancedTopic/TripReferenceCaseClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
@@ -485,7 +479,6 @@ binary dependencies:
 source dependencies:
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> src/main/scala/org/controller/AdvancedTopic/CaseClassCar.scala
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> src/main/scala/org/util/SparkOpener.scala
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> src/main/scala/org/util/readWriteUtil.scala
@@ -618,8 +611,6 @@ class names:
    src/main/scala/org/controller/AdvancedTopic/TailRecursion.scala -> org.controller.AdvancedTopic.TailRecursion$
    src/main/scala/org/controller/AdvancedTopic/TripReferenceCaseClass.scala -> org.controller.AdvancedTopic.TripReferenceCaseClass
    src/main/scala/org/controller/AdvancedTopic/TripReferenceCaseClass.scala -> org.controller.AdvancedTopic.TripReferenceCaseClass$
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> org.controller.AdvancedTopic.addingColumnToParquetFileInProd
-   src/main/scala/org/controller/AdvancedTopic/addingColumnToParquetFileInProd.scala -> org.controller.AdvancedTopic.addingColumnToParquetFileInProd$
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer
    src/main/scala/org/controller/AdvancedTopic/listToListBuffer.scala -> org.controller.AdvancedTopic.listToListBuffer$
    src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala -> org.controller.AdvancedTopic.schemaCheckingBetweenDataFrames
