@@ -1,0 +1,9 @@
+//works
+
+spark-shell  --packages za.co.absa:spark-hats_2.11:0.2.1
+
+val jsonDF=spark.read.json("/user/raptor/testing/structWithJson.json")
+
+import za.co.absa.spark.hats.Extensions._
+
+jsonDF.nestedWithColumn("info.drivers.age", lit(25))

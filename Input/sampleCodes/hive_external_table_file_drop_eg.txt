@@ -1,0 +1,21 @@
+CREATE TABLE data_check_db.car_temp_external_false(
+Vehicle_id string  
+,model string  
+,brand string  
+,year int 
+,month int  
+,miles int 
+,intake_date_time timestamp
+)
+STORED AS PARQUET
+location 
+'/user/raptor/testing/hadoop/hive2/tempData/car_temp_external_false/';
+
+load data inpath '/user/raptor/testing/hadoop/tempData/carData/' into table data_check_db.car_temp_external_false;
+
+ALTER TABLE data_check_db.car_temp_external_false SET TBLPROPERTIES ('external.table.purge'='false')
+
+drop table data_check_db.car_temp_external_false;
+
+hdfs dfs -ls /user/raptor/testing/hadoop/hive2/tempData/car_temp_external_false/
+// dir wont be present

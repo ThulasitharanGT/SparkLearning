@@ -1,0 +1,56 @@
+
+
+create database data_check_db;
+CREATE TABLE data_check_db.car_temp(
+Vehicle_id string  
+,model string  
+,brand string  
+,year int 
+,month int  
+,miles int 
+,intake_date_time timestamp
+)
+CLUSTERED BY (brand) INTO 4 BUCKETS 
+STORED AS ORC
+TBLPROPERTIES ("transactional"="true")
+;
+
+CREATE TABLE data_check_db.car_temp_parq(
+Vehicle_id string  
+,model string  
+,brand string  
+,year int 
+,month int  
+,miles int 
+,intake_date_time string
+)
+STORED AS PARQUET
+location 
+'/user/raptor/testing/hadoop/hive2/tempData/car_temp_parq/';
+
+load data inpath '/user/raptor/testing/hadoop/tempData/carData/' into table data_check_db.car_temp_parq;
+
+// wont work with hive's exec engine MR, only wil work with tez
+insert into data_check_db.car_temp select * from data_check_db.car_temp_parq;
+
+
+=============
+val listofFilesInFolder="hdfs dfs -ls /user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/"!!
+
+val filesToRead=listofFilesInFolder.split("\n").slice(1,listofFilesInFolder.split("\n").size).map(x => (x.contains("Extra") || x.contains("_diff_")) match {case true => println("") case _ => x.substring(x.indexOf("/"),x.size)} ).filter(_ .toString !="()").map(_.asInstanceOf[String])//.map(_.toString)
+
+val commonCols=Seq("Vehicle_id","model","brand","year","month","miles","intake_date_time")
+
+var dfTest:org.apache.spark.sql.DataFrame=null
+for(file <- filesToRead)
+dfTest match {
+case null => 
+dfTest=spark.read.option("inferSchema","true").option("header","true").option("delimiter","|").csv(file).selectExpr(commonCols:_*)
+case _ =>dfTest=dfTest.union(spark.read/*.format("com.databricks.spark.csv")*/.option("inferSchema","true").option("header","true").option("delimiter","|").csv(file).selectExpr(commonCols:_*))
+}
+
+
+val selectExprCols=Seq("Vehicle_id","model","brand","year","month","miles","cast (intake_date_time as timestamp) intake_date_time")
+
+dfTest.selectExpr(selectExprCols:_*).show
+dfTest.selectExpr(selectExprCols:_*).write.mode("overwrite").save("/user/raptor/testing/hadoop/tempData/carData/")
