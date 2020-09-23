@@ -1,0 +1,45 @@
+val dfTotal=spark.read.json("file:///home/raptor/IdeaProjects/SparkLearning/Input/tempInputs/allDtypesFile.json") // map is converted to struct and all possible kets are made as sub elements, things which are not in the original map is kept as null in combined struct
+
+val totalMainArrayBuffer=collection.mutable.ArrayBuffer[String]()
+def flatten_df_Struct(dfTotal:org.apache.spark.sql.DataFrame,dfTotalOuter:org.apache.spark.sql.DataFrame=dfTotal):org.apache.spark.sql.DataFrame=
+{
+//dfTotal.printSchema
+val originalDF=dfTotalOuter
+val totalStructCols=dfTotal.dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter(_.contains("Struct"))
+val mainArrayBuffer=collection.mutable.ArrayBuffer[String]()
+for(totalStructCol <- totalStructCols)
+{
+val tempArrayBuffer=collection.mutable.ArrayBuffer[String]()
+tempArrayBuffer+=s"${totalStructCol.split(",")(0)}.*"
+//tempArrayBuffer.toSeq.toDF.show(false)
+val columnsInside=dfTotal.selectExpr(tempArrayBuffer:_*).columns
+for(column <- columnsInside)
+mainArrayBuffer+=s"${totalStructCol.split(",")(0)}.${column} as ${totalStructCol.split(",")(0)}_${column}"
+//mainArrayBuffer.toSeq.toDF.show(false)
+}
+//dfTotal.selectExpr(mainArrayBuffer:_*).printSchema
+val nonStructCols=dfTotal.selectExpr(mainArrayBuffer:_*).dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter(!_.contains("Struct"))
+for (nonStructCol <- nonStructCols)
+totalMainArrayBuffer+=s"${nonStructCol.split(",")(0).replace("_",".")} as ${nonStructCol.split(",")(0)}"
+dfTotal.selectExpr(mainArrayBuffer:_*).dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter(_.contains("Struct")).size 
+match {
+case value if value ==0 => dfTotalOuter.selectExpr(totalMainArrayBuffer:_*)
+case _ => flatten_df_Struct(dfTotal.selectExpr(mainArrayBuffer:_*),originalDF)
+}
+}
+
+
+def flatten_df(dfTotal:org.apache.spark.sql.DataFrame):org.apache.spark.sql.DataFrame=
+{
+var totalArrayBuffer=collection.mutable.ArrayBuffer[String]()
+val totalNonStructCols=dfTotal.dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter(!_.contains("Struct"))
+for (totalNonStructCol <- totalNonStructCols)
+totalArrayBuffer+=s"${totalNonStructCol.split(",")(0)}"
+totalMainArrayBuffer.clear
+flatten_df_Struct(dfTotal) // flattened schema is now in totalMainArrayBuffer 
+totalArrayBuffer=totalArrayBuffer++totalMainArrayBuffer
+dfTotal.selectExpr(totalArrayBuffer:_*)
+}
+
+
+flatten_df(dfTotal).printSchema
