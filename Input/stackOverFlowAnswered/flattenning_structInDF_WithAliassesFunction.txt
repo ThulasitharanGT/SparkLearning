@@ -1,10 +1,67 @@
+//array inside struct is not an issue. struct inside array is an issue
+
+val dfSampleJson=spark.read.json("file:///home/raptor/IdeaProjects/SparkLearning/Input/tempInputs/jsonSample.json") // map is converted to struct and all possible kets are made as sub elements, things which are not in the original map is kept as null in combined struct
+// array (struct) will be a issue so split the dtypes without limit inside the function
+
+root
+ |-- item: struct (nullable = true)
+ |    |-- batters: struct (nullable = true)
+ |    |    |-- batter: array (nullable = true)   
+ |    |    |    |-- element: struct (containsNull = true)    // struct inside an array(we need to flatten twice) separate function
+ |    |    |    |    |-- id: string (nullable = true)
+ |    |    |    |    |-- type: string (nullable = true)
+ |    |-- id: string (nullable = true)
+ |    |-- name: string (nullable = true)
+ |    |-- ppu: double (nullable = true)
+ |    |-- topping: array (nullable = true)
+ |    |    |-- element: struct (containsNull = true)
+ |    |    |    |-- id: string (nullable = true)
+ |    |    |    |-- type: string (nullable = true)
+ |    |-- type: string (nullable = true)
+
+
+
+
 val dfTotal=spark.read.json("file:///home/raptor/IdeaProjects/SparkLearning/Input/tempInputs/allDtypesFile.json") // map is converted to struct and all possible kets are made as sub elements, things which are not in the original map is kept as null in combined struct
+
+// no struct inside an array,only struct inside a struct
+root
+ |-- arr1: array (nullable = true)
+ |    |-- element: long (containsNull = true)
+ |-- bool1: boolean (nullable = true)
+ |-- bool2: boolean (nullable = true)
+ |-- carInfo: struct (nullable = true)
+ |    |-- Engine: struct (nullable = true)
+ |    |    |-- Make: string (nullable = true)
+ |    |    |-- Power: struct (nullable = true)
+ |    |    |    |-- IC: string (nullable = true)
+ |    |    |    |-- battery: string (nullable = true)
+ |    |    |-- Redline: string (nullable = true)
+ |    |-- Tyres: struct (nullable = true)
+ |    |    |-- Compound: string (nullable = true)
+ |    |    |-- Life: string (nullable = true)
+ |    |    |-- Make: string (nullable = true)
+ |-- double1: double (nullable = true)
+ |-- double2: double (nullable = true)
+ |-- map1: struct (nullable = true)
+ |    |-- agressive: long (nullable = true)
+ |    |-- cool: long (nullable = true)
+ |    |-- fast: long (nullable = true)
+ |    |-- medium: long (nullable = true)
+ |    |-- normal: long (nullable = true)
+ |    |-- okay: long (nullable = true)
+ |    |-- preserve: long (nullable = true)
+ |-- num1: long (nullable = true)
+ |-- num2: long (nullable = true)
+ |-- str1: string (nullable = true)
+ |-- str2: string (nullable = true)
+
 
 val totalMainArrayBuffer=collection.mutable.ArrayBuffer[String]()
 def flatten_df_Struct(dfTemp:org.apache.spark.sql.DataFrame,dfTotalOuter:org.apache.spark.sql.DataFrame):org.apache.spark.sql.DataFrame=
 {
 //dfTemp.printSchema
-val totalStructCols=dfTemp.dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter(_.split(",",2)(1).contains("Struct")) // in case i the column names come with the word Struct embedded in it
+val totalStructCols=dfTemp.dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter(x => x.split(",")(1).dropRight(x.split(",")(1).size -6).contains("Struct")) // in case i the column names come with the word Struct embedded in it
 val mainArrayBuffer=collection.mutable.ArrayBuffer[String]()
 for(totalStructCol <- totalStructCols)
 {
@@ -17,10 +74,10 @@ mainArrayBuffer+=s"${totalStructCol.split(",")(0)}.${column} as ${totalStructCol
 //mainArrayBuffer.toSeq.toDF.show(false)
 }
 //dfTemp.selectExpr(mainArrayBuffer:_*).printSchema
-val nonStructCols=dfTemp.selectExpr(mainArrayBuffer:_*).dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter(!_.split(",",2)(1).contains("Struct")) // in case i the column names come with the word Struct embedded in it
+val nonStructCols=dfTemp.selectExpr(mainArrayBuffer:_*).dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter( x =>  (x.split(",")(1).dropRight(x.split(",")(1).size -6).indexOf("Struct") == -1)) // in case the column names come with the word Struct embedded in it
 for (nonStructCol <- nonStructCols)
 totalMainArrayBuffer+=s"${nonStructCol.split(",")(0).replace("_",".")} as ${nonStructCol.split(",")(0)}" // replacing _ by . in origial select clause if it's an already nested column 
-dfTemp.selectExpr(mainArrayBuffer:_*).dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter(_.split(",",2)(1).contains("Struct")).size 
+dfTemp.selectExpr(mainArrayBuffer:_*).dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter(x => x.split(",")(1).dropRight(x.split(",")(1).size -6).contains("Struct")).size // -6 is for the word struct alone to be preserved, taking non struct columns
 match {
 case value if value ==0 => dfTotalOuter.selectExpr(totalMainArrayBuffer:_*)
 case _ => flatten_df_Struct(dfTemp.selectExpr(mainArrayBuffer:_*),dfTotalOuter)
@@ -31,7 +88,7 @@ case _ => flatten_df_Struct(dfTemp.selectExpr(mainArrayBuffer:_*),dfTotalOuter)
 def flatten_df(dfTemp:org.apache.spark.sql.DataFrame):org.apache.spark.sql.DataFrame=
 {
 var totalArrayBuffer=collection.mutable.ArrayBuffer[String]()
-val totalNonStructCols=dfTemp.dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter(!_.split(",",2)(1).contains("Struct")) // in case i the column names come with the word Struct embedded in it
+val totalNonStructCols=dfTemp.dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter(x =>  (x.split(",")(1).dropRight(x.split(",")(1).size -6).indexOf("Struct") == -1)) // in case in the column names come with the word Struct ,taking non struct columns embedded in it
 for (totalNonStructCol <- totalNonStructCols)
 totalArrayBuffer+=s"${totalNonStructCol.split(",")(0)}"
 totalMainArrayBuffer.clear
@@ -40,7 +97,52 @@ totalArrayBuffer=totalArrayBuffer++totalMainArrayBuffer
 dfTemp.selectExpr(totalArrayBuffer:_*)
 }
 
+flatten_df(dfSampleJson).printSchema
 
-flatten_df(dfTotal.withColumn("tempStruct",lit(5))).printSchema
+root
+ |-- item_id: string (nullable = true)
+ |-- item_name: string (nullable = true)
+ |-- item_ppu: double (nullable = true)
+ |-- item_topping: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- id: string (nullable = true)
+ |    |    |-- type: string (nullable = true)
+ |-- item_type: string (nullable = true)
+ |-- item_batters_batter: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- id: string (nullable = true)
+ |    |    |-- type: string (nullable = true)
 
+flatten_df(dfSampleJson).withColumn("item_topping_Exploded",explode(col("item_topping"))).withColumn("item_batters_batter_Exploded",explode(col("item_batters_batter"))).printSchema
+
+// drop the non exploded columns and do flatten again, write another function
+
+
+flatten_df(dfTotal).printSchema
+
+root
+ |-- arr1: array (nullable = true)
+ |    |-- element: long (containsNull = true)
+ |-- bool1: boolean (nullable = true)
+ |-- bool2: boolean (nullable = true)
+ |-- double1: double (nullable = true)
+ |-- double2: double (nullable = true)
+ |-- num1: long (nullable = true)
+ |-- num2: long (nullable = true)
+ |-- str1: string (nullable = true)
+ |-- str2: string (nullable = true)
+ |-- map1_agressive: long (nullable = true)
+ |-- map1_cool: long (nullable = true)
+ |-- map1_fast: long (nullable = true)
+ |-- map1_medium: long (nullable = true)
+ |-- map1_normal: long (nullable = true)
+ |-- map1_okay: long (nullable = true)
+ |-- map1_preserve: long (nullable = true)
+ |-- carInfo_Engine_Make: string (nullable = true)
+ |-- carInfo_Engine_Redline: string (nullable = true)
+ |-- carInfo_Tyres_Compound: string (nullable = true)
+ |-- carInfo_Tyres_Life: string (nullable = true)
+ |-- carInfo_Tyres_Make: string (nullable = true)
+ |-- carInfo_Engine_Power_IC: string (nullable = true)
+ |-- carInfo_Engine_Power_battery: string (nullable = true)
 
