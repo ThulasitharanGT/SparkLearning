@@ -1,5 +1,6 @@
 val dfSampleJson=spark.read.json("file:///home/raptor/IdeaProjects/SparkLearning/Input/tempInputs/jsonSample.json") // map is converted to struct and all possible kets are made as sub elements, things which are not in the original map is kept as null in combined struct
 
+//stack overflow
 def occurrencesOf(text:String, word:String) ={
 val length = text.length
 val lenghtofWord = word.length
@@ -9,6 +10,10 @@ val lengthWithoutWord = text.replaceAll(word, "").length()
 
 //occurrencesOf("item_batters_batter_exploded_type_types_exploded_description.intro","exploded")
 
+////// own
+def occurrencesOf(text:String, word:String) =text.split(word).size-1
+
+//occurrencesOf("item_batters_batter_exploded_type_types_exploded_description.intro","exploded")
 
 
 val totalMainArrayBuffer=collection.mutable.ArrayBuffer[String]()
