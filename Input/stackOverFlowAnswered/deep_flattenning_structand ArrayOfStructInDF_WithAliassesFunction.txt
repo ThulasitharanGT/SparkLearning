@@ -1,0 +1,210 @@
+val dfSampleJson=spark.read.json("file:///home/raptor/IdeaProjects/SparkLearning/Input/tempInputs/jsonSample.json") // map is converted to struct and all possible kets are made as sub elements, things which are not in the original map is kept as null in combined struct
+
+def occurrencesOf(text:String, word:String) ={
+val length = text.length
+val lenghtofWord = word.length
+val lengthWithoutWord = text.replaceAll(word, "").length()
+(length - lengthWithoutWord) / lenghtofWord  // toatal - length without current word is the total occurances f our word. devide it by our word's lenght, it says the number of occurance
+}
+
+//occurrencesOf("item_batters_batter_exploded_type_types_exploded_description.intro","exploded")
+
+
+
+val totalMainArrayBuffer=collection.mutable.ArrayBuffer[String]()
+val tempExplodedClauseArrayBuffer=collection.mutable.ArrayBuffer[String]()
+def flatten_df_Struct_withArray(dfTempOut:org.apache.spark.sql.DataFrame,dfTotalOuter:org.apache.spark.sql.DataFrame):org.apache.spark.sql.DataFrame=
+{
+var dfTemp=dfTempOut
+//dfTemp.printSchema
+val totalStructCols=dfTemp.dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter(x => x.split(",")(1).dropRight(x.split(",")(1).size -6).contains("Struct")) // in case the column names come with the word Struct embedded in it
+
+val totalArrayOfStructCols=dfTemp.dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter(_.split(",")(1).contains("Struct")).filter(x => x.split(",")(1).dropRight(x.split(",")(1).size -20).indexOf("ArrayType(StructType") != -1) // checking for array(Struct)
+
+var mainArrayBuffer=collection.mutable.ArrayBuffer[String]()
+for(totalStructCol <- totalStructCols) // val totalStructCol=totalStructCols(0)
+{
+val tempArrayBuffer=collection.mutable.ArrayBuffer[String]()
+tempArrayBuffer+=s"${totalStructCol.split(",")(0)}.*"
+//tempArrayBuffer.toSeq.toDF.show(false)
+val columnsInside=dfTemp.selectExpr(tempArrayBuffer:_*).columns
+for(column <- columnsInside) // val column=columnsInside(0)
+mainArrayBuffer+=s"${totalStructCol.split(",")(0)}.${column} as ${totalStructCol.split(",")(0)}_${column}"
+//mainArrayBuffer.toSeq.toDF.show(false)
+}
+for(totalArrayOfStructCol <- totalArrayOfStructCols) // val totalArrayOfStructCol=totalArrayOfStructCols(0)
+{
+mainArrayBuffer+=s"explode(${totalArrayOfStructCol.split(",")(0)}) as ${totalArrayOfStructCol.split(",")(0)}_exploded"
+totalArrayOfStructCol.contains("_exploded_") match
+{
+case false => tempExplodedClauseArrayBuffer+=s"explode(${totalArrayOfStructCol.split(",")(0).replace("_",".").replace(".exploded.",".")}) as ${totalArrayOfStructCol.split(",")(0).replace("_exploded_","_")}"
+case _ => 
+{
+val columnNameSplitted=totalArrayOfStructCol.split(",")(0).split("_exploded")
+var tempExplodedColumnName=columnNameSplitted(0)
+for(columnNameIndex <- 1 to columnNameSplitted.size -1)
+tempExplodedColumnName=tempExplodedColumnName+columnNameSplitted(columnNameIndex).replace("_",".")
+tempExplodedClauseArrayBuffer+=s"explode(${tempExplodedColumnName}) as ${totalArrayOfStructCol.split(",")(0).replace("_exploded_","_")}"
+}
+}
+//mainArrayBuffer.toSeq.toDF.show(false)
+//tempExplodedClauseArrayBuffer.toSeq.toDF.show(false)
+}
+
+mainArrayBuffer.filter(_.contains("explode(")).size match   // we cant do multiple explodes in 1 select expr, so doing one by one and apppendig cols to DF
+{
+case value if value <= 1 => mainArrayBuffer
+case _ => 
+{
+for (mainCols <- mainArrayBuffer)  // val mainCols =mainArrayBuffer(0)
+dfTemp=dfTemp.selectExpr("*",mainCols)
+val tempMainArrayBuffer=mainArrayBuffer.diff(mainArrayBuffer.filter(_.contains("explode(")))
+mainArrayBuffer= tempMainArrayBuffer ++ mainArrayBuffer.filter(_.contains("explode(")).map(_.split(" as ")(1))
+}
+}
+
+//dfTemp.selectExpr(mainArrayBuffer:_*).printSchema
+val nonStructCols=dfTemp.selectExpr(mainArrayBuffer:_*).dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter( x =>  (x.split(",")(1).dropRight(x.split(",")(1).size -6).indexOf("Struct") == -1)) // in case the column names come with the word Struct embedded in it
+val ArrayOFStructCols=dfTemp.selectExpr(mainArrayBuffer:_*).dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter( x =>  (x.split(",")(1).dropRight(x.split(",")(1).size -20).indexOf("ArrayType(StructType") != -1))  // -20 is for  ArrayType(StructType , array is homogenous array(struct) is array (struct)
+
+for (nonStructOrArrayOFStructCol <- nonStructCols.diff(ArrayOFStructCols)) // val nonStructOrArrayOFStructCol=nonStructCols.diff(ArrayOFStructCols)(0)
+nonStructOrArrayOFStructCol.split(",")(0).contains("exploded") match
+{
+case value if value == false => totalMainArrayBuffer+=s"${nonStructOrArrayOFStructCol.split(",")(0).replace("_",".")} as ${nonStructOrArrayOFStructCol.split(",")(0)}" // replacing _ by . in origial select clause if it's an already nested column 
+case _ => nonStructOrArrayOFStructCol.split(",")(0).split("exploded").size match 
+{
+case value if value == 1 => totalMainArrayBuffer+=s"${nonStructOrArrayOFStructCol.split(",")(0).substring(0,nonStructOrArrayOFStructCol.split(",")(0).lastIndexOf("_")).replace("exploded_","exploded.") }.${nonStructOrArrayOFStructCol.split(",")(0).substring(nonStructOrArrayOFStructCol.split(",")(0).lastIndexOf("_")+1,nonStructOrArrayOFStructCol.split(",")(0).size).replace("exploded_","exploded.")} as ${nonStructOrArrayOFStructCol.split(",")(0)}" 
+// replacing _ by . in origial select clause if it's an already nested column, but exploded column remains with . and if struct inside an exploded column occurs, exploded_ needs to be taken as exploded. 
+case _ => totalMainArrayBuffer+=s"${nonStructOrArrayOFStructCol.split(",")(0).substring(0,nonStructOrArrayOFStructCol.split(",")(0).lastIndexOf("_"))}.${nonStructOrArrayOFStructCol.split(",")(0).substring(nonStructOrArrayOFStructCol.split(",")(0).lastIndexOf("_")+1,nonStructOrArrayOFStructCol.split(",")(0).size).replace("exploded_","exploded.")} as ${nonStructOrArrayOFStructCol.split(",")(0)}" 
+}
+}
+
+//totalMainArrayBuffer.toSeq.toDF.show(false)
+//tempExplodedClauseArrayBuffer.toDF.show(false)
+
+dfTemp.selectExpr(mainArrayBuffer:_*).dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter(x => x.split(",")(1).contains("Struct")).size // .dropRight(x.split(",")(1).size -6) -6 is for the word struct alone to be preserved, taking non struct columns
+match {
+case value if value == 0 =>
+{
+var tempDfTotalOuter=dfTotalOuter    
+for( tempExplodedColumnClause <- tempExplodedClauseArrayBuffer ) // val tempExplodedColumnClause =tempExplodedClauseArrayBuffer(0)
+tempDfTotalOuter=tempDfTotalOuter.selectExpr("*",tempExplodedColumnClause)
+tempDfTotalOuter//.selectExpr(totalMainArrayBuffer:_*) // passing with the exploded column alone, not select exprs, as it will be done  in the main flatten function
+} 
+case _ =>  flatten_df_Struct_withArray(dfTemp.selectExpr(mainArrayBuffer:_*),dfTotalOuter)
+}
+}
+
+
+
+def deep_flatten_df(dfTemp:org.apache.spark.sql.DataFrame):org.apache.spark.sql.DataFrame=
+{
+var tempTotalArrayBuffer=collection.mutable.ArrayBuffer[String]()
+val totalNonStructCols=dfTemp.dtypes.map(x => x.toString.substring(1,x.toString.size-1)).filter(x =>  (x.split(",")(1).indexOf("Struct") == -1)) // in case in the column names come with the word Struct ,taking non struct columns embedded in it
+for (totalNonStructCol <- totalNonStructCols)
+tempTotalArrayBuffer+=s"${totalNonStructCol.split(",")(0)}"
+totalMainArrayBuffer.clear
+tempExplodedClauseArrayBuffer.clear
+val finalDFTemp=flatten_df_Struct_withArray(dfTemp,dfTemp) // flattened schema is now in totalMainArrayBuffer 
+//finalDFTemp.printSchema
+
+for (colExpression<-totalMainArrayBuffer) // val colExpression=totalMainArrayBuffer(10)
+colExpression.contains("exploded") match 
+{
+case false => tempTotalArrayBuffer+=colExpression
+case _ => occurrencesOf(colExpression,"exploded") match // one for alias one for expression (2 is 1)
+{
+case value if value == 2 => tempTotalArrayBuffer+= s"${colExpression.split(" as ")(0).replace("_exploded","")} as ${colExpression.split(" as ")(1)}"
+case _ => 
+{
+val tempColExpression=colExpression.split(" as ")(0)
+val columnExprSplitted=colExpression.split(" as ")(0).split("_exploded") // before 1st _exploded, the column must be a exploded column, and others must be sub columns inside it
+var tempExplodedColumnName=columnExprSplitted(0) // this remains with _
+for(columnNameIndex <- 1 to columnExprSplitted.size -1)
+tempExplodedColumnName=tempExplodedColumnName+columnExprSplitted(columnNameIndex).replace("_",".") // others are replaced with . where _ is present
+tempTotalArrayBuffer+=s"${tempExplodedColumnName} as ${colExpression.split(" as ")(1)}"
+}
+}
+}
+//tempTotalArrayBuffer.toSeq.toDF.show(false)
+finalDFTemp.selectExpr(tempTotalArrayBuffer:_*)
+}
+
+
+dfSampleJson.printSchema
+root
+ |-- item: struct (nullable = true)
+ |    |-- batters: struct (nullable = true)
+ |    |    |-- batter: array (nullable = true)
+ |    |    |    |-- element: struct (containsNull = true)
+ |    |    |    |    |-- id: string (nullable = true)
+ |    |    |    |    |-- type: string (nullable = true)
+ |    |-- id: string (nullable = true)
+ |    |-- name: string (nullable = true)
+ |    |-- ppu: double (nullable = true)
+ |    |-- topping: array (nullable = true)
+ |    |    |-- element: struct (containsNull = true)
+ |    |    |    |-- id: string (nullable = true)
+ |    |    |    |-- type: string (nullable = true)
+ |    |-- type: string (nullable = true)
+
+
+deep_flatten_df(dfSampleJson).printSchema // array of structs will be exploded and column name will contain exploded
+
+root
+ |-- item_id: string (nullable = true)
+ |-- item_name: string (nullable = true)
+ |-- item_ppu: double (nullable = true)
+ |-- item_type: string (nullable = true)
+ |-- item_topping_exploded_id: string (nullable = true)
+ |-- item_topping_exploded_type: string (nullable = true)
+ |-- item_batters_batter_exploded_id: string (nullable = true)
+ |-- item_batters_batter_exploded_type: string (nullable = true)
+
+
+
+val dfSampleJson2=spark.read.json("file:///home/raptor/IdeaProjects/SparkLearning/Input/tempInputs/arrayStructArray1.json") // map is converted to struct and all possible kets are made as sub elements, things which are not in the original map is kept as null in combined struct
+
+
+dfSampleJson2.printSchema
+
+root
+ |-- item: struct (nullable = true)
+ |    |-- batters: struct (nullable = true)
+ |    |    |-- batter: array (nullable = true)
+ |    |    |    |-- element: struct (containsNull = true)
+ |    |    |    |    |-- id: string (nullable = true)
+ |    |    |    |    |-- type: struct (nullable = true)
+ |    |    |    |    |    |-- types: array (nullable = true)
+ |    |    |    |    |    |    |-- element: struct (containsNull = true)
+ |    |    |    |    |    |    |    |-- description: struct (nullable = true)
+ |    |    |    |    |    |    |    |    |-- intro: string (nullable = true)
+ |    |    |    |    |    |    |    |-- flavours: array (nullable = true)
+ |    |    |    |    |    |    |    |    |-- element: string (containsNull = true)
+ |    |-- id: string (nullable = true)
+ |    |-- name: string (nullable = true)
+ |    |-- ppu: double (nullable = true)
+ |    |-- topping: array (nullable = true)
+ |    |    |-- element: struct (containsNull = true)
+ |    |    |    |-- id: string (nullable = true)
+ |    |    |    |-- type: string (nullable = true)
+ |    |-- type: string (nullable = true)
+
+deep_flatten_df(dfSampleJson2).printSchema
+
+root
+ |-- item_id: string (nullable = true)
+ |-- item_name: string (nullable = true)
+ |-- item_ppu: double (nullable = true)
+ |-- item_type: string (nullable = true)
+ |-- item_topping_exploded_id: string (nullable = true)
+ |-- item_topping_exploded_type: string (nullable = true)
+ |-- item_batters_batter_exploded_id: string (nullable = true)
+ |-- item_batters_batter_exploded_type_types_exploded_flavours: array (nullable = true)
+ |    |-- element: array (containsNull = true)
+ |    |    |-- element: string (containsNull = true)
+ |-- item_batters_batter_exploded_type_types_exploded_description_intro: array (nullable = true)
+ |    |-- element: string (containsNull = true)
+
+
+

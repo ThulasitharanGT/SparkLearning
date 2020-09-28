@@ -1,0 +1,4 @@
+{"base":[{"millitary":{"class":"class1","location":"classified","availability":["rankA","rankA1"]}},{"secret":{"class":"class2","location":"decrypted","availability":["rankB","rankB1"]}}]}
+{"base":[{"millitary":{"class":"class2","location":"encrytped","availability":["rankE","rankE1"]}},{"secret":{"class":"class1","location":"classified","availability":["rankC","rankC1"]}}]}
+{"base":[{"millitary":{"class":"classA","location":"Secure","availability":["rankA","POTUS"]}},{"secret":{"class":"classB","location":"Safe","availability":["rankB","General"]}}]}
+
