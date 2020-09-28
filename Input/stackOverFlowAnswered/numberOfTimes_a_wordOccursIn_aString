@@ -1,0 +1,25 @@
+number of times a word occurs in a string
+
+// editted from net
+
+def occurrencesOf(text:String, word:String) ={
+val length = text.length
+val lenghtofWord = word.length
+val lengthWithoutWord = text.replaceAll(word, "").length()
+(length - lengthWithoutWord) / lenghtofWord  // toatal - length without current word is the total occurances f our word. devide it by our word's lenght, it says the number of occurance
+}
+
+occurrencesOf("item_batters_batter_exploded_type_types_exploded_description.intro","exploded")
+
+// own 
+
+def numTimesOccurrenced(text:String, word:String) =text.split(word).size-1 // 1 is to stablizie the extra split which we get for 1 occurance, \\b is for boundaries,
+
+eg, if we give male cat and female cat is present, it won't spoit the female cat
+
+numTimesOccurrenced("item_batters_batter_exploded_type_types_exploded_description.intro","exploded")
+
+numTimesOccurrenced("item_batters_batter_exploded_type_types_exploded_exploded_exploded _exploded description.intro","\\b_exploded\\b")  // yields 1, break only counts separate words
+
+
+
