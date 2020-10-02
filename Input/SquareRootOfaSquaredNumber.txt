@@ -1,0 +1,72 @@
+def sqrt(number:Int)= // returns 0 if that number is a square
+{
+val numberCheck=number%2
+var Sqrt=0.0
+numberCheck match
+{
+case value if value ==0 =>
+//val numberTemp=number/2
+//val numberSeq=2 to numberTemp by 2
+breakable
+{
+for(i <- (2.0 to (number/2.0) by 2.0)) //(i <- numberSeq)
+if (number/i ==i)
+{
+Sqrt=i
+break
+}
+}
+case value if value == 1 =>
+//val numberTemp=number/2
+//val numberSeq=1 to numberTemp by 2
+breakable
+{
+for(i <-  (1.0 to (number/2.0) by 2.0))
+if (number/i ==i)
+{
+Sqrt=i
+break
+}
+}
+}
+Sqrt.toInt
+}
+
+sqrt(24)
+
+sqrt(64)
+
+
+
+
+def sqrtOpt(number:Int)= // returns 0 if that number is a square
+{
+val numberCheck=number%2
+var Sqrt=0.0
+numberCheck match
+{
+case value if value ==0 =>
+//val numberTemp=number/2
+//val numberSeq=2 to numberTemp by 2
+breakable
+{
+for(i <- (2.0 to (number/2.0) by 2.0))
+i*i match {
+case value if value <= number => if (number/i ==i) {Sqrt=i ; break}
+case _ => break
+}
+}
+case value if value == 1 =>
+//val numberTemp=number/2
+// val numberSeq=1 to numberTemp by 2
+breakable
+{
+for(i <- (1.0 to (number/2.0) by 2.0))
+i*i match {
+case value if value <= number => if (number/i ==i) {Sqrt=i ; break}
+case _ => break
+}
+}
+}
+Sqrt
+}

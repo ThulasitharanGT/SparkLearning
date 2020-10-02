@@ -1,0 +1,43 @@
+val listofFilesInFolder="hdfs dfs -ls /user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/"!!
+
+val filesToRead=listofFilesInFolder.split("\n").slice(1,listofFilesInFolder.split("\n").size).map(x => (x.contains("Extra") || x.contains("_diff_")) match {case true => println("") case _ => x.substring(x.indexOf("/"),x.size)} ).filter(_ .toString !="()").map(_.asInstanceOf[String])//.map(_.toString)
+
+val commonCols=Seq("Vehicle_id","model","brand","year","month","miles","intake_date_time")
+
+var dfTest:org.apache.spark.sql.DataFrame=null
+for(file <- filesToRead)
+dfTest match {
+case null => 
+dfTest=spark.read.option("inferSchema","true").option("header","true").option("delimiter","|").csv(file).selectExpr(commonCols:_*)
+case _ =>dfTest=dfTest.union(spark.read/*.format("com.databricks.spark.csv")*/.option("inferSchema","true").option("header","true").option("delimiter","|").csv(file).selectExpr(commonCols:_*))
+}
+
+val baseDF=spark.read.option("inferSchema","true").option("header","true").option("delimiter","|").csv("/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car2.txt")
+
+val baseDF1=spark.read.option("inferSchema","true").option("header","true").option("delimiter","|").csv("/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car2.txt")
+
+val baseDF2=spark.read.option("inferSchema","true").option("header","true").option("delimiter","|").csv("/user/raptor/testing/hadoop/deltaTableTestFolder/inputFiles/Avail_car3.txt")
+
+
+
+import org.apache.spark.sql.functions._
+baseDF1.groupBy("brand","model").agg(count("*")).show
+
+
+baseDF2.groupBy("brand","model").agg(count("*")).show
+
+
+spark.conf.set("spark.sql.sources.partitionOverwriteMode","static") 
+
+baseDF2.write.mode("overwrite").option("header","true").partitionBy("brand","model").csv("/user/raptor/testing/hadoop/deltaTableTestFolder/outputTemp1") // has extra brand
+
+spark.conf.set("spark.sql.sources.partitionOverwriteMode","dynamic")
+
+baseDF1.write.mode("overwrite").option("header","true").partitionBy("brand","model").csv("/user/raptor/testing/hadoop/deltaTableTestFolder/outputTemp1")
+
+
+
+
+baseDF1.col("brand")===baseDF1.col("brand") && baseDF1.col("model")===baseDF1.col("model")
+
+baseDF1.join(baseDF2,Seq("brand","model"),"full_outer")
