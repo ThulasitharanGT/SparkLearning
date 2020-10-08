@@ -59,17 +59,21 @@ a1                   22              Chennai
 
 import org.apache.spark.sql.functions._
 
-val df1=df.groupBy("mobile-handset-code").agg(count("pings").as("number-ofpings"))
+val df1=mobileDf.groupBy("mobile_handset_code").agg(count("pings").as("number-ofpings"))
 
-val df2=df.groupBy("mobile-handset-code","seen-location").agg(count("seen-location").as("seen-location_total"))
+val df2=mobileDf.groupBy("mobile_handset_code","pings").agg(count("pings").as("seen-location_total"))
 
-val df3= df2.select("mobile-handset-code","seen-location").withcolumn("max-seen-location",rank.over("seen-location_total").partitionBy("mobile-handset-code").orderBy("seen-location_total").desc).filter("")
+val df3= df2.withColumn("max_seen_location",rank.over(Window.partitionBy("mobile_handset_code").orderBy($"seen-location_total".desc)))
 
 import spark.implicits._
 
-df1.join(df3,Seq("mobile-handset-code")).show
+df1.join(df3,Seq("mobile_handset_code")).filter("max_seen_location =1")
 
+// single line
 
+val mobileDf=spark.read.option("header","true").option("inferSchema","true").option("delimiter","|").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/mobilePings.txt")
+
+mobileDf.groupBy("mobile_handset_code").agg(count("pings").as("numberOfPings")).join(mobileDf.groupBy("mobile_handset_code","pings").agg(count("*")),Seq("mobile_handset_code")).withColumn("rankForMaxSeen",dense_rank.over(Window.partitionBy("mobile_handset_code","numberOfPings").orderBy(desc("count(1)")))).where("rankForMaxSeen=1").show
 
 
 
@@ -77,21 +81,104 @@ df1.join(df3,Seq("mobile-handset-code")).show
 
 ------------
 
-df.groupby("userID","ChannelName","showName")//.agg(min("starttime"),max("endTime"))
 
+userID|ChannelName|showName|startTime|Endtime
+1001|ch001|ufc|2019-02-10 11:12:00|2019-02-10 11:14:00
+1001|ch001|ufc|2019-02-10 11:15:00|2019-02-10 11:18:00
+1001|ch001|ufc|2019-02-10 11:15:00|2019-02-10 11:19:00
+1001|ch002|f1|2019-02-10 11:25:00|2019-02-10 11:30:00
+1002|ch003|f1|2019-02-10 11:15:00|2019-02-10 11:18:00
+1002|ch003|f1|2019-02-10 11:15:00|2019-02-10 11:16:00
+1003|ch002|f1|2019-02-10 11:45:00|2019-02-10 11:55:00
 
-df.as("a").join(df.as("b"),Seq("userID","ChannelName","showName"))
+need like this:
+userID|ChannelName|showName|startTime|Endtime
+1001|ch001|ufc|2019-02-10 11:12:00|2019-02-10 11:19:00
+1001|ch002|f1|2019-02-10 11:25:00|2019-02-10 11:30:00
+1002|ch003|f1|2019-02-10 11:15:00|2019-02-10 11:18:00
+1003|ch002|f1|2019-02-10 11:45:00|2019-02-10 11:55:00
 
-val userList=df.select("userID").distinct.collect.map(_(0).toString)
-for(user <- userList)
+import java.sql.Timestamp
+
+case class programs(userID:Int,ChannelName:String,showName:String,startTime:Timestamp,Endtime:Timestamp)
+
+val rawProgramsDF=spark.read.option("header","true").option("inferSchema","true").option("delimiter","|").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/sampleCodes/programsInput.txt")
+
+val programsDF=rawProgramsDF.distinct.orderBy("userID","ChannelName","showName","startTime") // avoiding duplicate records while taking in
+
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+
+val timestampFormat="yyyy-MM-dd HH:mm:ss.SSS"
+
+val userIds=programsDF.select("userID").distinct.collect.map(_(0).asInstanceOf[Int]).toList
+
+val outPutArrayBuffer= new collection.mutable.ArrayBuffer[programs]()
+for (userId <- userIds) //val userId=userIds(4)
 {
-val tempDf=df.filter(s"userID='${user}'").orderBy("userID","ChannelName","showName","starttime")
-val userLeadDF=df.select("*").withColumn("leadColumn",Window.lead("starttime",1)).withColumn("indexColumn",0)
-val userDF=userLeadDF.selectExpr("*","case when leadColumn<endTime")
+val userIdDf=programsDF.filter(s"userID=${userId}").orderBy("userID","ChannelName","showName","startTime")
+val channelsInUserID=userIdDf.select("ChannelName").distinct.collect.map(_(0).asInstanceOf[String]).toList
+for (channelInUserID <- channelsInUserID) // val channelInUserID=channelsInUserID(0)
+{
+val channelDF=userIdDf.filter(s"ChannelName='${channelInUserID}'").orderBy("userID","ChannelName","showName","startTime")
+val channelDFlist=channelDF.rdd.collect
+channelDF.count match
+{
+case value if value == 1.asInstanceOf[Long] => outPutArrayBuffer+=programs(channelDFlist(0)(0).asInstanceOf[Int],channelDFlist(0)(1).toString,channelDFlist(0)(2).toString,new Timestamp(DateTime.parse(channelDFlist(0)(3).toString,DateTimeFormat.forPattern(timestampFormat)).getMillis),new Timestamp(DateTime.parse(channelDFlist(0)(4).toString,DateTimeFormat.forPattern(timestampFormat)).getMillis))
+
+case _ =>
+{
+val numIterations=channelDFlist.size
+//val showName=channelDFlist(0)(2).toString
+var startTime=DateTime.parse(channelDFlist(0)(3).toString,DateTimeFormat.forPattern(timestampFormat)) 
+var endTime=DateTime.parse(channelDFlist(0)(4).toString,DateTimeFormat.forPattern(timestampFormat))
+for (iteration <- 0 to numIterations-1) // val iteration=2
+{
+if (iteration != numIterations-1)
+{
+val currentEndTime=DateTime.parse(channelDFlist(iteration)(4).toString,DateTimeFormat.forPattern(timestampFormat))
+val nextStartTime=DateTime.parse(channelDFlist(iteration+1)(3).toString,DateTimeFormat.forPattern(timestampFormat))
+val nextEndTime=DateTime.parse(channelDFlist(iteration+1)(4).toString,DateTimeFormat.forPattern(timestampFormat))
+val expectedStartMinuteOfDay=currentEndTime.plusMinutes(1).getMinuteOfDay
+expectedStartMinuteOfDay match // ((expectedStartMinuteOfDay >= nextStartTime.getMinuteOfDay) && (expectedStartMinuteOfDay <= nextEndTime.getMinuteOfDay ))
+{
+case value if ((value >= nextStartTime.getMinuteOfDay) && (value <= nextEndTime.getMinuteOfDay )) => endTime=nextEndTime
+case _ => {
+outPutArrayBuffer+=programs(channelDFlist(iteration)(0).asInstanceOf[Int],channelDFlist(iteration)(1).toString,channelDFlist(iteration)(2).toString,new Timestamp(startTime.getMillis),new Timestamp(endTime.getMillis))
+startTime=nextStartTime // updating start time for upcomming record
+endTime=nextEndTime
 }
+}
+}
+if (iteration == numIterations-1)
+{
+val currentStartTime=DateTime.parse(channelDFlist(iteration)(3).toString,DateTimeFormat.forPattern(timestampFormat))
+val previousEndTime=DateTime.parse(channelDFlist(iteration-1)(4).toString,DateTimeFormat.forPattern(timestampFormat))
+val currentEndTime=DateTime.parse(channelDFlist(iteration)(4).toString,DateTimeFormat.forPattern(timestampFormat))
+val expectedStartMinuteOfDay=previousEndTime.plusMinutes(1).getMinuteOfDay
+expectedStartMinuteOfDay match // ((expectedStartMinuteOfDay >= currentStartTime.getMinuteOfDay) && (previousEndTime.plusMinutes(1).compareTo(currentEndTime)<=0))
+{
+case value if ((value >= currentStartTime.getMinuteOfDay) && (endTime.compareTo(currentEndTime)<=0)) => outPutArrayBuffer+=programs(channelDFlist(iteration-1)(0).asInstanceOf[Int],channelDFlist(iteration-1)(1).toString,channelDFlist(iteration-1)(2).toString,new Timestamp(startTime.getMillis),new Timestamp(currentEndTime.getMillis)) //previous record
+case _ => 
+{
+outPutArrayBuffer+=programs(channelDFlist(iteration-1)(0).asInstanceOf[Int],channelDFlist(iteration-1)(1).toString,channelDFlist(iteration-1)(2).toString,new Timestamp(startTime.getMillis),new Timestamp(endTime.getMillis)) //previous record , do distinct incase if duplicates gets inserted
+outPutArrayBuffer+=programs(channelDFlist(iteration)(0).asInstanceOf[Int],channelDFlist(iteration)(1).toString,channelDFlist(iteration)(2).toString,new Timestamp(DateTime.parse(channelDFlist(iteration)(3).toString,DateTimeFormat.forPattern(timestampFormat)).getMillis),new Timestamp(DateTime.parse(channelDFlist(iteration)(4).toString,DateTimeFormat.forPattern(timestampFormat)).getMillis)) //current Record
+}
+}
+}
+}
+}
+}
+}
+}
+outPutArrayBuffer.toSeq.toDF.orderBy("userID","ChannelName","showName","startTime").show(false)
+outPutArrayBuffer.toSeq.toDF.distinct.orderBy("userID","ChannelName","showName","startTime").show(false)
+programsDF.show(false)
+
+DateTime.parse(channelDFlist(0)(3).toString,DateTimeFormat.forPattern(timestampFormat)).getMillis
+DateTime.parse(channelDFlist(0)(4).toString,DateTimeFormat.forPattern(timestampFormat)).getMillis
 
 --------------------------------------------------------------------------------------
-c1,c2,c3,c4 <-- csv file
 
 input
 mm/dd/yyyy
@@ -100,24 +187,19 @@ yyyy/mm/dd
 output
 yyyy-MM-dd
 
-import java.util.Date
-import java.text.SimpleDateFormat
-
-
-val monthFirst="mm/dd/yyyy"
-val yearFirst="yyyy/mm/dd"
-val outPut="yyyy-MM-dd"
-//val input="10/22/2019"
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+val outPutPattern="yyyy-MM-dd"
+val InputPatternYearFirst="yyyy/MM/dd"
+val InputPatternDayFirst="MM/dd/yyyy"
+val input="10/22/2019"
+//val input="2019/11/22"
 val checkNumber=input.indexOf("/")
-val outPutDateFormat= new SimpleDateFormat(outPut)
-val monthFirstDateFormat= new SimpleDateFormat(monthFirst)
-val yearFirstDateFormat= new SimpleDateFormat(yearFirst)
-val dateFormat=new Date("10/22/2019")
 var outputString=""
 checkNumber match {
-case value if value== 2 =>{ val dateInput=outPutDateFormat.format(input,monthFirstDateFormat); outputString=dateFormat.format(dateInput,monthFirstDateFormat)}
-case value if value== 4 =>{ val dateInput=dateFormat.fotmat(input,yearFirstDateFormat); outputString=dateFormat.format(dateInput,yearFirstDateFormat)}
-case _ => exception
+case value if value== 2 =>{ val dateInput=DateTime.parse(input,DateTimeFormat.forPattern(InputPatternDayFirst)); outputString=new java.sql.Date(dateInput.getMillis).toString }
+case value if value== 4 =>{  val dateInput=DateTime.parse(input,DateTimeFormat.forPattern(InputPatternYearFirst)); outputString=new java.sql.Date(dateInput.getMillis).toString}
+case _ => println("handle exception")
 }
 outputString
 

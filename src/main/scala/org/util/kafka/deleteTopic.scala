@@ -42,7 +42,8 @@ object deleteTopic {
       case true =>{ kafkaUtilMethods.deleteTopic(adminZKClientConnection,topicName) // kafka will mark the topic for deletion, and then delete it when it gets refreshed based on time interval or it's internal mechanism. It'll delete the topic after 60000 ms
        // val topicCheckResultAfter=kafkaUtilMethods.checkIfTopicExists(zkKafkaClient,topicName) // if we directly match , some times it wont work
         //println(topicCheckResultAfter)
-        println(topicName+" in "+zookeeperIp+" has marked for deletion")
+        println(topicName+" in "+zookeeperIp+" has been " +
+          "marked for deletion")
         println("Waiting for cluster to delete the topic.......")
         Thread.sleep(sleepMsForKafkaToDeleteTopic) //sleeping till kafka deletes the topic after it has marked the topic for deletion (60000 ms)
         kafkaUtilMethods.checkIfTopicExists(zkKafkaClient,topicName) match{case false =>println("Topic deleted from cluster") case _ => println("Topic present in cluster")}}

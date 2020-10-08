@@ -7,7 +7,7 @@ import org.joda.time.format.DateTimeFormat
 
 import scala.collection.mutable.ListBuffer
 
-
+// refer splittingTimeMain for correct code
 class SplitFunction {
 def Splitting(TripRecord:Row) =
 {
