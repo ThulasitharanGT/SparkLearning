@@ -1,0 +1,23 @@
+// dbfs
+
+
+import sys.process._
+//"mkdir -p /databricks/driver/tempData"
+"wget -P /tmp  https://introcs.cs.princeton.edu/java/data/sdss6949386.csv" !!
+val localpath="file:/tmp/sdss6949386.csv"
+dbutils.fs.mkdirs("dbfs:/datasets/")
+dbutils.fs.cp(localpath, "dbfs:/datasets/")
+display(dbutils.fs.ls("dbfs:/datasets/sdss6949386.csv"))
+
+databricks cli:
+================
+
+docker run -t -i ubuntu:latest
+apt-get-update
+apt-get install -y python3-pip python3-dev
+apt-get update
+pip3 install --upgrade pip
+ln -s /usr/bin/python3 /usr/bin/python
+pip install databricks-cli
+databricks configure # host is https://community.cloud.databricks.com/ , username : email, pwd : pwd
+databricks fs ls dbfs:/tmp/hive/

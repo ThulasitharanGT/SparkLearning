@@ -1,0 +1,10 @@
+userId|AccessedUrls
+1001|www.tinybooks.com/userId=1001/authenticated=yes/category=Information/book=book1/book1.pdf
+1001|www.tinybooks.com/userId=1001/authenticated=yes/category=Novel/book=book2/book2.pdf
+1001|www.tinybooks.com/userId=1001/authenticated=yes/category=Thriller/book=book1/book1.pdf
+1001|www.tinybooks.com/userId=1001/authenticated=yes/category=Mistery/book=book11/book11.pdf
+1002|www.tinybooks.com/userId=1002/authenticated=yes/category=Literature/book=book1/book1.pdf
+1002|www.tinybooks.com/userId=1002/authenticated=yes/category=Novel/book=book1/book1.pdf
+1002|www.tinybooks.com/userId=1002/authenticated=yes/category=Mistery/book=book1/book1.pdf
+1002|www.tinybooks.com/userId=1002/authenticated=yes/category=Crime/book=book1/book1.pdf
+1002|www.tinybooks.com/userId=1002/authenticated=yes/category=Thriller/book=book1/book1.pdf

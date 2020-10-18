@@ -1,0 +1,34 @@
+//sti global
+
+def fact(num:Int) ={
+var result=1
+for (i <- 1 to num)
+result=result*i
+result
+}
+
+// factorial tail recursion
+
+def fact(num:Int,multiplyer:Int):Int =
+num match {
+case value if (value ==1 ||  value ==0)=> multiplyer
+case _ =>fact(num-1, num*multiplyer)
+}
+
+fact(5,1)
+
+
+  
+// passing function to function
+def funHigh(num:Int,f:(Int)=>Int):Int =f(num)
+
+funHigh(5,(x)=> x*x)
+funHigh(5,(x)=> x+x)
+funHigh(5,(x)=> x-x)
+
+df.selectExpr("size(col)")
+
+// map vs flat map
+map() => array[array[String]]
+flatMap() => array[String]
+

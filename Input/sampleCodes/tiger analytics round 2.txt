@@ -161,7 +161,7 @@ expectedStartMinuteOfDay match // ((expectedStartMinuteOfDay >= currentStartTime
 case value if ((value >= currentStartTime.getMinuteOfDay) && (endTime.compareTo(currentEndTime)<=0)) => outPutArrayBuffer+=programs(channelDFlist(iteration-1)(0).asInstanceOf[Int],channelDFlist(iteration-1)(1).toString,channelDFlist(iteration-1)(2).toString,new Timestamp(startTime.getMillis),new Timestamp(currentEndTime.getMillis)) //previous record
 case _ => 
 {
-outPutArrayBuffer+=programs(channelDFlist(iteration-1)(0).asInstanceOf[Int],channelDFlist(iteration-1)(1).toString,channelDFlist(iteration-1)(2).toString,new Timestamp(startTime.getMillis),new Timestamp(endTime.getMillis)) //previous record , do distinct incase if duplicates gets inserted
+//outPutArrayBuffer+=programs(channelDFlist(iteration-1)(0).asInstanceOf[Int],channelDFlist(iteration-1)(1).toString,channelDFlist(iteration-1)(2).toString,new Timestamp(startTime.getMillis),new Timestamp(endTime.getMillis)) //previous record will be updated by cut and stop in previous iteration if the last record is not a continuation record.
 outPutArrayBuffer+=programs(channelDFlist(iteration)(0).asInstanceOf[Int],channelDFlist(iteration)(1).toString,channelDFlist(iteration)(2).toString,new Timestamp(DateTime.parse(channelDFlist(iteration)(3).toString,DateTimeFormat.forPattern(timestampFormat)).getMillis),new Timestamp(DateTime.parse(channelDFlist(iteration)(4).toString,DateTimeFormat.forPattern(timestampFormat)).getMillis)) //current Record
 }
 }

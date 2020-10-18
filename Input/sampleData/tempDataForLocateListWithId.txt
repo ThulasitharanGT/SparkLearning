@@ -1,0 +1,7 @@
+userId|pattern|listOfInputs
+u001|en|en1002,en1003,en1005
+u001|et|et1002,et1003,et1005
+u002|en|en1002,en1003,en1005
+u002|en|en1002,en1003,et1005
+u003|pn|pn1002,pn1003,en1005
+

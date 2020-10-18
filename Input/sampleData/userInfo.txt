@@ -1,0 +1,4 @@
+userId|registeredCategories
+1001|array("Information","Novel","SiFi")
+1002|array("Novel","Literature","Romance")
+1003|array("Thriller","Mistery","Crime")

@@ -1,0 +1,179 @@
+userId|registeredCategories
+1001|array("Information","Novel","SiFi")
+1002|array("Novel","Literature","Romance")
+1003|array("Thriller","Mistery","Crime")
+
+
+userId|AccessedUrls
+1001|www.tinybooks.com/userId=1001/authenticated=yes/category=Information/book=book1/book1.pdf
+1001|www.tinybooks.com/userId=1001/authenticated=yes/category=Novel/book=book2/book2.pdf
+1001|www.tinybooks.com/userId=1001/authenticated=yes/category=Thriller/book=book1/book1.pdf
+1001|www.tinybooks.com/userId=1001/authenticated=yes/category=Mistery/book=book11/book11.pdf
+1002|www.tinybooks.com/userId=1002/authenticated=yes/category=Literature/book=book1/book1.pdf
+1002|www.tinybooks.com/userId=1002/authenticated=yes/category=Novel/book=book1/book1.pdf
+1002|www.tinybooks.com/userId=1002/authenticated=yes/category=Mistery/book=book1/book1.pdf
+1002|www.tinybooks.com/userId=1002/authenticated=yes/category=Crime/book=book1/book1.pdf
+1002|www.tinybooks.com/userId=1002/authenticated=yes/category=Thriller/book=book1/book1.pdf
+
+// checking user accessed categories which are not in their category types
+
+val userInfoDf=spark.read.format("com.databricks.spark.csv").option("inferSchema","true").option("header","true").option("delimiter","|").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/sampleData/userInfo.txt")
+
+userInfoDf.withColumn("temp",substring(col("registeredCategories"),7,Int.MaxValue)).selectExpr("userId","substring(temp,0,temp.indexOf(')'))").show
+//userInfoDf.withColumn("temp",substring(col("registeredCategories"),7,Int.MaxValue))
+
+userInfoDf.selectExpr("userId","split(replace(substring(registeredCategories,locate('(',registeredCategories)+1,locate(')',registeredCategories)-locate('(',registeredCategories)-1 ),'\"',''),',') as registeredCategories").show(false)
+
+val userInfoDF=spark.read.load("file:///home/raptor/IdeaProjects/SparkLearning/Input/sampleData/userInfo.parquet").withColumn("userCategory",explode(col("registeredCategories")))
+
+val userAccessInfoDf=spark.read.format("com.databricks.spark.csv").option("inferSchema","true").option("header","true").option("delimiter","|").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/sampleData/userAccessInfo.txt")
+
+val finalUserAccessInfoDf=userAccessInfoDf.selectExpr("*","explode(split(AccessedUrls,'/')) as accessInfo").filter("accessInfo like '%category%' ").selectExpr("*","split(accessInfo,'=')[1] as category").show(false)
+
+userInfoDF.join(finalUserAccessInfoDf,userInfoDF("userCategory")===finalUserAccessInfoDf("category") && userInfoDF("userId")===finalUserAccessInfoDf("userId") ,"right").show(false)
+
+
+
+
+userInfoDF.as("userBase").join(finalUserAccessInfoDf.as("userUrlInfo"),userInfoDF("userCategory")===finalUserAccessInfoDf("category") && userInfoDF("userId")===finalUserAccessInfoDf("userId") ,"right").where("userCategory is null").selectExpr("userUrlInfo.userId","AccessedUrls","accessInfo","category").as("resultIntermediate").join(userInfoDF.as("userInfo"),Seq("userId"),"left").selectExpr("resultIntermediate.*","registeredCategories").withColumn("rowNumberCol",row_number().over(org.apache.spark.sql.expressions.Window.partitionBy("userId","AccessedUrls","accessInfo","category","registeredCategories").orderBy("userId"))).where("rowNumberCol=1").show(false)
+
+// rank same number for identical columns
+
+pattern|listOfInputs
+en|en1002,en1003,en1005
+pn|pn1002,pn1003,en1005
+et|et1002,et1003,et1005
+
+val patternInfoDf=spark.read.format("com.databricks.spark.csv").option("inferSchema","true").option("header","true").option("delimiter","|").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/sampleData/tempDataForLocateList.txt").selectExpr("pattern","split(listOfInputs,',') listOfInputs")
+
+patternInfoDf.coalesce(1).write.mode("append").save("file:///home/raptor/IdeaProjects/SparkLearning/Input/sampleData/")
+
+val patternInfoDf=spark.read.load("file:///home/raptor/IdeaProjects/SparkLearning/Input/sampleData/tempDataForLocateList.parquet")
+
+patternInfoDf.selectExpr("pattern","explode('listOfInputs') inputs").groupBy("pattern").agg(count("*").as("InputCountForPattern"))
+
+
+
+// debug
+patternInfoDf.withColumn("input",explode(col("listOfInputs"))).drop("listOfInputs").withColumn("patternMatchResult",when(col("input").contains("pattern"),1).otherwise(0)).groupBy("en")
+
+patternInfoDf.withColumn("input",explode(col("listOfInputs"))).drop("listOfInputs").selectExpr("pattern","input","case when locate(pattern,input) >0 then 1 else 0 end as  patternMatchResult").groupBy("pattern").agg(sum("patternMatchResult")).show(false)
+
+patternInfoDf.withColumn("input",explode(col("listOfInputs"))).groupBy("pattern").agg(count("*")).show(false)
+
+// answer1
+patternInfoDf.withColumn("input",explode(col("listOfInputs"))).drop("listOfInputs").selectExpr("pattern","input","case when locate(pattern,input) >0 then 1 else 0 end as  patternMatchResult").groupBy("pattern").agg(sum("patternMatchResult").as("sumOfPatternMatchResult")).join(patternInfoDf.withColumn("input",explode(col("listOfInputs"))).groupBy("pattern").agg(count("*").as("totalInputCount")),Seq("pattern")).selectExpr("pattern","case when totalInputCount=sumOfPatternMatchResult then true else false end finalResult").filter("finalResult=true").drop("finalResult").join(patternInfoDf,Seq("pattern")).show(false)
+
+// answer 2
+
+// 1 way of UDF
+val find = udf {
+(item: String, collection: Seq[String]) =>
+{
+val resultCollection=collection.map(_.toLowerCase.contains(item)).filter(_ ==true) 
+collection.size match {
+case value if value == resultCollection.size => true
+case _ => false
+}	
+}
+}
+
+// the other WAY :{
+def find(item: String, collection: Seq[String]) = {
+val resultCollection=collection.map(_.toLowerCase.contains(item)).filter(_ ==true) 
+collection.size match {
+case value if value == resultCollection.size => true
+case _ => false
+}	
+}
+
+spark.udf.register("findUDF",find(_:String,_:Seq[String]))
+
+
+patternInfoDf.selectExpr("*","findUDF(pattern,listOfInputs)").show
+===========================================
+
+with userid
+
+userId|pattern|listOfInputs
+u001|en|en1002,en1003,en1005
+u001|et|et1002,et1003,et1005
+u002|en|en1002,en1003,en1005
+u002|en|en1002,en1003,et1005
+u003|pn|pn1002,pn1003,en1005
+u004|pn|pn1002,pn1003,pn1005
+
+
+val patternInfoWithUserDf=spark.read.format("com.databricks.spark.csv").option("inferSchema","true").option("header","true").option("delimiter","|").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/sampleData/tempDataForLocateListWithId.txt").selectExpr("userId","pattern","split(listOfInputs,',') listOfInputs")
+
+patternInfoWithUserDf.coalesce(1).write.mode("append").save("file:///home/raptor/IdeaProjects/SparkLearning/Input/sampleData/")
+
+val patternInfoWithUserDf=spark.read.load("file:///home/raptor/IdeaProjects/SparkLearning/Input/sampleData/tempDataForLocateListWithId.parquet")
+
+
+patternInfoWithUserDf.selectExpr("*","explode(listOfInputs) input").groupBy("userId","pattern").agg(count("input").as("inputCount"))
+
+patternInfoWithUserDf.selectExpr("*","explode(listOfInputs) input").selectExpr("*","case when locate(pattern,input) !=0 then 1 else 0 end patternMatchResult").groupBy("userId","pattern").agg(sum("patternMatchResult").as("sumPatternMatchResult"))
+
+// rejects if one of many entry is false for one user
+patternInfoWithUserDf.selectExpr("*","explode(listOfInputs) input").groupBy("userId","pattern").agg(count("input").as("inputCount")).join(patternInfoWithUserDf.selectExpr("*","explode(listOfInputs) input").selectExpr("*","case when locate(pattern,input) !=0 then 1 else 0 end patternMatchResult").groupBy("userId","pattern").agg(sum("patternMatchResult").as("sumPatternMatchResult")),Seq("userID","pattern")).selectExpr("userID","pattern","case when sumPatternMatchResult = inputCount then true else false end finalResult").filter("finalResult = true").join(patternInfoWithUserDf,Seq("userId","pattern")).drop("finalResult").show(false)
+
+// checks for that user row aone, to ignore entire user
+patternInfoWithUserDf.selectExpr("*","findUDF(pattern,listOfInputs) as final_result").filter("final_result=true").drop("final_result").show(false)
+
+// to ignore the entire user (needs subquery)
+
+patternInfoWithUserDf.selectExpr("*","findUDF(pattern,listOfInputs) as final_result").createOrReplaceTempView("temp_view_user_pattern")
+
+patternInfoWithUserDf.where("userid not in (select distinct userid from temp_view_user_pattern where final_result = false)")
+
+
+
+
+patternInfoDf.createOrReplaceTempView("tbl")
+
+spark.sql("select a.pattern,b.listOfInputs from ( select  * from (select a.pattern, case when inputCount = sumPatternMatchResult then true else false end finalResult from (select pattern , sum(patternMatchResult) as sumPatternMatchResult from (select pattern,case when locate(pattern,input) !=0 then 1 else 0 end patternMatchResult from (select pattern,explode(split(listOfInputs,',')) as input from tbl)a ) b group by pattern) a join (select pattern , count(input) inputCount from (select pattern,explode(split(listOfInputs,',')) as input from tbl)a group by pattern) b on a.pattern=b.pattern )c where finalResult=true)a  join (select * from tbl) b on a.pattern=b.pattern ").show(false)
+
+// logically makes sense
+spark.sql("""select pattern,listOfInputs
+from tbl
+lateral view explode(split(listOfInputs,',')) t as split_listOfInputs
+group by pattern,listOfInputs
+having sum(cast(locate(pattern,split_listOfInputs)>0 as int))=count(split_listOfInputs)""").show(false)
+
+// correct 
+spark.sql("""select pattern,listOfInputs
+from tbl
+lateral view explode(split(listOfInputs,',')) t as split_listOfInputs
+group by pattern,listOfInputs
+having sum(cast(locate(pattern,split_listOfInputs)>0 as int))=count(*)""").show(false)
+
+// what's lateral view in hive
+
+
+spark.sql("""select pattern,listOfInputs
+from tbl
+lateral view explode(split(listOfInputs,',')) t as split_listOfInputs group by pattern,listOfInputs""").show(false)
+
+
+spark.sql("""select pattern,listOfInputs,case when sum(cast(locate(pattern,split_listOfInputs) as int)) = count(split_listOfInputs) then true else false end result
+from tbl
+lateral view explode(split(listOfInputs,',')) t as split_listOfInputs group by pattern,listOfInputs having result = true""").show(false)
+
+====================================================================
+
+spark.sql("""select pattern,listOfInputs,t.*
+from tbl
+lateral view explode(split(listOfInputs,',')) t as split_listOfInputs""").show(false)
+
+// take exploded like lateral flatten in snowflake , then compare it in having . goupbu works for having condition too
+spark.sql("""select pattern,listOfInputs
+from tbl
+lateral view explode(split(listOfInputs,',')) t as splitInput group by pattern,listOfInputs having sum(locate(pattern,splitInput))= count(splitInput) """).show(false)
+
+
+sum(locate(pattern,explode(split(listOfInputs,',')))) as sumOfMatches
+
+count(explode(split(listOfInputs,','))) as countOfInputs
+
+
