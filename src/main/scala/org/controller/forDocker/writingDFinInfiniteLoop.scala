@@ -27,9 +27,11 @@ object writingDFinInfiniteLoop extends SparkOpener{
         inputMap.put(keyPart,argPart)
       }
     import spark.implicits._
-    val outputPath=inputMap("outputPath")
+    //val outputPath=inputMap("outputPath")
     while(true)
-      Seq(dataFrameInfiniteLoop(randomStringGenerator(1000),randomNumber)).toDF.write.mode("append").save(outputPath)
+      Seq(dataFrameInfiniteLoop(randomStringGenerator(1000),randomNumber)).toDF.show(false)
+      //Seq(dataFrameInfiniteLoop(randomStringGenerator(1000),randomNumber)).toDF.write.mode("append").save(outputPath)
+
   }
 //spark-submit --class org.controller.forDocker.writingDFinInfiniteLoop --num-executors 1 --executor-memory 1g --executor-cores 2 --driver-memory 1g --driver-cores 1 --deploy-mode client --master yarn /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar outputPath=hdfs://localhost/user/raptor/testing
 }
