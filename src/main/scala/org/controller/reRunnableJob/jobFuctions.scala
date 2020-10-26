@@ -9,7 +9,7 @@ object jobFuctions {
   def loadFromRedshift(spark:SparkSession,inputMap:collection.mutable.Map[String,String]) ={
     inputMap.put(sqlStringArg, s"insert into tempDb.temp_audit_table values('${inputMap(mainJobNameArg)}','${inputMap(currentJobNameArg)}',current_timestamp(),current_timestamp(),'${inputMap(runDateArg)}','${runningString}',${inputMap(jobRunIdArg)})") // change run date
     execSparkSql(spark,inputMap)
-    inputMap.put(dbTableOption, "(select * from dapfioridb.dwh_audit_fiori_load)t")
+    inputMap.put(dbTableOption, "(select * from /*red_shiftdb.redshift_table*/)t")
     val fileOutputStream=fileOutputStreamObjectCreator(inputMap(hdfsDomain), inputMap(logPathArg))
     fileOutputStream.writeBytes("Running from load from redshift\n")
     var df:org.apache.spark.sql.DataFrame=null

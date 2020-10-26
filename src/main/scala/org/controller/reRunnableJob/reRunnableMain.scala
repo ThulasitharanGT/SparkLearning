@@ -18,9 +18,9 @@ def main(args:Array[String]):Unit=
     val runDate=dateFormatter.format(date)
     val jobRunID=dateFormatterJobId.format(date)
     //val runDate="2020-05-15"
-    /*val redshiftUrl = "jdbc:redshift://dapfiori.czsqals6k9uo.us-east-1.redshift.amazonaws.com:5439/dapfioridb"
-    val redshiftUser = "dapappadmin"
-    val redshiftPwd = "Adm1n@aw$"
+    /*val redshiftUrl = ""//jdbc url
+    val redshiftUser = "" //jdbc user name
+    val redshiftPwd = "" // jdbc password
     val redshiftDriver = "com.amazon.redshift.jdbc42.Driver"*/
     val mainJobName="temp_load"
     val logPathArg="logPath"
@@ -313,7 +313,7 @@ def main(args:Array[String]):Unit=
     catch
       {
         case e:Exception=>{
-          println("Error occured while running job")
+          println(s"Error occurred while running job -> ${e.printStackTrace}")
           val fileOutputStream=fileOutputStreamObjectCreator(inputMap(hdfsDomain), inputMap(logPathArg))
           fileOutputStream.writeBytes("Error occured while running job\n")
           fileOutputStream.close
@@ -340,7 +340,7 @@ def main(args:Array[String]):Unit=
     }
     inputMap.put(fromEmailProperty,"driftking9696@outlook.in")
     inputMap.put(toEmailProperty,"driftking9696@outlook.in,driftking9696@gmail.com")
-    inputMap.put(fromPasswordProperty,"Thulz@1996")
+    inputMap.put(fromPasswordProperty,"")// pwd
     inputMap.put(filePathArg,inputMap(logPathArg))
     inputMap.put(attachmentNameArg,s"log_${jobRunID}.txt")
     mainSenderWithAttachment(inputMap)

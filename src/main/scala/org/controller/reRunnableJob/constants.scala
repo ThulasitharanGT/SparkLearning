@@ -68,8 +68,6 @@ object constants
 
   //environment
   val hdfsURI="hdfs://"
-  val hdfsDomainConstantAcProd=s"${hdfsURI}alpha2prod"
-  val hdfsDomainConstantAcDev=s"${hdfsURI}edh-analytics-dev"
   val prodConstant="prod"
   val devConstant="dev"
 
