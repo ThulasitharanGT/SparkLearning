@@ -1,0 +1,89 @@
+confgure spark, just get jar and run spark submit in that DOCKERFile
+
+explode map
+
+FROM ubuntu:latest
+RUN apt-get update
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get install -y openjdk-8-jdk 
+RUN apt-get update 
+RUN apt-get install git -y 
+RUN apt-get update
+RUN apt-get install wget -y 
+RUN apt-get update
+ARG SPARK_URL
+ARG SPARK_VERSION
+ARG HADOOP_VERSION
+ENV SPARKURL $SPARK_URL
+ENV SPARKVERSION $SPARK_VERSION
+ENV HADOOPVERSION $HADOOP_VERSION
+RUN mkdir -p /usr/soft/spark/
+RUN wget -P /usr/soft/spark/ "$SPARKURL/spark-$SPARKVERSION/spark-$SPARKVERSION-bin-hadoop$HADOOPVERSION.tgz"
+RUN tar -xzvf /usr/soft/spark/spark-$SPARKVERSION-bin-hadoop$HADOOPVERSION.tgz -C /usr/soft/spark/ 
+RUN rm /usr/soft/spark/spark-$SPARKVERSION-bin-hadoop$HADOOPVERSION.tgz
+ENV PATH=~/.local/bin:$PATH
+ENV SPARK_HOME /usr/soft/spark/spark-$SPARKVERSION-bin-hadoop$HADOOPVERSION/
+ENV PATH $PATH:$SPARK_HOME/bin
+RUN cp $SPARK_HOME/conf/log4j.properties.template $SPARK_HOME/conf/log4j.properties
+
+//CMD spark-submit --version
+
+
+docker build -t thulz06/sparkubuntu:2.4.7 --build-arg SPARK_URL="https://archive.apache.org/dist/spark" --build-arg SPARK_VERSION="2.4.7" --build-arg HADOOP_VERSION="2.7" .
+
+docker build -t thulz06/sparkubuntu:2.4.4 --build-arg SPARK_URL="https://archive.apache.org/dist/spark" --build-arg SPARK_VERSION="2.4.4" --build-arg HADOOP_VERSION="2.7" .
+
+docker build -t thulz06/sparkubuntu:2.4.5 --build-arg SPARK_URL="https://archive.apache.org/dist/spark" --build-arg SPARK_VERSION="2.4.5" --build-arg HADOOP_VERSION="2.7" .
+
+docker build -t thulz06/sparkubuntu:2.4.0 --build-arg SPARK_URL="https://archive.apache.org/dist/spark" --build-arg SPARK_VERSION="2.4.0" --build-arg HADOOP_VERSION="2.7" .
+
+docker build -t thulz06/sparkubuntu:3.0.0 --build-arg SPARK_URL="https://archive.apache.org/dist/spark" --build-arg SPARK_VERSION="3.0.0" --build-arg HADOOP_VERSION="2.7" .
+
+
+docker images
+
+docker login -u 
+
+docker tag 
+
+docker push 
+
+use this image as from in next docker file
+
+
+
+export SPARKURL="https://archive.apache.org/dist/spark"
+export SPARKVERSION="2.4.7"
+export HADOOPVERSION="2.7"
+
+
+apt-get update
+export DEBIAN_FRONTEND=noninteractive
+apt-get install -y openjdk-8-jdk 
+apt-get update 
+apt-get install git -y 
+apt-get update
+apt-get install wget -y 
+apt-get update
+wget "https://archive.apache.org/dist/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz"
+tar -xzvf spark-2.4.5-bin-hadoop2.7.tgz
+rm spark-2.4.5-bin-hadoop2.7.tgz
+
+// worked
+
+Dockerfile for spark stream
+
+FROM thulz06/sparkubuntu:3.0.0
+ARG GIT_URL
+ARG JAR_NAME
+ENV GITURL $GIT_URL
+ENV JARNAME $JAR_NAME
+RUN wget -O $JAR_NAME "$GITURL/$JARNAME?raw=true"
+CMD spark-submit --class com.dockerTemp.randomDataGenerator --master local[*] --num-executors 2 --driver-memory 512m --executor-memory 1g --driver-cores 2 $JARNAME numberOfRecordsPerBatch=50 sizeOfString=10
+	
+	
+docker build -t thulz06/sparkstreamrateusingsparkbase:v1 --build-arg GIT_URL="https://github.com/ThulasitharanGT/KafkaGradleTest/blob/master/build/libs/" --build-arg JAR_NAME="KafkaGradleTest-1.0-SNAPSHOT-all.jar" . 
+
+https://github.com/ThulasitharanGT/SparkLearning/blob/master/build/libs/SparkLearning-1.0-SNAPSHOT.jar?raw=true
+
+https://github.com/ThulasitharanGT/KafkaGradleTest/blob/master/build/libs/KafkaGradleTest-1.0-SNAPSHOT-all.jar?raw=true
