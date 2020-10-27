@@ -22,7 +22,7 @@ object mailExample {
     prop.put("mail.smtp.auth", "true")
     prop.put("mail.smtp.starttls.enable", "true")
     prop.put("mail.smtp.port", "587")
- // val auth=new Authenticator() {PasswordAuthentication getPasswordAuthentication() {return new PasswordAuthentication(fromMailId, "IAMTHEemperor")}}
+ // val auth=new Authenticator() {PasswordAuthentication getPasswordAuthentication() {return new PasswordAuthentication(fromMailId, "pwd")}}
     val session = Session.getDefaultInstance(prop,null)
     val message = new MimeMessage(session)
     val msg = new mailBeanClass(fromMailId, toMailId, subject, body)
