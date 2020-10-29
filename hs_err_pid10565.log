@@ -1,0 +1,1284 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 111673344 bytes for committing reserved memory.
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   The process is running with CompressedOops enabled, and the Java Heap may be blocking the growth of the native heap
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+#   JVM is running with Unscaled Compressed Oops mode in which the Java heap is
+#     placed in the first 4GB address space. The Java Heap base address is the
+#     maximum limit for the native heap growth. Please use -XX:HeapBaseMinAddress
+#     to set the Java Heap base and to place the Java Heap above 4GB virtual address.
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (os_linux.cpp:2749), pid=10565, tid=0x00007f3fec4f4700
+#
+# JRE version: Java(TM) SE Runtime Environment (8.0_221-b11) (build 1.8.0_221-b11)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.221-b11 mixed mode linux-amd64 compressed oops)
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f3ffc07e000):  VMThread [stack: 0x00007f3fec3f5000,0x00007f3fec4f5000] [id=10578]
+
+Stack: [0x00007f3fec3f5000,0x00007f3fec4f5000],  sp=0x00007f3fec4f33d0,  free space=1016k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0xad3455]  VMError::report_and_die()+0x2e5
+V  [libjvm.so+0x4e0537]  report_vm_out_of_memory(char const*, int, unsigned long, VMErrorType, char const*)+0x67
+V  [libjvm.so+0x910320]  os::pd_commit_memory(char*, unsigned long, unsigned long, bool)+0x100
+V  [libjvm.so+0x90794f]  os::commit_memory(char*, unsigned long, unsigned long, bool)+0x1f
+V  [libjvm.so+0x98c736]  PSVirtualSpace::expand_by(unsigned long)+0x56
+V  [libjvm.so+0x97ba0b]  PSOldGen::expand_by(unsigned long) [clone .part.28]+0x1b
+V  [libjvm.so+0x97bbc8]  PSOldGen::expand(unsigned long) [clone .part.29]+0xa8
+V  [libjvm.so+0x97c771]  PSOldGen::resize(unsigned long)+0xe1
+V  [libjvm.so+0x9828ac]  PSParallelCompact::invoke_no_policy(bool) [clone .part.118]+0xa2c
+V  [libjvm.so+0x98a6c5]  PSScavenge::invoke()+0x215
+V  [libjvm.so+0x93a248]  ParallelScavengeHeap::failed_mem_allocate(unsigned long)+0x68
+V  [libjvm.so+0xad4fa3]  VM_ParallelGCFailedAllocation::doit()+0x93
+V  [libjvm.so+0xada1c6]  VM_Operation::evaluate()+0x46
+V  [libjvm.so+0xad84fd]  VMThread::evaluate_operation(VM_Operation*) [clone .constprop.44]+0xcd
+V  [libjvm.so+0xad8ae3]  VMThread::loop()+0x3a3
+V  [libjvm.so+0xad8eb8]  VMThread::run()+0x78
+V  [libjvm.so+0x90d952]  java_start(Thread*)+0x102
+
+VM_Operation (0x00007f3fd7528de0): ParallelGCFailedAllocation, mode: safepoint, requested by thread 0x00007f3ffcc22000
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00007f3f98b89800 JavaThread "File lock request listener" [_thread_in_native, id=10596, stack(0x00007f3fd6d2a000,0x00007f3fd6e2b000)]
+  0x00007f3ffcc5a800 JavaThread "/0:0:0:0:0:0:0:1:45408 to /0:0:0:0:0:0:0:1:36523 workers Thread 3" [_thread_in_native, id=10595, stack(0x00007f3fd722b000,0x00007f3fd732c000)]
+  0x00007f3ffcc56800 JavaThread "/0:0:0:0:0:0:0:1:45408 to /0:0:0:0:0:0:0:1:36523 workers Thread 2" [_thread_blocked, id=10594, stack(0x00007f3fd732c000,0x00007f3fd742d000)]
+  0x00007f3ffcc22000 JavaThread "/0:0:0:0:0:0:0:1:45408 to /0:0:0:0:0:0:0:1:36523 workers" [_thread_blocked, id=10593, stack(0x00007f3fd742d000,0x00007f3fd752e000)]
+  0x00007f3ffcaef000 JavaThread "Memory manager" [_thread_blocked, id=10592, stack(0x00007f3fd7ced000,0x00007f3fd7dee000)]
+  0x00007f3ffc10a000 JavaThread "Service Thread" daemon [_thread_blocked, id=10585, stack(0x00007f3fdfa1f000,0x00007f3fdfb20000)]
+  0x00007f3ffc0fd000 JavaThread "C1 CompilerThread2" daemon [_thread_blocked, id=10584, stack(0x00007f3fdfb21000,0x00007f3fdfc21000)]
+  0x00007f3ffc0fa800 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=10583, stack(0x00007f3fdfc22000,0x00007f3fdfd22000)]
+  0x00007f3ffc0f9000 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=10582, stack(0x00007f3fe40b0000,0x00007f3fe41b0000)]
+  0x00007f3ffc0f6000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=10581, stack(0x00007f3fec0f1000,0x00007f3fec1f2000)]
+  0x00007f3ffc08c000 JavaThread "Finalizer" daemon [_thread_blocked, id=10580, stack(0x00007f3fec1f2000,0x00007f3fec2f3000)]
+  0x00007f3ffc087800 JavaThread "Reference Handler" daemon [_thread_blocked, id=10579, stack(0x00007f3fec2f3000,0x00007f3fec3f4000)]
+  0x00007f3ffc00b800 JavaThread "main" [_thread_blocked, id=10571, stack(0x00007f4005926000,0x00007f4005a26000)]
+
+Other Threads:
+=>0x00007f3ffc07e000 VMThread [stack: 0x00007f3fec3f5000,0x00007f3fec4f5000] [id=10578]
+  0x00007f3ffc10d000 WatcherThread [stack: 0x00007f3fdf91f000,0x00007f3fdfa1f000] [id=10586]
+
+VM state:at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x00007f3ffc0078e0] ExpandHeap_lock - owner thread: 0x00007f3ffc07e000
+[0x00007f3ffc007f60] Threads_lock - owner thread: 0x00007f3ffc07e000
+[0x00007f3ffc008460] Heap_lock - owner thread: 0x00007f3ffcc22000
+
+heap address: 0x0000000083600000, size: 1994 MB, Compressed Oops mode: 32-bit
+Narrow klass base: 0x0000000000000000, Narrow klass shift: 3
+Compressed class space size: 1073741824 Address: 0x0000000100000000
+
+Heap:
+ PSYoungGen      total 305664K, used 1862K [0x00000000d6780000, 0x00000000ef900000, 0x0000000100000000)
+  eden space 231936K, 0% used [0x00000000d6780000,0x00000000d6780000,0x00000000e4a00000)
+  from space 73728K, 2% used [0x00000000e9380000,0x00000000e9551910,0x00000000edb80000)
+  to   space 75264K, 0% used [0x00000000e4a00000,0x00000000e4a00000,0x00000000e9380000)
+ ParOldGen       total 151040K, used 150713K [0x0000000083600000, 0x000000008c980000, 0x00000000d6780000)
+  object space 151040K, 99% used [0x0000000083600000,0x000000008c92e710,0x000000008c980000)
+ Metaspace       used 54508K, capacity 58145K, committed 58288K, reserved 1099776K
+  class space    used 7520K, capacity 7823K, committed 7856K, reserved 1048576K
+
+Card table byte_map: [0x00007f400221f000,0x00007f4002605000] byte_map_base: 0x00007f4001e04000
+
+Marking Bits: (ParMarkBitMap*) 0x00007f4004dd2d80
+ Begin Bits: [0x00007f3fe41b0000, 0x00007f3fe60d8000)
+ End Bits:   [0x00007f3fe60d8000, 0x00007f3fe8000000)
+
+Polling page: 0x00007f4005a42000
+
+CodeCache: size=245760Kb used=34709Kb max_used=34709Kb free=211050Kb
+ bounds [0x00007f3fed000000, 0x00007f3fef200000, 0x00007f3ffc000000]
+ total_blobs=10825 nmethods=10338 adapters=396
+ compilation: enabled
+
+Compilation events (10 events):
+Event: 21.771 Thread 0x00007f3ffc0fd000 nmethod 11613 0x00007f3fef1f6910 code [0x00007f3fef1f6ae0, 0x00007f3fef1f7288]
+Event: 21.771 Thread 0x00007f3ffc0fd000 11614       3       scala.collection.TraversableOnce::foldLeft (23 bytes)
+Event: 21.771 Thread 0x00007f3ffc0fd000 nmethod 11614 0x00007f3fef1f77d0 code [0x00007f3fef1f79a0, 0x00007f3fef1f8108]
+Event: 21.771 Thread 0x00007f3ffc0fd000 11617       3       sbt.inc.AnalysisCallback::externalDependency (112 bytes)
+Event: 21.773 Thread 0x00007f3ffc0fd000 nmethod 11617 0x00007f3fef1f8550 code [0x00007f3fef1f8820, 0x00007f3fef1f9e38]
+Event: 21.773 Thread 0x00007f3ffc0fd000 11618       2       scala.util.hashing.MurmurHash3::productHash (75 bytes)
+Event: 21.774 Thread 0x00007f3ffc0fd000 nmethod 11618 0x00007f3fef1fac90 code [0x00007f3fef1fae60, 0x00007f3fef1fb298]
+Event: 21.774 Thread 0x00007f3ffc0fd000 11615       3       scala.collection.TraversableOnce$$Lambda$95/1539852145::get$Lambda (10 bytes)
+Event: 21.774 Thread 0x00007f3ffc0fd000 nmethod 11615 0x00007f3fef1fb510 code [0x00007f3fef1fb680, 0x00007f3fef1fb8f0]
+Event: 21.774 Thread 0x00007f3ffc0fd000 11616       3       scala.collection.TraversableOnce$$Lambda$95/1539852145::<init> (15 bytes)
+
+GC Heap History (10 events):
+Event: 6.328 GC heap after
+Heap after GC invocations=8 (full 1):
+ PSYoungGen      total 136192K, used 18416K [0x00000000d6780000, 0x00000000e8680000, 0x0000000100000000)
+  eden space 117760K, 0% used [0x00000000d6780000,0x00000000d6780000,0x00000000dda80000)
+  from space 18432K, 99% used [0x00000000dda80000,0x00000000dec7c080,0x00000000dec80000)
+  to   space 44544K, 0% used [0x00000000e5b00000,0x00000000e5b00000,0x00000000e8680000)
+ ParOldGen       total 64000K, used 63508K [0x0000000083600000, 0x0000000087480000, 0x00000000d6780000)
+  object space 64000K, 99% used [0x0000000083600000,0x0000000087405380,0x0000000087480000)
+ Metaspace       used 34161K, capacity 35091K, committed 35248K, reserved 1079296K
+  class space    used 5348K, capacity 5528K, committed 5552K, reserved 1048576K
+}
+Event: 6.328 GC heap before
+{Heap before GC invocations=9 (full 2):
+ PSYoungGen      total 136192K, used 18416K [0x00000000d6780000, 0x00000000e8680000, 0x0000000100000000)
+  eden space 117760K, 0% used [0x00000000d6780000,0x00000000d6780000,0x00000000dda80000)
+  from space 18432K, 99% used [0x00000000dda80000,0x00000000dec7c080,0x00000000dec80000)
+  to   space 44544K, 0% used [0x00000000e5b00000,0x00000000e5b00000,0x00000000e8680000)
+ ParOldGen       total 64000K, used 63508K [0x0000000083600000, 0x0000000087480000, 0x00000000d6780000)
+  object space 64000K, 99% used [0x0000000083600000,0x0000000087405380,0x0000000087480000)
+ Metaspace       used 34161K, capacity 35091K, committed 35248K, reserved 1079296K
+  class space    used 5348K, capacity 5528K, committed 5552K, reserved 1048576K
+Event: 6.478 GC heap after
+Heap after GC invocations=9 (full 2):
+ PSYoungGen      total 136192K, used 5087K [0x00000000d6780000, 0x00000000e8680000, 0x0000000100000000)
+  eden space 117760K, 0% used [0x00000000d6780000,0x00000000d6780000,0x00000000dda80000)
+  from space 18432K, 27% used [0x00000000dda80000,0x00000000ddf77f98,0x00000000dec80000)
+  to   space 44544K, 0% used [0x00000000e5b00000,0x00000000e5b00000,0x00000000e8680000)
+ ParOldGen       total 151040K, used 63769K [0x0000000083600000, 0x000000008c980000, 0x00000000d6780000)
+  object space 151040K, 42% used [0x0000000083600000,0x0000000087446698,0x000000008c980000)
+ Metaspace       used 34161K, capacity 35091K, committed 35248K, reserved 1079296K
+  class space    used 5348K, capacity 5528K, committed 5552K, reserved 1048576K
+}
+Event: 10.191 GC heap before
+{Heap before GC invocations=10 (full 2):
+ PSYoungGen      total 136192K, used 122847K [0x00000000d6780000, 0x00000000e8680000, 0x0000000100000000)
+  eden space 117760K, 100% used [0x00000000d6780000,0x00000000dda80000,0x00000000dda80000)
+  from space 18432K, 27% used [0x00000000dda80000,0x00000000ddf77f98,0x00000000dec80000)
+  to   space 44544K, 0% used [0x00000000e5b00000,0x00000000e5b00000,0x00000000e8680000)
+ ParOldGen       total 151040K, used 63769K [0x0000000083600000, 0x000000008c980000, 0x00000000d6780000)
+  object space 151040K, 42% used [0x0000000083600000,0x0000000087446698,0x000000008c980000)
+ Metaspace       used 44453K, capacity 46645K, committed 46768K, reserved 1089536K
+  class space    used 6465K, capacity 6716K, committed 6832K, reserved 1048576K
+Event: 10.242 GC heap after
+Heap after GC invocations=10 (full 2):
+ PSYoungGen      total 224768K, used 44532K [0x00000000d6780000, 0x00000000e8680000, 0x0000000100000000)
+  eden space 180224K, 0% used [0x00000000d6780000,0x00000000d6780000,0x00000000e1780000)
+  from space 44544K, 99% used [0x00000000e5b00000,0x00000000e867d2e0,0x00000000e8680000)
+  to   space 54272K, 0% used [0x00000000e1c80000,0x00000000e1c80000,0x00000000e5180000)
+ ParOldGen       total 151040K, used 65696K [0x0000000083600000, 0x000000008c980000, 0x00000000d6780000)
+  object space 151040K, 43% used [0x0000000083600000,0x0000000087628390,0x000000008c980000)
+ Metaspace       used 44453K, capacity 46645K, committed 46768K, reserved 1089536K
+  class space    used 6465K, capacity 6716K, committed 6832K, reserved 1048576K
+}
+Event: 18.637 GC heap before
+{Heap before GC invocations=11 (full 2):
+ PSYoungGen      total 224768K, used 224756K [0x00000000d6780000, 0x00000000e8680000, 0x0000000100000000)
+  eden space 180224K, 100% used [0x00000000d6780000,0x00000000e1780000,0x00000000e1780000)
+  from space 44544K, 99% used [0x00000000e5b00000,0x00000000e867d2e0,0x00000000e8680000)
+  to   space 54272K, 0% used [0x00000000e1c80000,0x00000000e1c80000,0x00000000e5180000)
+ ParOldGen       total 151040K, used 65696K [0x0000000083600000, 0x000000008c980000, 0x00000000d6780000)
+  object space 151040K, 43% used [0x0000000083600000,0x0000000087628390,0x000000008c980000)
+ Metaspace       used 50265K, capacity 53311K, committed 53424K, reserved 1095680K
+  class space    used 6991K, capacity 7276K, committed 7344K, reserved 1048576K
+Event: 18.760 GC heap after
+Heap after GC invocations=11 (full 2):
+ PSYoungGen      total 239616K, used 54258K [0x00000000d6780000, 0x00000000edb80000, 0x0000000100000000)
+  eden space 185344K, 0% used [0x00000000d6780000,0x00000000d6780000,0x00000000e1c80000)
+  from space 54272K, 99% used [0x00000000e1c80000,0x00000000e517c9c0,0x00000000e5180000)
+  to   space 73728K, 0% used [0x00000000e9380000,0x00000000e9380000,0x00000000edb80000)
+ ParOldGen       total 151040K, used 88330K [0x0000000083600000, 0x000000008c980000, 0x00000000d6780000)
+  object space 151040K, 58% used [0x0000000083600000,0x0000000088c42978,0x000000008c980000)
+ Metaspace       used 50265K, capacity 53311K, committed 53424K, reserved 1095680K
+  class space    used 6991K, capacity 7276K, committed 7344K, reserved 1048576K
+}
+Event: 21.774 GC heap before
+{Heap before GC invocations=12 (full 2):
+ PSYoungGen      total 239616K, used 239602K [0x00000000d6780000, 0x00000000edb80000, 0x0000000100000000)
+  eden space 185344K, 100% used [0x00000000d6780000,0x00000000e1c80000,0x00000000e1c80000)
+  from space 54272K, 99% used [0x00000000e1c80000,0x00000000e517c9c0,0x00000000e5180000)
+  to   space 73728K, 0% used [0x00000000e9380000,0x00000000e9380000,0x00000000edb80000)
+ ParOldGen       total 151040K, used 88330K [0x0000000083600000, 0x000000008c980000, 0x00000000d6780000)
+  object space 151040K, 58% used [0x0000000083600000,0x0000000088c42978,0x000000008c980000)
+ Metaspace       used 54508K, capacity 58145K, committed 58288K, reserved 1099776K
+  class space    used 7520K, capacity 7823K, committed 7856K, reserved 1048576K
+Event: 22.366 GC heap after
+Heap after GC invocations=12 (full 2):
+ PSYoungGen      total 305664K, used 42948K [0x00000000d6780000, 0x00000000ef900000, 0x0000000100000000)
+  eden space 231936K, 0% used [0x00000000d6780000,0x00000000d6780000,0x00000000e4a00000)
+  from space 73728K, 58% used [0x00000000e9380000,0x00000000ebd71278,0x00000000edb80000)
+  to   space 75264K, 0% used [0x00000000e4a00000,0x00000000e4a00000,0x00000000e9380000)
+ ParOldGen       total 151040K, used 123848K [0x0000000083600000, 0x000000008c980000, 0x00000000d6780000)
+  object space 151040K, 81% used [0x0000000083600000,0x000000008aef2368,0x000000008c980000)
+ Metaspace       used 54508K, capacity 58145K, committed 58288K, reserved 1099776K
+  class space    used 7520K, capacity 7823K, committed 7856K, reserved 1048576K
+}
+Event: 22.374 GC heap before
+{Heap before GC invocations=13 (full 3):
+ PSYoungGen      total 305664K, used 42948K [0x00000000d6780000, 0x00000000ef900000, 0x0000000100000000)
+  eden space 231936K, 0% used [0x00000000d6780000,0x00000000d6780000,0x00000000e4a00000)
+  from space 73728K, 58% used [0x00000000e9380000,0x00000000ebd71278,0x00000000edb80000)
+  to   space 75264K, 0% used [0x00000000e4a00000,0x00000000e4a00000,0x00000000e9380000)
+ ParOldGen       total 151040K, used 123848K [0x0000000083600000, 0x000000008c980000, 0x00000000d6780000)
+  object space 151040K, 81% used [0x0000000083600000,0x000000008aef2368,0x000000008c980000)
+ Metaspace       used 54508K, capacity 58145K, committed 58288K, reserved 1099776K
+  class space    used 7520K, capacity 7823K, committed 7856K, reserved 1048576K
+
+Deoptimization events (10 events):
+Event: 21.467 Thread 0x00007f3ffcc22000 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f3fef13f8dc method=scala.collection.immutable.HashSet$HashSet1.foreach(Lscala/Function1;)V @ 5
+Event: 21.467 Thread 0x00007f3ffcc22000 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f3fef13f8dc method=scala.collection.immutable.HashSet$HashSet1.foreach(Lscala/Function1;)V @ 5
+Event: 21.467 Thread 0x00007f3ffcc22000 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f3fef13f8dc method=scala.collection.immutable.HashSet$HashSet1.foreach(Lscala/Function1;)V @ 5
+Event: 21.469 Thread 0x00007f3ffcc22000 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f3feee27ebc method=scala.reflect.internal.Trees.$anonfun$itraverse$1(Lscala/reflect/api/Trees$Traverser;Lscala/reflect/internal/Trees$MemberDef;)V @ 70
+Event: 21.476 Thread 0x00007f3ffcc22000 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f3feee27ebc method=scala.reflect.internal.Trees.$anonfun$itraverse$1(Lscala/reflect/api/Trees$Traverser;Lscala/reflect/internal/Trees$MemberDef;)V @ 70
+Event: 21.480 Thread 0x00007f3ffcc22000 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f3fef0aa334 method=scala.util.hashing.MurmurHash3.productHash(Lscala/Product;I)I @ 1
+Event: 21.630 Thread 0x00007f3ffcc22000 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f3fef0aa334 method=scala.util.hashing.MurmurHash3.productHash(Lscala/Product;I)I @ 1
+Event: 21.630 Thread 0x00007f3ffcc22000 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f3fef0aa334 method=scala.util.hashing.MurmurHash3.productHash(Lscala/Product;I)I @ 1
+Event: 21.633 Thread 0x00007f3ffcc22000 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f3fef0aa334 method=scala.util.hashing.MurmurHash3.productHash(Lscala/Product;I)I @ 1
+Event: 21.634 Thread 0x00007f3ffcc22000 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f3feee4c124 method=scala.reflect.internal.Trees.$anonfun$itraverse$1(Lscala/reflect/api/Trees$Traverser;Lscala/reflect/internal/Trees$MemberDef;)V @ 70
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (10 events):
+Event: 19.426 Thread 0x00007f3ffcc22000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$doCSE$20$adapted(Lscala/tools/nsc/transform/patmat/MatchOptimization$CommonSubconditionElimination;Lscala/tools/nsc/transform/patmat/MatchApproximation$MatchApproximator$Test;)Ljava/lan
+Event: 19.428 Thread 0x00007f3ffcc22000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$doCSE$23(Lscala/tools/nsc/transform/patmat/MatchApproximation$MatchApproximator$Test;)Lscala/tools/nsc/transform/patmat/MatchTreeMaking$TreeMakers$TreeMaker;> (0x00000000d7d2c890) throw
+Event: 19.451 Thread 0x00007f3ffcc22000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$exhaustive$1(Lscala/tools/nsc/transform/patmat/MatchAnalysis$MatchAnalyzer;Lscala/runtime/BooleanRef;Lscala/tools/nsc/transform/patmat/MatchApproximation$MatchApproximator$TreeMakersToP
+Event: 19.452 Thread 0x00007f3ffcc22000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$exhaustive$2(Lscala/tools/nsc/transform/patmat/MatchAnalysis$MatchAnalyzer;Lscala/runtime/BooleanRef;Lscala/tools/nsc/transform/patmat/MatchTreeMaking$TreeMakers$TreeMaker;)Lscala/tools
+Event: 19.453 Thread 0x00007f3ffcc22000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$exhaustive$3(Lscala/tools/nsc/transform/patmat/MatchAnalysis$MatchAnalyzer;Lscala/collection/immutable/List;)Lscala/tools/nsc/transform/patmat/Logic$PropositionalLogic$Prop;> (0x0000000
+Event: 19.456 Thread 0x00007f3ffcc22000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$findAllModelsFor$7(Lscala/tools/nsc/transform/patmat/Solving$CNF$Solvable;Lscala/tools/nsc/transform/patmat/Solving$Solver$TseitinSolution$3;)Lscala/tools/nsc/transform/patmat/Logic$Pro
+Event: 19.456 Thread 0x00007f3ffcc22000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$exhaustive$5(Lscala/tools/nsc/transform/patmat/MatchAnalysis$MatchAnalyzer;Lscala/tools/nsc/transform/patmat/ScalaLogic$TreesAndTypesDomain$Var;Lscala/tools/nsc/transform/patmat/Logic$P
+Event: 19.458 Thread 0x00007f3ffcc22000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$exhaustive$7(Lscala/tools/nsc/transform/patmat/MatchAnalysis$MatchAnalyzer$CounterExample;)Ljava/lang/String;> (0x00000000d7de5e18) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jd
+Event: 19.459 Thread 0x00007f3ffcc22000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$exhaustive$8(Lscala/tools/nsc/transform/patmat/MatchAnalysis$MatchAnalyzer$CounterExample;)Ljava/lang/String;> (0x00000000d7df8da8) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jd
+Event: 20.362 Thread 0x00007f3ffcc22000 Exception <a 'java/lang/NoSuchMethodError': java.lang.Object.$anonfun$staticAnnotations$1$adapted(Lscala/reflect/internal/AnnotationInfos$AnnotationInfo;)Ljava/lang/Object;> (0x00000000d876d508) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u221/
+
+Events (10 events):
+Event: 21.630 Thread 0x00007f3ffcc22000 Uncommon trap: trap_request=0xffffffc6 fr.pc=0x00007f3fef0aa334
+Event: 21.630 Thread 0x00007f3ffcc22000 DEOPT PACKING pc=0x00007f3fef0aa334 sp=0x00007f3fd7529370
+Event: 21.630 Thread 0x00007f3ffcc22000 DEOPT UNPACKING pc=0x00007f3fed04573a sp=0x00007f3fd7529328 mode 2
+Event: 21.633 Thread 0x00007f3ffcc22000 Uncommon trap: trap_request=0xffffffc6 fr.pc=0x00007f3fef0aa334
+Event: 21.633 Thread 0x00007f3ffcc22000 DEOPT PACKING pc=0x00007f3fef0aa334 sp=0x00007f3fd7529370
+Event: 21.633 Thread 0x00007f3ffcc22000 DEOPT UNPACKING pc=0x00007f3fed04573a sp=0x00007f3fd7529328 mode 2
+Event: 21.634 Thread 0x00007f3ffcc22000 Uncommon trap: trap_request=0xffffffc6 fr.pc=0x00007f3feee4c124
+Event: 21.634 Thread 0x00007f3ffcc22000 DEOPT PACKING pc=0x00007f3feee4c124 sp=0x00007f3fd7529280
+Event: 21.634 Thread 0x00007f3ffcc22000 DEOPT UNPACKING pc=0x00007f3fed04573a sp=0x00007f3fd7529030 mode 2
+Event: 21.774 Executing VM operation: ParallelGCFailedAllocation
+
+
+Dynamic libraries:
+00400000-00401000 r-xp 00000000 08:01 1708700                            /home/raptor/Softwares/jdk1.8.0_221/bin/java
+00600000-00601000 r--p 00000000 08:01 1708700                            /home/raptor/Softwares/jdk1.8.0_221/bin/java
+00601000-00602000 rw-p 00001000 08:01 1708700                            /home/raptor/Softwares/jdk1.8.0_221/bin/java
+01893000-018b4000 rw-p 00000000 00:00 0                                  [heap]
+83600000-8c980000 rw-p 00000000 00:00 0 
+93400000-d6780000 ---p 00000000 00:00 0 
+d6780000-ef900000 rw-p 00000000 00:00 0 
+ef900000-100000000 ---p 00000000 00:00 0 
+100000000-1007ac000 rw-p 00000000 00:00 0 
+1007ac000-140000000 ---p 00000000 00:00 0 
+7f3f8f200000-7f3f8f340000 rw-p 00000000 00:00 0 
+7f3f8f340000-7f3f8f400000 ---p 00000000 00:00 0 
+7f3f8f400000-7f3f8f600000 rw-p 00000000 00:00 0 
+7f3f8f600000-7f3f8f800000 rw-p 00000000 00:00 0 
+7f3f8f800000-7f3f8fa00000 rw-p 00000000 00:00 0 
+7f3f8fa00000-7f3f8fc00000 rw-p 00000000 00:00 0 
+7f3f8fc00000-7f3f8fe00000 rw-p 00000000 00:00 0 
+7f3f8fe00000-7f3f90000000 rw-p 00000000 00:00 0 
+7f3f90000000-7f3f90061000 rw-p 00000000 00:00 0 
+7f3f90061000-7f3f94000000 ---p 00000000 00:00 0 
+7f3f94000000-7f3f94021000 rw-p 00000000 00:00 0 
+7f3f94021000-7f3f98000000 ---p 00000000 00:00 0 
+7f3f98000000-7f3f9ad0a000 rw-p 00000000 00:00 0 
+7f3f9ad0a000-7f3f9c000000 ---p 00000000 00:00 0 
+7f3f9c000000-7f3f9c021000 rw-p 00000000 00:00 0 
+7f3f9c021000-7f3fa0000000 ---p 00000000 00:00 0 
+7f3fa0000000-7f3fa0021000 rw-p 00000000 00:00 0 
+7f3fa0021000-7f3fa4000000 ---p 00000000 00:00 0 
+7f3fa4000000-7f3fa4021000 rw-p 00000000 00:00 0 
+7f3fa4021000-7f3fa8000000 ---p 00000000 00:00 0 
+7f3fa8000000-7f3fa8ff9000 rw-p 00000000 00:00 0 
+7f3fa8ff9000-7f3fac000000 ---p 00000000 00:00 0 
+7f3fac000000-7f3fac021000 rw-p 00000000 00:00 0 
+7f3fac021000-7f3fb0000000 ---p 00000000 00:00 0 
+7f3fb0000000-7f3fb11bd000 rw-p 00000000 00:00 0 
+7f3fb11bd000-7f3fb4000000 ---p 00000000 00:00 0 
+7f3fb4000000-7f3fb57ca000 rw-p 00000000 00:00 0 
+7f3fb57ca000-7f3fb8000000 ---p 00000000 00:00 0 
+7f3fb8000000-7f3fb8021000 rw-p 00000000 00:00 0 
+7f3fb8021000-7f3fbc000000 ---p 00000000 00:00 0 
+7f3fbc000000-7f3fbc021000 rw-p 00000000 00:00 0 
+7f3fbc021000-7f3fc0000000 ---p 00000000 00:00 0 
+7f3fc0000000-7f3fc029d000 rw-p 00000000 00:00 0 
+7f3fc029d000-7f3fc4000000 ---p 00000000 00:00 0 
+7f3fc4000000-7f3fc4021000 rw-p 00000000 00:00 0 
+7f3fc4021000-7f3fc8000000 ---p 00000000 00:00 0 
+7f3fc8000000-7f3fc8021000 rw-p 00000000 00:00 0 
+7f3fc8021000-7f3fcc000000 ---p 00000000 00:00 0 
+7f3fcc000000-7f3fcc021000 rw-p 00000000 00:00 0 
+7f3fcc021000-7f3fd0000000 ---p 00000000 00:00 0 
+7f3fd0000000-7f3fd0021000 rw-p 00000000 00:00 0 
+7f3fd0021000-7f3fd4000000 ---p 00000000 00:00 0 
+7f3fd40bf000-7f3fd42bf000 rw-p 00000000 00:00 0 
+7f3fd42bf000-7f3fd44bf000 rw-p 00000000 00:00 0 
+7f3fd44bf000-7f3fd46bf000 rw-p 00000000 00:00 0 
+7f3fd46bf000-7f3fd46c1000 r--s 00004000 08:01 1311933                    /home/raptor/.gradle/caches/modules-2/files-2.1/javax.xml.stream/stax-api/1.0-2/d6337b0de8b25e53e81b922352fbea9f9f57ba0b/stax-api-1.0-2.jar
+7f3fd46c1000-7f3fd46ca000 r--s 00051000 08:01 1316792                    /home/raptor/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-core/1.0.9/41916886a1df068ad1dfea9bcc649a7b8ea4553e/logback-core-1.0.9.jar
+7f3fd46ca000-7f3fd46cf000 r--s 00036000 08:01 1316790                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-all/5.0.2/973bac1ba8f8eddf06e180373134cb9f85f5f6f5/asm-all-5.0.2.jar
+7f3fd46cf000-7f3fd46d0000 r--s 00004000 08:01 1316789                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.jamesmurty.utils/java-xmlbuilder/0.4/ac5962e48cdee3a0a6e1f8e00fcb594747ac5aaf/java-xmlbuilder-0.4.jar
+7f3fd46d0000-7f3fd47f5000 r--s 00ef9000 08:01 1316788                    /home/raptor/.gradle/caches/modules-2/files-2.1/it.unimi.dsi/fastutil/6.5.6/7b644ef32b59d4f27004da19dd35f9040b726ec/fastutil-6.5.6.jar
+7f3fd47f5000-7f3fd47f6000 r--s 00003000 08:01 1319579                    /home/raptor/.gradle/caches/modules-2/files-2.1/javax.transaction/jta/1.1/2ca09f0b36ca7d71b762e14ea2ff09d5eac57558/jta-1.1.jar
+7f3fd47f6000-7f3fd4800000 r--s 000a5000 08:01 1319575                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.javassist/javassist/3.18.1-GA/d9a09f7732226af26bf99f19e2cffe0ae219db5b/javassist-3.18.1-GA.jar
+7f3fd4800000-7f3fd4802000 r--s 00002000 08:01 1319574                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.glassfish.hk2.external/aopalliance-repackaged/2.4.0-b34/3d5e856dbc91a3a2b0bcb3a3424f8b62421ae4cf/aopalliance-repackaged-2.4.0-b34.jar
+7f3fd4802000-7f3fd4805000 r--s 0000b000 08:01 1311925                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.objenesis/objenesis/2.5.1/272bab9a4e5994757044d1fc43ce480c8cb907a4/objenesis-2.5.1.jar
+7f3fd4805000-7f3fd4806000 r--s 00001000 08:01 1319568                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.esotericsoftware/minlog/1.3.0/ff07b5f1b01d2f92bb00a337f9a94873712f0827/minlog-1.3.0.jar
+7f3fd4806000-7f3fd4808000 r--s 0000f000 08:01 1311932                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.codehaus.jettison/jettison/1.1/1a01a2a1218fcf9faa2cc2a6ced025bdea687262/jettison-1.1.jar
+7f3fd4808000-7f3fd480a000 r--s 00000000 08:01 1319586                    /home/raptor/.gradle/caches/modules-2/files-2.1/aopalliance/aopalliance/1.0/235ba8b489512805ac13a8f9ea77a1ca5ebe3e8/aopalliance-1.0.jar
+7f3fd480a000-7f3fd480b000 r--s 00000000 08:01 1319583                    /home/raptor/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/6975da39a7040257bd51d21a231b76c915872d38/javax.inject-1.jar
+7f3fd480b000-7f3fd480f000 r--s 0001a000 08:01 1319573                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.glassfish.hk2/hk2-utils/2.4.0-b34/aacce18411fffef9621d8fc91464ca0477119c38/hk2-utils-2.4.0-b34.jar
+7f3fd480f000-7f3fd4811000 r--s 00009000 08:01 1316172                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/42a25dc3219429f0e5d060061f71acb49bf010a0/hamcrest-core-1.3.jar
+7f3fd4811000-7f3fd4812000 r--s 0000a000 08:01 1316786                    /home/raptor/.gradle/caches/modules-2/files-2.1/asm/asm/3.1/c157def142714c544bdea2e6144645702adf7097/asm-3.1.jar
+7f3fd4812000-7f3fd4819000 r--s 0003e000 08:01 1319587                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.sonatype.sisu.inject/cglib/2.2.1-v20090111/7ce5e983fd0e6c78346f4c9cbfa39d83049dda2/cglib-2.2.1-v20090111.jar
+7f3fd4819000-7f3fd4831000 r--s 00115000 08:01 1316791                    /home/raptor/.gradle/caches/modules-2/files-2.1/xerces/xercesImpl/2.9.1/1136d197e2755bbde296ceee217ec5fe2917477b/xercesImpl-2.9.1.jar
+7f3fd4831000-7f3fd4832000 r--s 00005000 08:01 1316783                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-daemon/commons-daemon/1.0.13/750856a1fdb3ddf721ccf73c3518e4211cffc3a3/commons-daemon-1.0.13.jar
+7f3fd4832000-7f3fd4837000 r--s 00040000 08:01 1316784                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.jcraft/jsch/0.1.54/da3584329a263616e277e15462b387addd1b208d/jsch-0.1.54.jar
+7f3fd4837000-7f3fd483a000 r--s 00016000 08:01 1316782                    /home/raptor/.gradle/caches/modules-2/files-2.1/javax.servlet.jsp/jsp-api/2.1/63f943103f250ef1f3a4d5e94d145a0f961f5316/jsp-api-2.1.jar
+7f3fd483a000-7f3fd483b000 r--s 00003000 08:01 1319571                    /home/raptor/.gradle/caches/modules-2/files-2.1/xmlenc/xmlenc/0.52/d82554efbe65906d83b3d97bd7509289e9db561a/xmlenc-0.52.jar
+7f3fd483b000-7f3fd483d000 r--s 00007000 08:01 1316781                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-csv/1.0/8a0796ad6541a144eb1c00b93e06fbac03a9f313/commons-csv-1.0.jar
+7f3fd483d000-7f3fd483f000 r--s 00000000 08:01 1316779                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.github.stephenc.jcip/jcip-annotations/1.0-1/ef31541dd28ae2cefdd17c7ebf352d93e9058c63/jcip-annotations-1.0-1.jar
+7f3fd483f000-7f3fd4842000 r--s 00030000 08:01 1316778                    /home/raptor/.gradle/caches/modules-2/files-2.1/jline/jline/2.11/9504d5e2da5d78237239c5226e8200ec21182040/jline-2.11.jar
+7f3fd4842000-7f3fd4846000 r--s 0001a000 08:01 1316777                    /home/raptor/.gradle/caches/modules-2/files-2.1/sqlline/sqlline/1.2.0/4f4273e8200a9495a18c319883fbb25864bba240/sqlline-1.2.0.jar
+7f3fd4846000-7f3fd4847000 r--s 00002000 08:01 1316775                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.tephra/tephra-api/0.9.0-incubating/5ee9a5c98af32dc64f647099ca3ada9d8d96bf79/tephra-api-0.9.0-incubating.jar
+7f3fd4847000-7f3fd4849000 r--s 0001f000 08:01 1316787                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.mortbay.jetty/servlet-api/2.5-20081211/22bff70037e1e6fa7e6413149489552ee2064702/servlet-api-2.5-20081211.jar
+7f3fd4849000-7f3fd484a000 r--s 00004000 08:01 1319566                    /home/raptor/.gradle/caches/modules-2/files-2.1/net.hydromatic/eigenbase-properties/1.1.5/a941956b3a4664d0cf728ece06ba25cc2110a3aa/eigenbase-properties-1.1.5.jar
+7f3fd484a000-7f3fd4855000 r--s 00062000 08:01 1319565                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.calcite/calcite-linq4j/1.2.0-incubating/e5370a39bafe076eeec8355b1cc0b09dec0137ec/calcite-linq4j-1.2.0-incubating.jar
+7f3fd4855000-7f3fd485b000 r--s 0002c000 08:01 1319563                    /home/raptor/.gradle/caches/modules-2/files-2.1/javax.jdo/jdo-api/3.0.1/58e7a538e020b73871e232eeb064835fd98a492/jdo-api-3.0.1.jar
+7f3fd485b000-7f3fd485e000 r--s 00015000 08:01 1319562                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-pool/commons-pool/1.5.4/75b6e20c596ed2945a259cea26d7fadd298398e6/commons-pool-1.5.4.jar
+7f3fd485e000-7f3fd4861000 r--s 00025000 08:01 1319561                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-dbcp/commons-dbcp/1.4/30be73c965cc990b153a100aaaaafcf239f82d39/commons-dbcp-1.4.jar
+7f3fd4861000-7f3fd4877000 r--s 001a4000 08:01 1319560                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-rdbms/3.2.9/b95b6ff6ea969ab67f06754108167c4f9fadfd7e/datanucleus-rdbms-3.2.9.jar
+7f3fd4877000-7f3fd487c000 r--s 0004e000 08:01 1319559                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-api-jdo/3.2.6/cb21100ecc0d2e80dfd62067046c8a2a25a95c50/datanucleus-api-jdo-3.2.6.jar
+7f3fd487c000-7f3fd487f000 r--s 00019000 08:01 1319555                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.jolbox/bonecp/0.8.0.RELEASE/cec24ee9345b3678472bb1b8fdd6aa6b9428beb8/bonecp-0.8.0.RELEASE.jar
+7f3fd487f000-7f3fd4881000 r--s 00005000 08:01 1319554                    /home/raptor/.gradle/caches/modules-2/files-2.1/stax/stax-api/1.0.1/49c100caf72d658aca8e58bd74a4ba90fa2b0d70/stax-api-1.0.1.jar
+7f3fd4881000-7f3fd4882000 r--s 0000b000 08:01 1316774                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.iq80.snappy/snappy/0.3/c4ca27840da7ffc6ed46ec34454683a6c1c2b2f8/snappy-0.3.jar
+7f3fd4882000-7f3fd4884000 r--s 00003000 08:01 1319552                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.googlecode.javaewah/JavaEWAH/0.3.2/7130b68f1d4d9666f0ced0ba1a1bee37e2e51926/JavaEWAH-0.3.2.jar
+7f3fd4884000-7f3fd488c000 r--s 00066000 08:01 1319548                    /home/raptor/.gradle/caches/modules-2/files-2.1/log4j/apache-log4j-extras/1.2.17/85863614d82185d7e51fe21c00aa9117a523a8b6/apache-log4j-extras-1.2.17.jar
+7f3fd488c000-7f3fd4894000 r--s 00059000 08:01 1319547                    /home/raptor/.gradle/caches/modules-2/files-2.1/javolution/javolution/5.5.1/3fcba819cdb7861728405963ddc4b2755ab182e5/javolution-5.5.1.jar
+7f3fd4894000-7f3fd4898000 r--s 0000c000 08:01 1319543                    /home/raptor/.gradle/caches/modules-2/files-2.1/javax.validation/validation-api/1.1.0.Final/8613ae82954779d518631e05daa73a6a954817d5/validation-api-1.1.0.Final.jar
+7f3fd4898000-7f3fd4899000 r--s 00004000 08:01 1319542                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.glassfish.hk2/osgi-resource-locator/1.0.1/4ed2b2d4738aed5786cfa64cba5a332779c4c708/osgi-resource-locator-1.0.1.jar
+7f3fd4899000-7f3fd48b1000 r--s 000d6000 08:01 1319541                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.glassfish.jersey.bundles.repackaged/jersey-guava/2.22.2/7422c693c89640c9685dfa99dbef2da745aa4617/jersey-guava-2.22.2.jar
+7f3fd48b1000-7f3fd48b3000 r--s 00005000 08:01 1319539                    /home/raptor/.gradle/caches/modules-2/files-2.1/javax.annotation/javax.annotation-api/1.2/479c1e06db31c432330183f5cae684163f186146/javax.annotation-api-1.2.jar
+7f3fd48b3000-7f3fd48b4000 r--s 00001000 08:01 1319540                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.glassfish.hk2.external/javax.inject/2.4.0-b34/a6a3d4935af7b03e44126b5aac2c2a0ce98fe6e9/javax.inject-2.4.0-b34.jar
+7f3fd48b4000-7f3fd48b9000 r--s 00027000 08:01 1319538                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.glassfish.hk2/hk2-api/2.4.0-b34/1017432e219dbd1d4a1121b2d7e87c5b2f0bcfb9/hk2-api-2.4.0-b34.jar
+7f3fd48b9000-7f3fd48bd000 r--s 00029000 08:01 1319537                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.glassfish.hk2/hk2-locator/2.4.0-b34/1451fc3e5b7f00d7a5ca0feaff2c1bf68be5ac91/hk2-locator-2.4.0-b34.jar
+7f3fd48bd000-7f3fd48c1000 r--s 00019000 08:01 1319536                    /home/raptor/.gradle/caches/modules-2/files-2.1/javax.ws.rs/javax.ws.rs-api/2.0.1/104e9c2b5583cfcfeac0402316221648d6d8ea6b/javax.ws.rs-api-2.0.1.jar
+7f3fd48c1000-7f3fd48c4000 r--s 000fd000 08:01 1319534                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.fusesource.leveldbjni/leveldbjni-all/1.8/707350a2eeb1fa2ed77a32ddb3893ed308e941db/leveldbjni-all-1.8.jar
+7f3fd48c4000-7f3fd48cc000 r--s 0005d000 08:01 1311920                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.esotericsoftware/kryo-shaded/4.0.2/e8c89779f93091aa9cb895093402b5d15065bf88/kryo-shaded-4.0.2.jar
+7f3fd48cc000-7f3fd48cd000 r--s 00002000 08:01 1311914                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.vlkan/flatbuffers/1.2.0-3f79e055/b4a3fa3b6f768a99c2540e8b96b83bbb051f926c/flatbuffers-1.2.0-3f79e055.jar
+7f3fd48cd000-7f3fd48ee000 r--s 00177000 08:01 1311913                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.carrotsearch/hppc/0.7.2/710398361f2ae8fd594a133e3619045c16b24137/hppc-0.7.2.jar
+7f3fd48ee000-7f3fd48f0000 r--s 0000b000 08:01 1311912                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.arrow/arrow-format/0.10.0/85347ddea82e80b0aa14efd25aefb9a009d8ff0f/arrow-format-0.10.0.jar
+7f3fd48f0000-7f3fd4904000 r--s 000ec000 08:01 1311909                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.parquet/parquet-jackson/1.10.1/d61d80ada3a2c6b0c9ed06bd689cfd428de96112/parquet-jackson-1.10.1.jar
+7f3fd4904000-7f3fd4907000 r--s 0001e000 08:01 1311907                    /home/raptor/.gradle/caches/modules-2/files-2.1/io.airlift/aircompressor/0.10/bf8305930ec675964bd68599c702ffb32df4d1e6/aircompressor-0.10.jar
+7f3fd4907000-7f3fd4912000 r--s 000b0000 08:01 1319526                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.github.rwl/jtransforms/2.4.0/20ab3d14a0375cc2baee9452b92b217aac7e3c57/jtransforms-2.4.0.jar
+7f3fd4912000-7f3fd4913000 r--s 00004000 08:01 1319525                    /home/raptor/.gradle/caches/modules-2/files-2.1/net.sf.opencsv/opencsv/2.3/c23708cdb9e80a144db433e23344a788a1fd6599/opencsv-2.3.jar
+7f3fd4913000-7f3fd4978000 r--s 00abc000 08:01 1311919                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.ibm.icu/icu4j/58.2/db9fd4b4c189cf1518db14c67d14a2cfcfbe59f6/icu4j-58.2.jar
+7f3fd4978000-7f3fd497b000 r--s 00012000 08:01 1311918                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.glassfish/javax.json/1.0.4/3178f73569fd7a1e5ffc464e680f7a8cc784b85a/javax.json-1.0.4.jar
+7f3fd497b000-7f3fd497d000 r--s 00005000 08:01 1311917                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.abego.treelayout/org.abego.treelayout.core/1.0.3/457216e8e6578099ae63667bb1e4439235892028/org.abego.treelayout.core-1.0.3.jar
+7f3fd497d000-7f3fd4980000 r--s 00026000 08:01 1311916                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.antlr/antlr-runtime/3.5.2/cd9cd41361c155f3af0f653009dcecb08d8b4afd/antlr-runtime-3.5.2.jar
+7f3fd4980000-7f3fd4984000 r--s 00037000 08:01 1311915                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.antlr/ST4/4.0.8/a1c55e974f8a94d78e2348fa6ff63f4fa1fae64/ST4-4.0.8.jar
+7f3fd4984000-7f3fd4985000 r--s 00004000 08:01 1338532                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.yetus/audience-annotations/0.5.0/55762d3191a8d6610ef46d11e8cb70c7667342a3/audience-annotations-0.5.0.jar
+7f3fd4985000-7f3fd498a000 r--s 00051000 08:01 1316785                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.10.0/4e2c5fa04648ec9772c63e2101c53af6504e624e/jackson-core-2.10.0.jar
+7f3fd498a000-7f3fd498d000 r--s 0000e000 08:01 1316773                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.10.0/e01cfd93b80d6773b3f757c78e756c9755b47b81/jackson-annotations-2.10.0.jar
+7f3fd498d000-7f3fd499c000 r--s 0009f000 08:01 1319584                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.google.inject/guice/3.0/9d84f15fe35e2c716a02979fb62f50a29f38aefa/guice-3.0.jar
+7f3fd499c000-7f3fd499e000 r--s 00008000 08:01 1316772                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.google.inject.extensions/guice-assistedinject/3.0/544449ddb19f088dcde44f055d30a08835a954a7/guice-assistedinject-3.0.jar
+7f3fd499e000-7f3fd49a0000 r--s 0000e000 08:01 1316771                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.google.inject.extensions/guice-servlet/3.0/610cde0e8da5a8b7d8efb8f0b8987466ffebaaf9/guice-servlet-3.0.jar
+7f3fd49a0000-7f3fd49a2000 r--s 00018000 08:01 1316770                    /home/raptor/.gradle/caches/modules-2/files-2.1/javax.servlet/servlet-api/2.5/5959582d97d8b61f4d154ca9e495aafd16726e34/servlet-api-2.5.jar
+7f3fd49a2000-7f3fd49a4000 r--s 00002000 08:01 1316768                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.github.stephenc.findbugs/findbugs-annotations/1.3.9-1/a6b11447635d80757d64b355bed3c00786d86801/findbugs-annotations-1.3.9-1.jar
+7f3fd49a4000-7f3fd49ac000 r--s 00045000 08:01 1316173                    /home/raptor/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.12.jar
+7f3fd49ac000-7f3fd49b3000 r--s 00049000 08:01 1311926                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.4.10/acc54d9b28bdffe4bbde89ed2e4a1e86b5285e2b/httpcore-4.4.10.jar
+7f3fd49b3000-7f3fd49b6000 r--s 00011000 08:01 1316769                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.lmax/disruptor/3.3.0/6925c7787741f6ac1535188ea450f04fa1246acf/disruptor-3.3.0.jar
+7f3fd49b6000-7f3fd49b7000 r--s 00005000 08:01 1316767                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.jamon/jamon-runtime/2.4.1/78feef47f07af7a5caa663ca2ba35b31853a080f/jamon-runtime-2.4.1.jar
+7f3fd49b7000-7f3fd49bc000 r--s 0005f000 08:01 1316763                    /home/raptor/.gradle/caches/modules-2/files-2.1/tomcat/jasper-compiler/5.5.23/6d35bd7fb8c4fbc1f5401fb3678aa976d2e4c241/jasper-compiler-5.5.23.jar
+7f3fd49bc000-7f3fd49bf000 r--s 0001e000 08:01 1316760                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.mortbay.jetty/servlet-api-2.5/6.1.14/5f07601ab7d7c85dd9e38a17c0e1b0edfbd4a191/servlet-api-2.5-6.1.14.jar
+7f3fd49bf000-7f3fd49c2000 r--s 0001e000 08:01 1316761                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.mortbay.jetty/jsp-api-2.1/6.1.14/756b3fac155e31bd0e85545dbf953495e0455c73/jsp-api-2.1-6.1.14.jar
+7f3fd49c2000-7f3fd49d3000 r--s 000ea000 08:01 1316759                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.mortbay.jetty/jsp-2.1/6.1.14/3a1df1e8e0fa56e9a940abbd19bc6f397fce16b5/jsp-2.1-6.1.14.jar
+7f3fd49d3000-7f3fd49d7000 r--s 00028000 08:01 1319572                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.mortbay.jetty/jetty-util/6.1.26/e5642fe0399814e1687d55a3862aa5a3417226a9/jetty-util-6.1.26.jar
+7f3fd49d7000-7f3fd49de000 r--s 0007d000 08:01 1316756                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.mortbay.jetty/jetty/6.1.26/2f546e289fddd5b1fab1d4199fbb6e9ef43ee4b0/jetty-6.1.26.jar
+7f3fd49de000-7f3fd49df000 r--s 00004000 08:01 1316754                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.mortbay.jetty/jetty-sslengine/6.1.26/60367999cee49a3b09fa86bdcb52310b6c896014/jetty-sslengine-6.1.26.jar
+7f3fd49df000-7f3fd49f2000 r--s 000df000 08:01 1316752                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-math/2.2/4877b85d388275f994a5cfc7eceb73a8045d3006/commons-math-2.2.jar
+7f3fd49f2000-7f3fd49f4000 r--s 00009000 08:01 1319556                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-cli/commons-cli/1.2/2bf96b7aa8b611c177d329452af1dc933e14501c/commons-cli-1.2.jar
+7f3fd49f4000-7f3fd49fe000 r--s 00066000 08:01 1316751                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.sun.jersey/jersey-core/1.9/8341846f18187013bb9e27e46b7ee00a6395daf4/jersey-core-1.9.jar
+7f3fd49fe000-7f3fd4a01000 r--s 0001d000 08:01 1316750                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.sun.jersey/jersey-client/1.9/d3c4b2b5f89db32c96ceddcb863684821910a7bb/jersey-client-1.9.jar
+7f3fd4a01000-7f3fd4a13000 r--s 0009d000 08:01 1316749                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.sun.jersey/jersey-server/1.9/3a6ea7cc5e15c824953f9f3ece2201b634d90d18/jersey-server-1.9.jar
+7f3fd4a13000-7f3fd4a14000 r--s 00003000 08:01 1316748                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.sun.jersey.contribs/jersey-guice/1.9/5963c28c47df7e5d6ad34cec80c071c368777f7b/jersey-guice-1.9.jar
+7f3fd4a14000-7f3fd4a21000 r--s 00083000 08:01 1311927                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-collections/commons-collections/3.2.2/8ad72fe39fa8c91eaaf12aadb21e0c3661fe26d5/commons-collections-3.2.2.jar
+7f3fd4a21000-7f3fd4a28000 r--s 0003a000 08:01 1316762                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase.thirdparty/hbase-shaded-gson/3.0.0/5d4c9ac77d7257197249a971f7ba2b4b021bc67d/hbase-shaded-gson-3.0.0.jar
+7f3fd4a28000-7f3fd4a31000 r--s 00133000 08:01 1316747                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.jruby.jcodings/jcodings/1.0.8/33fa45fd853c277b888e3d5a2e6a4604b7c11e2c/jcodings-1.0.8.jar
+7f3fd4a31000-7f3fd4a34000 r--s 0002b000 08:01 1316745                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.jruby.joni/joni/2.1.2/1f08024ec70e86a716188b7d069b0c2d2f183e14/joni-2.1.2.jar
+7f3fd4a34000-7f3fd4a4d000 r--s 00150000 08:01 1316734                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.htrace/htrace-core/3.1.0-incubating/f73606e7c9ede5802335c290bf47490ad6d51df3/htrace-core-3.1.0-incubating.jar
+7f3fd4a4d000-7f3fd4a77000 r--s 001e9000 08:01 1316744                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/15.0/ed727a8d9f247e2050281cb083f1c77b09dcb5cd/guava-15.0.jar
+7f3fd4a77000-7f3fd4a7a000 r--s 0000d000 08:01 1316743                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.twitter/joauth/6.0.2/d591272e42c725d3c61354e609aab1063f6077bb/joauth-6.0.2.jar
+7f3fd4a7a000-7f3fd4a7c000 r--s 0000e000 08:01 1319557                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.2/4bfc12adfe4842bf07b657f0369c4cb522955686/commons-logging-1.2.jar
+7f3fd4a7c000-7f3fd4a81000 r--s 0002a000 08:01 1319585                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-beanutils/commons-beanutils/1.7.0/5675fd96b29656504b86029551973d60fb41339b/commons-beanutils-1.7.0.jar
+7f3fd4a81000-7f3fd4a85000 r--s 0002f000 08:01 1316732                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-beanutils/commons-beanutils-core/1.8.0/175dc721f87e4bc5cc0573f990e28c3cf9117508/commons-beanutils-core-1.8.0.jar
+7f3fd4a85000-7f3fd4a89000 r--s 00020000 08:01 1319581                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-digester/commons-digester/1.8/dc6a73fdbd1fa3f0944e8497c6c872fa21dca37e/commons-digester-1.8.jar
+7f3fd4a89000-7f3fd4a8c000 r--s 00019000 08:01 1316729                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-el/commons-el/1.0/1df2c042b3f2de0124750241ac6c886dbfa2cc2c/commons-el-1.0.jar
+7f3fd4a8c000-7f3fd4a8e000 r--s 00011000 08:01 1316728                    /home/raptor/.gradle/caches/modules-2/files-2.1/tomcat/jasper-runtime/5.5.23/96ca5528a93ab47b001476b74320c644beb89dde/jasper-runtime-5.5.23.jar
+7f3fd4a8e000-7f3fd4a9e000 r--s 0014c000 08:01 1329685                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.google.protobuf/protobuf-java/3.6.1/d06d46ecfd92ec6d0f3b423b4cd81cb38d8b924/protobuf-java-3.6.1.jar
+7f3fd4a9e000-7f3fd4aa3000 r--s 00041000 08:01 1319546                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.6/ce1edb914c94ebc388f086c6827e8bdeec71ac2/commons-lang-2.6.jar
+7f3fd4aa3000-7f3fd4aa9000 r--s 00043000 08:01 1319544                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-configuration/commons-configuration/1.6/32cadde23955d7681b0d94a2715846d20b425235/commons-configuration-1.6.jar
+7f3fd4aa9000-7f3fd4ab1000 r--s 00066000 08:01 1316731                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.velocity/velocity/1.7/2ceb567b8f3f21118ecdec129fe1271dbc09aa7a/velocity-1.7.jar
+7f3fd4ab1000-7f3fd4ab5000 r--s 00015000 08:01 1329688                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.tukaani/xz/1.5/9c64274b7dbb65288237216e3fae7877fd3f2bee/xz-1.5.jar
+7f3fd4ab5000-7f3fd4abc000 r--s 00053000 08:01 1329684                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-compress/1.8.1/a698750c16740fd5b3871425f4cb3bbaa87f529d/commons-compress-1.8.1.jar
+7f3fd4abc000-7f3fd4ac0000 r--s 00035000 08:01 1319530                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.codehaus.jackson/jackson-core-asl/1.9.13/3c304d70f42f832e0a86d45bd437f692129299a4/jackson-core-asl-1.9.13.jar
+7f3fd4ac0000-7f3fd4aef000 r--s 002e5000 08:01 1311904                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.12.1.1/75070c744a8e52a7d17b8b476468580309d5cd09/derby-10.12.1.1.jar
+7f3fd4aef000-7f3fd4b07000 r--s 001b6000 08:01 1319520                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-core/3.2.10/7ad66634f30d7c6a06373475e94bcfbe65e2648e/datanucleus-core-3.2.10.jar
+7f3fd4b07000-7f3fd4b0d000 r--s 00063000 08:01 1319519                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.jodd/jodd-core/3.5.2/a9ac8028eeeb5fa430e17017628629c94123c401/jodd-core-3.5.2.jar
+7f3fd4b0d000-7f3fd4b1e000 r--s 0008a000 08:01 1311903                    /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
+7f3fd4b1e000-7f3fd4b2c000 r--s 000b1000 08:01 1319517                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.codehaus.jackson/jackson-mapper-asl/1.9.13/1ee2f2bed0e5dd29d1cb155a166e6f8d50bbddb7/jackson-mapper-asl-1.9.13.jar
+7f3fd4b2c000-7f3fd4b2d000 r--s 00007000 08:01 1316727                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.codehaus.jackson/jackson-xc/1.8.3/1226667dcdb7c259b3ee07e112ed83446554516e/jackson-xc-1.8.3.jar
+7f3fd4b2d000-7f3fd4b2e000 r--s 00004000 08:01 1316726                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.codehaus.jackson/jackson-jaxrs/1.8.3/3604ca9f572170e2ef5813141ec1f0e0100efd19/jackson-jaxrs-1.8.3.jar
+7f3fd4b2e000-7f3fd4b35000 r--s 00039000 08:01 1319516                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.calcite/calcite-avatica/1.2.0-incubating/449432909cb395700a7293cb4147b4230124fd9d/calcite-avatica-1.2.0-incubating.jar
+7f3fd4b35000-7f3fd4b6c000 r--s 00325000 08:01 1319515                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.calcite/calcite-core/1.2.0-incubating/48fbc72e0c33026e53ab2272bafa4917ff598693/calcite-core-1.2.0-incubating.jar
+7f3fd4b6c000-7f3fd4bcf000 r--s 004de000 08:01 1319514                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.spark-project.hive/hive-metastore/1.2.1.spark2/1fde9720e4ead8c07b28c45011e231277c79b7a1/hive-metastore-1.2.1.spark2.jar
+7f3fd4bcf000-7f3fd4c03000 r--s 00277000 08:01 1319513                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.twitter/parquet-hadoop-bundle/1.6.0/b5ac7d2781de212c84420962723093cd17cefd72/parquet-hadoop-bundle-1.6.0.jar
+7f3fd4c03000-7f3fd4c05000 r--s 0001f000 08:01 1319512                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-crypto/1.0.0/7938f66b01f62f03ef8af8a64401e85e45d51c5d/commons-crypto-1.0.0.jar
+7f3fd4c05000-7f3fd4c07000 r--s 0001c000 08:01 1311902                    /home/raptor/.gradle/caches/modules-2/files-2.1/net.sf.py4j/py4j/0.10.7/e733e888c2e798ea15802f12a9f3130949ca741f/py4j-0.10.7.jar
+7f3fd4c07000-7f3fd4c0a000 r--s 00015000 08:01 1319510                    /home/raptor/.gradle/caches/modules-2/files-2.1/net.razorvine/pyrolite/4.13/b71a4668b0c4194486832fe7ce161eed2d0d12cb/pyrolite-4.13.jar
+7f3fd4c0a000-7f3fd4c0c000 r--s 0000e000 08:01 1319509                    /home/raptor/.gradle/caches/modules-2/files-2.1/oro/oro/2.0.8/5592374f834645c4ae250f4c9fbb314c9369d698/oro-2.0.8.jar
+7f3fd4c0c000-7f3fd4c22000 r--s 00124000 08:01 1319508                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.ivy/ivy/2.4.0/5abe4c24bbe992a9ac07ca563d5bd3e8d569e9ed/ivy-2.4.0.jar
+7f3fd4c22000-7f3fd4c25000 r--s 00028000 08:01 1319507                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.clearspring.analytics/stream/2.7.0/9998f8cf87d329fef226405f8d519638cfe1431d/stream-2.7.0.jar
+7f3fd4c25000-7f3fd4c3e000 r--s 00123000 08:01 1338534                    /home/raptor/.gradle/caches/modules-2/files-2.1/io.netty/netty/3.10.6.Final/18ed04a0e502896552854926e908509db2987a00/netty-3.10.6.Final.jar
+7f3fd4c3e000-7f3fd4c7f000 r--s 0035a000 08:01 1314604                    /home/raptor/.gradle/caches/modules-2/files-2.1/io.netty/netty-all/4.1.17.Final/43142cd1d6a0ea281eb6a4990354b4d3ad23dd43/netty-all-4.1.17.Final.jar
+7f3fd4c7f000-7f3fd4c8d000 r--s 0009d000 08:01 1319504                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.glassfish.jersey.core/jersey-common/2.22.2/1209b89878b60ce7d49afadeff7522d2fde0e217/jersey-common-2.22.2.jar
+7f3fd4c8d000-7f3fd4c8f000 r--s 00010000 08:01 1319503                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.glassfish.jersey.media/jersey-media-jaxb/2.22.2/7a9adf97790a92d09a1f2c027dbd34af15ffee04/jersey-media-jaxb-2.22.2.jar
+7f3fd4c8f000-7f3fd4c93000 r--s 00025000 08:01 1319502                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.glassfish.jersey.core/jersey-client/2.22.2/1712fff037ce5a59e3d67f90fff29222989799ee/jersey-client-2.22.2.jar
+7f3fd4c93000-7f3fd4ca9000 r--s 000d3000 08:01 1319501                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.glassfish.jersey.core/jersey-server/2.22.2/5ede3e5f98f8b14d31d1d0fffe9908df2bd41c0f/jersey-server-2.22.2.jar
+7f3fd4ca9000-7f3fd4cac000 r--s 0000e000 08:01 1319500                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.glassfish.jersey.containers/jersey-container-servlet-core/2.22.2/212c534c5b030594ccf5c4b929e8f7cbf26eb1ba/jersey-container-servlet-core-2.22.2.jar
+7f3fd4cac000-7f3fd4cae000 r--s 00003000 08:01 1319499                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.glassfish.jersey.containers/jersey-container-servlet/2.22.2/d90487b9809f822af7731abb8896a2183e7c4a0c/jersey-container-servlet-2.22.2.jar
+7f3fd4cae000-7f3fd4cb3000 r--s 0003e000 08:01 1319498                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-net/commons-net/3.1/2298164a7c2484406f2aa5ac85b205d39019896f/commons-net-3.1.jar
+7f3fd4cb3000-7f3fd4cb6000 r--s 0002f000 08:01 1325733                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.roaringbitmap/RoaringBitmap/0.5.11/e6b04760ea1896fc36beea4f11b8649481bf5af7/RoaringBitmap-0.5.11.jar
+7f3fd4cb6000-7f3fd4cb8000 r--s 00012000 08:01 1319495                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.ning/compress-lzf/1.0.3/3e1495b0c532ebe58f1c8b1c5d9b3bdcc6c1504c/compress-lzf-1.0.3.jar
+7f3fd4cb8000-7f3fd4cc1000 r--s 0006f000 08:01 1319494                    /home/raptor/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/5af35056b4d257e4b64b9e8069c0746e8b08629f/log4j-1.2.17.jar
+7f3fd4cc1000-7f3fd4cc3000 r--s 00003000 08:01 1311884                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.2/25ea2e8b0c338a877313bd4672d3fe056ea78f0d/jsr305-3.0.2.jar
+7f3fd4cc3000-7f3fd4cc5000 r--s 00002000 08:01 1338529                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.github.spotbugs/spotbugs-annotations/3.1.9/2ef5127efcc1a899aab8c66d449a631c9a99c469/spotbugs-annotations-3.1.9.jar
+7f3fd4cc5000-7f3fd4ccd000 r--s 0006e000 08:01 1319492                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.5/6c6c702c89bfff3cd9e80b04d668c5e190d588c6/commons-lang3-3.5.jar
+7f3fd4ccd000-7f3fd4cd0000 r--s 00015000 08:01 1319491                    /home/raptor/.gradle/caches/modules-2/files-2.1/javax.servlet/javax.servlet-api/3.1.0/3cd63d075497751784b2fa84be59432f4905bf7c/javax.servlet-api-3.1.0.jar
+7f3fd4cd0000-7f3fd4cd2000 r--s 0000f000 08:01 1311878                    /home/raptor/.gradle/caches/modules-2/files-2.1/javax.activation/activation/1.1.1/485de3a253e23f645037828c07f1d7f1af40763a/activation-1.1.1.jar
+7f3fd4cd2000-7f3fd4cd5000 r--s 00017000 08:01 1311877                    /home/raptor/.gradle/caches/modules-2/files-2.1/javax.xml.bind/jaxb-api/2.2.2/aeb3021ca93dde265796d82015beecdcff95bf09/jaxb-api-2.2.2.jar
+7f3fd4cd5000-7f3fd4ce8000 r--s 000c7000 08:01 1316725                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.sun.xml.bind/jaxb-impl/2.2.3-1/56baae106392040a45a06d4a41099173425da1e6/jaxb-impl-2.2.3-1.jar
+7f3fd4ce8000-7f3fd4cec000 r--s 00021000 08:01 1316724                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.sun.jersey/jersey-json/1.9/1aa73e1896bcc7013fed247157d7f676226eb432/jersey-json-1.9.jar
+7f3fd4cec000-7f3fd4cee000 r--s 0000d000 08:01 1311876                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.twitter/chill-java/0.9.3/f7670c73b068b3beeba8f0ed284e08b8d38eae02/chill-java-0.9.3.jar
+7f3fd4cee000-7f3fd4cf0000 r--s 00007000 08:01 1311875                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.thoughtworks.paranamer/paranamer/2.8/619eba74c19ccf1da8ebec97a2d7f8ba05773dd6/paranamer-2.8.jar
+7f3fd4cf0000-7f3fd4cf7000 r--s 0003f000 08:01 1319488                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.10/4b95f4897fa13f2cd904aee711aeafc0c5295cd8/commons-codec-1.10.jar
+7f3fd4cf7000-7f3fd4d04000 r--s 000af000 08:01 1311871                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.5.6/1afe5621985efe90a92d0fbc9be86271efbe796f/httpclient-4.5.6.jar
+7f3fd4d04000-7f3fd4d0d000 r--s 0007b000 08:01 1316723                    /home/raptor/.gradle/caches/modules-2/files-2.1/net.java.dev.jets3t/jets3t/0.9.0/792bc96ee7e57b89f472aa0cb5a31015b9f59c96/jets3t-0.9.0.jar
+7f3fd4d0d000-7f3fd4d13000 r--s 00045000 08:01 1319484                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-httpclient/commons-httpclient/3.1/964cd74171f427720480efdec40a7c7f6e58426a/commons-httpclient-3.1.jar
+7f3fd4d13000-7f3fd4d15000 r--s 00008000 08:01 1311147                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.codehaus.janino/commons-compiler/3.0.9/6aac3c03d02dcab0d59f77ff00b682f5320e54e9/commons-compiler-3.0.9.jar
+7f3fd4d15000-7f3fd4d20000 r--s 000b9000 08:01 1311148                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.codehaus.janino/janino/3.0.9/ddfd261063f2e6300e4c884aeef5f145dd0b38d/janino-3.0.9.jar
+7f3fd4d20000-7f3fd4d32000 r--s 00112000 08:01 1319478                    /home/raptor/.gradle/caches/modules-2/files-2.1/net.sourceforge.f2j/arpack_combined_all/0.1/225619a060b42605b4d9fd4af11815664abf26eb/arpack_combined_all-0.1.jar
+7f3fd4d32000-7f3fd4d34000 r--s 00027000 08:01 1319477                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.github.fommil.netlib/core/1.1.2/574b480eca62f535fad6d259e144fee3ef24b66e/core-1.1.2.jar
+7f3fd4d34000-7f3fd4d39000 r--s 00041000 08:01 1311146                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.xbean/xbean-asm6-shaded/4.8/34bd7c7236dfa87de173e4328354ba0701a374c/xbean-asm6-shaded-4.8.jar
+7f3fd4d39000-7f3fd4d44000 r--s 000bc000 08:01 1311140                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.orc/orc-mapreduce/1.5.5/fc8c58a4bd3a3523e42eec3eee61810e92ab6fe4/orc-mapreduce-1.5.5-nohive.jar
+7f3fd4d44000-7f3fd4d4c000 r--s 0005b000 08:01 1311138                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.univocity/univocity-parsers/2.7.3/2d7b2cbe31d203333e0ce2b99ddb9f8afa03fc42/univocity-parsers-2.7.3.jar
+7f3fd4d4c000-7f3fd4d70000 r--s 001cd000 08:01 1319471                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-math3/3.4.1/3ac44a8664228384bc68437264cf7c4cf112f579/commons-math3-3.4.1.jar
+7f3fd4d70000-7f3fd4d76000 r--s 0004c000 08:01 1311150                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4-runtime/4.7/30b13b7efc55b7feea667691509cf59902375001/antlr4-runtime-4.7.jar
+7f3fd4d76000-7f3fd4d83000 r--s 00117000 08:01 1311149                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4/4.7/cd6df46532bccabd8127c18c9ca5ef481962e931/antlr4-4.7.jar
+7f3fd4d83000-7f3fd4d84000 r--s 00000000 08:01 1319473                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.spark-project.spark/unused/1.0.0/205fe37a2fade6ce6dfcf8eff57ed21a4a1c22af/unused-1.0.0.jar
+7f3fd4d84000-7f3fd4d87000 r--s 00011000 08:01 1338540                    /home/raptor/.gradle/caches/modules-2/files-2.1/net.sf.jopt-simple/jopt-simple/5.0.4/4fdac2fbe92dfad86aa6e9301736f6b4342a3f5c/jopt-simple-5.0.4.jar
+7f3fd4d87000-7f3fd4d9d000 r--s 00141000 08:01 1316721                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.10.0/1127c9cf62f2bb3121a3a2a0a1351d251a602117/jackson-databind-2.10.0.jar
+7f3fd4d9d000-7f3fd4d9f000 r--s 00009000 08:01 1316716                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.module/jackson-module-paranamer/2.10.0/4fc4ba10b328a53ac5653cee15504621c6b66083/jackson-module-paranamer-2.10.0.jar
+7f3fd4d9f000-7f3fd4da1000 r--s 00007000 08:01 1338524                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/2.10.0/ac9b5e4ec02f243c580113c0c58564d90432afaa/jackson-datatype-jdk8-2.10.0.jar
+7f3fd4da1000-7f3fd4da3000 r--s 00017000 08:01 1338528                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.dataformat/jackson-dataformat-csv/2.10.0/fdbc401c60e2343a05b6842b21edf1fc5ec8ec79/jackson-dataformat-csv-2.10.0.jar
+7f3fd4da3000-7f3fd4da5000 r--s 00009000 08:01 1329734                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.26/77100a62c2e6f04b53977b9f541044d7d722693d/slf4j-api-1.7.26.jar
+7f3fd4da5000-7f3fd4daa000 r--s 00039000 08:01 1316722                    /home/raptor/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-classic/1.0.9/258c3d8f956e7c8723f13fdea6b81e3d74201f68/logback-classic-1.0.9.jar
+7f3fd4daa000-7f3fd4dab000 r--s 00002000 08:01 1316714                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.twill/twill-common/0.6.0-incubating/34c9d6fbcab9eb68a2c858ce0f16529e5f5e4993/twill-common-0.6.0-incubating.jar
+7f3fd4dab000-7f3fd4dad000 r--s 00000000 08:01 1316713                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.twill/twill-discovery-api/0.6.0-incubating/c8b5bf3ac8d25fe20a89924e00ea8e113c1a787a/twill-discovery-api-0.6.0-incubating.jar
+7f3fd4dad000-7f3fd4db1000 r--s 0000d000 08:01 1316711                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.twill/twill-api/0.6.0-incubating/338247e16528d12f1d70781769af63b818f4f356/twill-api-0.6.0-incubating.jar
+7f3fd4db1000-7f3fd4db3000 r--s 00012000 08:01 1311894                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.directory.api/api-util/1.0.0-M20/a871abf060b3cf83fc6dc4d7e3d151fce50ac3cb/api-util-1.0.0-M20.jar
+7f3fd4db3000-7f3fd4db5000 r--s 00003000 08:01 1311893                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.directory.api/api-asn1-api/1.0.0-M20/5e6486ffa3125ba44dc410ead166e1d6ba8ac76d/api-asn1-api-1.0.0-M20.jar
+7f3fd4db5000-7f3fd4db6000 r--s 0000a000 08:01 1311892                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.directory.server/apacheds-i18n/2.0.0-M15/71c61c84683152ec2a6a65f3f96fe534e304fa22/apacheds-i18n-2.0.0-M15.jar
+7f3fd4db6000-7f3fd4dbc000 r--s 00034000 08:01 1311154                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.thrift/libthrift/0.9.3/8625e8f9b6f49b881fa5fd143172c2833df1ce47/libthrift-0.9.3.jar
+7f3fd4dbc000-7f3fd4dc3000 r--s 00046000 08:01 1311152                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.thrift/libfb303/0.9.3/5d1abb695642e88558f4e7e0d32aa1925a1fd0b7/libfb303-0.9.3.jar
+7f3fd4dc3000-7f3fd4dd5000 r--s 00097000 08:01 1311891                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.directory.server/apacheds-kerberos-codec/2.0.0-M15/1c16e4e477183641c5f0dd5cdecd27ec331bacb5/apacheds-kerberos-codec-2.0.0-M15.jar
+7f3fd4dd5000-7f3fd4dd7000 r--s 00012000 08:01 1311883                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.arrow/arrow-memory/0.10.0/d9301e56042f0734b5844ddf265d1f044ae0c6d8/arrow-memory-0.10.0.jar
+7f3fd4dd7000-7f3fd4de5000 r--s 000a3000 08:01 1311890                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.parquet/parquet-format/2.4.0/d4508d385899dfb2dcecdc08fc5e4a5e6b747057/parquet-format-2.4.0.jar
+7f3fd4de5000-7f3fd4de9000 r--s 00014000 08:01 1311889                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.parquet/parquet-common/1.10.1/2a6b665654098c2321f7ab95c48096734026638d/parquet-common-1.10.1.jar
+7f3fd4de9000-7f3fd4df4000 r--s 000c5000 08:01 1311873                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.parquet/parquet-encoding/1.10.1/b495a7817b434be694965059c0cd4c255a94c57d/parquet-encoding-1.10.1.jar
+7f3fd4df4000-7f3fd4e0d000 r--s 000f4000 08:01 1311142                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.parquet/parquet-column/1.10.1/10999fbe40cd5d26e7e800a9cf8e6cc0fcf1c99e/parquet-column-1.10.1.jar
+7f3fd4e0d000-7f3fd4e0e000 r--s 00006000 08:01 1311888                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.orc/orc-shims/1.5.5/6a639c228ab66601398fd2d94d441d4c6a9a7c8e/orc-shims-1.5.5.jar
+7f3fd4e0e000-7f3fd4e0f000 r--s 00002000 08:01 1338518                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-log4j12/1.7.25/110cefe2df103412849d72ef7a67e4e91e4266b4/slf4j-log4j12-1.7.25.jar
+7f3fd4e0f000-7f3fd4e1c000 r--s 000d2000 08:01 1338517                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.zookeeper/zookeeper/3.4.14/c114c1e1c8172a7cd3f6ae39209a635f7a06c1a1/zookeeper-3.4.14.jar
+7f3fd4e1c000-7f3fd4e20000 r--s 0001e000 08:01 1316712                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.twill/twill-zookeeper/0.6.0-incubating/58f37b2dc9eeaadcafd63236cce8d61f500ab29c/twill-zookeeper-0.6.0-incubating.jar
+7f3fd4e20000-7f3fd4e22000 r--s 0000f000 08:01 1316710                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.curator/curator-client/2.7.1/a591dfc085db3e9d4d480381cc7e6ae8a26b34af/curator-client-2.7.1.jar
+7f3fd4e22000-7f3fd4e28000 r--s 00028000 08:01 1316708                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.curator/curator-framework/2.7.1/8c7b1eeb78e43bb91ea737111ba3dec0512be876/curator-framework-2.7.1.jar
+7f3fd4e28000-7f3fd4e30000 r--s 0003b000 08:01 1316709                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.curator/curator-recipes/2.7.1/a2c180efc6a38a4f8c9197eb35bb4eb5716cd2fa/curator-recipes-2.7.1.jar
+7f3fd4e30000-7f3fd4e34000 r--s 0001a000 08:01 1311887                    /home/raptor/.gradle/caches/modules-2/files-2.1/io.dropwizard.metrics/metrics-core/3.1.5/b07d2c8b79a11dd0a7d6d48adc96f396d7b58808/metrics-core-3.1.5.jar
+7f3fd4e34000-7f3fd4e36000 r--s 00004000 08:01 1311886                    /home/raptor/.gradle/caches/modules-2/files-2.1/io.dropwizard.metrics/metrics-graphite/3.1.5/366b727fe0e64fe43b60a3e2455c9dcc149cc0d3/metrics-graphite-3.1.5.jar
+7f3fd4e36000-7f3fd4e37000 r--s 00003000 08:01 1311143                    /home/raptor/.gradle/caches/modules-2/files-2.1/io.dropwizard.metrics/metrics-json/3.1.5/46debd1b9f1b4ada07d084dffc3eb272e87c6f62/metrics-json-3.1.5.jar
+7f3fd4e37000-7f3fd4e39000 r--s 00008000 08:01 1311885                    /home/raptor/.gradle/caches/modules-2/files-2.1/io.dropwizard.metrics/metrics-jvm/3.1.5/42fe531a5873bd56dbca6e4b7678912b5df2a19/metrics-jvm-3.1.5.jar
+7f3fd4e39000-7f3fd4e67000 r--s 0021a000 08:01 1325734                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-network-common_2.11/2.4.1/4b06ce7e311585496441870776b24add9047c9fa/spark-network-common_2.11-2.4.1.jar
+7f3fd4e67000-7f3fd4e6a000 r--s 0000f000 08:01 1325731                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-network-shuffle_2.11/2.4.1/cc6285746cdc2dc64d312fadfce634ef823421dc/spark-network-shuffle_2.11-2.4.1.jar
+7f3fd4e6a000-7f3fd4e6c000 r--s 00003000 08:01 1319442                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.slf4j/jcl-over-slf4j/1.7.16/34e48073884704ac987d3d1a1ab9b60e62028a9/jcl-over-slf4j-1.7.16.jar
+7f3fd4e6c000-7f3fd4e6e000 r--s 00000000 08:01 1319441                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.slf4j/jul-to-slf4j/1.7.16/2d5b546c5557dcbf08c3a381d7dc9bd275a602c1/jul-to-slf4j-1.7.16.jar
+7f3fd4e6e000-7f3fd4e7e000 r--s 00133000 08:01 1311145                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.arrow/arrow-vector/0.10.0/1883c9bae9650ca76771dbbcbb4a8744070e5043/arrow-vector-0.10.0.jar
+7f3fd4e7e000-7f3fd4e92000 r--s 0016b000 08:01 1311139                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.orc/orc-core/1.5.5/31c4c6c741a558d68c76c4cf88fb06fdca82adc/orc-core-1.5.5-nohive.jar
+7f3fd4e92000-7f3fd4e95000 r--s 00010000 08:01 1338513                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.101tec/zkclient/0.11/eac41195bbbd8af968e43a71bc774c31984da31e/zkclient-0.11.jar
+7f3fd4e95000-7f3fd4e98000 r--s 00012000 08:01 1338084                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.yammer.metrics/metrics-core/2.2.0/f82c035cfa786d3cbec362c38c22a5f5b1bc8724/metrics-core-2.2.0.jar
+7f3fd4e98000-7f3fd4e9b000 r--s 001eb000 08:01 1311896                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.xerial.snappy/snappy-java/1.1.7.3/241bb74a1eb37d68a4e324a4bc3865427de0a62d/snappy-java-1.1.7.3.jar
+7f3fd4e9b000-7f3fd4ea0000 r--s 00041000 08:01 1311141                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.parquet/parquet-hadoop/1.10.1/374c8d94b49388266aeb4d96ae2d19e6fe957b26/parquet-hadoop-1.10.1.jar
+7f3fd4ea0000-7f3fd4ea3000 r--s 0009a000 08:01 1338511                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.lz4/lz4-java/1.6.0/b49e2b422a5b7145ba7aa0c3f60c13664a5c5acf/lz4-java-1.6.0.jar
+7f3fd4ea3000-7f3fd4ea5000 r--s 003ca000 08:01 1338510                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.github.luben/zstd-jni/1.4.0-1/8cc7f9b0f2bd53ef3bd0e38fccc678691f983474/zstd-jni-1.4.0-1.jar
+7f3fd4ea5000-7f3fd4ea8000 r--s 0000e000 08:01 1316706                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.twitter/hbc-core/2.2.0/cc05d8eacbf0f6f627755a62ae8f63502982a896/hbc-core-2.2.0.jar
+7f3fd4ea8000-7f3fd4ead000 r--s 00036000 08:01 1316705                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.8.6/9180733b7df8542621dc12e21e87557e8c99b8cb/gson-2.8.6.jar
+7f3fd4ead000-7f3fd4eaf000 r--s 00006000 08:01 1316704                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.twill/twill-discovery-core/0.6.0-incubating/b30e4df2f98d858bba1e2914e79d3b785deb2022/twill-discovery-core-0.6.0-incubating.jar
+7f3fd4eaf000-7f3fd4eb6000 r--s 0003a000 08:01 1316703                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.twill/twill-core/0.6.0-incubating/46109bb5fd3876749009d6d8998c8066a911ee8a/twill-core-0.6.0-incubating.jar
+7f3fd4eb6000-7f3fd4ec6000 r--s 0009d000 08:01 1316701                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.tephra/tephra-core/0.9.0-incubating/356ac049c9bf8af66af784bfc2aa4d2abe9d492f/tephra-core-0.9.0-incubating.jar
+7f3fd4ec6000-7f3fd4ec8000 r--s 00007000 08:01 1316700                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.tephra/tephra-hbase-compat-1.1/0.9.0-incubating/be60b0a50867238e0ef47e2d1a0f47b1cf9652ce/tephra-hbase-compat-1.1-0.9.0-incubating.jar
+7f3fd4ec8000-7f3fd4ecd000 r--s 00046000 08:01 1316702                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.twitter4j/twitter4j-core/4.0.6/f3722af4568b96ee66739267e13211b8b66ac7d4/twitter4j-core-4.0.6.jar
+7f3fd4ecd000-7f3fd4ecf000 r--s 0000e000 08:01 1316696                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.twitter4j/twitter4j-stream/4.0.6/d631a279e4747bdc7c87ec7698184a390bb8d859/twitter4j-stream-4.0.6.jar
+7f3fd4ecf000-7f3fd4ed2000 r--s 00015000 08:01 1316693                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-auth/2.7.4/a2d5d89a6acfb11dd1a125e86b84fcef549483ae/hadoop-auth-2.7.4.jar
+7f3fd4ed2000-7f3fd4ed4000 r--s 00009000 08:01 1316684                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-annotations/2.7.4/d8e0a3abcc3fb46e1418b99d6d1328a95d9bd7b1/hadoop-annotations-2.7.4.jar
+7f3fd4ed4000-7f3fd4ef0000 r--s 001d6000 08:01 1316697                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-api/2.7.4/12dd62408001b48ffacb7b905ba2315bbd7a6758/hadoop-yarn-api-2.7.4.jar
+7f3fd4ef0000-7f3fd4ef2000 r--s 00004000 08:01 1316683                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-annotations/1.4.12/66172691cbb0a51fd6770998512165f8f679caef/hbase-annotations-1.4.12.jar
+7f3fd4ef2000-7f3fd4f32000 r--s 00476000 08:01 1316695                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-protocol/1.4.12/9d9f6dee276da7d8f87818416ef4bba077a01029/hbase-protocol-1.4.12.jar
+7f3fd4f32000-7f3fd4f3b000 r--s 00097000 08:01 1316675                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.sun.mail/javax.mail/1.6.0/a055c648842c4954c1f7db7254f45d9ad565e278/javax.mail-1.6.0.jar
+7f3fd4f3b000-7f3fd4f3f000 r--s 00032000 08:01 1316682                    /home/raptor/.gradle/caches/modules-2/files-2.1/javax.mail/javax.mail-api/1.6.2/17a8151bab44f9c94f34c10db70d95ba3c830eda/javax.mail-api-1.6.2.jar
+7f3fd4f3f000-7f3fd4f43000 r--s 0002f000 08:01 1316672                    /home/raptor/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.5/2852e6e05fbb95076fc091f6d1780f1f8fe35e0f/commons-io-2.5.jar
+7f3fd4f43000-7f3fd4f5b000 r--s 00183000 08:01 1316670                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-common/2.7.4/e25002b6c480e5e17a1f6a17f3ff4cedf04cd807/hadoop-yarn-common-2.7.4.jar
+7f3fd4f5b000-7f3fd4f62000 r--s 00058000 08:01 1316669                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-common/2.7.4/23eac36a00a754caf63d8cb1dd6373ea7d5322f8/hadoop-yarn-server-common-2.7.4.jar
+7f3fd4f62000-7f3fd4f70000 r--s 000a2000 08:01 1316668                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-nodemanager/2.7.4/960e9f00299f0757ca9a4b7298426f016bc9c0fb/hadoop-yarn-server-nodemanager-2.7.4.jar
+7f3fd4f70000-7f3fd4f73000 r--s 00026000 08:01 1316666                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-client/2.7.4/94040d1929d60bcbdf142f8edd645f6b10a319cc/hadoop-yarn-client-2.7.4.jar
+7f3fd4f73000-7f3fd4fdd000 r--s 0078d000 08:01 1316665                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-hdfs/2.7.4/3e1414e3ae47e97f66b2eb904d3ec6c50a3e29d0/hadoop-hdfs-2.7.4.jar
+7f3fd4fdd000-7f3fd4ff5000 r--s 001f2000 08:01 1316667                    /home/raptor/.gradle/caches/modules-2/files-2.1/mysql/mysql-connector-java/8.0.15/1cd928d0f1a93563993ce1d8b468217ea0d19b11/mysql-connector-java-8.0.15.jar
+7f3fd4ff5000-7f3fd5016000 r--s 0015c000 08:01 1329671                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro/1.8.2/91e3146dfff4bd510181032c8276a3a0130c0697/avro-1.8.2.jar
+7f3fd5016000-7f3fd502f000 r--s 00164000 08:01 1316664                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-core/2.7.4/d65431f1fc78577d8fb0db1a5330f26dfe3436d0/hadoop-mapreduce-client-core-2.7.4.jar
+7f3fd502f000-7f3fd503c000 r--s 000b1000 08:01 1316661                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-common/2.7.4/5ef603580ada9e5c1c99069697d3dee0bf686507/hadoop-mapreduce-client-common-2.7.4.jar
+7f3fd503c000-7f3fd503e000 r--s 00010000 08:01 1316660                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-shuffle/2.7.4/835e2e5c63113a6e457b036b724d247f142ce5a/hadoop-mapreduce-client-shuffle-2.7.4.jar
+7f3fd503e000-7f3fd5040000 r--s 0000e000 08:01 1316659                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-jobclient/2.7.4/6e1438b952eb0fad79dfac07459ecdae0bfef188/hadoop-mapreduce-client-jobclient-2.7.4.jar
+7f3fd5040000-7f3fd504a000 r--s 0007b000 08:01 1316663                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-app/2.7.4/1eac14c9992afd923294e2b70b2cf4a860666b6e/hadoop-mapreduce-client-app-2.7.4.jar
+7f3fd504a000-7f3fd5081000 r--s 00320000 08:01 1316657                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-common/2.7.4/9afa8d2004a0bbd930d1ac10d221d927917067be/hadoop-common-2.7.4.jar
+7f3fd5081000-7f3fd5082000 r--s 00006000 08:01 1316637                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-client/2.7.4/adfb60eb37014967ba902f04298fbad4b777b9e/hadoop-client-2.7.4.jar
+7f3fd5082000-7f3fd5087000 r--s 00037000 08:01 1316658                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-common/1.4.12/9a270d7cac21ce7a1c95c9e3d9ce5714e0c04b27/hbase-common-1.4.12-tests.jar
+7f3fd5087000-7f3fd5091000 r--s 0008e000 08:01 1316656                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-common/1.4.12/e3ce0d78286afc4dbca4b2824e7abcd9c4b33e84/hbase-common-1.4.12.jar
+7f3fd5091000-7f3fd5093000 r--s 00004000 08:01 1316537                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-metrics-api/1.4.12/e1fab76be74bbea7ea0f631174eefeedee9d8032/hbase-metrics-api-1.4.12.jar
+7f3fd5093000-7f3fd5096000 r--s 0000a000 08:01 1316540                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-hadoop-compat/1.4.12/72a728ba9c7cb860a67e40d8b714edba8550d38/hbase-hadoop-compat-1.4.12.jar
+7f3fd5096000-7f3fd5098000 r--s 00006000 08:01 1316535                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-metrics/1.4.12/eac1b2639e4382b1cd20bfdd6964506c5780c86c/hbase-metrics-1.4.12.jar
+7f3fd5098000-7f3fd509b000 r--s 0001d000 08:01 1316548                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-procedure/1.4.12/d217a0e69959ea56c846c84b718e327311c01001/hbase-procedure-1.4.12.jar
+7f3fd509b000-7f3fd509f000 r--s 0001e000 08:01 1316495                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-hadoop2-compat/1.4.12/1bca527153c0f3aab6d7e2e822e0e77123224cd8/hbase-hadoop2-compat-1.4.12.jar
+7f3fd509f000-7f3fd50a2000 r--s 00017000 08:01 1316303                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-prefix-tree/1.4.12/724af4c3275faf6bc34ec4443557aadf5ea1fd6/hbase-prefix-tree-1.4.12.jar
+7f3fd50a2000-7f3fd50b5000 r--s 00146000 08:01 1316487                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-client/1.4.12/4505890582f14e7396c267f4ed8a32d36703262/hbase-client-1.4.12.jar
+7f3fd50b5000-7f3fd50f1000 r--s 00446000 08:01 1316293                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase-server/1.4.12/1fcef61b34156e6ce0217ee56b8f63867c9a0fb4/hbase-server-1.4.12.jar
+7f3fd50f1000-7f3fd5123000 r--s 00358000 08:01 1316235                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.phoenix/phoenix-core/4.9.0-HBase-1.1/90b45b26b8697271a89862358aab8ffed44cb773/phoenix-core-4.9.0-HBase-1.1.jar
+7f3fd5123000-7f3fd5126000 r--s 0001e000 08:01 1329670                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-ipc/1.8.2/f4b0a97be342337431dada7b3c8d8cd62993684c/avro-ipc-1.8.2.jar
+7f3fd5126000-7f3fd51cf000 r--s 00a4f000 08:01 1319433                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.spark-project.hive/hive-exec/1.2.1.spark2/7a6236e2fce787814560970a49a1c517e6de1927/hive-exec-1.2.1.spark2.jar
+7f3fd51cf000-7f3fd51d1000 r--s 00013000 08:01 1316182                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-compiler/1.8.2/d5cee89807f8d091fc0c5987d03903407ef0968b/avro-compiler-1.8.2.jar
+7f3fd51d1000-7f3fd51d5000 r--s 0002a000 08:01 1329667                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-mapred/1.8.2/8d31caedebfc3f8801981b0f5b501a673eca1bb6/avro-mapred-1.8.2-hadoop2.jar
+7f3fd51d5000-7f3fd51d9000 r--s 0002a000 08:01 1329666                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-mapred/1.8.2/8d31caedebfc3f8801981b0f5b501a673eca1bb6/avro-mapred-1.8.2.jar
+7f3fd51d9000-7f3fd51e7000 r--s 00089000 08:01 1316180                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.json4s/json4s-scalap_2.11/3.5.3/a78590f694a565a63ca6ba0eae8cd19f52d79ec4/json4s-scalap_2.11-3.5.3.jar
+7f3fd51e7000-7f3fd51ea000 r--s 00014000 08:01 1316143                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.json4s/json4s-ast_2.11/3.5.3/f1b60133c0667114a02e122d7f05e334dadc03a7/json4s-ast_2.11-3.5.3.jar
+7f3fd51ea000-7f3fd51f4000 r--s 0009a000 08:01 1316144                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-xml_2.11/1.0.6/4ebd108453e6455351c0ec50d32509ae1154fdb1/scala-xml_2.11-1.0.6.jar
+7f3fd51f4000-7f3fd51f5000 r--s 00000000 08:01 1315907                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.typelevel/macro-compat_2.11/1.1.1/cb87cb74fd5fb118fede3f98075c2044616b35d/macro-compat_2.11-1.1.1.jar
+7f3fd51f5000-7f3fd5202000 r--s 0009c000 08:01 1316179                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.json4s/json4s-core_2.11/3.5.3/4ea70f8fec94e03341c81d21e924d8c469ef0b61/json4s-core_2.11-3.5.3.jar
+7f3fd5202000-7f3fd5248000 r--s 00317000 08:01 1316178                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.chuusai/shapeless_2.11/2.3.2/f40ed6e303d550293f5f8f3743681d98e31f2360/shapeless_2.11-2.3.2.jar
+7f3fd5248000-7f3fd524a000 r--s 00004000 08:01 1315900                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.bahir/spark-streaming-twitter_2.11/2.4.0/e924820db2f2325153a254436e7349f65ab6c854/spark-streaming-twitter_2.11-2.4.0.jar
+7f3fd524a000-7f3fd524f000 r--s 00035000 08:01 1315856                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.twitter/chill_2.11/0.9.3/432cc2832f1deee574535b3dbf7be0a478e9ab0f/chill_2.11-0.9.3.jar
+7f3fd524f000-7f3fd5344000 r--s 00bec000 08:01 1325727                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.1/125cf177720bb7b479c694e72f022a81c46d42d0/spark-core_2.11-2.4.1.jar
+7f3fd5344000-7f3fd5374000 r--s 001e3000 08:01 1325725                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-streaming_2.11/2.4.1/2b6519e48494c02bdd513aa1c94c4facf1dc3103/spark-streaming_2.11-2.4.1.jar
+7f3fd5374000-7f3fd53a1000 r--s 00212000 08:01 1325724                    /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.0/9eac59ba21a197b65570727fd5305013661a88d/delta-core_2.11-0.6.0.jar
+7f3fd53a1000-7f3fd53ee000 r--s 0041c000 08:01 1315822                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+7f3fd53ee000-7f3fd5459000 r--s 0093d000 08:01 1315820                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.spire-math/spire_2.11/0.13.0/32f131bf5002a637fbe9b1b9417a66aaad67bc5e/spire_2.11-0.13.0.jar
+7f3fd5459000-7f3fd5531000 r--s 00d92000 08:01 1315794                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.scalanlp/breeze_2.11/0.13.2/4ead72f6bff9a6b7f2c16ca840f55db2b78b3922/breeze_2.11-0.13.2.jar
+7f3fd5531000-7f3fd55ed000 r--s 00902000 08:01 1325718                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
+7f3fd55ed000-7f3fd56b3000 r--s 008a7000 08:01 1322173                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
+7f3fd56b3000-7f3fd5746000 r--s 00715000 08:01 1325716                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-mllib_2.11/2.4.1/f27053cb7a35ca512294ec657251e90b0689c28f/spark-mllib_2.11-2.4.1.jar
+7f3fd5746000-7f3fd5853000 r--s 00dd7000 08:01 1322060                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-compiler/2.11.12/a1b5e58fd80cb1edc1413e904a346bfdb3a88333/scala-compiler-2.11.12.jar
+7f3fd5853000-7f3fd5a53000 rw-p 00000000 00:00 0 
+7f3fd5a53000-7f3fd5a54000 r--s 00003000 08:01 1316141                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-tags_2.12/2.4.0/37351027347bb7af731b3b589e24a7814a55ce8e/spark-tags_2.12-2.4.0.jar
+7f3fd5a54000-7f3fd5a56000 r--s 0000a000 08:01 1315896                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.json4s/json4s-jackson_2.11/3.5.3/733a711a66d8eecbde9cfd7618235eae0d349a6d/json4s-jackson_2.11-3.5.3.jar
+7f3fd5a56000-7f3fd5a57000 r--s 00003000 08:01 1325730                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-tags_2.11/2.4.1/fae63d3fb8c2dacb500b46ac1e6b7ecabab2356d/spark-tags_2.11-2.4.1.jar
+7f3fd5a57000-7f3fd5a59000 r--s 0000b000 08:01 1325732                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-kvstore_2.11/2.4.1/9f256b9f2ac3a8630bc1b7f4d7d2685d57ddf614/spark-kvstore_2.11-2.4.1.jar
+7f3fd5a59000-7f3fd5a5b000 r--s 0000b000 08:01 1325729                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-unsafe_2.11/2.4.1/94023850467ae55d06a485ca1daa9e83ca3353ab/spark-unsafe_2.11-2.4.1.jar
+7f3fd5a5b000-7f3fd5a5d000 r--s 00006000 08:01 1325631                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sketch_2.11/2.4.1/6dd78b76307d1f56b986c40215c1089c1470cef6/spark-sketch_2.11-2.4.1.jar
+7f3fd5a5d000-7f3fd5a5f000 r--s 00011000 08:01 1325726                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-launcher_2.11/2.4.1/6f5b9c0abf431bb92e92e217f2a0d90bada5e565/spark-launcher_2.11-2.4.1.jar
+7f3fd5a5f000-7f3fd5a6c000 r--s 00068000 08:01 1315840                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.module/jackson-module-scala_2.11/2.10.0/582f2e2fc347b3de8d9a536df02750fc77515e88/jackson-module-scala_2.11-2.10.0.jar
+7f3fd5a6c000-7f3fd5a77000 r--s 000ad000 08:01 1315718                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-swing_2.11/2.0.3/4ac2dba71c17967af873ec9a8b2501a0afcf292d/scala-swing_2.11-2.0.3.jar
+7f3fd5a77000-7f3fd5a7b000 r--s 00015000 08:01 1319407                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.databricks/spark-avro_2.11/4.0.0/77b2fb4c18d8819dd63020f707a8b65dc3528dc7/spark-avro_2.11-4.0.0.jar
+7f3fd5a7b000-7f3fd5a86000 r--s 00067000 08:01 1315502                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-parser-combinators_2.11/1.1.2/d57a6718e8085bfdc97d8af347b62ccef794120a/scala-parser-combinators_2.11-1.1.2.jar
+7f3fd5a86000-7f3fd5a87000 r--s 00008000 08:01 1315821                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.typelevel/machinist_2.11/0.6.1/239a56280d1cf730048f552a1a18f415bfcbf270/machinist_2.11-0.6.1.jar
+7f3fd5a87000-7f3fd5a89000 r--s 00014000 08:01 1315812                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.spire-math/spire-macros_2.11/0.13.0/17059a17d2ee67ffd7eeaa825e68c9732cecf15a/spire-macros_2.11-0.13.0.jar
+7f3fd5a89000-7f3fd5a8d000 r--s 0002a000 08:01 1315777                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.scalanlp/breeze-macros_2.11/0.13.2/b079266f280c98e710c20dfa7d892c28ab217ee4/breeze-macros_2.11-0.13.2.jar
+7f3fd5a8d000-7f3fd5a91000 r--s 00029000 08:01 1325662                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-mllib-local_2.11/2.4.1/4e1847a8c88a41711f93a8f7a493637c8d218b27/spark-mllib-local_2.11-2.4.1.jar
+7f3fd5a91000-7f3fd5a9e000 r--s 000a0000 08:01 1319058                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-graphx_2.11/2.4.1/a0faed4ea064a36560881bdc89ecad3e35b7dbdb/spark-graphx_2.11-2.4.1.jar
+7f3fd5a9e000-7f3fd5aa1000 r--s 00012000 08:01 1315770                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.typesafe.scala-logging/scala-logging_2.11/3.9.0/e0dba06b4a763a0e2208182b264421baedbb0df/scala-logging_2.11-3.9.0.jar
+7f3fd5aa1000-7f3fd5aad000 r--s 00075000 08:01 1580481                    /home/raptor/.m2/repository/com/hortonworks/shc-core/1.1.1-2.1-s_2.11/shc-core-1.1.1-2.1-s_2.11.jar
+7f3fd5aad000-7f3fd5ac7000 r--s 0012c000 08:01 1325735                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-hive_2.11/2.4.1/9f07e97d4499b6d007b264dec846580dfbbb19f3/spark-hive_2.11-2.4.1.jar
+7f3fd5ac7000-7f3fd5af2000 r--s 00273000 08:01 1338489                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/2.3.1/21664b0318d201ec412f9b02357b07ba94009c87/kafka-clients-2.3.1.jar
+7f3fd5af2000-7f3fd5afe000 r--s 00077000 08:01 1325714                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql-kafka-0-10_2.11/2.4.1/9fc75a4db4cea095c64861a79524874f98ff0be4/spark-sql-kafka-0-10_2.11-2.4.1.jar
+7f3fd5afe000-7f3fd5b93000 r--s 00722000 08:01 1315691                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka_2.11/2.3.1/17255386d7e983ae82a0e82a0e5be0058e834842/kafka_2.11-2.3.1.jar
+7f3fd5b93000-7f3fd5b99000 r--s 0003f000 08:01 1708958                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/ext/sunjce_provider.jar
+7f3fd5b99000-7f3fd5c2f000 r--s 01114000 08:01 1708961                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/ext/jfxrt.jar
+7f3fd5c2f000-7f3fd5c4b000 r--s 00393000 08:01 1708962                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/ext/cldrdata.jar
+7f3fd5c4b000-7f3fd5c4c000 r--s 00010000 08:01 1708957                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/ext/zipfs.jar
+7f3fd5c4c000-7f3fd5c4e000 r--s 00001000 08:01 1708960                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/ext/dnsns.jar
+7f3fd5c4e000-7f3fd5c52000 r--s 0003b000 08:01 1708963                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/ext/sunpkcs11.jar
+7f3fd5c52000-7f3fd5c5c000 r--s 00116000 08:01 1708954                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/ext/localedata.jar
+7f3fd5c5c000-7f3fd5c77000 r--s 001d4000 08:01 1708956                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/ext/nashorn.jar
+7f3fd5c77000-7f3fd5c7c000 r--s 00084000 08:01 1708946                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/jfr.jar
+7f3fd5c7c000-7f3fd5c81000 r--s 002f9000 08:01 1708758                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/charsets.jar
+7f3fd5c81000-7f3fd5e81000 rw-p 00000000 00:00 0 
+7f3fd5e81000-7f3fd6081000 rw-p 00000000 00:00 0 
+7f3fd6081000-7f3fd6281000 rw-p 00000000 00:00 0 
+7f3fd6281000-7f3fd6481000 rw-p 00000000 00:00 0 
+7f3fd6481000-7f3fd6681000 rw-p 00000000 00:00 0 
+7f3fd6681000-7f3fd6881000 rw-p 00000000 00:00 0 
+7f3fd6881000-7f3fd6a81000 rw-p 00000000 00:00 0 
+7f3fd6a81000-7f3fd6aa4000 r--s 00350000 08:01 1316794                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.12.7/c5a8eb12969e77db4c0dd785c104b59d226b8265/scala-reflect-2.12.7.jar
+7f3fd6aa4000-7f3fd6ca4000 rw-p 00000000 00:00 0 
+7f3fd6ca4000-7f3fd6cf3000 r--s 009b0000 08:01 1316795                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-compiler/2.12.7/a393b72134dff0751d5110c3e4808689deba75c1/scala-compiler-2.12.7.jar
+7f3fd6cf3000-7f3fd6d2a000 r--s 004d2000 08:01 1316218                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+7f3fd6d2a000-7f3fd6d2d000 ---p 00000000 00:00 0 
+7f3fd6d2d000-7f3fd702b000 rw-p 00000000 00:00 0 
+7f3fd702b000-7f3fd722b000 rw-p 00000000 00:00 0 
+7f3fd722b000-7f3fd722e000 ---p 00000000 00:00 0 
+7f3fd722e000-7f3fd732c000 rw-p 00000000 00:00 0 
+7f3fd732c000-7f3fd732f000 ---p 00000000 00:00 0 
+7f3fd732f000-7f3fd742d000 rw-p 00000000 00:00 0 
+7f3fd742d000-7f3fd7430000 ---p 00000000 00:00 0 
+7f3fd7430000-7f3fd752e000 rw-p 00000000 00:00 0 
+7f3fd752e000-7f3fd7545000 r-xp 00000000 08:01 1461152                    /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f3fd7545000-7f3fd7744000 ---p 00017000 08:01 1461152                    /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f3fd7744000-7f3fd7745000 r--p 00016000 08:01 1461152                    /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f3fd7745000-7f3fd7746000 rw-p 00017000 08:01 1461152                    /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f3fd7746000-7f3fd78bf000 r-xp 00000000 08:01 2621621                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+7f3fd78bf000-7f3fd7abf000 ---p 00179000 08:01 2621621                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+7f3fd7abf000-7f3fd7ac9000 r--p 00179000 08:01 2621621                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+7f3fd7ac9000-7f3fd7acb000 rw-p 00183000 08:01 2621621                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+7f3fd7acb000-7f3fd7acf000 rw-p 00000000 00:00 0 
+7f3fd7acf000-7f3fd7ad2000 r--s 0001a000 08:01 1708849                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/jce.jar
+7f3fd7ad2000-7f3fd7ae5000 r--s 00345000 08:01 1708881                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/resources.jar
+7f3fd7ae5000-7f3fd7ae8000 r--s 00026000 08:01 1458207                    /home/raptor/.gradle/caches/4.10/zinc-0.3.15/0.3.15/compiler-interface-2.12.7-52.0.jar
+7f3fd7ae8000-7f3fd7aed000 r-xp 00000000 08:01 1452437                    /home/raptor/.gradle/native/25/linux-amd64/libnative-platform.so
+7f3fd7aed000-7f3fd7cec000 ---p 00005000 08:01 1452437                    /home/raptor/.gradle/native/25/linux-amd64/libnative-platform.so
+7f3fd7cec000-7f3fd7ced000 rw-p 00004000 08:01 1452437                    /home/raptor/.gradle/native/25/linux-amd64/libnative-platform.so
+7f3fd7ced000-7f3fd7cf0000 ---p 00000000 00:00 0 
+7f3fd7cf0000-7f3fd7dee000 rw-p 00000000 00:00 0 
+7f3fd7dee000-7f3fd7dff000 r-xp 00000000 08:01 1709071                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libnio.so
+7f3fd7dff000-7f3fd7ffe000 ---p 00011000 08:01 1709071                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libnio.so
+7f3fd7ffe000-7f3fd7fff000 r--p 00010000 08:01 1709071                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libnio.so
+7f3fd7fff000-7f3fd8000000 rw-p 00011000 08:01 1709071                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libnio.so
+7f3fd8000000-7f3fd8021000 rw-p 00000000 00:00 0 
+7f3fd8021000-7f3fdc000000 ---p 00000000 00:00 0 
+7f3fdc000000-7f3fdc001000 r--s 0000a000 08:01 1708953                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/ext/jaccess.jar
+7f3fdc001000-7f3fdc002000 r--s 0000e000 08:01 1708955                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/ext/sunec.jar
+7f3fdc002000-7f3fdc008000 r--s 00080000 08:01 1329731                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-xml_2.12/1.0.6/e22de3366a698a9f744106fb6dda4335838cf6a7/scala-xml_2.12-1.0.6.jar
+7f3fdc008000-7f3fdc00f000 r--s 00000000 08:01 2901677                    /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache
+7f3fdc00f000-7f3fdc082000 r--s 0065b000 08:01 1312427                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.10.6/421989aa8f95a05a4f894630aad96b8c7b828732/scala-library-2.10.6.jar
+7f3fdc082000-7f3fdc0b7000 r--s 002da000 08:01 1312423                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.10.6/3259f3df0f166f017ef5b2d385445808398c316c/scala-reflect-2.10.6.jar
+7f3fdc0b7000-7f3fdc0b9000 r--s 0000b000 08:01 1312425                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.typesafe.sbt/sbt-interface/0.13.15/93fe450d5f5efb111397a34bc1fba0d50368a265/sbt-interface-0.13.15.jar
+7f3fdc0b9000-7f3fdc1b7000 r--s 00cd0000 08:01 1312424                    /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-compiler/2.10.6/9b15174852f5b6bb1edbf303d5722286a0a54011/scala-compiler-2.10.6.jar
+7f3fdc1b7000-7f3fdc1b8000 r--s 00007000 08:01 1312421                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.typesafe.sbt/compiler-interface/0.13.15/bad996ed4fc3e83b872525e9cd7b80d81b98a324/compiler-interface-0.13.15-sources.jar
+7f3fdc1b8000-7f3fdc1e5000 r--s 00234000 08:01 1312426                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.typesafe.sbt/incremental-compiler/0.13.15/95e20d00b25a7aae19838009c11578b7e6b258ad/incremental-compiler-0.13.15.jar
+7f3fdc1e5000-7f3fdc1ec000 r--s 0005a000 08:01 1312422                    /home/raptor/.gradle/caches/modules-2/files-2.1/com.typesafe.zinc/zinc/0.3.15/12e1f782684f2702e847faa0994eed4711270687/zinc-0.3.15.jar
+7f3fdc1ec000-7f3fdc1f1000 r--s 000a3000 08:01 1708968                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/jsse.jar
+7f3fdc1f1000-7f3fdf1f2000 rw-p 00000000 00:00 0 
+7f3fdf1f2000-7f3fdf208000 r-xp 00000000 08:01 1709010                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libnet.so
+7f3fdf208000-7f3fdf407000 ---p 00016000 08:01 1709010                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libnet.so
+7f3fdf407000-7f3fdf408000 r--p 00015000 08:01 1709010                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libnet.so
+7f3fdf408000-7f3fdf409000 rw-p 00016000 08:01 1709010                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libnet.so
+7f3fdf409000-7f3fdf40d000 r--s 00013000 08:01 1442924                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-build-cache-4.10.jar
+7f3fdf40d000-7f3fdf413000 r--s 00034000 08:01 1442925                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-persistent-cache-4.10.jar
+7f3fdf413000-7f3fdf418000 r--s 00015000 08:01 1442928                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-resources-4.10.jar
+7f3fdf418000-7f3fdf419000 r--s 00003000 08:01 1442935                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-build-option-4.10.jar
+7f3fdf419000-7f3fdf41a000 r--s 00006000 08:01 1442936                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-cli-4.10.jar
+7f3fdf41a000-7f3fdf41c000 r--s 00000000 08:01 1442947                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/jul-to-slf4j-1.7.16.jar
+7f3fdf41c000-7f3fdf424000 r--s 00035000 08:01 1442926                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-logging-4.10.jar
+7f3fdf424000-7f3fdf433000 r--s 00085000 08:01 1442931                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-model-core-4.10.jar
+7f3fdf433000-7f3fdf435000 r--s 00006000 08:01 1442932                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-base-services-groovy-4.10.jar
+7f3fdf435000-7f3fdf437000 r--s 00007000 08:01 1442930                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-model-groovy-4.10.jar
+7f3fdf437000-7f3fdf438000 r--s 00006000 08:01 1442937                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-docs-4.10.jar
+7f3fdf438000-7f3fdf442000 r--s 00078000 08:01 1442959                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/commons-compress-1.14.jar
+7f3fdf442000-7f3fdf443000 r--s 00004000 08:01 1442963                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/native-platform-freebsd-amd64-libcpp-0.14.jar
+7f3fdf443000-7f3fdf444000 r--s 00004000 08:01 1442964                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/native-platform-freebsd-amd64-libstdcpp-0.14.jar
+7f3fdf444000-7f3fdf445000 r--s 00004000 08:01 1442965                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/native-platform-freebsd-i386-libcpp-0.14.jar
+7f3fdf445000-7f3fdf446000 r--s 00003000 08:01 1442966                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/native-platform-freebsd-i386-libstdcpp-0.14.jar
+7f3fdf446000-7f3fdf447000 r--s 00002000 08:01 1442967                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/native-platform-linux-amd64-0.14.jar
+7f3fdf447000-7f3fdf448000 r--s 00002000 08:01 1442968                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/native-platform-linux-i386-0.14.jar
+7f3fdf448000-7f3fdf44a000 r--s 00002000 08:01 1442969                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/native-platform-osx-amd64-0.14.jar
+7f3fdf44a000-7f3fdf44b000 r--s 00003000 08:01 1442970                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/native-platform-osx-i386-0.14.jar
+7f3fdf44b000-7f3fdf44d000 r--s 0000b000 08:01 1442971                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/native-platform-windows-amd64-0.14.jar
+7f3fdf44d000-7f3fdf44e000 r--s 0000b000 08:01 1442972                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/native-platform-windows-i386-0.14.jar
+7f3fdf44e000-7f3fdf44f000 r--s 00001000 08:01 1442973                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/native-platform-linux-amd64-ncurses5-0.14.jar
+7f3fdf44f000-7f3fdf450000 r--s 00001000 08:01 1442974                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/native-platform-linux-amd64-ncurses6-0.14.jar
+7f3fdf450000-7f3fdf451000 r--s 00001000 08:01 1442975                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/native-platform-linux-i386-ncurses5-0.14.jar
+7f3fdf451000-7f3fdf452000 r--s 00001000 08:01 1442976                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/native-platform-linux-i386-ncurses6-0.14.jar
+7f3fdf452000-7f3fdf456000 r--s 00012000 08:01 1442958                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/native-platform-0.14.jar
+7f3fdf456000-7f3fdf459000 r--s 00023000 08:01 1442961                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/jansi-1.14.jar
+7f3fdf459000-7f3fdf45d000 r--s 0000c000 08:01 1442929                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-native-4.10.jar
+7f3fdf45d000-7f3fdf464000 r--s 0002d000 08:01 1442933                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-messaging-4.10.jar
+7f3fdf464000-7f3fdf466000 r--s 00006000 08:01 1442927                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-process-services-4.10.jar
+7f3fdf466000-7f3fdf468000 r--s 00000000 08:01 1442922                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-jvm-services-4.10.jar
+7f3fdf468000-7f3fdf46b000 r--s 0001a000 08:01 1442952                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/fastutil-7.2.1-min.jar
+7f3fdf46b000-7f3fdf46d000 r--s 00009000 08:01 1443005                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-tooling-api-builders-4.10.jar
+7f3fdf46d000-7f3fdf46f000 r--s 00003000 08:01 1442988                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-tooling-native-4.10.jar
+7f3fdf46f000-7f3fdf473000 r--s 00019000 08:01 1442990                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-testing-native-4.10.jar
+7f3fdf473000-7f3fdf475000 r--s 0000d000 08:01 1443124                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/jcommander-1.47.jar
+7f3fdf475000-7f3fdf47e000 r--s 00089000 08:01 1443082                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/testng-6.3.1.jar
+7f3fdf47e000-7f3fdf483000 r--s 0005a000 08:01 1443086                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/bsh-2.0b6.jar
+7f3fdf483000-7f3fdf487000 r--s 0001c000 08:01 1443010                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-testing-jvm-4.10.jar
+7f3fdf487000-7f3fdf489000 r--s 0000e000 08:01 1443122                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/junit-platform-commons-1.0.3.jar
+7f3fdf489000-7f3fdf48a000 r--s 00001000 08:01 1443131                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/opentest4j-1.0.0.jar
+7f3fdf48a000-7f3fdf48d000 r--s 00013000 08:01 1443121                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/junit-platform-engine-1.0.3.jar
+7f3fdf48d000-7f3fdf48e000 r--s 00000000 08:01 1443123                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/apiguardian-api-1.0.0.jar
+7f3fdf48e000-7f3fdf490000 r--s 0000c000 08:01 1443087                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/junit-platform-launcher-1.0.3.jar
+7f3fdf490000-7f3fdf491000 r--s 00003000 08:01 1443009                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-testing-junit-platform-4.10.jar
+7f3fdf491000-7f3fdf493000 r--s 0000f000 08:01 1442942                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/reflectasm-1.07-shaded.jar
+7f3fdf493000-7f3fdf495000 r--s 00000000 08:01 1442977                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/minlog-1.2.jar
+7f3fdf495000-7f3fdf497000 r--s 00007000 08:01 1442978                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/objenesis-1.2.jar
+7f3fdf497000-7f3fdf49b000 r--s 00026000 08:01 1442941                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/kryo-2.20.jar
+7f3fdf49b000-7f3fdf4a3000 r--s 00034000 08:01 1443032                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-testing-base-4.10.jar
+7f3fdf4a3000-7f3fdf4aa000 r--s 00043000 08:01 1443077                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/bcpg-jdk15on-1.58.jar
+7f3fdf4aa000-7f3fdf4ad000 r--s 00010000 08:01 1442987                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-signing-4.10.jar
+7f3fdf4ad000-7f3fdf4af000 r--s 00007000 08:01 1442996                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-scala-4.10.jar
+7f3fdf4af000-7f3fdf4b0000 r--s 00004000 08:01 1443045                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-resources-sftp-4.10.jar
+7f3fdf4b0000-7f3fdf4b9000 r--s 0005a000 08:01 1443048                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/aws-java-sdk-kms-1.11.267.jar
+7f3fdf4b9000-7f3fdf4bb000 r--s 00005000 08:01 1443095                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/jmespath-java-1.11.267.jar
+7f3fdf4bb000-7f3fdf4cd000 r--s 000bb000 08:01 1443047                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/aws-java-sdk-s3-1.11.267.jar
+7f3fdf4cd000-7f3fdf4d7000 r--s 00081000 08:01 1443118                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/ion-java-1.0.2.jar
+7f3fdf4d7000-7f3fdf4ec000 r--s 000bd000 08:01 1443049                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/aws-java-sdk-core-1.11.267.jar
+7f3fdf4ec000-7f3fdf4ee000 r--s 00004000 08:01 1443041                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-resources-s3-4.10.jar
+7f3fdf4ee000-7f3fdf4fe000 r--s 00088000 08:01 1443099                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/joda-time-2.8.2.jar
+7f3fdf4fe000-7f3fdf511000 r--s 00136000 08:01 1443096                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/jackson-databind-2.9.4.jar
+7f3fdf511000-7f3fdf514000 r--s 0000e000 08:01 1443098                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/jackson-annotations-2.9.4.jar
+7f3fdf514000-7f3fdf518000 r--s 0004b000 08:01 1443097                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/jackson-core-2.9.4.jar
+7f3fdf518000-7f3fdf519000 r--s 00001000 08:01 1443058                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/google-http-client-jackson2-1.23.0.jar
+7f3fdf519000-7f3fdf522000 r--s 0004f000 08:01 1443059                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/google-http-client-1.23.0.jar
+7f3fdf522000-7f3fdf524000 r--s 00006000 08:01 1442951                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/jsr305-2.0.1.jar
+7f3fdf524000-7f3fdf527000 r--s 0000d000 08:01 1443055                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/google-oauth-client-1.23.0.jar
+7f3fdf527000-7f3fdf52c000 r--s 0002c000 08:01 1443054                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/google-api-client-1.23.0.jar
+7f3fdf52c000-7f3fdf530000 r--s 0001c000 08:01 1443053                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/google-api-services-storage-v1-rev116-1.23.0.jar
+7f3fdf530000-7f3fdf532000 r--s 00003000 08:01 1443042                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-resources-gcs-4.10.jar
+7f3fdf532000-7f3fdf535000 r--s 0000f000 08:01 1443038                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-reporting-4.10.jar
+7f3fdf535000-7f3fdf537000 r--s 00007000 08:01 1443031                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-publish-4.10.jar
+7f3fdf537000-7f3fdf539000 r--s 00009000 08:01 1443066                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/commons-cli-1.2.jar
+7f3fdf539000-7f3fdf53a000 r--s 00004000 08:01 1442962                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/ant-launcher-1.9.11.jar
+7f3fdf53a000-7f3fdf559000 r--s 001d9000 08:01 1442955                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/ant-1.9.11.jar
+7f3fdf559000-7f3fdf55f000 r--s 0003e000 08:01 1443004                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-plugins-4.10.jar
+7f3fdf55f000-7f3fdf561000 r--s 0000b000 08:01 1442992                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-plugin-development-4.10.jar
+7f3fdf561000-7f3fdf567000 r--s 00030000 08:01 1442999                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-platform-play-4.10.jar
+7f3fdf567000-7f3fdf56d000 r--s 00033000 08:01 1443083                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/snakeyaml-1.6.jar
+7f3fdf56d000-7f3fdf57e000 r--s 00075000 08:01 1443014                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-platform-native-4.10.jar
+7f3fdf57e000-7f3fdf582000 r--s 0001b000 08:01 1443013                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-platform-jvm-4.10.jar
+7f3fdf582000-7f3fdf589000 r--s 00029000 08:01 1443033                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-platform-base-4.10.jar
+7f3fdf589000-7f3fdf5b4000 r--s 00247000 08:01 1443067                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/biz.aQute.bndlib-3.4.0.jar
+7f3fdf5b4000-7f3fdf5b5000 r--s 00004000 08:01 1442984                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-osgi-4.10.jar
+7f3fdf5b5000-7f3fdf5b8000 r--s 0000c000 08:01 1443072                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/pmaven-groovy-0.8-20100325.jar
+7f3fdf5b8000-7f3fdf5b9000 r--s 00004000 08:01 1443071                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/pmaven-common-0.8-20100325.jar
+7f3fdf5b9000-7f3fdf5ba000 r--s 00007000 08:01 1443052                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/wagon-http-shared4-2.4.jar
+7f3fdf5ba000-7f3fdf5bb000 r--s 00002000 08:01 1443051                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/wagon-http-2.4.jar
+7f3fdf5bb000-7f3fdf5bc000 r--s 00002000 08:01 1443075                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/wagon-file-2.4.jar
+7f3fdf5bc000-7f3fdf5be000 r--s 00006000 08:01 1443076                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/aether-connector-wagon-1.13.1.jar
+7f3fdf5be000-7f3fdf5c5000 r--s 0002d000 08:01 1442993                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-maven-4.10.jar
+7f3fdf5c5000-7f3fdf5c7000 r--s 0000c000 08:01 1443008                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-language-scala-4.10.jar
+7f3fdf5c7000-7f3fdf5d3000 r--s 0005d000 08:01 1442991                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-language-native-4.10.jar
+7f3fdf5d3000-7f3fdf5d5000 r--s 00005000 08:01 1443012                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-language-jvm-4.10.jar
+7f3fdf5d5000-7f3fdf5dd000 r--s 0003e000 08:01 1443011                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-language-java-4.10.jar
+7f3fdf5dd000-7f3fdf5df000 r--s 0000b000 08:01 1443007                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-language-groovy-4.10.jar
+7f3fdf5df000-7f3fdf5e6000 r--s 00035000 08:01 1443080                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/simple-4.1.21.jar
+7f3fdf5e6000-7f3fdf5f2000 r--s 00100000 08:01 1443078                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/rhino-1.7R3.jar
+7f3fdf5f2000-7f3fdf5f6000 r--s 00012000 08:01 1443000                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-javascript-4.10.jar
+7f3fdf5f6000-7f3fdf5fa000 r--s 00010000 08:01 1443002                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-jacoco-4.10.jar
+7f3fdf5fa000-7f3fdf5fd000 r--s 00013000 08:01 1443001                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-ivy-4.10.jar
+7f3fdf5fd000-7f3fdf5fe000 r--s 00002000 08:01 1442994                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-ide-play-4.10.jar
+7f3fdf5fe000-7f3fdf5ff000 r--s 00011000 08:01 1443084                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/dd-plist-1.20.jar
+7f3fdf5ff000-7f3fdf606000 r--s 00032000 08:01 1442989                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-ide-native-4.10.jar
+7f3fdf606000-7f3fdf610000 r--s 0005c000 08:01 1442995                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-ide-4.10.jar
+7f3fdf610000-7f3fdf611000 r--s 00000000 08:01 1442956                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/javax.inject-1.jar
+7f3fdf611000-7f3fdf613000 r--s 00008000 08:01 1442998                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-ear-4.10.jar
+7f3fdf613000-7f3fdf615000 r--s 00005000 08:01 1443065                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/jatl-0.2.2.jar
+7f3fdf615000-7f3fdf622000 r--s 00083000 08:01 1442957                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/commons-collections-3.2.2.jar
+7f3fdf622000-7f3fdf629000 r--s 0003d000 08:01 1443015                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-diagnostics-4.10.jar
+7f3fdf629000-7f3fdf62e000 r--s 00028000 08:01 1442983                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-code-quality-4.10.jar
+7f3fdf62e000-7f3fdf630000 r--s 0000b000 08:01 1443081                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/maven-plugin-api-3.0.4.jar
+7f3fdf630000-7f3fdf632000 r--s 0000b000 08:01 1443106                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/wagon-provider-api-2.4.jar
+7f3fdf632000-7f3fdf638000 r--s 0003f000 08:01 1443069                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/maven-compat-3.0.4.jar
+7f3fdf638000-7f3fdf63a000 r--s 00004000 08:01 1442948                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/log4j-over-slf4j-1.7.16.jar
+7f3fdf63a000-7f3fdf63e000 r--s 0001d000 08:01 1443063                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/xbean-reflect-3.4.jar
+7f3fdf63e000-7f3fdf640000 r--s 00009000 08:01 1443120                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/hamcrest-core-1.3.jar
+7f3fdf640000-7f3fdf648000 r--s 00045000 08:01 1443085                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/junit-4.12.jar
+7f3fdf648000-7f3fdf64a000 r--s 0000a000 08:01 1443107                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/plexus-classworlds-2.4.jar
+7f3fdf64a000-7f3fdf651000 r--s 0002e000 08:01 1443062                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/plexus-container-default-1.5.5.jar
+7f3fdf651000-7f3fdf657000 r--s 00026000 08:01 1443003                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-build-init-4.10.jar
+7f3fdf657000-7f3fdf6c8000 r--s 00665000 08:01 1442954                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/groovy-all-2.4.15.jar
+7f3fdf6c8000-7f3fdf6cf000 r--s 0002d000 08:01 1442997                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-build-comparison-4.10.jar
+7f3fdf6cf000-7f3fdf6d0000 r--s 00002000 08:01 1443043                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-build-cache-http-4.10.jar
+7f3fdf6d0000-7f3fdf6d2000 r--s 00009000 08:01 1442982                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-antlr-4.10.jar
+7f3fdf6d2000-7f3fdf6d4000 r--s 00004000 08:01 1442981                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-announce-4.10.jar
+7f3fdf6d4000-7f3fdf6d6000 r--s 00011000 08:01 1442906                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-kotlin-dsl-tooling-builders-1.0-rc-3.jar
+7f3fdf6d6000-7f3fdf6d8000 r--s 00002000 08:01 1442915                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/kotlin-stdlib-jdk8-1.2.60.jar
+7f3fdf6d8000-7f3fdf6de000 r--s 00015000 08:01 1442913                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/kotlin-stdlib-common-1.2.60.jar
+7f3fdf6de000-7f3fdf6ee000 r--s 000db000 08:01 1442912                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/kotlin-stdlib-1.2.60.jar
+7f3fdf6ee000-7f3fdf6f0000 r--s 00009000 08:01 1442911                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/kotlin-script-runtime-1.2.60.jar
+7f3fdf6f0000-7f3fdf725000 r--s 00241000 08:01 1442909                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/kotlin-reflect-1.2.60.jar
+7f3fdf725000-7f3fdf8f0000 r--s 019b6000 08:01 1442908                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/kotlin-compiler-embeddable-1.2.60.jar
+7f3fdf8f0000-7f3fdf905000 r--s 00108000 08:01 1442904                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-kotlin-dsl-1.0-rc-3.jar
+7f3fdf905000-7f3fdf91e000 r--s 0013a000 08:01 1443093                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/xercesImpl-2.12.0.jar
+7f3fdf91e000-7f3fdf91f000 ---p 00000000 00:00 0 
+7f3fdf91f000-7f3fdfa1f000 rw-p 00000000 00:00 0 
+7f3fdfa1f000-7f3fdfa22000 ---p 00000000 00:00 0 
+7f3fdfa22000-7f3fdfb20000 rw-p 00000000 00:00 0 
+7f3fdfb20000-7f3fdfb21000 ---p 00000000 00:00 0 
+7f3fdfb21000-7f3fdfb24000 ---p 00000000 00:00 0 
+7f3fdfb24000-7f3fdfc21000 rw-p 00000000 00:00 0 
+7f3fdfc21000-7f3fdfc22000 ---p 00000000 00:00 0 
+7f3fdfc22000-7f3fdfc25000 ---p 00000000 00:00 0 
+7f3fdfc25000-7f3fdfd22000 rw-p 00000000 00:00 0 
+7f3fdfd22000-7f3fe0000000 r--p 00000000 08:01 2625047                    /usr/lib/locale/locale-archive
+7f3fe0000000-7f3fe0021000 rw-p 00000000 00:00 0 
+7f3fe0021000-7f3fe4000000 ---p 00000000 00:00 0 
+7f3fe4000000-7f3fe4001000 r--s 00000000 08:01 1442914                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/kotlin-stdlib-jdk7-1.2.60.jar
+7f3fe4001000-7f3fe4003000 r--s 00000000 08:01 1442907                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-kotlin-dsl-tooling-models-1.0-rc-3.jar
+7f3fe4003000-7f3fe4005000 r--s 00003000 08:01 1442903                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/annotations-13.0.jar
+7f3fe4005000-7f3fe4007000 r--s 00005000 08:01 1442905                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-kotlin-dsl-provider-plugins-1.0-rc-3.jar
+7f3fe4007000-7f3fe4009000 r--s 0000c000 08:01 1443034                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-plugin-use-4.10.jar
+7f3fe4009000-7f3fe4012000 r--s 0002d000 08:01 1442960                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/xml-apis-1.4.01.jar
+7f3fe4012000-7f3fe4015000 r--s 0001c000 08:01 1443089                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/nekohtml-1.9.20.jar
+7f3fe4015000-7f3fe401b000 r--s 0005b000 08:01 1443088                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/jcifs-1.3.17.jar
+7f3fe401b000-7f3fe4043000 r--s 001cf000 08:01 1442950                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/guava-jdk5-17.0.jar
+7f3fe4043000-7f3fe4046000 r--s 0000d000 08:01 1443044                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-resources-http-4.10.jar
+7f3fe4046000-7f3fe4069000 r--s 00223000 08:01 1443050                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/org.eclipse.jgit-4.5.3.201708160445-r.jar
+7f3fe4069000-7f3fe40af000 r--s 00265000 08:01 1442921                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-core-4.10.jar
+7f3fe40af000-7f3fe40b0000 ---p 00000000 00:00 0 
+7f3fe40b0000-7f3fe40b3000 ---p 00000000 00:00 0 
+7f3fe40b3000-7f3fe8000000 rw-p 00000000 00:00 0 
+7f3fe8000000-7f3fe8021000 rw-p 00000000 00:00 0 
+7f3fe8021000-7f3fec000000 ---p 00000000 00:00 0 
+7f3fec000000-7f3fec001000 r--s 00002000 08:01 1442910                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/kotlin-sam-with-receiver-compiler-plugin-1.2.60.jar
+7f3fec001000-7f3fec002000 r--s 00000000 08:01 1442917                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-runtime-api-info-4.10.jar
+7f3fec002000-7f3fec007000 r--s 00040000 08:01 1443094                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/jsch-0.1.54.jar
+7f3fec007000-7f3fec009000 r--s 00003000 08:01 1442946                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/jcl-over-slf4j-1.7.16.jar
+7f3fec009000-7f3fec010000 r--s 00049000 08:01 1443119                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/httpcore-4.4.9.jar
+7f3fec010000-7f3fec017000 r--s 0003f000 08:01 1443061                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/commons-codec-1.10.jar
+7f3fec017000-7f3fec025000 r--s 000ae000 08:01 1443060                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/httpclient-4.5.5.jar
+7f3fec025000-7f3fec027000 r--s 0000c000 08:01 1443035                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-version-control-4.10.jar
+7f3fec027000-7f3fec029000 r--s 00006000 08:01 1442919                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-wrapper-4.10.jar
+7f3fec029000-7f3fec038000 r--s 0004b000 08:01 1442918                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-tooling-api-4.10.jar
+7f3fec038000-7f3fec045000 r--s 00037000 08:01 1442923                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-core-api-4.10.jar
+7f3fec045000-7f3fec051000 r--s 00064000 08:01 1442934                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-base-services-4.10.jar
+7f3fec051000-7f3fec05e000 r--s 00068000 08:01 1442916                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-launcher-4.10.jar
+7f3fec05e000-7f3fec060000 r--s 0000d000 08:01 1443037                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-composite-builds-4.10.jar
+7f3fec060000-7f3fec061000 r--s 00000000 08:01 1442920                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/gradle-installation-beacon-4.10.jar
+7f3fec061000-7f3fec062000 r--s 00009000 08:01 1442949                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/slf4j-api-1.7.16.jar
+7f3fec062000-7f3fec064000 r--s 00006000 08:01 1443116                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/maven-repository-metadata-3.0.4.jar
+7f3fec064000-7f3fec066000 r--s 0000c000 08:01 1443101                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/maven-aether-provider-3.0.4.jar
+7f3fec066000-7f3fec06a000 r--s 00021000 08:01 1443110                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/maven-model-builder-3.0.4.jar
+7f3fec06a000-7f3fec06c000 r--s 00026000 08:01 1443111                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/maven-model-3.0.4.jar
+7f3fec06c000-7f3fec06e000 r--s 0000a000 08:01 1443114                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/maven-settings-3.0.4.jar
+7f3fec06e000-7f3fec0c1000 r--s 00373000 08:01 1443100                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/bcprov-jdk15on-1.58.jar
+7f3fec0c1000-7f3fec0f1000 r--s 0018f000 08:01 1443036                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-dependency-management-4.10.jar
+7f3fec0f1000-7f3fec0f4000 ---p 00000000 00:00 0 
+7f3fec0f4000-7f3fec1f2000 rw-p 00000000 00:00 0 
+7f3fec1f2000-7f3fec1f5000 ---p 00000000 00:00 0 
+7f3fec1f5000-7f3fec2f3000 rw-p 00000000 00:00 0 
+7f3fec2f3000-7f3fec2f6000 ---p 00000000 00:00 0 
+7f3fec2f6000-7f3fec3f4000 rw-p 00000000 00:00 0 
+7f3fec3f4000-7f3fec3f5000 ---p 00000000 00:00 0 
+7f3fec3f5000-7f3fed000000 rw-p 00000000 00:00 0 
+7f3fed000000-7f3fef200000 rwxp 00000000 00:00 0 
+7f3fef200000-7f3ffc000000 ---p 00000000 00:00 0 
+7f3ffc000000-7f3ffcc94000 rw-p 00000000 00:00 0 
+7f3ffcc94000-7f4000000000 ---p 00000000 00:00 0 
+7f4000000000-7f4000002000 r--s 00002000 08:01 1443132                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/plexus-cipher-1.7.jar
+7f4000002000-7f4000003000 r--s 00006000 08:01 1443115                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/plexus-sec-dispatcher-1.3.jar
+7f4000003000-7f4000005000 r--s 0000d000 08:01 1443129                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/plexus-interpolation-1.14.jar
+7f4000005000-7f4000007000 r--s 00000000 08:01 1443130                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/plexus-component-annotations-1.5.5.jar
+7f4000007000-7f400000a000 r--s 00008000 08:01 1443112                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/maven-settings-builder-3.0.4.jar
+7f400000a000-7f400000e000 r--s 00035000 08:01 1443117                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/plexus-utils-3.0.8.jar
+7f400000e000-7f4000010000 r--s 0000b000 08:01 1443113                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/maven-artifact-3.0.4.jar
+7f4000010000-7f400001c000 r--s 0007d000 08:01 1443070                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/maven-core-3.0.4.jar
+7f400001c000-7f400002b000 r--s 000d9000 08:01 1443068                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/ivy-2.2.0.jar
+7f400002b000-7f4000b4b000 rw-p 00000000 00:00 0 
+7f4000b4b000-7f4000d25000 r--s 03d88000 08:01 1708759                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+7f4000d25000-7f4001980000 rw-p 00000000 00:00 0 
+7f4001980000-7f4001981000 ---p 00000000 00:00 0 
+7f4001981000-7f4001a81000 rw-p 00000000 00:00 0 
+7f4001a81000-7f4001a82000 ---p 00000000 00:00 0 
+7f4001a82000-7f4001b82000 rw-p 00000000 00:00 0 
+7f4001b82000-7f4001b83000 ---p 00000000 00:00 0 
+7f4001b83000-7f4001c83000 rw-p 00000000 00:00 0 
+7f4001c83000-7f4001c84000 ---p 00000000 00:00 0 
+7f4001c84000-7f4001d84000 rw-p 00000000 00:00 0 
+7f4001d84000-7f4001d85000 ---p 00000000 00:00 0 
+7f4001d85000-7f4001e85000 rw-p 00000000 00:00 0 
+7f4001e85000-7f4001e86000 ---p 00000000 00:00 0 
+7f4001e86000-7f4001fd0000 rw-p 00000000 00:00 0 
+7f4001fd0000-7f400221f000 ---p 00000000 00:00 0 
+7f400221f000-7f4002269000 rw-p 00000000 00:00 0 
+7f4002269000-7f40024b7000 ---p 00000000 00:00 0 
+7f40024b7000-7f4002581000 rw-p 00000000 00:00 0 
+7f4002581000-7f4002604000 ---p 00000000 00:00 0 
+7f4002604000-7f400268d000 rw-p 00000000 00:00 0 
+7f400268d000-7f40029c5000 ---p 00000000 00:00 0 
+7f40029c5000-7f40029e0000 r-xp 00000000 08:01 1709033                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libzip.so
+7f40029e0000-7f4002bdf000 ---p 0001b000 08:01 1709033                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libzip.so
+7f4002bdf000-7f4002be0000 r--p 0001a000 08:01 1709033                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libzip.so
+7f4002be0000-7f4002be1000 rw-p 0001b000 08:01 1709033                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libzip.so
+7f4002be1000-7f4002bec000 r-xp 00000000 08:01 1442193                    /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7f4002bec000-7f4002deb000 ---p 0000b000 08:01 1442193                    /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7f4002deb000-7f4002dec000 r--p 0000a000 08:01 1442193                    /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7f4002dec000-7f4002ded000 rw-p 0000b000 08:01 1442193                    /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7f4002ded000-7f4002df3000 rw-p 00000000 00:00 0 
+7f4002df3000-7f4002e0a000 r-xp 00000000 08:01 1442190                    /lib/x86_64-linux-gnu/libnsl-2.27.so
+7f4002e0a000-7f4003009000 ---p 00017000 08:01 1442190                    /lib/x86_64-linux-gnu/libnsl-2.27.so
+7f4003009000-7f400300a000 r--p 00016000 08:01 1442190                    /lib/x86_64-linux-gnu/libnsl-2.27.so
+7f400300a000-7f400300b000 rw-p 00017000 08:01 1442190                    /lib/x86_64-linux-gnu/libnsl-2.27.so
+7f400300b000-7f400300d000 rw-p 00000000 00:00 0 
+7f400300d000-7f4003018000 r-xp 00000000 08:01 1442195                    /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7f4003018000-7f4003217000 ---p 0000b000 08:01 1442195                    /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7f4003217000-7f4003218000 r--p 0000a000 08:01 1442195                    /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7f4003218000-7f4003219000 rw-p 0000b000 08:01 1442195                    /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7f4003219000-7f4003221000 r-xp 00000000 08:01 1442191                    /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7f4003221000-7f4003421000 ---p 00008000 08:01 1442191                    /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7f4003421000-7f4003422000 r--p 00008000 08:01 1442191                    /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7f4003422000-7f4003423000 rw-p 00009000 08:01 1442191                    /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7f4003423000-7f400344f000 r-xp 00000000 08:01 1709024                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libjava.so
+7f400344f000-7f400364f000 ---p 0002c000 08:01 1709024                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libjava.so
+7f400364f000-7f4003650000 r--p 0002c000 08:01 1709024                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libjava.so
+7f4003650000-7f4003652000 rw-p 0002d000 08:01 1709024                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libjava.so
+7f4003652000-7f400365f000 r-xp 00000000 08:01 1709015                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libverify.so
+7f400365f000-7f400385e000 ---p 0000d000 08:01 1709015                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libverify.so
+7f400385e000-7f4003860000 r--p 0000c000 08:01 1709015                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libverify.so
+7f4003860000-7f4003861000 rw-p 0000e000 08:01 1709015                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/libverify.so
+7f4003861000-7f4003868000 r-xp 00000000 08:01 1442200                    /lib/x86_64-linux-gnu/librt-2.27.so
+7f4003868000-7f4003a67000 ---p 00007000 08:01 1442200                    /lib/x86_64-linux-gnu/librt-2.27.so
+7f4003a67000-7f4003a68000 r--p 00006000 08:01 1442200                    /lib/x86_64-linux-gnu/librt-2.27.so
+7f4003a68000-7f4003a69000 rw-p 00007000 08:01 1442200                    /lib/x86_64-linux-gnu/librt-2.27.so
+7f4003a69000-7f4003c06000 r-xp 00000000 08:01 1442187                    /lib/x86_64-linux-gnu/libm-2.27.so
+7f4003c06000-7f4003e05000 ---p 0019d000 08:01 1442187                    /lib/x86_64-linux-gnu/libm-2.27.so
+7f4003e05000-7f4003e06000 r--p 0019c000 08:01 1442187                    /lib/x86_64-linux-gnu/libm-2.27.so
+7f4003e06000-7f4003e07000 rw-p 0019d000 08:01 1442187                    /lib/x86_64-linux-gnu/libm-2.27.so
+7f4003e07000-7f4004aef000 r-xp 00000000 08:01 1709031                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/server/libjvm.so
+7f4004aef000-7f4004cee000 ---p 00ce8000 08:01 1709031                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/server/libjvm.so
+7f4004cee000-7f4004d84000 r--p 00ce7000 08:01 1709031                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/server/libjvm.so
+7f4004d84000-7f4004db5000 rw-p 00d7d000 08:01 1709031                    /home/raptor/Softwares/jdk1.8.0_221/jre/lib/amd64/server/libjvm.so
+7f4004db5000-7f4004df0000 rw-p 00000000 00:00 0 
+7f4004df0000-7f4004fd7000 r-xp 00000000 08:01 1442183                    /lib/x86_64-linux-gnu/libc-2.27.so
+7f4004fd7000-7f40051d7000 ---p 001e7000 08:01 1442183                    /lib/x86_64-linux-gnu/libc-2.27.so
+7f40051d7000-7f40051db000 r--p 001e7000 08:01 1442183                    /lib/x86_64-linux-gnu/libc-2.27.so
+7f40051db000-7f40051dd000 rw-p 001eb000 08:01 1442183                    /lib/x86_64-linux-gnu/libc-2.27.so
+7f40051dd000-7f40051e1000 rw-p 00000000 00:00 0 
+7f40051e1000-7f40051e4000 r-xp 00000000 08:01 1442186                    /lib/x86_64-linux-gnu/libdl-2.27.so
+7f40051e4000-7f40053e3000 ---p 00003000 08:01 1442186                    /lib/x86_64-linux-gnu/libdl-2.27.so
+7f40053e3000-7f40053e4000 r--p 00002000 08:01 1442186                    /lib/x86_64-linux-gnu/libdl-2.27.so
+7f40053e4000-7f40053e5000 rw-p 00003000 08:01 1442186                    /lib/x86_64-linux-gnu/libdl-2.27.so
+7f40053e5000-7f40053fc000 r-xp 00000000 08:01 1708010                    /home/raptor/Softwares/jdk1.8.0_221/lib/amd64/jli/libjli.so
+7f40053fc000-7f40055fb000 ---p 00017000 08:01 1708010                    /home/raptor/Softwares/jdk1.8.0_221/lib/amd64/jli/libjli.so
+7f40055fb000-7f40055fc000 r--p 00016000 08:01 1708010                    /home/raptor/Softwares/jdk1.8.0_221/lib/amd64/jli/libjli.so
+7f40055fc000-7f40055fd000 rw-p 00017000 08:01 1708010                    /home/raptor/Softwares/jdk1.8.0_221/lib/amd64/jli/libjli.so
+7f40055fd000-7f4005617000 r-xp 00000000 08:01 1442198                    /lib/x86_64-linux-gnu/libpthread-2.27.so
+7f4005617000-7f4005816000 ---p 0001a000 08:01 1442198                    /lib/x86_64-linux-gnu/libpthread-2.27.so
+7f4005816000-7f4005817000 r--p 00019000 08:01 1442198                    /lib/x86_64-linux-gnu/libpthread-2.27.so
+7f4005817000-7f4005818000 rw-p 0001a000 08:01 1442198                    /lib/x86_64-linux-gnu/libpthread-2.27.so
+7f4005818000-7f400581c000 rw-p 00000000 00:00 0 
+7f400581c000-7f4005843000 r-xp 00000000 08:01 1442179                    /lib/x86_64-linux-gnu/ld-2.27.so
+7f4005843000-7f4005844000 r--s 00003000 08:01 1443103                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/aether-spi-1.13.1.jar
+7f4005844000-7f4005847000 r--s 0001d000 08:01 1443102                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/aether-impl-1.13.1.jar
+7f4005847000-7f400584b000 r--s 0001c000 08:01 1443104                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/aether-util-1.13.1.jar
+7f400584b000-7f400584e000 r--s 00013000 08:01 1443105                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/aether-api-1.13.1.jar
+7f400584e000-7f4005853000 r--s 00034000 08:01 1443079                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gson-2.7.jar
+7f4005853000-7f4005857000 r--s 0002a000 08:01 1442944                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/commons-io-2.4.jar
+7f4005857000-7f4005859000 r--s 00012000 08:01 1443064                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/asm-util-6.2.jar
+7f4005859000-7f400585a000 r--s 00007000 08:01 1442939                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/asm-analysis-6.2.jar
+7f400585a000-7f4005925000 rw-p 00000000 00:00 0 
+7f4005925000-7f4005926000 ---p 00000000 00:00 0 
+7f4005926000-7f4005929000 ---p 00000000 00:00 0 
+7f4005929000-7f4005a2a000 rw-p 00000000 00:00 0 
+7f4005a2a000-7f4005a2c000 r--s 0000b000 08:01 1442940                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/asm-tree-6.2.jar
+7f4005a2c000-7f4005a2e000 r--s 00012000 08:01 1442938                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/asm-commons-6.2.jar
+7f4005a2e000-7f4005a30000 r--s 0001a000 08:01 1442943                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/asm-6.2.jar
+7f4005a30000-7f4005a35000 r--s 00041000 08:01 1442945                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/commons-lang-2.6.jar
+7f4005a35000-7f4005a36000 r--s 00000000 08:01 1442953                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/jcip-annotations-1.0.jar
+7f4005a36000-7f4005a38000 r--s 0000e000 08:01 1443046                    /home/raptor/.gradle/wrapper/dists/gradle-4.10-all/54ye4nru8k2rpf7xwj15he4fo/gradle-4.10/lib/plugins/gradle-workers-4.10.jar
+7f4005a38000-7f4005a39000 r--s 0000a000 08:01 1458200                    /home/raptor/.gradle/caches/4.10/workerMain/gradle-worker.jar
+7f4005a39000-7f4005a41000 rw-s 00000000 08:01 1321632                    /tmp/hsperfdata_raptor/10565
+7f4005a41000-7f4005a42000 rw-p 00000000 00:00 0 
+7f4005a42000-7f4005a43000 ---p 00000000 00:00 0 
+7f4005a43000-7f4005a44000 r--p 00027000 08:01 1442179                    /lib/x86_64-linux-gnu/ld-2.27.so
+7f4005a44000-7f4005a45000 rw-p 00028000 08:01 1442179                    /lib/x86_64-linux-gnu/ld-2.27.so
+7f4005a45000-7f4005a46000 rw-p 00000000 00:00 0 
+7ffe5c59b000-7ffe5c5bc000 rw-p 00000000 00:00 0                          [stack]
+7ffe5c5bf000-7ffe5c5c2000 r--p 00000000 00:00 0                          [vvar]
+7ffe5c5c2000-7ffe5c5c4000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+VM Arguments:
+jvm_args: -Djava.security.manager=worker.org.gradle.process.internal.worker.child.BootstrapSecurityManager -Dfile.encoding=UTF-8 -Duser.country=IN -Duser.language=en -Duser.variant 
+java_command: worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Worker Daemon 3'
+java_class_path (initial): /home/raptor/.gradle/caches/4.10/workerMain/gradle-worker.jar
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+USERNAME=raptor
+SHELL=/bin/bash
+DISPLAY=:0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0xad3d90], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGBUS: [libjvm.so+0xad3d90], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGFPE: [libjvm.so+0x90b8b0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGPIPE: [libjvm.so+0x90b8b0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGXFSZ: [libjvm.so+0x90b8b0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGILL: [libjvm.so+0x90b8b0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGUSR1: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGUSR2: [libjvm.so+0x90b780], sa_mask[0]=00100000000000000000000000000000, sa_flags=SA_RESTART|SA_SIGINFO
+SIGHUP: [libjvm.so+0x90bda0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGINT: [libjvm.so+0x90bda0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGTERM: [libjvm.so+0x90bda0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGQUIT: [libjvm.so+0x90bda0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+
+
+---------------  S Y S T E M  ---------------
+
+OS:DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=18.04
+DISTRIB_CODENAME=bionic
+DISTRIB_DESCRIPTION="Ubuntu 18.04.5 LTS"
+
+uname:Linux 4.15.0-122-generic #124-Ubuntu SMP Thu Oct 15 13:03:05 UTC 2020 x86_64
+libc:glibc 2.27 NPTL 2.27 
+rlimit: STACK 8192k, CORE 0k, NPROC 31727, NOFILE 1048576, AS infinity
+load average:2.70 2.76 2.01
+
+/proc/meminfo:
+MemTotal:        8167256 kB
+MemFree:          135880 kB
+MemAvailable:      47284 kB
+Buffers:            1196 kB
+Cached:            73800 kB
+SwapCached:        21072 kB
+Active:          6868312 kB
+Inactive:         876360 kB
+Active(anon):    6839564 kB
+Inactive(anon):   854688 kB
+Active(file):      28748 kB
+Inactive(file):    21672 kB
+Unevictable:          16 kB
+Mlocked:              16 kB
+SwapTotal:       2097148 kB
+SwapFree:           1412 kB
+Dirty:               140 kB
+Writeback:             0 kB
+AnonPages:       7649424 kB
+Mapped:            67072 kB
+Shmem:             24468 kB
+Slab:             103584 kB
+SReclaimable:      42232 kB
+SUnreclaim:        61352 kB
+KernelStack:       32192 kB
+PageTables:        76432 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     6180776 kB
+Committed_AS:   19991184 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:         0 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:      190400 kB
+DirectMap2M:     8198144 kB
+
+container (cgroup) information:
+container_type: cgroupv1
+cpu_cpuset_cpus: 0-5
+cpu_memory_nodes: 0
+active_processor_count: 6
+cpu_quota: -1
+cpu_period: 100000
+cpu_shares: -1
+memory_limit_in_bytes: -1
+memory_and_swap_limit_in_bytes: -2
+memory_soft_limit_in_bytes: -1
+memory_usage_in_bytes: 7919714304
+memory_max_usage_in_bytes: 15699968
+
+
+CPU:total 6 (initial active 6) (6 cores per cpu, 1 threads per core) family 6 model 158 stepping 10, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, 3dnowpref, lzcnt, tsc, tscinvbit
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz
+stepping	: 10
+cpu MHz		: 2208.002
+cache size	: 9216 KB
+physical id	: 0
+siblings	: 6
+core id		: 0
+cpu cores	: 6
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single pti fsgsbase avx2 invpcid rdseed clflushopt md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit srbds
+bogomips	: 4416.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz
+stepping	: 10
+cpu MHz		: 2208.002
+cache size	: 9216 KB
+physical id	: 0
+siblings	: 6
+core id		: 1
+cpu cores	: 6
+apicid		: 1
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single pti fsgsbase avx2 invpcid rdseed clflushopt md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit srbds
+bogomips	: 4416.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz
+stepping	: 10
+cpu MHz		: 2208.002
+cache size	: 9216 KB
+physical id	: 0
+siblings	: 6
+core id		: 2
+cpu cores	: 6
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single pti fsgsbase avx2 invpcid rdseed clflushopt md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit srbds
+bogomips	: 4416.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz
+stepping	: 10
+cpu MHz		: 2208.002
+cache size	: 9216 KB
+physical id	: 0
+siblings	: 6
+core id		: 3
+cpu cores	: 6
+apicid		: 3
+initial apicid	: 3
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single pti fsgsbase avx2 invpcid rdseed clflushopt md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit srbds
+bogomips	: 4416.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 4
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz
+stepping	: 10
+cpu MHz		: 2208.002
+cache size	: 9216 KB
+physical id	: 0
+siblings	: 6
+core id		: 4
+cpu cores	: 6
+apicid		: 4
+initial apicid	: 4
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single pti fsgsbase avx2 invpcid rdseed clflushopt md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit srbds
+bogomips	: 4416.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 5
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz
+stepping	: 10
+cpu MHz		: 2208.002
+cache size	: 9216 KB
+physical id	: 0
+siblings	: 6
+core id		: 5
+cpu cores	: 6
+apicid		: 5
+initial apicid	: 5
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single pti fsgsbase avx2 invpcid rdseed clflushopt md_clear flush_l1d
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit srbds
+bogomips	: 4416.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+
+
+Memory: 4k page, physical 8167256k(135880k free), swap 2097148k(1412k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (25.221-b11) for linux-amd64 JRE (1.8.0_221-b11), built on Jul  4 2019 04:27:00 by "java_re" with gcc 7.3.0
+
+time: Thu Oct 29 20:56:27 2020
+timezone: IST
+elapsed time: 23 seconds (0d 0h 0m 23s)
+

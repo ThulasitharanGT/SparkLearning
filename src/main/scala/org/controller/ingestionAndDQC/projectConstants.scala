@@ -4,7 +4,42 @@ import java.text.SimpleDateFormat
 import org.apache.spark.sql.SaveMode
 
 object projectConstants {
+  /*
+  Hive Tables
+  create database data_pipeline;
 
+  create external table data_pipeline.job_audit_data_pipeline(
+  job_run_id bigint,
+  job_name string,
+  job_sub_name string,
+  job_status_entry_time timestamp,
+  job_status string
+  )
+  partitioned by
+  (job_run_date date)
+  stored as PARQUET
+  location
+  'hdfs:///user/raptor/hadoop/dataProject/data_pipeline/external/audit_table/';
+
+  create table data_pipeline.job_audit_stats_table(
+  job_run_id bigint,
+  job_name string,
+  job_sub_name string,
+  job_status_entry_time timestamp,
+  job_status string,
+  data_date date,
+  previous_day_Count_bronze bigint,
+  job_Run_day_Count_bronze bigint,
+  job_Run_day_Count_silver bigint,
+  difference_job_Run_day_bronze_vs_silver bigint,
+  difference_prev_day_bronze_vs_curr_day_bronze bigint
+  )
+  partitioned by
+  (job_run_date date)
+  stored as PARQUET
+  location
+  'hdfs:///user/raptor/hadoop/dataProject/data_pipeline/external/bronze_vs_silver_stats/';
+   */
   val timeStampDateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss")
   val dateNonHyphenFormat= new SimpleDateFormat("yyyyMMdd")
   val dateFormat= new SimpleDateFormat("yyyy-MM-dd")
