@@ -4,8 +4,24 @@ import org.util.SparkOpener
 import java.text.SimpleDateFormat
 import java.util.Date
 import  org.controller.reRunnableJob.constants._
-import  org.controller.reRunnableJob.jobFuctions._
+import  org.controller.reRunnableJob.jobFunctions._
 import  org.controller.reRunnableJob.readWriteUtil._
+// this job uses one audit table to check the last run subjob and it's stats . If its a failure then we need to restart from there, else it will start new
+/*
+audit table ddl
+create table tempDb.temp_audit_table
+(
+job_name string,
+sub_job_name string,
+job_creation_date timestamp,
+job_updation_date timestamp,
+run_date string,
+job_status string,
+job_run_id bigint
+)
+stored as parquet;
+
+ */
 
 object reRunnableMain extends SparkOpener{
 def main(args:Array[String]):Unit=

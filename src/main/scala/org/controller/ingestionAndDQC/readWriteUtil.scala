@@ -12,10 +12,33 @@ import scala.util.Try
 import org.apache.hadoop.conf.Configuration
 import java.util.Properties
 import org.apache.hadoop.fs.{Path ,FSDataOutputStream,FileSystem}
-
+import sys.process._
 import org.controller.ingestionAndDQC.projectConstants._
 
 object readWriteUtil {
+  def sysCommandExecuter(inputMap:collection.mutable.Map[String,String]):Boolean={
+   var result=false
+   try {
+       s"${inputMap(sysCommandArg)}"!;
+         result=true
+     }
+    catch {
+      case e:Exception => {println(s"Error in executing system command ${e.printStackTrace}")}
+    }
+    result
+  }
+
+  def sysCommandExecuterWithOutput(inputMap:collection.mutable.Map[String,String]):String={
+    var result=""
+    try {
+      result= s"${inputMap(sysCommandArg)}"!!;
+    }
+    catch {
+      case e:Exception => {println(s"Error in executing system command ${e.printStackTrace}")}
+    }
+    result
+  }
+
   def wgetRunner(inputMap:collection.mutable.Map[String,String]) ={
     import sys.process._
     var output_stats = -1
@@ -192,12 +215,12 @@ object readWriteUtil {
         }
       catch
         {
-          case e:Exception => println("Error while sending mail")
+          case e:Exception => println(s"Error while sending mail\nStack Trace: \n${e.printStackTrace}")
         }
     }
     catch
       {
-        case e:Exception => println("Error while getting Auth for sending mail\nMail wont be sent.")
+        case e:Exception => println(s"Error while getting Auth for sending mail\nMail wont be sent.\nStack Trace: \n${e.printStackTrace}")
       }
   }
 
@@ -231,12 +254,12 @@ object readWriteUtil {
         }
       catch
         {
-          case e:Exception => println("Error while sending mail")
+          case e:Exception => println(s"Error while sending mail\nStack Trace: \n${e.printStackTrace}")
         }
     }
     catch
       {
-        case e:Exception => println("Error while getting Auth for sending mail\nMail wont be sent.")
+        case e:Exception => println(s"Error while getting Auth for sending mail\nMail wont be sent.\nStack Trace: \n${e.printStackTrace}")
       }
   }
   def fileOutputStreamObjectCreator(hdfsDomain:String,filePath:String) =

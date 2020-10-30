@@ -50,6 +50,7 @@ object projectConstants {
   val jobNameBatch="bronze to silver"
   val jobNameStatsBatch="bronze vs silver vs previous day bronze check"
   val jobNameStatsMail="Status mail"
+  val jobNameFixExtraRecordsInBronzeIntoSilver="Ingesting extra records from bronze to silver"
   val statusStarted="Started"
   val statusRunning="Running"
   val statusFailure="Failed"
@@ -61,13 +62,13 @@ object projectConstants {
   val subscribeArg="subscribe"
   val keyConstant="key"
   val valueConstant="value"
-  val serilaizerConstant="serializer"
+  val serializerConstant="serializer"
   val deSerializerConstant="deserializer"
   val keyDeserializerArg=s"${keyConstant}.${deSerializerConstant}"
   val valueDeserializerArg=s"${valueConstant}.${deSerializerConstant}"
   val startingOffsetsArg="startingOffsets"
   val checkpointLocationArg="checkpointLocation"
-
+  val sysCommandArg="sysCommand"
   val startingOffsetsEarliest="earliest"
   val startingOffsetsLatest="latest"
 
@@ -78,15 +79,18 @@ object projectConstants {
 
   val checkpointBasePath="/user/raptor/hadoop/dataProject/checkpoints/"
   val bronzeBasePath="/user/raptor/hadoop/dataProject/bronze/"
-  val bronzeVsSilverStatsBasePath="/user/raptor/hadoop/dataProject/data_pipeline/external/bronze_vs_silver_stats/"
+  val bronzeVsSilverStatsBasePath="/user/raptor/hadoop/dataProject/data_pipeline/external/tables/bronze_vs_silver_stats/"
   val silverBasePath="/user/raptor/hadoop/dataProject/silver/"
   val failureStatsTempFilePath="/user/raptor/hadoop/dataProject/fileSaveForMail/"
- // log paths
+  val extraRecordsBronzeCatchupTempPathForCompaction="/user/raptor/hadoop/dataProject/bronzeCatchupTempForCompaction/"
+
+  // log paths
   val logBasePath="/user/raptor/hadoop/dataProject/logs/"
   val kafkaToBronzeLogPath=s"${logBasePath}kafkaToBronzeLogs/"
   val bronzeToSilverLogPath=s"${logBasePath}bronzeToSilverLogs/"
   val statsJobLogPath=s"${logBasePath}statsJobLogs/"
   val statsMailJobLogPath=s"${logBasePath}statsMailLogs/"
+  val fixExtraBronzeDataToSilverLogPath=s"${logBasePath}fixExtraBronzeDataToSilver/"
 
   val auditTableDB="data_pipeline"
   val auditTableName="job_audit_data_pipeline"

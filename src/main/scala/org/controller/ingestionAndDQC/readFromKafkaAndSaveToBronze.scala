@@ -10,6 +10,7 @@ import org.controller.ingestionAndDQC.readWriteUtil._
 object readFromKafkaAndSaveToBronze extends sparkOpener {
   def main(args:Array[String]):Unit ={
     val spark=sparkSessionOpen()
+    spark.sparkContext.setLogLevel("ERROR")
     val inputMap=collection.mutable.Map[String,String]()
     for (arg<- args)
       inputMap.put(arg.split("=",2)(0),arg.split("=",2)(1))

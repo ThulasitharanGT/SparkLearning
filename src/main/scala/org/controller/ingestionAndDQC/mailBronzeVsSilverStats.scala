@@ -23,7 +23,7 @@ object mailBronzeVsSilverStats extends sparkOpener {
     writerObject.writeBytes(s"Starting ${jobNameStatsMail} for ${jobRunDate}\n")
     writerObject.writeBytes(s"Entering entry in audit table for ${jobNameStatsMail} for ${jobRunDate}\n")
     writerObject.close
-    inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameStatsMail}','${timeStampDateFormat.format(new Date)}','${statusStarted}')")
+    inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameStatsMail}',current_timestamp(),'${statusStarted}')")//'${timeStampDateFormat.format(new Date)}'
     execSparkSql(spark,inputMap)
     writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePath)
     writerObject.writeBytes(s"Entry entered in audit table for ${jobNameStatsMail} for ${jobRunDate}\n")
@@ -41,8 +41,8 @@ object mailBronzeVsSilverStats extends sparkOpener {
     var comparisonStatus=""
     currentDayStatsDF.filter("difference_prev_day_bronze_vs_curr_day_bronze !=0").count match
     {
-      case value if value == 0.asInstanceOf[Long] => comparisonStatus = statusSuccess
-      case value if value != 0.asInstanceOf[Long] => comparisonStatus = statusFailure
+      case value if value == 0.asInstanceOf[Long] => {comparisonStatus = statusSuccess ;inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameStatsMail}',current_timestamp(),'${statusFinished} - Success')")/*'${timeStampDateFormat.format(new Date)}'*/;execSparkSql(spark,inputMap)}
+      case value if value != 0.asInstanceOf[Long] => {comparisonStatus = statusFailure ;inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameStatsMail}',current_timestamp(),'${statusFinished} - Failure')")/*'${timeStampDateFormat.format(new Date)}'*/;execSparkSql(spark,inputMap)}
     }
     writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePath)
     writerObject.writeBytes(s"Comparison stats ${comparisonStatus} \n${comparisonStatus match {case value if value == statusSuccess => "Success mail will be sent" case value if value == statusFailure => "Failure mail with attachment will be sent" }} \n")
@@ -103,8 +103,11 @@ object mailBronzeVsSilverStats extends sparkOpener {
         writerObject.writeBytes(s"Wrote stats file in ${failureStatsTempFilePath} path to attach it in mail\n")
         writerObject.close
        // val filesInPath=s"hdfs dfs -ls -t ${bronzeVsSilverStatsBasePath}/job_run_date=${processingDate}"!!  //-t is not working in local hadoop, do a workaround by writing stats DF as CSV and Attaching that in mail
-        val filesInPath=s"hdfs dfs -ls ${failureStatsTempFilePath}"!!
-        val filePath=filesInPath.split("\n")(1)
+        inputMap.put(sysCommandArg,s"hdfs dfs -rm ${failureStatsTempFilePath}_SUCCESS")
+        val pickIndex= sysCommandExecuter(inputMap) match { case true => 1 case false => 2}
+        inputMap.put(sysCommandArg,s"hdfs dfs -ls ${failureStatsTempFilePath}")
+        val filesInPath=sysCommandExecuterWithOutput(inputMap)
+        val filePath=filesInPath.split("\n")(pickIndex)
         val filePathFinal= filePath.contains("hdfs://") match {case true => filePath.substring(filePath.indexOf("/")-5,filePath.size) case false => filePath.substring(filePath.indexOf("/"),filePath.size)}
         writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePath)
         writerObject.writeBytes(s"File in this path ${filePathFinal} will be attached as log_${jobRunId}.csv in mail\n")
@@ -126,5 +129,7 @@ object mailBronzeVsSilverStats extends sparkOpener {
       }
       case _ => println("Mail wont be sent. \nInvalid selection.")
     }
+    inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameStatsMail}',current_timestamp(),'${statusFinished}')")/*'${timeStampDateFormat.format(new Date)}'*/
+    execSparkSql(spark,inputMap)
   }
 }
