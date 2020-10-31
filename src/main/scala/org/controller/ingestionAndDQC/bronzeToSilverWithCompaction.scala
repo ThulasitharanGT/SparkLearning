@@ -15,8 +15,8 @@ object bronzeToSilverWithCompaction extends sparkOpener{
    for(arg <- args)
      inputMap.put(arg.split("=",2)(0),arg.split("=",2)(1))
    val processingDate=inputMap("processingDate")            //"2020-08-03" // 1st data is processed on second
-   val calenderInstance = Calendar.getInstance()
-   calenderInstance.setTime(dateFormat.parse(processingDate))
+    val calenderInstance = Calendar.getInstance()
+    calenderInstance.setTime(dateFormat.parse(processingDate))
    calenderInstance.add(Calendar.DAY_OF_MONTH,-1)
    val dataDate=dateFormat.format(calenderInstance.getTime)
    val jobRunId=jobRunIDDateFormat.format(new Date)

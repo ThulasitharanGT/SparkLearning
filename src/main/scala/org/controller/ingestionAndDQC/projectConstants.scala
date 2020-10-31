@@ -19,8 +19,8 @@ object projectConstants {
   (job_run_date date)
   stored as PARQUET
   location
-  'hdfs:///user/raptor/hadoop/dataProject/data_pipeline/external/audit_table/';
-
+  'hdfs:///user/raptor/hadoop/dataProject/data_pipeline/external/tables/audit_table/';
+ path without the folder tables between table_name and external has folders which belong to hive 1.2.0 table
   create table data_pipeline.job_audit_stats_table(
   job_run_id bigint,
   job_name string,
@@ -32,13 +32,14 @@ object projectConstants {
   job_Run_day_Count_bronze bigint,
   job_Run_day_Count_silver bigint,
   difference_job_Run_day_bronze_vs_silver bigint,
-  difference_prev_day_bronze_vs_curr_day_bronze bigint
+  difference_prev_day_bronze_vs_curr_day_bronze bigint,
+    comment string
   )
   partitioned by
   (job_run_date date)
   stored as PARQUET
   location
-  'hdfs:///user/raptor/hadoop/dataProject/data_pipeline/external/bronze_vs_silver_stats/';
+  'hdfs:///user/raptor/hadoop/dataProject/data_pipeline/external/tables/bronze_vs_silver_stats/';
    */
   val timeStampDateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss")
   val dateNonHyphenFormat= new SimpleDateFormat("yyyyMMdd")
