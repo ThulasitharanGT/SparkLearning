@@ -64,7 +64,13 @@ object readFromKafkaAndSaveToBronze extends sparkOpener {
             writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,streamLogFilePath)
             writerObject.writeBytes(s"Read ${numOfRecordsInThisBatch} records in this batch\n")
             writerObject.close
-            batchDF.withColumn("processedTimeStamp",lit(timeStampDateFormat.format(new Date))).withColumn("batchCounter",lit(batchProcessCounter)).write.format(deltaFileFormat).mode(appendMode).partitionBy("processDate").save(bronzeBasePath)
+            inputMap.put(fileFormatArg,deltaFileFormat)
+            inputMap.put(partitionByFlag,stringTrue)
+            inputMap.put(partitionByColumns,"processDate")
+            inputMap.put(saveModeArg,appendMode)
+            inputMap.put(pathOption,bronzeBasePath)
+            writeDF(spark,inputMap,batchDF.withColumn("processedTimeStamp",lit(timeStampDateFormat.format(new Date))).withColumn("batchCounter",lit(batchProcessCounter)))
+            //batchDF.withColumn("processedTimeStamp",lit(timeStampDateFormat.format(new Date))).withColumn("batchCounter",lit(batchProcessCounter)).write.format(deltaFileFormat).mode(appendMode).partitionBy("processDate").save(bronzeBasePath)
             writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,streamLogFilePath)
             writerObject.writeBytes(s"processed ${numOfRecordsInThisBatch} records in this batch\n")
             writerObject.close

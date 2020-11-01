@@ -82,6 +82,8 @@ object projectConstants {
   val bronzeBasePath="/user/raptor/hadoop/dataProject/bronze/"
   val bronzeVsSilverStatsBasePath="/user/raptor/hadoop/dataProject/data_pipeline/external/tables/bronze_vs_silver_stats/"
   val silverBasePath="/user/raptor/hadoop/dataProject/silver/"
+  val goldBasePath="/user/raptor/hadoop/dataProject/gold/"
+  val goldRankedBasePath="/user/raptor/hadoop/dataProject/goldRanked/"
   val failureStatsTempFilePath="/user/raptor/hadoop/dataProject/fileSaveForMail/"
   val extraRecordsBronzeCatchupTempPathForCompaction="/user/raptor/hadoop/dataProject/bronzeCatchupTempForCompaction/"
 
