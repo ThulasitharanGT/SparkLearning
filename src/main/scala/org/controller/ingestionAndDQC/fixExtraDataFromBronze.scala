@@ -42,7 +42,7 @@ object fixExtraDataFromBronze extends sparkOpener {
     writerObject.writeBytes(s"Start status inserted in ${auditTable}\n")
     writerObject.close
     try {
-      for (dateToBeLoaded <- datesToBeReloaded) {
+      for (dateToBeLoaded <- datesToBeReloaded) { //val dateToBeLoaded=datesToBeReloaded(0)
         breakable {
           writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFile)
           writerObject.writeBytes(s"Entering start status entry for ${dateToBeLoaded} \n")
@@ -75,8 +75,9 @@ object fixExtraDataFromBronze extends sparkOpener {
           val extraRecordsDF = bronzeDataForCurrentFixDateDF.as("bronzeDataSet").join(silverDataForCurrentFixDateDF.as("silverDataSet"), col("bronzeDataSet.key") === col("silverDataSet.key") && col("bronzeDataSet.topic") === col("silverDataSet.topic") && col("bronzeDataSet.partition") === col("silverDataSet.partition") && col("bronzeDataSet.offset") === col("silverDataSet.offset") && col("bronzeDataSet.timestamp") === col("silverDataSet.timestamp") && col("bronzeDataSet.timestampType") === col("silverDataSet.timestampType") && col("bronzeDataSet.reading") === col("silverDataSet.reading") && col("bronzeDataSet.year") === col("silverDataSet.year") && col("bronzeDataSet.circuit") === col("silverDataSet.circuit") && col("bronzeDataSet.session") === col("silverDataSet.session") && col("bronzeDataSet.processDate") === col("silverDataSet.processDate"), "full_outer").where("silverDataSet.key is null").selectExpr("bronzeDataSet.*")
           writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFile)
           writerObject.writeBytes(s"Found all late records in bronze for ${dateToBeLoaded}\n")
-          writerObject.writeBytes(s"Saving the late records in silver for ${dateToBeLoaded} to a temporary path.\n")
+          writerObject.writeBytes(s"Saving the late records in silver for $dateToBeLoaded to a temporary path.\n")
           writerObject.close
+          inputMap.put(fileFormatArg, parquetFileFormatArg)
           inputMap.put(pathOption, s"${extraRecordsBronzeCatchupTempPathForCompaction}")
           inputMap.put(saveModeArg, overWriteMode)
           writeDF(spark, inputMap, extraRecordsDF)
@@ -93,11 +94,13 @@ object fixExtraDataFromBronze extends sparkOpener {
           writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFile)
           writerObject.writeBytes(s"Performed compaction, ${numOfFiles} number of files will be created.\n ")
           writerObject.close
+          inputMap.put(fileFormatArg, deltaFileFormat)
           inputMap.put(pathOption, s"${silverBasePath}")
           inputMap.put(partitionByFlag, stringTrue)
           inputMap.put(partitionByColumns, "processDate")
           inputMap.put(DFrepartitionArg, "2")
           inputMap.put(coalesceArg, s"${numOfFiles}")
+          inputMap.put(saveModeArg, appendMode)
           writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFile)
           writerObject.writeBytes(s"Writing extra records to orginal silver path.\n ")
           writerObject.close

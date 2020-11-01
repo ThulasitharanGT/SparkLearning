@@ -71,7 +71,7 @@ def main(args:Array[String]):Unit = {
       val finalResult=finalResult_1.union(finalResult_2)
       var statsTableColumnSeq:Seq[String]=null
       runType match {
-        case value if value == "fix" => statsTableColumnSeq = Seq("job_run_id", "job_name", "job_sub_name", "current_timestamp() as job_status_entry_time", "job_status", "cast(finalResult.data_date as date) data_date", "finalResult.previous_day_Count_bronze","nvl(finalResult.src_rowcount,cast (0 as long)) as job_Run_day_Count_bronze", "nvl(finalResult.dest_rowcount,cast (0 as long)) as job_Run_day_Count_silver", "finalResult.difference_job_Run_day_bronze_vs_silver", "case when finalResult.difference_job_Run_day_bronze_vs_silver =0 then 0 else finalResult.difference_prev_day_bronze_vs_curr_day_bronze  end difference_prev_day_bronze_vs_curr_day_bronze", "job_run_date", s"'${value}' as comment") // if fix checks if current day bronze and silver matches, then assigns 0 to prev bronze vs curr bronze column
+        case value if value == "fix" => statsTableColumnSeq = Seq("job_run_id", "job_name", "job_sub_name", "current_timestamp() as job_status_entry_time", "job_status", "cast(finalResult.data_date as date) data_date", "finalResult.previous_day_Count_bronze","nvl(finalResult.src_rowcount,cast (0 as long)) as job_Run_day_Count_bronze", "nvl(finalResult.dest_rowcount,cast (0 as long)) as job_Run_day_Count_silver", "finalResult.difference_job_Run_day_bronze_vs_silver", "case when finalResult.difference_job_Run_day_bronze_vs_silver =0 then 0 else finalResult.difference_prev_day_bronze_vs_curr_day_bronze  end difference_prev_day_bronze_vs_curr_day_bronze", "job_run_date", s"'${value}' as comment") // if fix, checks if current day bronze and silver matches, then assigns 0 to prev bronze vs curr bronze column
         case value if value == "daily" => statsTableColumnSeq = Seq("job_run_id", "job_name", "job_sub_name", "current_timestamp() as job_status_entry_time", "job_status", "cast(finalResult.data_date as date) data_date", "finalResult.previous_day_Count_bronze","nvl(finalResult.src_rowcount,cast (0 as long)) as job_Run_day_Count_bronze", "nvl(finalResult.dest_rowcount,cast (0 as long)) as job_Run_day_Count_silver", "finalResult.difference_job_Run_day_bronze_vs_silver", "finalResult.difference_prev_day_bronze_vs_curr_day_bronze", "job_run_date", s"'${value}' as comment") // if daily computes stats as it is
         case _ => println("Invalid runType selection. Supported types are fix and daily")
       }
@@ -111,16 +111,16 @@ def main(args:Array[String]):Unit = {
       }
     }
   writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePathForStatsBronzeVsSilver)
-  writerObject.writeBytes(s"Refreshing partition metastore for ${statsTable}  by running alter table add partition command\n")
+  writerObject.writeBytes(s"Refreshing partition metastore for ${statsTable}  by running alter table add partition command in case of daily run or MSCK REPAIR TABLE in case of fix run.\n")
   writerObject.close
   runType match {
     case value if value =="fix" => inputMap.put(sqlStringArg,s"MSCK REPAIR TABLE ${statsTable}")
     case value if value =="daily" => inputMap.put(sqlStringArg,s"ALTER TABLE ${statsTable} ADD IF NOT EXISTS PARTITION (job_run_date='${processingDate}')")
-    case _ => println("Invalid runType selection. Supported types are fix and daily")
+    case _ => println("Invalid runType selection. Supported types are fix and daily, Just MSCK REPAIR TABLE will be done") ; inputMap.put(sqlStringArg,s"MSCK REPAIR TABLE ${statsTable}")
   }
   execSparkSql(spark,inputMap)
   writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePathForStatsBronzeVsSilver)
-  writerObject.writeBytes(s"Alter table add partition command completed successfully\n")
+  writerObject.writeBytes(s"Refreshed partition metastore for ${statsTable}. Command executed ${inputMap(sqlStringArg)} for runType ${runType}\n")
   writerObject.close
 }
 }

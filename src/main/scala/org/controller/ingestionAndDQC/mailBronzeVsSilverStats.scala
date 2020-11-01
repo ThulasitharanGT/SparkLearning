@@ -52,8 +52,8 @@ object mailBronzeVsSilverStats extends sparkOpener {
     {
       case value if value == statusSuccess =>
       {
-        messageBody=s"Job ${jobName} stats check ${statusSuccess} for ${jobRunDate}\n No further action is required"
-        inputMap.put(mailSubjectArg,s"Job ${jobName} ${statusSuccess} for ${jobRunDate}")
+        messageBody=s"Job ${jobName} - ${jobRunId} stats check ${statusSuccess} for ${jobRunDate}\n No further action is required"
+        inputMap.put(mailSubjectArg,s"Job ${jobName} - ${jobRunId} ${statusSuccess} for ${jobRunDate}")
         inputMap.put(mailBodyArg,messageBody)
         inputMap.put(fromMailIdArg,s"driftking9696@outlook.in")
         inputMap.put(toMailIdsArg,s"driftking9696@outlook.in,driftking9696@gmail.com")
@@ -76,13 +76,13 @@ object mailBronzeVsSilverStats extends sparkOpener {
         val jobRunId=nonMatchingRecords(0)(0)
         val jobName=nonMatchingRecords(0)(1)
         val jobSubName=nonMatchingRecords(0)(2)
-        messageBody=s"Job ${jobSubName} in ${jobName} failed for ${jobRunDate} \n<h1>Dates and count information are as follows : <h1>"
+        messageBody=s"Job ${jobSubName} in ${jobName} failed for ${jobRunDate} \n<h1>Dates and count information are as follows : </h1>"
         writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePath)
         writerObject.writeBytes(s"Dates and count information are as follows : \n")
         writerObject.close
         for(nonMatchingRecord <- nonMatchingRecords)
           messageBody=messageBody+s"\n<h3>Data date = ${nonMatchingRecord(3)} </h3> \n Bronze count when checked previous day = ${nonMatchingRecord(4)} \n Bronze count today = ${nonMatchingRecord(5)}\n Extra records found = ${nonMatchingRecord(6)}"
-        inputMap.put(mailSubjectArg,s"Job ${jobSubName} in ${jobName} failed for ${jobRunDate}")
+        inputMap.put(mailSubjectArg,s"Job ${jobSubName} - ${jobRunId} in ${jobName} failed for ${jobRunDate}")
         inputMap.put(mailBodyArg,messageBody)
         writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePath)
         writerObject.writeBytes(s"${messageBody.replaceAll("<h3>","").replaceAll("</h3>","")}\n")
