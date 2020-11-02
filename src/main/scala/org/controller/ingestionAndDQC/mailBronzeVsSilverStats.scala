@@ -20,13 +20,13 @@ object mailBronzeVsSilverStats extends sparkOpener {
     val jobRunDate=dateFormat.format(new Date)
     val logFilePath=s"${statsMailJobLogPath}${jobRunId}.log"
     var writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePath)
-    writerObject.writeBytes(s"Starting ${jobNameStatsMail} for ${jobRunDate}\n")
-    writerObject.writeBytes(s"Entering entry in audit table for ${jobNameStatsMail} for ${jobRunDate}\n")
+    writerObject.writeBytes(s"Starting ${jobNameBronzeVsSilverStatsStatusMail} for ${jobRunDate}\n")
+    writerObject.writeBytes(s"Entering entry in audit table for ${jobNameBronzeVsSilverStatsStatusMail} for ${jobRunDate}\n")
     writerObject.close
-    inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameStatsMail}',current_timestamp(),'${statusStarted}')")//'${timeStampDateFormat.format(new Date)}'
+    inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameBronzeVsSilverStatsStatusMail}',current_timestamp(),'${statusStarted}')")//'${timeStampDateFormat.format(new Date)}'
     execSparkSql(spark,inputMap)
     writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePath)
-    writerObject.writeBytes(s"Entry entered in audit table for ${jobNameStatsMail} for ${jobRunDate}\n")
+    writerObject.writeBytes(s"Entry entered in audit table for ${jobNameBronzeVsSilverStatsStatusMail} for ${jobRunDate}\n")
     writerObject.close
     inputMap.put(basePathArg,s"${bronzeVsSilverStatsBasePath}")
     inputMap.put(pathOption,s"${bronzeVsSilverStatsBasePath}job_run_date=${processingDate}")
@@ -41,8 +41,8 @@ object mailBronzeVsSilverStats extends sparkOpener {
     var comparisonStatus=""
     currentDayStatsDF.filter("difference_prev_day_bronze_vs_curr_day_bronze !=0").count match
     {
-      case value if value == 0.asInstanceOf[Long] => {comparisonStatus = statusSuccess ;inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameStatsMail}',current_timestamp(),'${statusFinished} - Success')")/*'${timeStampDateFormat.format(new Date)}'*/;execSparkSql(spark,inputMap)}
-      case value if value != 0.asInstanceOf[Long] => {comparisonStatus = statusFailure ;inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameStatsMail}',current_timestamp(),'${statusFinished} - Failure')")/*'${timeStampDateFormat.format(new Date)}'*/;execSparkSql(spark,inputMap)}
+      case value if value == 0.asInstanceOf[Long] => {comparisonStatus = statusSuccess ;inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameBronzeVsSilverStatsStatusMail}',current_timestamp(),'${statusFinished} - Success')")/*'${timeStampDateFormat.format(new Date)}'*/;execSparkSql(spark,inputMap)}
+      case value if value != 0.asInstanceOf[Long] => {comparisonStatus = statusFailure ;inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameBronzeVsSilverStatsStatusMail}',current_timestamp(),'${statusFinished} - Failure')")/*'${timeStampDateFormat.format(new Date)}'*/;execSparkSql(spark,inputMap)}
     }
     writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePath)
     writerObject.writeBytes(s"Comparison stats ${comparisonStatus} \n${comparisonStatus match {case value if value == statusSuccess => "Success mail will be sent" case value if value == statusFailure => "Failure mail with attachment will be sent" }} \n")
@@ -129,7 +129,7 @@ object mailBronzeVsSilverStats extends sparkOpener {
       }
       case _ => println("Mail wont be sent. \nInvalid selection.")
     }
-    inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameStatsMail}',current_timestamp(),'${statusFinished}')")/*'${timeStampDateFormat.format(new Date)}'*/
+    inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameBronzeVsSilverStatsStatusMail}',current_timestamp(),'${statusFinished}')")/*'${timeStampDateFormat.format(new Date)}'*/
     execSparkSql(spark,inputMap)
   }
 }

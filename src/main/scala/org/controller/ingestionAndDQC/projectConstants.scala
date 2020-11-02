@@ -47,11 +47,13 @@ object projectConstants {
   val jobRunIDDateFormat=new SimpleDateFormat("yyyyMMddHHmmsssss")
 
   val jobName="data collector for IOT"
-  val jobNameStream="kafka to bronze"
-  val jobNameBatch="bronze to silver"
-  val jobNameStatsBatch="bronze vs silver vs previous day bronze check"
-  val jobNameStatsMail="Status mail"
+  val jobNameKafkaToBronze="kafka to bronze"
+  val jobNameBronzeToSilver="bronze to silver"
+  val jobNameBronzeVsSilverStats="bronze vs silver vs previous day bronze check"
+  val jobNameBronzeVsSilverStatsStatusMail="bronze vs silver Status mail"
   val jobNameFixExtraRecordsInBronzeIntoSilver="Ingesting extra records from bronze to silver"
+  val jobNameSilverToGold="silver to gold"
+
   val statusStarted="Started"
   val statusRunning="Running"
   val statusFailure="Failed"
@@ -94,6 +96,7 @@ object projectConstants {
   val statsJobLogPath=s"${logBasePath}statsJobLogs/"
   val statsMailJobLogPath=s"${logBasePath}statsMailLogs/"
   val fixExtraBronzeDataToSilverLogPath=s"${logBasePath}fixExtraBronzeDataToSilver/"
+  val silverToGoldLogPath=s"${logBasePath}silverToGoldLogs/"
 
   val auditTableDB="data_pipeline"
   val auditTableName="job_audit_data_pipeline"

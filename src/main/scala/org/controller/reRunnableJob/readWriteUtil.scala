@@ -26,7 +26,7 @@ object readWriteUtil {
     }
     catch
       {
-        case e:Exception => println("Exception occured while downloading file")
+        case e:Exception => println("Exception occurred while downloading file")
       }
     output_stats match
     {

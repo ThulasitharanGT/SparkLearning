@@ -1,0 +1,100 @@
+import org.apache.spark.sql.types._
+
+val stringConstant="string"
+val integerConstant="int"
+val schemaString="name string,id int"
+val schema=schemaString.split(",").map(x=> x.split(" ")(1).toLowerCase match { case value if value.equals(stringConstant) => StructField(x.split(" ")(1),StringType,true) case value if value.equals(integerConstant) => StructField(x.split(" ")(0),IntegerType,true)} )
+val tempRDD=Seq(("cool",1001),("fool",1003),("rule",1002)).toDF.rdd
+val schemaFinal=StructType(schema)
+val tempDF=spark.createDataFrame(tempRDD,schemaFinal)
+
+val t1DF=Seq(("cool",1001),("fool",1003),("rule",1002)).toDF("name","id")
+
+val t2DF=Seq((1001,"cool"),(1003,"fool"),(1002,"rule")).toDF("id","name")
+val t3DF=Seq((1001,"cool"),(1003,"fool"),(1002,"rule")).toDF("name","id")
+
+
+import scala.util.control.Breaks._
+
+def SchemaCheckerWithoutOrder(srcDF:org.apache.spark.sql.DataFrame,tgtDF:org.apache.spark.sql.DataFrame):Boolean ={
+val srcDtypes=srcDF.dtypes
+val tgtDtypes=tgtDF.dtypes
+val srcMap=collection.mutable.LinkedHashMap[String,String]()
+val tgtMap=collection.mutable.LinkedHashMap[String,String]()
+for(srcDtype <- srcDtypes)
+srcMap.put(srcDtype._1,srcDtype._2)
+for(tgtDtype <- tgtDtypes)
+tgtMap.put(tgtDtype._1,tgtDtype._2)
+val srcDFcols=srcMap.keys
+var columnMatchingCounter=0
+breakable
+{
+srcDFcols.size match {
+case value if value == tgtMap.keys.size =>{
+for (srcDFcol <- srcDFcols)
+srcMap(srcDFcol) match {
+case value if value.equals(tgtMap(srcDFcol)) => columnMatchingCounter=columnMatchingCounter+1
+case _ => println(s"${srcMap(srcDFcol)} column present in srcDF but not tn tgtDF. Terminating check"); break
+}
+}
+case _ => println(s"Number of columns doesn't match found ${srcDFcols.size} in sourceDF and ${tgtMap.keys.size} in targetDF")
+}
+}
+srcDFcols.size match {
+case value if value == columnMatchingCounter => value match {case value if value == tgtMap.keys.size => true case _ => false}
+case _ => false
+}
+}
+
+SchemaCheckerWithoutOrder(t1DF,t1DF)
+res2: Boolean = true
+
+SchemaCheckerWithoutOrder(t1DF,t2DF)
+res3: Boolean = true
+
+// checks the column order too
+
+
+
+def SchemaCheckerWithOrder(srcDF:org.apache.spark.sql.DataFrame,tgtDF:org.apache.spark.sql.DataFrame):Boolean ={
+val srcDtypes=srcDF.dtypes
+val tgtDtypes=tgtDF.dtypes
+val srcMap=collection.mutable.LinkedHashMap[String,String]()
+val tgtMap=collection.mutable.LinkedHashMap[String,String]()
+for(srcDtype <- srcDtypes)
+srcMap.put(srcDtype._1,srcDtype._2)
+for(tgtDtype <- tgtDtypes)
+tgtMap.put(tgtDtype._1,tgtDtype._2)
+val srcDFcols=srcMap.keys.toArray
+val tgtDFcols=tgtMap.keys.toArray
+var columnMatchingCounter=0
+breakable
+{
+srcDFcols.size match {
+case value if value.equals(tgtDFcols.size) =>{
+for (columnIndex <- 0 to srcDFcols.size -1 )
+srcDFcols(columnIndex) match { // column name check
+case value if value == tgtDFcols(columnIndex) => srcMap(srcDFcols(columnIndex)) match  // datatype check
+{
+case value if value.equals(tgtMap(tgtDFcols(columnIndex))) => columnMatchingCounter=columnMatchingCounter+1
+case _ => println(s"${srcDFcols(columnIndex)} datatype is not matching between source and destination. Source datatype: ${srcMap(srcDFcols(columnIndex))} Destination datatype: ${tgtMap(tgtDFcols(columnIndex))}")
+}
+case value if tgtDFcols.contains(value) =>  println(s"${srcDFcols(columnIndex)} column present in tgtDF,but not the same order as srcDF. Terminating check"); break
+case _ => println(s"${srcMap(srcDFcols(columnIndex))} column present in srcDF but not in tgtDF. Terminating check"); break
+}
+}
+case _ => println(s"Number of columns doesn't match found ${srcDFcols.size} in sourceDF and ${tgtDFcols.size} in targetDF")
+}
+}
+srcDFcols.size match {
+case value if value == columnMatchingCounter => value match {case value if value == tgtDFcols.size => true case _ => false}
+case _ => false
+}
+}
+
+val srcDF=t1DF
+val tgtDF=t2DF
+
+SchemaCheckerWithOrder(t1DF,t1DF)
+
+SchemaCheckerWithOrder(t1DF,t2DF)

@@ -14,7 +14,8 @@ object bronzeToSilverWithCompaction extends sparkOpener{
    val inputMap=collection.mutable.Map[String,String]()
    for(arg <- args)
      inputMap.put(arg.split("=",2)(0),arg.split("=",2)(1))
-   val processingDate=inputMap("processingDate")            //"2020-08-03" // 1st data is processed on second
+   val processingDate=inputMap("processingDate") //"2020-08-03" // 1st data is processed on second
+    val jobRunDate = dateFormat.format(new Date)
     val calenderInstance = Calendar.getInstance()
     calenderInstance.setTime(dateFormat.parse(processingDate))
    calenderInstance.add(Calendar.DAY_OF_MONTH,-1)
@@ -23,9 +24,9 @@ object bronzeToSilverWithCompaction extends sparkOpener{
    val logFilePathForBronzeToSilver=s"${bronzeToSilverLogPath}${jobRunId}.log"
     var writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePathForBronzeToSilver)
     writerObject.writeBytes(s"Starting Job to copy data from bronze to silver for ${dataDate} on ${processingDate} \n")
-    writerObject.writeBytes(s"Putting entry in Audit table for ${jobNameBatch} \n")
+    writerObject.writeBytes(s"Putting entry in Audit table for ${jobNameBronzeToSilver} \n")
     writerObject.close
-    inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${processingDate}') values(${jobRunId},'${jobName}','${jobNameBatch}',current_timestamp(),'${statusStarted}')")//'cast(${timeStampDateFormat.format(new Date)} as timestamp)'
+    inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameBronzeToSilver}',current_timestamp(),'${statusStarted}')")//'cast(${timeStampDateFormat.format(new Date)} as timestamp)'
     execSparkSql(spark,inputMap)
     writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePathForBronzeToSilver)
     writerObject.writeBytes("Audit table entry successful")
@@ -62,22 +63,22 @@ object bronzeToSilverWithCompaction extends sparkOpener{
       writerObject.writeBytes(s"Save for silver data for ${dataDate} into ${silverBasePath}/processDate=${dataDate} complete")
       writerObject.close
       writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePathForBronzeToSilver)
-      writerObject.writeBytes(s"Putting completed entry into audit table for  ${jobNameBatch}")
+      writerObject.writeBytes(s"Putting completed entry into audit table for  ${jobNameBronzeToSilver}")
       writerObject.close
-      inputMap.put(sqlStringArg, s"insert into ${auditTable} partition(job_run_date='${processingDate}') values(${jobRunId},'${jobName}','${jobNameBatch}',current_timestamp(),'${statusFinished}')")
+      inputMap.put(sqlStringArg, s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameBronzeToSilver}',current_timestamp(),'${statusFinished}')")
       execSparkSql(spark, inputMap)
       writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePathForBronzeToSilver)
-      writerObject.writeBytes(s"Entry into audit table for  ${jobNameBatch} successful")
+      writerObject.writeBytes(s"Entry into audit table for  ${jobNameBronzeToSilver} successful")
       writerObject.close
     }
         catch
         {
           case e:Exception => {
             println(e.printStackTrace)
-            inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${processingDate}') values(${jobRunId},'${jobName}','${jobNameBatch}',current_timestamp(),'${statusFailure}')")
+            inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameBronzeToSilver}',current_timestamp(),'${statusFailure}')")
             execSparkSql(spark,inputMap)
             writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePathForBronzeToSilver)
-            writerObject.writeBytes(s"Job failed  - ${jobNameBatch} \nStack trace : \n${e.printStackTrace}")
+            writerObject.writeBytes(s"Job failed  - ${jobNameBronzeToSilver} \nStack trace : \n${e.printStackTrace}")
             writerObject.writeBytes(s"Updated failure status in audit table\n")
             writerObject.close
           }

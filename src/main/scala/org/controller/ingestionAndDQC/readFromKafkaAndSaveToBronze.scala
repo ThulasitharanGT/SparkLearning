@@ -21,14 +21,14 @@ object readFromKafkaAndSaveToBronze extends sparkOpener {
     val jobRunDate=dateFormat.format(new Date)
     val logFilePath=s"${kafkaToBronzeLogPath}${jobRunId}.log"
     var writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePath)
-    writerObject.writeBytes(s"Starting ${jobNameStream} for ${jobRunDate}\n")
-    writerObject.writeBytes(s"Entering entry in audit table for ${jobNameStream} for ${jobRunDate}\n")
+    writerObject.writeBytes(s"Starting ${jobNameKafkaToBronze} for ${jobRunDate}\n")
+    writerObject.writeBytes(s"Entering entry in audit table for ${jobNameKafkaToBronze} for ${jobRunDate}\n")
     writerObject.close
     val bronzeFinalSelectExpr=Seq("key","topic","partition","offset","timestamp","timestampType","value[0] as reading","value[1] as year","value[2] as circuit","value[3] as session","value[4] as processDate")
-    inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameStream}',current_timestamp(),'${statusStarted}')")//cast(${timeStampDateFormat.format(new Date)} as timestamp)
+    inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameKafkaToBronze}',current_timestamp(),'${statusStarted}')")//cast(${timeStampDateFormat.format(new Date)} as timestamp)
     execSparkSql(spark,inputMap)
     writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePath)
-    writerObject.writeBytes(s"Entered entry in audit table for ${jobNameStream} for ${jobRunDate}\n")
+    writerObject.writeBytes(s"Entered entry in audit table for ${jobNameKafkaToBronze} for ${jobRunDate}\n")
     writerObject.close
     try
       {
@@ -53,12 +53,12 @@ object readFromKafkaAndSaveToBronze extends sparkOpener {
             val streamLogFilePath=s"${kafkaToBronzeLogPath}${jobRunId}_${dateNonHyphenFormat.format(new Date)}.log"
             val numOfRecordsInThisBatch=batchDF.count
             writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,streamLogFilePath)
-            writerObject.writeBytes(s"Entering entry for start of ${jobNameStream} - ${batchProcessCounter} in audit table\n")
+            writerObject.writeBytes(s"Entering entry for start of ${jobNameKafkaToBronze} - ${batchProcessCounter} in audit table\n")
             writerObject.close
-            inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameStream} - ${batchProcessCounter}',current_timestamp(),'${statusStarted}')")//cast(${timeStampDateFormat.format(new Date)} as timestamp)
+            inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameKafkaToBronze} - ${batchProcessCounter}',current_timestamp(),'${statusStarted}')")//cast(${timeStampDateFormat.format(new Date)} as timestamp)
             execSparkSql(spark,inputMap)
             writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,streamLogFilePath)
-            writerObject.writeBytes(s"Entering entered for ${jobNameStream} - ${batchProcessCounter} in audit table\n")
+            writerObject.writeBytes(s"Entering entered for ${jobNameKafkaToBronze} - ${batchProcessCounter} in audit table\n")
             writerObject.close
             println(s"Read for iteration ${batchProcessCounter}. Records in this batch ${numOfRecordsInThisBatch}")
             writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,streamLogFilePath)
@@ -76,12 +76,12 @@ object readFromKafkaAndSaveToBronze extends sparkOpener {
             writerObject.close
             println(s"Written iteration ${batchProcessCounter}. Records processed this batch ${numOfRecordsInThisBatch}")
             writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,streamLogFilePath)
-            writerObject.writeBytes(s"Entering entry for finish of ${jobNameStream} - ${batchProcessCounter} in audit table\n")
+            writerObject.writeBytes(s"Entering entry for finish of ${jobNameKafkaToBronze} - ${batchProcessCounter} in audit table\n")
             writerObject.close
-            inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameStream} - ${batchProcessCounter}',current_timestamp(),'${statusFinished}')")//'cast(${timeStampDateFormat.format(new Date)} as timestamp)'
+            inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameKafkaToBronze} - ${batchProcessCounter}',current_timestamp(),'${statusFinished}')")//'cast(${timeStampDateFormat.format(new Date)} as timestamp)'
             execSparkSql(spark,inputMap)
             writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,streamLogFilePath)
-            writerObject.writeBytes(s"Entry entered for finish of ${jobNameStream} - ${batchProcessCounter} in audit table\n")
+            writerObject.writeBytes(s"Entry entered for finish of ${jobNameKafkaToBronze} - ${batchProcessCounter} in audit table\n")
             writerObject.close
         }.start.awaitTermination
       }
@@ -89,13 +89,13 @@ object readFromKafkaAndSaveToBronze extends sparkOpener {
       {
         case e:Exception => {
           writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePath)
-          writerObject.writeBytes(s"Failed ${jobNameStream} in ${dateFormat.format(new Date)}")
-          writerObject.writeBytes(s"Entering entry for failure of ${jobNameStream} in audit table\n")
+          writerObject.writeBytes(s"Failed ${jobNameKafkaToBronze} in ${dateFormat.format(new Date)}")
+          writerObject.writeBytes(s"Entering entry for failure of ${jobNameKafkaToBronze} in audit table\n")
           writerObject.close
-          inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameStream}',current_timestamp(),'${statusFailure}')")//cast(${timeStampDateFormat.format(new Date)} as timestamp)
+          inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameKafkaToBronze}',current_timestamp(),'${statusFailure}')")//cast(${timeStampDateFormat.format(new Date)} as timestamp)
           execSparkSql(spark,inputMap)
           writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePath)
-          writerObject.writeBytes(s"Entered entry for failure of ${jobNameStream} in audit table\n")
+          writerObject.writeBytes(s"Entered entry for failure of ${jobNameKafkaToBronze} in audit table\n")
           writerObject.writeBytes(s"Stack Trace: \n${e.printStackTrace}")
           writerObject.close
           println(e.printStackTrace)

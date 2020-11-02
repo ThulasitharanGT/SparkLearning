@@ -102,6 +102,8 @@ products:
    src/main/scala/org/controller/ingestionAndDQC/fixExtraDataFromBronze.scala -> build/classes/scala/main/org/controller/ingestionAndDQC/fixExtraDataFromBronze.class
    src/main/scala/org/controller/ingestionAndDQC/mailBronzeVsSilverStats.scala -> build/classes/scala/main/org/controller/ingestionAndDQC/mailBronzeVsSilverStats$.class
    src/main/scala/org/controller/ingestionAndDQC/mailBronzeVsSilverStats.scala -> build/classes/scala/main/org/controller/ingestionAndDQC/mailBronzeVsSilverStats.class
+   src/main/scala/org/controller/ingestionAndDQC/mailFinalFinishStatus.scala -> build/classes/scala/main/org/controller/ingestionAndDQC/mailFinalFinishStatus$.class
+   src/main/scala/org/controller/ingestionAndDQC/mailFinalFinishStatus.scala -> build/classes/scala/main/org/controller/ingestionAndDQC/mailFinalFinishStatus.class
    src/main/scala/org/controller/ingestionAndDQC/projectConstants.scala -> build/classes/scala/main/org/controller/ingestionAndDQC/projectConstants$.class
    src/main/scala/org/controller/ingestionAndDQC/projectConstants.scala -> build/classes/scala/main/org/controller/ingestionAndDQC/projectConstants.class
    src/main/scala/org/controller/ingestionAndDQC/readFromKafkaAndSaveToBronze.scala -> build/classes/scala/main/org/controller/ingestionAndDQC/readFromKafkaAndSaveToBronze$.class
@@ -136,10 +138,11 @@ products:
    src/main/scala/org/controller/reRunnableJob/constants.scala -> build/classes/scala/main/org/controller/reRunnableJob/constants.class
    src/main/scala/org/controller/reRunnableJob/jobFunctions.scala -> build/classes/scala/main/org/controller/reRunnableJob/jobFunctions$.class
    src/main/scala/org/controller/reRunnableJob/jobFunctions.scala -> build/classes/scala/main/org/controller/reRunnableJob/jobFunctions.class
-   src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> build/classes/scala/main/reRunnableJob/reRunnableMain$.class
-   src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> build/classes/scala/main/reRunnableJob/reRunnableMain.class
+   src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> build/classes/scala/main/org/controller/reRunnableJob/reRunnableMain$.class
+   src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> build/classes/scala/main/org/controller/reRunnableJob/reRunnableMain.class
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> build/classes/scala/main/org/controller/reRunnableJob/readWriteUtil$.class
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> build/classes/scala/main/org/controller/reRunnableJob/readWriteUtil.class
+   src/main/scala/org/controller/reRunnableJob/sparkOpener.scala -> build/classes/scala/main/org/controller/reRunnableJob/sparkOpener.class
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> build/classes/scala/main/org/controller/scDotTextFileMethodOfFirstAndLastLine$$typecreator1$1.class
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> build/classes/scala/main/org/controller/scDotTextFileMethodOfFirstAndLastLine$.class
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> build/classes/scala/main/org/controller/scDotTextFileMethodOfFirstAndLastLine.class
@@ -360,6 +363,7 @@ binary dependencies:
    src/main/scala/org/controller/ingestionAndDQC/mailBronzeVsSilverStats.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
    src/main/scala/org/controller/ingestionAndDQC/mailBronzeVsSilverStats.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/ingestionAndDQC/mailBronzeVsSilverStats.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/ingestionAndDQC/mailFinalFinishStatus.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/ingestionAndDQC/projectConstants.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
    src/main/scala/org/controller/ingestionAndDQC/projectConstants.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/ingestionAndDQC/projectConstants.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
@@ -375,6 +379,7 @@ binary dependencies:
    src/main/scala/org/controller/ingestionAndDQC/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
    src/main/scala/org/controller/ingestionAndDQC/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/ingestionAndDQC/readWriteUtil.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/ingestionAndDQC/silverToGold.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-common/2.7.4/9afa8d2004a0bbd930d1ac10d221d927917067be/hadoop-common-2.7.4.jar
    src/main/scala/org/controller/ingestionAndDQC/silverToGold.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
    src/main/scala/org/controller/ingestionAndDQC/silverToGold.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
    src/main/scala/org/controller/ingestionAndDQC/silverToGold.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
@@ -430,6 +435,7 @@ binary dependencies:
    src/main/scala/org/controller/reRunnableJob/jobFunctions.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-common/2.7.4/9afa8d2004a0bbd930d1ac10d221d927917067be/hadoop-common-2.7.4.jar
    src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
+   src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.1/125cf177720bb7b479c694e72f022a81c46d42d0/spark-core_2.11-2.4.1.jar
    src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
    src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
@@ -439,6 +445,9 @@ binary dependencies:
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/reRunnableJob/sparkOpener.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
+   src/main/scala/org/controller/reRunnableJob/sparkOpener.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/reRunnableJob/sparkOpener.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.1/125cf177720bb7b479c694e72f022a81c46d42d0/spark-core_2.11-2.4.1.jar
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-mllib_2.11/2.4.1/f27053cb7a35ca512294ec657251e90b0689c28f/spark-mllib_2.11-2.4.1.jar
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
@@ -666,7 +675,7 @@ source dependencies:
    src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> src/main/scala/org/controller/reRunnableJob/constants.scala
    src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> src/main/scala/org/controller/reRunnableJob/jobFunctions.scala
    src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala
-   src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> src/main/scala/org/controller/reRunnableJob/sparkOpener.scala
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> src/main/scala/org/controller/reRunnableJob/constants.scala
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/seqOverTry.scala -> src/main/scala/org/util/SparkOpener.scala
@@ -808,6 +817,8 @@ class names:
    src/main/scala/org/controller/ingestionAndDQC/fixExtraDataFromBronze.scala -> org.controller.ingestionAndDQC.fixExtraDataFromBronze$
    src/main/scala/org/controller/ingestionAndDQC/mailBronzeVsSilverStats.scala -> org.controller.ingestionAndDQC.mailBronzeVsSilverStats
    src/main/scala/org/controller/ingestionAndDQC/mailBronzeVsSilverStats.scala -> org.controller.ingestionAndDQC.mailBronzeVsSilverStats$
+   src/main/scala/org/controller/ingestionAndDQC/mailFinalFinishStatus.scala -> org.controller.ingestionAndDQC.mailFinalFinishStatus
+   src/main/scala/org/controller/ingestionAndDQC/mailFinalFinishStatus.scala -> org.controller.ingestionAndDQC.mailFinalFinishStatus$
    src/main/scala/org/controller/ingestionAndDQC/projectConstants.scala -> org.controller.ingestionAndDQC.projectConstants
    src/main/scala/org/controller/ingestionAndDQC/projectConstants.scala -> org.controller.ingestionAndDQC.projectConstants$
    src/main/scala/org/controller/ingestionAndDQC/readFromKafkaAndSaveToBronze.scala -> org.controller.ingestionAndDQC.readFromKafkaAndSaveToBronze
@@ -842,10 +853,11 @@ class names:
    src/main/scala/org/controller/reRunnableJob/constants.scala -> org.controller.reRunnableJob.constants$
    src/main/scala/org/controller/reRunnableJob/jobFunctions.scala -> org.controller.reRunnableJob.jobFunctions
    src/main/scala/org/controller/reRunnableJob/jobFunctions.scala -> org.controller.reRunnableJob.jobFunctions$
-   src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> reRunnableJob.reRunnableMain
-   src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> reRunnableJob.reRunnableMain$
+   src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> org.controller.reRunnableJob.reRunnableMain
+   src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> org.controller.reRunnableJob.reRunnableMain$
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> org.controller.reRunnableJob.readWriteUtil
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> org.controller.reRunnableJob.readWriteUtil$
+   src/main/scala/org/controller/reRunnableJob/sparkOpener.scala -> org.controller.reRunnableJob.sparkOpener
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> org.controller.scDotTextFileMethodOfFirstAndLastLine
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> org.controller.scDotTextFileMethodOfFirstAndLastLine$
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> org.controller.scDotTextFileMethodOfFirstAndLastLine$$typecreator1$1

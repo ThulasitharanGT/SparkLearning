@@ -23,19 +23,20 @@ def main(args:Array[String]):Unit = {
   calenderInstance.add(Calendar.DAY_OF_MONTH,-1)
   val dataDate=dateFormat.format(calenderInstance.getTime)
   val jobRunId=jobRunIDDateFormat.format(new Date)
+  val jobRunDate=dateFormat.format(new Date)
   val logFilePathForStatsBronzeVsSilver=s"${statsJobLogPath}${jobRunId}.log"
   var writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePathForStatsBronzeVsSilver)
-  writerObject.writeBytes(s"starting  ${jobNameStatsBatch} \n")
+  writerObject.writeBytes(s"starting  ${jobNameBronzeVsSilverStats} \n")
   writerObject.close
   try
     {
       writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePathForStatsBronzeVsSilver)
-      writerObject.writeBytes(s"Putting entry into audit table for  ${jobNameStatsBatch} \n")
+      writerObject.writeBytes(s"Putting entry into audit table for  ${jobNameBronzeVsSilverStats} \n")
       writerObject.close
-      inputMap.put(sqlStringArg, s"insert into ${auditTable} partition(job_run_date='${processingDate}') values(${jobRunId},'${jobName}','${jobNameStatsBatch}',current_timestamp(),'${statusStarted}')")
+      inputMap.put(sqlStringArg, s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameBronzeVsSilverStats}',current_timestamp(),'${statusStarted}')")
       execSparkSql(spark, inputMap)
       writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePathForStatsBronzeVsSilver)
-      writerObject.writeBytes(s"Entered entry into audit table for  ${jobNameStatsBatch} \n")
+      writerObject.writeBytes(s"Entered entry into audit table for  ${jobNameBronzeVsSilverStats} \n")
       writerObject.close
      // inputMap.remove(basePathArg) // removing basePathArg, to read entire table
       writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePathForStatsBronzeVsSilver)
@@ -85,27 +86,27 @@ def main(args:Array[String]):Unit = {
       writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePathForStatsBronzeVsSilver)
       writerObject.writeBytes(s"Stats computed, preparing to write to final table ${statsTable} \n")
       writerObject.close
-      val statsForTodayDF=finalResult.as("finalResult").withColumn("job_run_id",lit(jobRunId).cast(LongType)).withColumn("job_name",lit(jobName)).withColumn("job_sub_name",lit(jobNameStatsBatch))/*.withColumn("job_status_entry_time",lit(timeStampDateFormat.format(new Date)))*/.withColumn("job_status",lit(statusSuccess)).withColumn("job_run_date",lit(processingDate).cast(DateType)).selectExpr(statsTableColumnSeq:_*)
+      val statsForTodayDF=finalResult.as("finalResult").withColumn("job_run_id",lit(jobRunId).cast(LongType)).withColumn("job_name",lit(jobName)).withColumn("job_sub_name",lit(jobNameBronzeVsSilverStats))/*.withColumn("job_status_entry_time",lit(timeStampDateFormat.format(new Date)))*/.withColumn("job_status",lit(statusSuccess)).withColumn("job_run_date",lit(processingDate).cast(DateType)).selectExpr(statsTableColumnSeq:_*)
       writeDF(spark,inputMap,statsForTodayDF)
       writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePathForStatsBronzeVsSilver)
       writerObject.writeBytes(s"Stats written to ${statsTable} \n")
-      writerObject.writeBytes(s"Inserting completed status for ${jobNameStatsBatch} in audit table \n")
+      writerObject.writeBytes(s"Inserting completed status for ${jobNameBronzeVsSilverStats} in audit table \n")
       writerObject.close
       //.repartition(2).coalesce(1).write.mode("append").format("parquet").partitionBy("job_run_date").save(s"${bronzeVsSilverStatsBasePath}")
-      inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${processingDate}') values(${jobRunId},'${jobName}','${jobNameStatsBatch}',current_timestamp(),'${statusFinished}')")
+      inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameBronzeVsSilverStats}',current_timestamp(),'${statusFinished}')")
       execSparkSql(spark,inputMap)
       writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePathForStatsBronzeVsSilver)
-      writerObject.writeBytes(s"Completed status for ${jobNameStatsBatch} inserted in audit table \n")
+      writerObject.writeBytes(s"Completed status for ${jobNameBronzeVsSilverStats} inserted in audit table \n")
       writerObject.close
     }
   catch
     {
       case e:Exception => {
         println(e.printStackTrace)
-        inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${processingDate}') values(${jobRunId},'${jobName}','${jobNameStatsBatch}',current_timestamp(),'${statusFailure}')")
+        inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameBronzeVsSilverStats}',current_timestamp(),'${statusFailure}')")
         execSparkSql(spark,inputMap)
         writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePathForStatsBronzeVsSilver)
-        writerObject.writeBytes(s"Job Failed for ${jobNameStatsBatch} \nStack Trace:\n ${e.printStackTrace}")
+        writerObject.writeBytes(s"Job Failed for ${jobNameBronzeVsSilverStats} \nStack Trace:\n ${e.printStackTrace}")
         writerObject.writeBytes(s"Updated failure status in audit table\n")
         writerObject.close
       }

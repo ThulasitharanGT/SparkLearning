@@ -19,8 +19,8 @@ object readWriteUtil {
   def sysCommandExecuter(inputMap:collection.mutable.Map[String,String]):Boolean={
    var result=false
    try {
-       s"${inputMap(sysCommandArg)}"!;
-         result=true
+       val tempResult =s"${inputMap(sysCommandArg)}"!;
+     tempResult match{ case 0 => result=true case _ => result=false}
      }
     catch {
       case e:Exception => {println(s"Error in executing system command ${e.printStackTrace}")}

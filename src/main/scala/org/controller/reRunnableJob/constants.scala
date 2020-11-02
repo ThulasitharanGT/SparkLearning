@@ -54,7 +54,7 @@ object constants
   val jobRunIdArg="jobRunID"
   val wgetFileNameArg="wgetFileName"
   val wgetHttpPathArg="wgetHttpPath"
-
+  val pwdArg="pwd"
   //basic
   val stringTrue="true"
   val stringFalse="false"
@@ -88,7 +88,8 @@ object constants
   //conf options
   val fsDefaultFS="fs.defaultFS"
   val hdfsDomain="hdfs.domain"
-
+  //val subJobNames=Seq("RedshiftRead","temp_archival","HiveInsert","HiveSnapshotArchival")
+  val subJobNames = Seq("wgetRead", "temp_archival", "HiveInsert", "HiveSnapshotArchival", "mailStatus")
   //mail options
   val fromEmailProperty="from.email"
   val fromPasswordProperty="from.pwd"
