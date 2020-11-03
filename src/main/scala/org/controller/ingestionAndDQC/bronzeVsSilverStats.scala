@@ -1,7 +1,6 @@
 package org.controller.ingestionAndDQC
 
 import java.util.{Calendar, Date}
-import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.types._

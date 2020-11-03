@@ -53,6 +53,7 @@ object projectConstants {
   val jobNameBronzeVsSilverStatsStatusMail="bronze vs silver Status mail"
   val jobNameFixExtraRecordsInBronzeIntoSilver="Ingesting extra records from bronze to silver"
   val jobNameSilverToGold="silver to gold"
+  val jobNameGoldRunStatusMail="gold run status"
 
   val statusStarted="Started"
   val statusRunning="Running"
@@ -97,7 +98,7 @@ object projectConstants {
   val statsMailJobLogPath=s"${logBasePath}statsMailLogs/"
   val fixExtraBronzeDataToSilverLogPath=s"${logBasePath}fixExtraBronzeDataToSilver/"
   val silverToGoldLogPath=s"${logBasePath}silverToGoldLogs/"
-
+  val mailFinalFinishStatusLogPath=s"${logBasePath}finalStatusMailLogs/"
   val auditTableDB="data_pipeline"
   val auditTableName="job_audit_data_pipeline"
   val auditTable=s"${auditTableDB}.${auditTableName}"

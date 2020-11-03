@@ -94,15 +94,26 @@ def main(args:Array[String]):Unit = {
   writeDF(spark, inputMap, goldRankedComputedDF)
   writerObject = fileOutputStreamObjectCreator(hdfsDomainLocal, logPath)
   writerObject.writeBytes(s"Wrote ${dataDate} date column in gold ranked path. \n")
-  writerObject.close
+    writerObject.writeBytes(s"Entering entry in ${auditTable} for completion \n")
+    writerObject.close
+    inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameSilverToGold}',current_timestamp(),'${statusFinished}')")//'cast(${timeStampDateFormat.format(new Date)} as timestamp)'
+    execSparkSql(spark,inputMap)
+    writerObject = fileOutputStreamObjectCreator(hdfsDomainLocal, logPath)
+    writerObject.writeBytes(s"Entered entry in ${auditTable} for completion \n")
+    writerObject.close
 }
   catch{
     case e:Exception => {
+      writerObject = fileOutputStreamObjectCreator(hdfsDomainLocal, logPath)
+      writerObject.writeBytes(s"Entering entry in ${auditTable} for failure \n")
+      writerObject.close
       inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameSilverToGold}',current_timestamp(),'${statusFailure}')")//'cast(${timeStampDateFormat.format(new Date)} as timestamp)'
       execSparkSql(spark,inputMap)
+      writerObject = fileOutputStreamObjectCreator(hdfsDomainLocal, logPath)
+      writerObject.writeBytes(s"Entered entry in ${auditTable} for failure \n")
+      writerObject.writeBytes(s"Stack trace:\n ${e.printStackTrace} \n")
+      writerObject.close
     }
   }
-  inputMap.put(sqlStringArg,s"insert into ${auditTable} partition(job_run_date='${jobRunDate}') values(${jobRunId},'${jobName}','${jobNameSilverToGold}',current_timestamp(),'${statusFinished}')")//'cast(${timeStampDateFormat.format(new Date)} as timestamp)'
-  execSparkSql(spark,inputMap)
 }
 }
