@@ -70,6 +70,8 @@ object projectConstants {
   val deSerializerConstant="deserializer"
   val keyDeserializerArg=s"${keyConstant}.${deSerializerConstant}"
   val valueDeserializerArg=s"${valueConstant}.${deSerializerConstant}"
+  val keySerializerArg=s"${keyConstant}.${serializerConstant}"
+  val valueSerializerArg=s"${valueConstant}.${serializerConstant}"
   val startingOffsetsArg="startingOffsets"
   val checkpointLocationArg="checkpointLocation"
   val sysCommandArg="sysCommand"

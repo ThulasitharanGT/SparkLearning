@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.typesafe.slick:slick_2.11:3.1.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.typesafe.slick/slick_2.11/3.1.1/a015445e5951bea4ca71088e6e87834d42d4f8b2/slick_2.11-3.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.typesafe.slick/slick_2.11/3.1.1/ad91d1e4819ee2ec4a976570f6f1a08442b81003/slick_2.11-3.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
