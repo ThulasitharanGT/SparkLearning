@@ -1,0 +1,52 @@
+
+// hive
+
+CREATE TABLE temp_db.transactions(
+ ID int,
+ tranValue string,
+ last_update_user string)
+PARTITIONED BY (tran_date string)
+CLUSTERED BY (ID) into 5 buckets 
+STORED AS ORC TBLPROPERTIES ('transactional'='true');
+
+CREATE TABLE temp_db.transactions_stg(
+ ID int,
+ tranValue string,
+ last_update_user string
+,tran_date string);
+
+// set these properties in order to use hive merge
+set hive.support.concurrency=true;
+set hive.enforce.bucketing=true;
+set hive.exec.dynamic.partition.mode =nonstrict;
+set hive.txn.manager=org.apache.hadoop.hive.ql.lockmgr.DbTxnManager;
+set hive.compactor.initiator.on =true;
+set hive.compactor.worker.threads=1;
+
+
+
+MERGE INTO temp_db.transactions AS T 
+USING temp_db.transactions_stg AS S
+ON T.ID = S.ID and T.tran_date = S.tran_date
+WHEN MATCHED AND (T.TranValue != S.TranValue AND S.TranValue IS NOT NULL) THEN UPDATE SET TranValue = S.TranValue, last_update_user = 'merge_update'
+WHEN MATCHED AND S.TranValue IS NULL THEN DELETE
+WHEN NOT MATCHED THEN INSERT VALUES (S.ID, S.TranValue, 'merge_insert', S.tran_date);
+
+
+// tmp 
+
+spark.sql("""MERGE INTO temp_db.transactions AS T 
+USING temp_db.transactions_stg AS S
+ON T.ID = S.ID --and T.tran_date = S.tran_date
+WHEN MATCHED THEN UPDATE SET TranValue = S.TranValue, last_update_user = 'merge_update',tran_date=S.tran_date
+--WHEN MATCHED AND S.TranValue IS NULL THEN DELETE
+WHEN NOT MATCHED THEN INSERT VALUES (S.ID, S.TranValue, 'merge_insert', S.tran_date);""").show
+
+
+
+MERGE INTO temp_db.transactions AS T 
+USING temp_db.transactions_stg AS S
+ON T.ID = S.ID and T.tran_date = S.tran_date
+WHEN MATCHED THEN UPDATE SET TranValue = S.TranValue, last_update_user = 'merge_update'
+--WHEN MATCHED AND S.TranValue IS NULL THEN DELETE
+WHEN NOT MATCHED THEN INSERT VALUES (S.ID, S.TranValue, 'merge_insert', S.tran_date);

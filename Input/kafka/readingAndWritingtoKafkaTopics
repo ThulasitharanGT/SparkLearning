@@ -1,0 +1,61 @@
+//sending message from CLI producer along with key bin/kafka-console-producer.sh --broker-list localhost:9092,localhost:9093 --topic producingTopic --property "parse.key=true" --property "key.separator=:" 
+key:msg (syntax)
+
+// consuming
+
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types._
+import spark.implicits._
+import sys.process._
+
+
+//def toJson(topic:String,key:String,value:String,partition:String,offset:String,timestamp:String,timestampType:String) = s"{\\topic\\:\\${topic}\\,\\key\\:\\${key}\\,\\value\\:\\${value}\\,\\partition\\:\\${partition}\\,\\offset\\:\\${offset}\\,\\timestamp\\:\\${timestamp}\\,\\timestampType\\:\\${timestampType}\\}".replace("\\","\"")
+
+
+//def toJson(topic:String,key:String,value:String,partition:String,offset:String,timestamp:String,timestampType:String) = s"{[\\]message[\\]:{[\\]topic[\\]:[\\]${topic}[\\],[\\]key[\\]:[\\]${key}[\\],[\\]value[\\]:[\\]${value}[\\],[\\]partition[\\]:[\\]${partition}[\\],[\\]offset[\\]:[\\]${offset}[\\],[\\]timestamp[\\]:[\\]${timestamp}[\\],[\\]timestampType[\\]:[\\]${timestampType}[\\]}}".replace("[\\]","\"") // gives a json string in return with all data given into message column with struct type
+
+def toJson(topic:String,key:String,value:String,partition:String,offset:String,timestamp:String,timestampType:String) = s"{[\\]topic[\\]:[\\]${topic}[\\],[\\]key[\\]:[\\]${key}[\\],[\\]value[\\]:[\\]${value}[\\],[\\]partition[\\]:[\\]${partition}[\\],[\\]offset[\\]:[\\]${offset}[\\],[\\]timestamp[\\]:[\\]${timestamp}[\\],[\\]timestampType[\\]:[\\]${timestampType}[\\]}".replace("[\\]","\"") // gives a json string in return
+
+spark.udf.register("toJsonMsg",toJson(_:String,_:String,_:String,_:String,_:String,_:String,_:String))
+
+"hdfs dfs -rm -r /user/raptor/stream/tmpCheck1/"!
+
+"hdfs dfs -rm -r /user/raptor/stream/tmpCheck2/"!
+
+
+val readStreamDF=spark.readStream.format("kafka").option("kafka.bootstrap.servers","localhost:9093,localhost:9094").option("checkpointLocation","hdfs://localhost:8020/user/raptor/stream/tmpCheck1/").option("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer").option("value.deserializer","org.apache.kafka.common.serialization.StringDeserializer").option("subscribe","producingTopic")/*.option("offset","earliest")*/.option("offset","latest").load.select($"key".cast(StringType),$"value".cast(StringType),$"topic".cast(StringType),$"partition".cast(StringType),$"offset".cast(StringType),$"timestamp".cast(StringType),$"timestampType".cast(StringType)).selectExpr("toJsonMsg(topic,key,value,partition,offset,timestamp,timestampType) as value")//.selectExpr("concat('{',concat('key',concat(':',concat(key,concat(',',concat('value',concat(':',concat(value,'}')))))))) as value")
+
+readStreamDF.writeStream.format("kafka").option("kafka.bootstrap.servers","localhost:9093,localhost:9094").option("checkpointLocation","hdfs://localhost:8020/user/raptor/stream/tmpCheck2/").option("topic","consumingTopic").start
+
+// second session 
+
+// without message column (Just one layer json message in value)
+
+"hdfs dfs -rm -r /user/raptor/stream/tmpCheck3/"!
+
+"hdfs dfs -rm -r /user/raptor/stream/tmpCheck4/"!
+
+
+val inputSchemaStructField= Seq(StructField("topic",StringType,true),StructField("key",StringType,true),StructField("value",StringType,true),StructField("partition",StringType,true),StructField("offset",StringType,true),StructField("timestamp",StringType,true),StructField("timestampType",StringType,true))
+
+val inputSchemaStructType= StructType(inputSchemaStructField)
+
+
+val readStreamDF=spark.readStream.format("kafka").option("kafka.bootstrap.servers","localhost:9093,localhost:9094").option("checkpointLocation","hdfs://localhost:8020/user/raptor/stream/tmpCheck3/").option("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer").option("value.deserializer","org.apache.kafka.common.serialization.StringDeserializer").option("subscribe","consumingTopic")/*.option("offset","earliest")*/.option("offset","latest").load.select(from_json($"value".cast(StringType),inputSchemaStructType).as("reqValue")).selectExpr("reqValue.*")
+
+readStreamDF.writeStream.outputMode("update").format("console").option("checkpointLocation","hdfs://localhost:8020/user/raptor/stream/tmpCheck4/").start
+
+
+
+// with  message column (two layer json message in value)
+
+val messageSchemaStructField= Seq(StructField("message",inputSchemaStructType,true))
+
+val messageSchemaStructType= StructType(messageSchemaStructField)
+
+
+val readStreamDF=spark.readStream.format("kafka").option("kafka.bootstrap.servers","localhost:9093,localhost:9094").option("checkpointLocation","hdfs://localhost:8020/user/raptor/stream/tmpCheck3/").option("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer").option("value.deserializer","org.apache.kafka.common.serialization.StringDeserializer").option("subscribe","consumingTopic")/*.option("offset","earliest")*/.option("offset","latest").load.select($"value".cast(StringType)).select(from_json($"value".cast(StringType),messageSchemaStructType).as("message")).selectExpr("message.message.*") // from message
+
+readStreamDF.writeStream.outputMode("update").format("console").option("checkpointLocation","hdfs://localhost:8020/user/raptor/stream/tmpCheck4/").start
+
+

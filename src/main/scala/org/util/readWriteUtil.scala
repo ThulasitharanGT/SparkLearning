@@ -83,6 +83,8 @@ object readWriteUtil {
 
   def writeStreamAsDelta(spark:SparkSession,inputMap:collection.mutable.Map[String,String],DataframeToStream: DataFrame)=DataframeToStream.writeStream.outputMode(inputMap(projectConstants.outputModeArg)).format(inputMap(projectConstants.fileFormatArg)).option(projectConstants.checkPointLocationArg,inputMap(projectConstants.checkPointLocationArg)).option(projectConstants.deltaMergeSchemaClause, inputMap(projectConstants.deltaMergeSchemaClause)).option(projectConstants.deltaOverWriteSchemaClause, inputMap(projectConstants.deltaOverWriteSchemaClause)).option(projectConstants.pathArg, inputMap(projectConstants.pathArg))
 
+  //def toJson(topic:String,key:String,value:String,partition:String,offset:String,timestamp:String,timestampType:String)=s"{\"topic\":\"${topic}\",\"key\":\"${key}\",\"value\":\"${value}\",\"partition\":\"${partition}\",\"offset\":\"${offset}\",\"timestamp\":\"${timestamp}\",\"timestampType\":\"${timestampType}\"}"
+
 }
 
 /*df.coalesce(1).write.mode("overwrite").format("csv")

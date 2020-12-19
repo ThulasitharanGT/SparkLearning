@@ -1,0 +1,1 @@
+$HIVE_HOME/bin/schematool -dbType mysql -initSchema
