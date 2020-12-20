@@ -102,7 +102,8 @@ object mailBronzeVsSilverStats extends sparkOpener {
         writerObject=fileOutputStreamObjectCreator(hdfsDomainLocal,logFilePath)
         writerObject.writeBytes(s"Wrote stats file in ${failureStatsTempFilePath} path to attach it in mail\n")
         writerObject.close
-       // val filesInPath=s"hdfs dfs -ls -t ${bronzeVsSilverStatsBasePath}/job_run_date=${processingDate}"!!  //-t is not working in local hadoop, do a workaround by writing stats DF as CSV and Attaching that in mail
+       // val filesInPath=s"hdfs dfs -ls -t ${bronzeVsSilverStatsBasePath}/job_run_date=${processingDate}"!!  //-t is not working in local hadoop its < 2.7 , do a workaround by writing stats DF as CSV and Attaching that in mail
+        // in order to over come this "hdfs dfs -ls  /user/raptor/ "#|"sort -k7,8"!! / 7,8 specifies the position of date and timestamp in the listed output for all lines
         inputMap.put(sysCommandArg,s"hdfs dfs -rm ${failureStatsTempFilePath}_SUCCESS")
         val pickIndex= sysCommandExecuter(inputMap) match { case true => 1 case false => 2}
         inputMap.put(sysCommandArg,s"hdfs dfs -ls ${failureStatsTempFilePath}")
