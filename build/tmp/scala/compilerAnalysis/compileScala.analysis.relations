@@ -32,6 +32,10 @@ products:
    src/main/scala/org/controller/RankFunctionTest.scala -> build/classes/scala/main/org/controller/RankFunctionTest.class
    src/main/scala/org/controller/RevenueClass.scala -> build/classes/scala/main/org/controller/RevenueClass$.class
    src/main/scala/org/controller/RevenueClass.scala -> build/classes/scala/main/org/controller/RevenueClass.class
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlFullRewrite.scala -> build/classes/scala/main/org/controller/SCD/Type1/controller/scdStreamingWithMySqlFullRewrite$.class
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlFullRewrite.scala -> build/classes/scala/main/org/controller/SCD/Type1/controller/scdStreamingWithMySqlFullRewrite.class
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlTempTables.scala -> build/classes/scala/main/org/controller/SCD/Type1/controller/scdStreamingWithMySqlTempTables$.class
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlTempTables.scala -> build/classes/scala/main/org/controller/SCD/Type1/controller/scdStreamingWithMySqlTempTables.class
    src/main/scala/org/controller/ScalaMysqlExample.scala -> build/classes/scala/main/org/controller/ScalaMysqlExample$.class
    src/main/scala/org/controller/ScalaMysqlExample.scala -> build/classes/scala/main/org/controller/ScalaMysqlExample.class
    src/main/scala/org/controller/SplittingOneColumnToMultiple.scala -> build/classes/scala/main/org/controller/SplittingOneColumnToMultiple$.class
@@ -85,6 +89,12 @@ products:
    src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> build/classes/scala/main/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.class
    src/main/scala/org/controller/explodeExample.scala -> build/classes/scala/main/org/controller/explodeExample$.class
    src/main/scala/org/controller/explodeExample.scala -> build/classes/scala/main/org/controller/explodeExample.class
+   src/main/scala/org/controller/explorations/expenseClass.scala -> build/classes/scala/main/org/controller/explorations/expenseClass$.class
+   src/main/scala/org/controller/explorations/expenseClass.scala -> build/classes/scala/main/org/controller/explorations/expenseClass.class
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> build/classes/scala/main/org/controller/explorations/houseLoanPredictor$$typecreator13$1.class
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> build/classes/scala/main/org/controller/explorations/houseLoanPredictor$$typecreator5$1.class
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> build/classes/scala/main/org/controller/explorations/houseLoanPredictor$.class
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> build/classes/scala/main/org/controller/explorations/houseLoanPredictor.class
    src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala -> build/classes/scala/main/org/controller/forDocker/dataFrameInfiniteLoop$.class
    src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala -> build/classes/scala/main/org/controller/forDocker/dataFrameInfiniteLoop.class
    src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> build/classes/scala/main/org/controller/forDocker/writingDFinInfiniteLoop$$typecreator5$1.class
@@ -119,6 +129,9 @@ products:
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/deltaStreamRead.class
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead$.class
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead.class
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamsWithFilterUsingHeaders.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamsWithFilterUsingHeaders$.class
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamsWithFilterUsingHeaders.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamsWithFilterUsingHeaders.class
+   src/main/scala/org/controller/kafkaStreamExample/kafkaWithHeaders.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaWithHeaders.class
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption$.class
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.class
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/streamAggregationStats$.class
@@ -164,7 +177,6 @@ products:
    src/main/scala/org/controller/slickEG/controller/helloSlick.scala -> build/classes/scala/main/org/controller/slickEG/controller/helloSlick.class
    src/main/scala/org/controller/slickEG/utils/connectionHelper.scala -> build/classes/scala/main/org/controller/slickEG/utils/connectionHelper$.class
    src/main/scala/org/controller/slickEG/utils/connectionHelper.scala -> build/classes/scala/main/org/controller/slickEG/utils/connectionHelper.class
-   src/main/scala/org/controller/slickEG/utils/genericTable.scala -> build/classes/scala/main/org/controller/slickEG/utils/genericTable.class
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> build/classes/scala/main/org/controller/splittingDifferentColumnRecords$.class
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> build/classes/scala/main/org/controller/splittingDifferentColumnRecords.class
    src/main/scala/org/controller/splittingTime/SplitFunction.scala -> build/classes/scala/main/org/controller/splittingTime/SplitFunction.class
@@ -203,10 +215,6 @@ products:
    src/main/scala/org/controller/wordCountDFExample.scala -> build/classes/scala/main/org/controller/wordCountDFExample.class
    src/main/scala/org/temp/stringTestObj.scala -> build/classes/scala/main/temp/stringTestObj$.class
    src/main/scala/org/temp/stringTestObj.scala -> build/classes/scala/main/temp/stringTestObj.class
-   src/main/scala/org/temp/testScalaObj.scala -> build/classes/scala/main/temp/testScalaObj$.class
-   src/main/scala/org/temp/testScalaObj.scala -> build/classes/scala/main/temp/testScalaObj.class
-   src/main/scala/org/temp/testScalaObjV2.scala -> build/classes/scala/main/temp/testScalaObjV2$.class
-   src/main/scala/org/temp/testScalaObjV2.scala -> build/classes/scala/main/temp/testScalaObjV2.class
    src/main/scala/org/temp/twitterResult.scala -> build/classes/scala/main/temp/twitterResult$.class
    src/main/scala/org/temp/twitterResult.scala -> build/classes/scala/main/temp/twitterResult.class
    src/main/scala/org/temp/twitterTemp.scala -> build/classes/scala/main/temp/twitterTemp$.class
@@ -263,6 +271,14 @@ binary dependencies:
    src/main/scala/org/controller/RevenueClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
    src/main/scala/org/controller/RevenueClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/RevenueClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlFullRewrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlFullRewrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlFullRewrite.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlFullRewrite.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlTempTables.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlTempTables.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlTempTables.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlTempTables.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/ScalaMysqlExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
    src/main/scala/org/controller/ScalaMysqlExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
    src/main/scala/org/controller/ScalaMysqlExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
@@ -341,6 +357,14 @@ binary dependencies:
    src/main/scala/org/controller/explodeExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
    src/main/scala/org/controller/explodeExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/explodeExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/explorations/expenseClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/explorations/expenseClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.1/125cf177720bb7b479c694e72f022a81c46d42d0/spark-core_2.11-2.4.1.jar
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
@@ -422,6 +446,14 @@ binary dependencies:
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamsWithFilterUsingHeaders.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamsWithFilterUsingHeaders.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamsWithFilterUsingHeaders.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamsWithFilterUsingHeaders.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/kafkaStreamExample/kafkaWithHeaders.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
+   src/main/scala/org/controller/kafkaStreamExample/kafkaWithHeaders.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
+   src/main/scala/org/controller/kafkaStreamExample/kafkaWithHeaders.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/kafkaStreamExample/kafkaWithHeaders.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
@@ -503,7 +535,6 @@ binary dependencies:
    src/main/scala/org/controller/slickEG/utils/connectionHelper.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/com.zaxxer/HikariCP/3.4.5/aa1a2c00aae8e4ba8308e19940711bb9525b103d/HikariCP-3.4.5.jar
    src/main/scala/org/controller/slickEG/utils/connectionHelper.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/slickEG/utils/connectionHelper.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/slickEG/utils/genericTable.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.1/125cf177720bb7b479c694e72f022a81c46d42d0/spark-core_2.11-2.4.1.jar
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
@@ -570,18 +601,6 @@ binary dependencies:
    src/main/scala/org/controller/wordCountDFExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/temp/stringTestObj.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/temp/stringTestObj.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/temp/testScalaObj.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/5af35056b4d257e4b64b9e8069c0746e8b08629f/log4j-1.2.17.jar
-   src/main/scala/org/temp/testScalaObj.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
-   src/main/scala/org/temp/testScalaObj.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.1/125cf177720bb7b479c694e72f022a81c46d42d0/spark-core_2.11-2.4.1.jar
-   src/main/scala/org/temp/testScalaObj.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
-   src/main/scala/org/temp/testScalaObj.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
-   src/main/scala/org/temp/testScalaObj.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/temp/testScalaObjV2.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/5af35056b4d257e4b64b9e8069c0746e8b08629f/log4j-1.2.17.jar
-   src/main/scala/org/temp/testScalaObjV2.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
-   src/main/scala/org/temp/testScalaObjV2.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.1/125cf177720bb7b479c694e72f022a81c46d42d0/spark-core_2.11-2.4.1.jar
-   src/main/scala/org/temp/testScalaObjV2.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
-   src/main/scala/org/temp/testScalaObjV2.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
-   src/main/scala/org/temp/testScalaObjV2.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/temp/twitterResult.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/temp/twitterResult.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/5af35056b4d257e4b64b9e8069c0746e8b08629f/log4j-1.2.17.jar
@@ -636,6 +655,12 @@ source dependencies:
    src/main/scala/org/controller/PivotExample.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/RankFunctionTest.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/RevenueClass.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlFullRewrite.scala -> src/main/scala/org/constants/projectConstants.scala
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlFullRewrite.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlFullRewrite.scala -> src/main/scala/org/util/readWriteUtil.scala
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlTempTables.scala -> src/main/scala/org/constants/projectConstants.scala
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlTempTables.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlTempTables.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/ScalaMysqlExample.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/SplittingOneColumnToMultiple.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/UDFNewTry.scala -> src/main/scala/org/constants/projectConstants.scala
@@ -672,6 +697,8 @@ source dependencies:
    src/main/scala/org/controller/explodeExample.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/explodeExample.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/explodeExample.scala -> src/main/scala/org/util/readWriteUtil.scala
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> src/main/scala/org/controller/explorations/expenseClass.scala
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala
    src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/hbaseSpark/hbaseSparkReadWrite.scala -> src/main/scala/org/util/SparkOpener.scala
@@ -707,6 +734,8 @@ source dependencies:
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> src/main/scala/org/util/readWriteUtil.scala
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamsWithFilterUsingHeaders.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/kafkaStreamExample/kafkaWithHeaders.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> src/main/scala/org/util/readWriteUtil.scala
@@ -807,6 +836,10 @@ class names:
    src/main/scala/org/controller/RankFunctionTest.scala -> org.controller.RankFunctionTest$
    src/main/scala/org/controller/RevenueClass.scala -> org.controller.RevenueClass
    src/main/scala/org/controller/RevenueClass.scala -> org.controller.RevenueClass$
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlFullRewrite.scala -> org.controller.SCD.Type1.controller.scdStreamingWithMySqlFullRewrite
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlFullRewrite.scala -> org.controller.SCD.Type1.controller.scdStreamingWithMySqlFullRewrite$
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlTempTables.scala -> org.controller.SCD.Type1.controller.scdStreamingWithMySqlTempTables
+   src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlTempTables.scala -> org.controller.SCD.Type1.controller.scdStreamingWithMySqlTempTables$
    src/main/scala/org/controller/ScalaMysqlExample.scala -> org.controller.ScalaMysqlExample
    src/main/scala/org/controller/ScalaMysqlExample.scala -> org.controller.ScalaMysqlExample$
    src/main/scala/org/controller/SplittingOneColumnToMultiple.scala -> org.controller.SplittingOneColumnToMultiple
@@ -860,6 +893,12 @@ class names:
    src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> org.controller.deltaLakeEG.systemCommandRunningForStreamingPipeline$
    src/main/scala/org/controller/explodeExample.scala -> org.controller.explodeExample
    src/main/scala/org/controller/explodeExample.scala -> org.controller.explodeExample$
+   src/main/scala/org/controller/explorations/expenseClass.scala -> org.controller.explorations.expenseClass
+   src/main/scala/org/controller/explorations/expenseClass.scala -> org.controller.explorations.expenseClass$
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> org.controller.explorations.houseLoanPredictor
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> org.controller.explorations.houseLoanPredictor$
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> org.controller.explorations.houseLoanPredictor$$typecreator13$1
+   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> org.controller.explorations.houseLoanPredictor$$typecreator5$1
    src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala -> org.controller.forDocker.dataFrameInfiniteLoop
    src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala -> org.controller.forDocker.dataFrameInfiniteLoop$
    src/main/scala/org/controller/forDocker/writingDFinInfiniteLoop.scala -> org.controller.forDocker.writingDFinInfiniteLoop
@@ -894,6 +933,9 @@ class names:
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> org.controller.kafkaStreamExample.deltaStreamRead$
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead$
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamsWithFilterUsingHeaders.scala -> org.controller.kafkaStreamExample.kafkaStreamsWithFilterUsingHeaders
+   src/main/scala/org/controller/kafkaStreamExample/kafkaStreamsWithFilterUsingHeaders.scala -> org.controller.kafkaStreamExample.kafkaStreamsWithFilterUsingHeaders$
+   src/main/scala/org/controller/kafkaStreamExample/kafkaWithHeaders.scala -> org.controller.kafkaStreamExample.kafkaWithHeaders
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> org.controller.kafkaStreamExample.pullFromKafkaMergeSchemaOption
    src/main/scala/org/controller/kafkaStreamExample/pullFromKafkaMergeSchemaOption.scala -> org.controller.kafkaStreamExample.pullFromKafkaMergeSchemaOption$
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> org.controller.kafkaStreamExample.streamAggregationStats
@@ -939,7 +981,6 @@ class names:
    src/main/scala/org/controller/slickEG/controller/helloSlick.scala -> org.controller.slickEG.controller.helloSlick$
    src/main/scala/org/controller/slickEG/utils/connectionHelper.scala -> org.controller.slickEG.utils.connectionHelper
    src/main/scala/org/controller/slickEG/utils/connectionHelper.scala -> org.controller.slickEG.utils.connectionHelper$
-   src/main/scala/org/controller/slickEG/utils/genericTable.scala -> org.controller.slickEG.utils.genericTable
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> org.controller.splittingDifferentColumnRecords
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> org.controller.splittingDifferentColumnRecords$
    src/main/scala/org/controller/splittingTime/SplitFunction.scala -> org.controller.splittingTime.SplitFunction
@@ -978,10 +1019,6 @@ class names:
    src/main/scala/org/controller/wordCountDFExample.scala -> org.controller.wordCountDFExample$
    src/main/scala/org/temp/stringTestObj.scala -> temp.stringTestObj
    src/main/scala/org/temp/stringTestObj.scala -> temp.stringTestObj$
-   src/main/scala/org/temp/testScalaObj.scala -> temp.testScalaObj
-   src/main/scala/org/temp/testScalaObj.scala -> temp.testScalaObj$
-   src/main/scala/org/temp/testScalaObjV2.scala -> temp.testScalaObjV2
-   src/main/scala/org/temp/testScalaObjV2.scala -> temp.testScalaObjV2$
    src/main/scala/org/temp/twitterResult.scala -> temp.twitterResult
    src/main/scala/org/temp/twitterResult.scala -> temp.twitterResult$
    src/main/scala/org/temp/twitterTemp.scala -> temp.twitterTemp
