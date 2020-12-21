@@ -91,7 +91,6 @@ products:
    src/main/scala/org/controller/explodeExample.scala -> build/classes/scala/main/org/controller/explodeExample.class
    src/main/scala/org/controller/explorations/expenseClass.scala -> build/classes/scala/main/org/controller/explorations/expenseClass$.class
    src/main/scala/org/controller/explorations/expenseClass.scala -> build/classes/scala/main/org/controller/explorations/expenseClass.class
-   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> build/classes/scala/main/org/controller/explorations/houseLoanPredictor$$typecreator13$1.class
    src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> build/classes/scala/main/org/controller/explorations/houseLoanPredictor$$typecreator5$1.class
    src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> build/classes/scala/main/org/controller/explorations/houseLoanPredictor$.class
    src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> build/classes/scala/main/org/controller/explorations/houseLoanPredictor.class
@@ -897,7 +896,6 @@ class names:
    src/main/scala/org/controller/explorations/expenseClass.scala -> org.controller.explorations.expenseClass$
    src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> org.controller.explorations.houseLoanPredictor
    src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> org.controller.explorations.houseLoanPredictor$
-   src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> org.controller.explorations.houseLoanPredictor$$typecreator13$1
    src/main/scala/org/controller/explorations/houseLoanPredictor.scala -> org.controller.explorations.houseLoanPredictor$$typecreator5$1
    src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala -> org.controller.forDocker.dataFrameInfiniteLoop
    src/main/scala/org/controller/forDocker/dataFrameInfiniteLoop.scala -> org.controller.forDocker.dataFrameInfiniteLoop$
