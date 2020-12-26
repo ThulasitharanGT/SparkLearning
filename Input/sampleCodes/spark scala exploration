@@ -1,0 +1,103 @@
+val sampleDF=Seq((1,"aa"),(2,"bb"),(3,"cc")).toDF("age","name")
+
+//sampleDF.map(x=> x.getValuesMap[String](List("age","name"))) // cant convert into string on it's own.
+
+sampleDF.selectExpr("cast (age as string) age","name").map(x=> x.getValuesMap[String](List("age","name")))
+
+sampleDF.select($"age".cast(org.apache.spark.sql.types.StringType),$"name").map(x=> x.getValuesMap[String](List("age","name")))
+
+sampleDF.select($"age".cast(org.apache.spark.sql.types.StringType),$"name").withColumn("address",org.apache.spark.sql.functions.lit("Australia")).map(x=> x.getValuesMap[String](List("age","name","address")))
+
+//The above will bring map(sting , string with all column names and values)
+
+sampleDF.select($"age".cast(org.apache.spark.sql.types.StringType)).map(x=> x.getValuesMap[String](List("age"))).map(_.map{case (k,v) => (k,v.toInt)}).collect // one column alone is converted to Map
+
+sampleDF.select($"age".cast(org.apache.spark.sql.types.StringType),$"name").collect.toList.map(x=> Map(x(0) -> x(1))).map(_.map{case (k,v) => (k.asInstanceOf[String].toInt,v.asInstanceOf[String])}) //this is to map  column values to key and value in a map
+
+val tmpMapCols=List("age","name","address")
+//sampleDF.withColumn("address",org.apache.spark.sql.functions.lit("Australia")).select("age","name","address").collect
+sampleDF.withColumn("address",org.apache.spark.sql.functions.lit("Australia")).select("age","name","address").collect.toList.map(x => Map(tmpMapCols(0) ->x(0).toString,tmpMapCols(1) ->x(1).toString,tmpMapCols(2) ->x(2).toString)) // same as get Values Map
+
+val tmpMap=collection.mutable.Map[String,String]()
+var counter=1
+sampleDF.withColumn("address",org.apache.spark.sql.functions.lit("Australia")).select("age","name","address").collect.toList.map(mapManipulator(_))
+
+//counter=counter+1
+
+def mapManipulator(x:org.apache.spark.sql.Row)={
+for (i <- 0 to x.size -1)
+/*{
+println(s"counter ${counter}")
+println(s"key - ${tmpMapCols(i)}-${counter} value - ${x(i).toString}")*/
+tmpMap.put(s"${tmpMapCols(i)}-${counter}",x(i).toString)
+//}
+counter=counter+1
+}
+
+tmpMap.map(x=> println(s"key = ${x._1} value = ${x._2}"))
+
+---------------------
+
+apply and unapply methods.
+
+class fraction(numerator:Int,denominator:Int){
+val num=numerator
+val den=denominator
+def printFraction = println(s"numerator = ${num} denominator = ${den}")
+}
+
+object fraction{
+def apply(n:Int,d:Int)= new fraction(n,d)
+def unapply(f:fraction) = f match {case value if value ==null => None case _ => Some((f.num,f.den))}
+}
+
+
+val f2 = new fraction(1,3) // class is called here
+
+val f1=fraction(1,2) // apply is called
+val fraction(f1U)=f1 //unapply is called here, return (Option(String,String))
+val f1UNum=f1U._1
+val f1UDen=f1U._2
+
+
+
+object listUpgraded{  // using ArrayBuffer
+import scala.util.Try
+val tmpBuffer=collection.mutable.ArrayBuffer[String]()
+def apply(elements:String*)= for (element <- elements) tmpBuffer+=element
+def apply(element:String)= tmpBuffer+=element
+def unapply(i:Int) = { Try{tmpBuffer(i)}.isSuccess match {case true => Some(tmpBuffer(i)) case false => None } }
+def addElements(elements:String*)= for (element <- elements) tmpBuffer+=element
+def addElement(element:String)= tmpBuffer+=element
+}
+
+object listCustom{ //using Seq
+import scala.util.Try
+var tmpSeq:Seq[String]=null
+def apply(elements:String*)= tmpSeq=elements
+def unapply(i:Int):Option[String] = {Try{tmpSeq(i)}.isSuccess match {case true => Some(tmpSeq(i)) case _ => None} }
+def addElements(elements:String*)= tmpSeq=tmpSeq ++ elements
+def addElement(element:String)= tmpSeq = tmpSeq ++Seq(element)
+}
+
+
+// pattern matching
+
+val pattern1="([0-9]+) ([a-z]+)".r
+val pattern2="([0-9]+) ([a-z]+) ([A-Z]+)".r
+val pattern3="([0-9]) ([a-z])".r // no plus(+) after [a-z] or other pattern means only one character is allowed.
+val pattern4="([0-9]+) ([A-Z]+)".r
+
+
+"056 ert ASD" // pattern2
+"2 q" //pattern3
+"056 drt" //pattern1
+"056 ASD" //pattern4
+
+"2 q" match {
+case pattern1(key,value) /*key and values are temporary variables names, anything can be given instead */ => println(s"key - ${key}, value - ${value}")
+case pattern2(key,value,description) => println(s"key - ${key}, value - ${value}, description - ${description}")
+case pattern3(key,value) => println(s"key - ${key}, value - ${value}")
+case pattern4(key,value) => println(s"key - ${key}, value - ${value}")
+case _ => println("Not a valid pattern")
+}

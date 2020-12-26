@@ -1,0 +1,53 @@
+spark.sql("""create table temp_db.base_exists
+(
+col1 string,
+col2 string,
+col3 string,
+col4 string
+)""").show
+
+spark.sql("""create table temp_db.batch_exists
+(
+col1 string,
+col2 string
+)""").show
+
+/*
+hdfs dfs -cat file | exec hive --hiveconf dataBase="temp_db" --hiveconf tableBase="base_exists" --hiveconf tableBatch="batch_exists"
+
+set dataBase;
+set hiveconf:dataBase;
+set tableBase;
+set hiveconf:tableBase;
+set tableBatch;
+set hiveconf:tableBatch;
+create table ${hiveconf:dataBase}.${hiveconf:tableBase} (col1 string,col2 string,col3 string,col4 string);
+create table ${hiveconf:dataBase}.${hiveconf:tableBatch} (col1 string,col2 string);
+*/
+
+case class baseSchema(col1:String,col2:String,col3:Option[String],col4:Option[String])
+def rowGen(startNumber:Int,tableIdentifier:String,NumRows:Int)={
+var tmpArrayBuffer=new collection.mutable.ArrayBuffer[baseSchema]()
+for (currentNum <- startNumber to startNumber+NumRows-1)
+tableIdentifier match {
+case value if value==baseTable => tmpArrayBuffer+=baseSchema(s"col1-${currentNum}",s"col2-${currentNum}",Some(s"col3-${currentNum}"),Some(s"col4-${currentNum}"))
+case value if value==batchTable => tmpArrayBuffer+=baseSchema(s"col1-${currentNum}",s"col2-${currentNum}",None,None)
+}
+tableIdentifier match {
+case value if value==baseTable => tmpArrayBuffer.toDF//("col1","col2","col3","col4")
+case value if value==batchTable => tmpArrayBuffer.toDF/*("col1","col2","col3","col4")*/.select("col1","col2")
+}
+}
+
+rowGen(3,baseTable,3).write.mode("append").insertInto("temp_db.base_exists")
+
+rowGen(1,baseTable,3).createOrReplaceTempView("batch")
+
+spark.sql("""insert into temp_db.base_exists 
+select col1,col2,col2,col4 from batch a where not exists (select * from temp_db.base_exists b where a.col1=b.col1 and a.col2=b.col2 and a.col3=b.col3 and a.col4=b.col4)""")
+
+rowGen(4,baseTable,3).createOrReplaceTempView("batch")
+
+// same as above
+spark.sql("""insert into temp_db.base_exists 
+select b.col1,b.col2,b.col2,b.col4 from temp_db.base_exists a right join batch b on a.col1=b.col1 and a.col2=b.col2 and a.col3=b.col3 and a.col4=b.col4 where a.col1 is null""")
