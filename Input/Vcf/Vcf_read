@@ -1,0 +1,17 @@
+./bin/spark-shell --packages io.projectglow:glow-spark3_2.12:0.6.0 --conf spark.hadoop.io.compression.codecs=io.projectglow.sql.util.BGZFCodec
+
+// the vcf file is very sensitive and disciplined too tab's. All header columns are seperated by tab's. All the values are seperated by tab's. All the empty fields must be specified by .
+
+For more info refer this.
+
+https://samtools.github.io/hts-specs/
+https://samtools.github.io/hts-specs/VCFv4.2.pdf
+
+VCF usually contains genetics data about a cell.
+
+spark.read.format("vcf").option("flattenInfoFields", "false").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/Vcf/tmp_sample.vcf")
+res14: org.apache.spark.sql.DataFrame = [contigName: string, start: bigint ... 9 more fields]
+
+res4.show(false)
+
+No Idea how the file is coded and converted.
