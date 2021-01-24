@@ -1,0 +1,15 @@
+case class tmpCaseClass(col1:String,col2:Int)
+
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.ForeachWriter
+
+
+spark.readStream.format("rate").option("rowsPerSecond","5").load.withColumn("col1",lit("a")).withColumn("col2",lit(1)).as[tmpCaseClass].writeStream.format("console").outputMode("Update").option("checkpointLocation","hdfs:///user/raptor/stream/checkpoint1").foreach(
+new ForeachWriter[tmpCaseClass] {
+    def open(partitionId: Long, version: Long): Boolean = true
+    def process(record: tmpCaseClass) = {
+      println(record)
+    }
+    def close(errorOrNull: Throwable): Unit = Unit
+  }
+).start.awaitTermination

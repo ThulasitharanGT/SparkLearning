@@ -1,0 +1,22 @@
+val basePath="file:///home/raptor/IdeaProjects/SparkLearning/Input/Vcf/"
+val complexConstant="complex"
+val exampleConstant="example"
+val fileSuffix="bits.bgen"
+val bitsList=Seq("8","16","32")
+val filesPathList=collection.mutable.ArrayBuffer[String]()
+for(bitCurrent <- bitsList)
+{
+filesList+= s"${basePath}${complexConstant}.${bitCurrent}${fileSuffix}"
+filesList+= s"${basePath}${exampleConstant}.${bitCurrent}${fileSuffix}"
+}
+
+for (filesPath <- filesList)
+{
+val df=spark.read.format("bgen").load(filesPath)
+df.printSchema
+df.show(false)
+}
+
+
+val df=spark.read.format("bgen").load(filesPath)
+// add spark vcf package

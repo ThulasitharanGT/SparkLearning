@@ -1,0 +1,55 @@
+/*
+val charList= ('A' to 'Z') ++ ('a' to 'z')
+val numList= 0 to 100
+
+def randomStringGen(strLength:Int)={
+var tmpString=""
+for (i <- 1 to strLength)
+tmpString=tmpString + s"${charList(ThreadLocal.current.nextInt(0 to charList.size))}"
+}
+
+def randomNumberGen= numList(ThreadLocal.current.nextInt(0 to charList.size))
+
+def timeStamp
+
+val streamDF=spark.readStream.format("rate").
+
+*/
+
+//need socket stream
+
+val lines = spark.readStream.format("socket").option("host", "localhost").option("port","9999").option("offsets", "latest").load.selectExpr("split(value,',') as valueSplitted").selectExpr("cast (valueSplitted[0]  as string ) as  msg","cast(valueSplitted[1] as timestamp) as  timestampOfMsg") // creates a set of counts for a words in every 10 minutes with an incrementing enterval of 5 mins. eg: 12:00 to 12:10,12:05 to 12:15,12:15 to 12:25,12:20 to 12:30
+
+nc -lk 9999
+
+lines.writeStream.format("console").outputMode("append").option("checkpointLocation","hdfs://localhost:8020/user/raptor/stream/checkpoint2").start
+// without watermark
+val windowedCounts = lines.groupBy(window($"timestampOfMsg", "10 minutes", "5 minutes"),$"msg").count
+
+windowedCounts.writeStream.format("console").outputMode("update").option("truncate", "false").option("checkpointLocation","hdfs://localhost:8020/user/raptor/stream/checkpoint2").start
+
+// with watermark
+// --packages io.delta:delta-core_2.12:0.7.0
+val windowedWatermarkCounts = lines.withWatermark("timestampOfMsg", "5 minutes").groupBy(window($"timestampOfMsg", "10 minutes", "5 minutes"),$"msg").count
+
+windowedWatermarkCounts.writeStream.format("console").outputMode("append").option("truncate", "false").option("checkpointLocation","hdfs://localhost:8020/user/raptor/stream/checkpoint1").start  // console
+
+windowedWatermarkCounts.writeStream.format("delta").outputMode("complete").option("truncate", "false").option("checkpointLocation","hdfs://localhost:8020/user/raptor/stream/checkpoint1").option("path","hdfs://localhost:8020/user/raptor/tmp/streamWaterMark").start
+
+import io.delta.tables._
+
+val deltaTable=DeltaTable.forPath(spark,"hdfs://localhost:8020/user/raptor/tmp/streamWaterMark")
+
+deltaTable.toDF.show(false)
+
+
+vllo,2021-01-24 12:25:25.234
+cool,2021-01-24 12:22:25.234
+fool,2021-01-24 12:23:00.000                                                                         
+cool,2021-01-24 12:35:25.234 
+vllo,2021-01-24 12:30:25.234
+cool,2021-01-24 12:23:25.234  -- within 5 mins
+fool,2021-01-24 12:22:00.000  -- within 5 mins
+cool,2021-01-24 12:23:25.234  -- 5 mins late
+fool,2021-01-24 12:22:00.000  -- 5 mins late
+vllo,2021-01-24 12:23:25.234  -- 5 mins late

@@ -1,0 +1,31 @@
+spark-shell --packages org.apache.tika:tika-parsers:1.8,org.apache.tika:tika-core:1.8,org.apache.tika:tika-app:1.8
+
+
+import org.apache.spark.SparkContext._
+import org.apache.spark.SparkConf
+import org.apache.spark.input.PortableDataStream
+import org.apache.tika.metadata._
+import org.apache.tika.parser._
+import org.apache.tika.sax.WriteOutContentHandler
+import java.io._
+
+def tikaFunc (a: (String, PortableDataStream)) = {
+val file  = new File(a._1.drop(5)) // to remove file:// or hdfs ://
+val myparser  = new AutoDetectParser()
+val stream = new FileInputStream(file)
+val handler  = new WriteOutContentHandler(-1)
+val metadata = new Metadata()
+val context = new ParseContext()
+myparser.parse(stream, handler, metadata, context)
+stream.close
+//println(handler.toString())
+//println("------------------------------------------------")
+handler.toString
+}
+
+
+val pdfList=spark.sparkContext.binaryFiles("file:///home/raptor/IdeaProjects/SparkLearning/Input/Resume.pdf").collect
+
+case class (path:String,content:String)
+
+val temp=pdfList.map(x=> (x._1,tikaFunc(x))).toSeq.map(x => pdfCaseClass(x._1,x._2)).toDF.show

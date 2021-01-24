@@ -1,0 +1,165 @@
+//xslx file, as binary file.
+
+--packages org.apache.tika:tika-parsers:1.8,org.apache.tika:tika-core:1.8
+
+import org.apache.spark.input.PortableDataStream
+import org.apache.tika.metadata._
+import org.apache.tika.parser._
+import org.apache.tika.sax.WriteOutContentHandler
+import java.io._
+
+def tikaFunc (a: (String, PortableDataStream)) = {
+    val file  = new File(a._1.drop(5))
+    val myparser= new AutoDetectParser()
+    val stream = new FileInputStream(file)
+    val handler = new WriteOutContentHandler(-1)
+    val metadata = new Metadata()
+    val context = new ParseContext()
+    myparser.parse(stream, handler, metadata, context)
+    stream.close
+	handler.toString
+  }
+  
+val fileData = sc.binaryFiles("file:///home/raptor/IdeaProjects/SparkLearning/Input/excelFileCheck/sheetTest.xlsx")
+//fileData.foreach( x => tikaFunc(x))
+fileData.map( x => tikaFunc(x)).toDF.show
+
+
+fileData.map( x => {val file  = new File(x._1.drop(5))
+    val myparser= new AutoDetectParser()
+    val stream = new FileInputStream(file)
+    val handler = new WriteOutContentHandler(-1)
+    val metadata = new Metadata()
+    val context = new ParseContext()
+    myparser.parse(stream, handler, metadata, context)
+    stream.close
+	handler.toString}).toDF.show
+
+
+// ppt
+
+import org.apache.spark.input.PortableDataStream
+import org.apache.tika.metadata._
+import org.apache.tika.parser._
+import org.apache.tika.sax.WriteOutContentHandler
+import java.io._
+
+val fileData = sc.binaryFiles("file:///home/raptor/IdeaProjects/SparkLearning/Input/excelFileCheck/tmpPresentation.pptx")
+fileData.foreach( x => tikaFunc(x))
+fileData.map( x => (x._1,tikaFunc(x))).toDF 
+
+def tikaFunc (a: (String, PortableDataStream)) = {
+    val file  = new File(a._1.drop(5))
+    val myparser= new AutoDetectParser()
+    val stream = new FileInputStream(file)
+    val handler = new WriteOutContentHandler(-1)
+    val metadata = new Metadata()
+    val context = new ParseContext()
+    myparser.parse(stream, handler, metadata, context)
+    stream.close
+	handler.toString
+  }
+
+//docx
+
+val fileData = sc.binaryFiles("file:///home/raptor/IdeaProjects/SparkLearning/Input/Data_Collection_Ingestion_Pipeline.docx")
+fileData.foreach( x => tikaFunc(x))
+fileData.map( x => (x._1,tikaFunc(x))).toDF 
+
+//jpeg
+
+val fileData = sc.binaryFiles("file:///home/raptor/IdeaProjects/SparkLearning/Input/excelFileCheck/wp2267184-f1-ferrari-wallpapers.jpg")
+fileData.foreach( x => tikaFunc(x))
+fileData.map( x => (x._1,tikaFunc(x))).toDF.show(false)
+
+//mp3
+
+val fileData = sc.binaryFiles("file:///home/raptor/IdeaProjects/XXXTentacion-YuNg-BrAtZ.mp3")
+fileData.foreach( x => tikaFunc(x))
+fileData.map( x => (x._1,tikaFunc(x))).toDF.show(false)
+
+
+
+// Excel as a DF
+==========================
+spark-shell --packages com.crealytics:spark-excel_2.12:0.13.6
+// by default it will read the first sheet alone
+
+val df=spark.read.format("com.crealytics.spark.excel").option("header","false").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/excelFileCheck/sheetTest.xlsx").na.fill(" ")
+
+// if you want a different sheet, specify it in data address. (syntax : sheetname!range of cells to be read in that sheet)
+
+val currentSheetName="tmp1" 
+val df1=spark.read.format("com.crealytics.spark.excel").option("header","false").option("inferSchema","true").option("dataAddress", s"$currentSheetName!A1:Z65535").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/excelFileCheck/sheetTest.xlsx")
+
+// will read till the columns which had data in it. If the first row of the column is not empty then that entire column is not considered.
+
+
+val currentSheetName="tmp2" 
+val df1=spark.read.format("com.crealytics.spark.excel").option("header","false").option("inferSchema","true").option("dataAddress", s"$currentSheetName!A1:Z65535").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/excelFileCheck/sheetTest.xlsx")
+
+
+======================================================================================
+// working with multiple tabs in excel
+// use tika for this alone
+
+val fileData = sc.binaryFiles("file:///home/raptor/IdeaProjects/SparkLearning/Input/excelFileCheck/totalData.xlsx")
+//fileData.foreach( x => tikaFunc(x))
+fileData.map( x => (x._1,tikaFunc(x))).toDF.repartition(10)
+
+//tab names
+
+fileData.map( x => (x._1,tikaFunc(x))).toDF("fileName","fileContent").select("fileContent").collect.map(_(0).toString).toList(0).split("\n").filter(! _.startsWith("\t")).filter(_.size >0).map()
+
+case class fileAndTabNamesSchema(fileName:String,tabNames:Array[String])
+val tabsDF=fileData.map( x => (x._1,tikaFunc(x))).toDF("fileName","fileContent").select("fileName","fileContent").collect.map(x=> (x(0).toString,x(1).toString)).toList.map(x => (x._1,x._2.split("\n"))).map(x => (x._1,x._2.filter(_.size >0))).map(x=> (x._1,x._2.filter(!_.startsWith("\t")).filter(_.contains("Olympic")))).map(x => fileAndTabNamesSchema(x._1,x._2)).toSeq.toDF //.show(false)  // save it in a locaion for everyday 
+
+tabsDF.repartition(1).write.mode("overwrite").save("hdfs://localhost:8020/user/raptor/temp/excelPOC/sheetFile/") // array[String] is a complex type and csv cant store it, use types like parquet, json, avro
+==============
+--packages com.crealytics:spark-excel_2.12:0.13.6
+
+//val tabsDF=spark.read.load("hdfs://localhost:8020/user/raptor/temp/excelPOC/sheetFile/")
+
+val tabsDF=spark.read.load("file:///home/raptor/IdeaProjects/SparkLearning/Input/excelFileCheck/sheetFile/")
+
+val tabsFileAndReqTabInfo=tabsDF.collect.map(x => (x(0).toString,x(1).toString)).map(x => (x._1, x._2.substring(x._2.indexOf("(")+1,x._2.indexOf(")")).split(",").map(_.trim)))
+
+//same schema file can be read
+
+var df:org.apache.spark.sql.DataFrame=null
+
+for (tabFileAndReqTabInfo <- tabsFileAndReqTabInfo) //val tabFileAndReqTabInfo=tabsFileAndReqTabInfo(0)
+{
+val currentFileName=tabFileAndReqTabInfo._1 
+for (tabName <- tabFileAndReqTabInfo._2) // val tabName= tabFileAndReqTabInfo._2(1)
+df match {
+ case value if value == null => 
+ //System.gc
+ println("First")
+ println(s"tabName- ${tabName}")
+ println(s"currentFileName - ${currentFileName}")
+ println(s" range - A1:Z65535")
+ df=spark.read.format("com.crealytics.spark.excel").option("header","true").option("inferSchema","true").option("dataAddress", s"${tabName}!A1:Z65535").load(s"${currentFileName}").withColumn("tabName",org.apache.spark.sql.functions.lit(s"${tabName}")) // in future range can be modified
+ println("First - end")
+ //System.gc
+ case _ => 
+  //System.gc
+  println("next")
+  println(s"tabName- ${tabName}")
+  println(s"currentFileName - ${currentFileName}")
+  println(s"range - A1:Z65535")
+  df=df.union(spark.read.format("com.crealytics.spark.excel").option("header","true").option("inferSchema","true").option("dataAddress", s"$tabName!A1:Z65535").load(s"${currentFileName}").withColumn("tabName",org.apache.spark.sql.functions.lit(s"${tabName}"))) // in future range can be modified
+  println("next - end")
+  //System.gc
+}
+}
+
+spark-shell --packages com.crealytics:spark-excel_2.12:0.13.6 --driver-memory 4g --num-executors 2 --executor-cores 3 --driver-cores 2 --executor-memory 1g --conf spark.driver.maxResultSize=3072m --conf spark.dynamicAllocation.enabled=false --conf spark.serializer=org.apache.spark.serializer.KryoSerializer --conf spark.kryoserializer.buffer.max=256mb  --conf spark.executor.heartbeatInterval=20000 --conf spark.sql.shuffle.partitions=10 --conf spark.memory.offHeap.enabled=true --conf spark.memory.offHeap.size=16g -Xmx
+
+
+spark-shell --packages com.crealytics:spark-excel_2.12:0.13.6 --driver-memory 4g --num-executors 2 --executor-cores 3 --driver-cores 2 --executor-memory 1g --conf spark.driver.maxResultSize=3072m --conf spark.dynamicAllocation.enabled=false --conf spark.serializer=org.apache.spark.serializer.KryoSerializer --conf spark.kryoserializer.buffer.max=256mb  --conf spark.executor.heartbeatInterval=200000 --conf spark.sql.shuffle.partitions=10 --conf spark.memory.offHeap.enabled=true --conf spark.memory.offHeap.size=16g --conf "spark.driver.extraJavaOptions=-Xms4g" --conf spark.network.timeout=200009 --conf spark.storage.blockManagerSlaveTimeoutMs=200010
+
+
+spark-shell --packages com.crealytics:spark-excel_2.12:0.13.6 --driver-memory 8g --conf spark.driver.maxResultSize=5120m --conf spark.dynamicAllocation.enabled=false --conf spark.serializer=org.apache.spark.serializer.KryoSerializer --conf spark.executor.heartbeatInterval=1200000 --conf spark.sql.shuffle.partitions=10 --conf spark.memory.offHeap.enabled=true --conf spark.memory.offHeap.size=16g --conf "spark.driver.extraJavaOptions=-Xms4g" --conf spark.network.timeout=1200009 --conf spark.storage.blockManagerSlaveTimeoutMs=1200010
+
+
