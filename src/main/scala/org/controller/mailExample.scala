@@ -3,7 +3,6 @@ package org.controller
 import javax.mail._
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
-
 object mailExample {
 
   def main(args: Array[String]): Unit = {
@@ -34,7 +33,6 @@ object mailExample {
       //message.setHeader("name","value")
     //  message.setText(msg.body)
       message.setContent(msg.body,"text/html; charset=utf-8")
-
       val transport = session.getTransport("smtp")
       transport.connect(smptHost, fromMailId, "ajlvgqzkperftssx")
       transport.sendMessage(message,message.getAllRecipients)

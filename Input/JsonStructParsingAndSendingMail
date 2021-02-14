@@ -1,0 +1,336 @@
+// passing Array[String] is not working
+def messageConverter (inputArray:Array[String]):String=
+{
+var tempString="{\"value\":"
+var iterationIndex=0
+for(input <-  inputArray) //for(indexVar <- 0 to  inputArray.size -1)
+iterationIndex match {
+case 0 => 
+tempString=tempString+ "{\"Subject\" : \""+input+"\"\n , \"Body\":\""
+iterationIndex=iterationIndex+1
+case value if value == inputArray.size -1 => 
+tempString=tempString+input+"\n Thank you\n\"}}"
+iterationIndex=iterationIndex+1
+case value => 
+tempString=tempString+input+"\n"
+iterationIndex=iterationIndex+1
+}
+tempString
+}
+----------
+
+
+def messageConverter(inputString:String):String=
+{
+val inputArray=inputString.split(",")
+//var tempString="{\"payload\":"
+var tempString="\"payload\":"
+var iterationIndex=0
+for(input <-  inputArray) //for(indexVar <- 0 to  inputArray.size -1)
+iterationIndex match {
+case 0 => tempString=tempString+ "\"{\\\"Subject\\\" : \\\""+input+"<br>\\\" , \\\"Body\\\":\\\" "
+iterationIndex=iterationIndex+1
+case value if value == inputArray.size -1 => tempString=tempString+input.split("~")(0)+"<br> Thank you <br> \\\",\\\"fromAddress\\\":\\\""+input.split("~")(1).split("%")(0)+"\\\",\\\"toAddresses\\\":\\\""+input.split("~")(1).split("%")(1)+"\\\"}\""
+iterationIndex=iterationIndex+1
+case value if value == inputArray.size -1 => tempString=tempString+input+"<br> Thank you<br>\\\"}\""
+iterationIndex=iterationIndex+1
+case value => tempString=tempString+input+"<br>"
+iterationIndex=iterationIndex+1
+}
+tempString
+}
+
+import java.text.SimpleDateFormat
+import java.sql.Timestamp
+def metaDataAppender(payload:String,jobName:String)={
+//val ts= new Timestamp(System.currentTimeMillis())
+val dateFormat=new SimpleDateFormat("YYYY-MM-DD HH:mm:ss.SSS")
+"{\"jobName\" : \"" + s"${jobName}"+"\"," +payload +",\"timeStamp\":\""+s"${dateFormat.format(new Timestamp(System.currentTimeMillis))}"+"\"}"
+}
+
+
+
+------------------------------
+//with,
+// \n
+def messageConverter(inputString:String):String=
+{
+val inputArray=inputString.split(",")
+//var tempString="{\"payload\":"
+var tempString="\"payload\":"
+var iterationIndex=0
+for(input <-  inputArray) //for(indexVar <- 0 to  inputArray.size -1)
+iterationIndex match {
+case 0 => tempString=tempString+ "\"{\\\"Subject\\\" : \\\""+input+"\\\" , \\\"Body\\\":\\\" \\n "
+iterationIndex=iterationIndex+1
+//case value if value == inputArray.size -1 => tempString=tempString+input+"\\n Thank you \\n \\\"}\""
+case value if value == inputArray.size -1 => tempString=tempString+input.split("~")(0)+"\\n Thank you \\n \\\",\\\"From\\\":\\\""+input.split("~")(1).split("%")(0)+"\\\",\\\"To\\\":\\\""+input.split("~")(1).split("%")(1)+"\\\"}\""
+iterationIndex=iterationIndex+1
+case value => tempString=tempString+input+"\\n"
+iterationIndex=iterationIndex+1
+}
+tempString
+}
+
+import java.text.SimpleDateFormat
+import java.sql.Timestamp
+def metaDataAppender(payload:String,jobName:String)={
+//val ts= new Timestamp(System.currentTimeMillis())
+val dateFormat=new SimpleDateFormat("YYYY-MM-DD HH:mm:ss.SSS")
+"{\"jobName\" : \"" + s"${jobName}"+"\"" +s",${payload}" +",\"timeStamp\":\""+s"${dateFormat.format(new Timestamp(System.currentTimeMillis))}"+"\"}"
+}
+
+,,,,~from%to$to2$to3:Jobname
+------------------------------------------------------------------
+
+--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,net.liftweb:lift-json_2.12:3.4.3,javax.mail:mail:1.4.7
+
+
+//,javax.mail:javax.mail-api:1.6.2,,com.sun.mail:javax.mail:1.6.2
+
+//spark.udf.register("msgConvert",messageConverter(_:Array[String]))
+
+spark.udf.register("msgConvert",messageConverter(_:String))
+spark.udf.register("metaDataAppender",metaDataAppender(_:String,_:String))
+
+//val lines = spark.readStream.format("socket").option("host", "localhost").option("port","9999").option("offsets", "latest").load.selectExpr("split(value,',') as valueSplitted").selectExpr("msgConvert(valueSplitted) as value")
+
+// reading from socket and printing in kafka, as metadata with payload
+// with metadata
+val lines = spark.readStream.format("socket").option("host", "localhost").option("bootstrap.servers","localhost:9997").option("port","9997").option("offsets", "latest").load.selectExpr("metaDataAppender(msgConvert(split(value,':')[0]),split(value,':')[1]) as value")
+
+// without metadata
+val lines = spark.readStream.format("socket").option("host", "localhost").option("bootstrap.servers","localhost:9997").option("port","9996").option("offsets", "latest").load.selectExpr("msgConvert(split(value,':')[0])")
+
+
+
+// array of string is not working, obsolete req. Refer socket stream logic
+// val lines = spark.readStream.format("socket").option("bootstrap.servers","localhost:9999").option("offsets", "latest").option("host", "localhost").option("port","9999").load.selectExpr("split(value,',') as valueSplitted").selectExpr("msgConvert(valueSplitted) as value").selectExpr("cast(value as string) as value") 
+
+// to console
+lines.writeStream.format("console").outputMode("update").option("truncate","false").option("checkpointLocation","hdfs://localhost:8020/user/raptor/streams/ceckSream9/").start
+
+// to kafka
+lines.writeStream.format("kafka").option("kafka.bootstrap.servers","localhost:9092,localhost:9093,localhost:9094").option("topic","tmpTopic").option("checkpointLocation","hdfs://localhost:8020/user/raptor/streams/ceckSream8/").start
+
+--property print.key=true  --property key.separator="::"
+ 
+--property parse.key=true   --property key.separator=":"
+
+// reading the event from topic with metadata
+
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types._
+
+val schemaEventCols=Array(StructField("jobName",StringType,true),StructField("payload",StringType,true),StructField("timeStamp",StringType,true))
+val schemaEvent=StructType(schemaEventCols)
+
+val schemaPayloadCols=Array(StructField("Subject",StringType,true),StructField("Body",StringType,true),StructField("fromAddress",StringType,true),StructField("toAddresses",StringType,true))
+val schemaPayload=StructType(schemaPayloadCols)
+
+// show
+
+//import net.liftweb.json._
+case class totalData(jobName:String,timeStamp:String,Subject:String,Body:String,fromAddress:String,toAddresses:String)
+case class totalDataWithStatus(jobName:String,timeStamp:String,Subject:String,Body:String,fromAddress:String,toAddresses:String,mailStatus:Boolean)
+
+import scala.util.Try
+
+val lines = spark.readStream.format("kafka").option("kafka.bootstrap.servers","localhost:9092,localhost:9093,localhost:9094").option("subscribe","tmpTopic").option("offsets", "latest").option("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer").option("value.deserializer","org.apache.kafka.common.serialization.StringDeserializer").load.select(from_json(col("value").cast(StringType),schemaEvent).as("value")).selectExpr("value.*").withColumn("payloadParsed",from_json($"payload",schemaPayload)).selectExpr("jobName","timeStamp","payloadParsed.*").as[totalData].map(dataParsed => Try{mailSender(dataParsed)}.isSuccess match {case true => totalDataWithStatus(dataParsed.jobName,dataParsed.timeStamp,dataParsed.Subject,dataParsed.Body,dataParsed.fromAddress,dataParsed.toAddresses,true) case _ => totalDataWithStatus(dataParsed.jobName,dataParsed.timeStamp,dataParsed.Subject,dataParsed.Body,dataParsed.fromAddress,dataParsed.toAddresses,false)})
+
+/*
+def mailWrapper(dataParsed:totalData)= Try{mailSender(dataParsed)}.isSuccess match {case true => totalDataWithStatus(dataParsed.jobName,dataParsed.timeStamp,dataParsed.Subject,dataParsed.Body,dataParsed.fromAddress,dataParsed.toAddresses,true) case _ => totalDataWithStatus(dataParsed.jobName,dataParsed.timeStamp,dataParsed.Subject,dataParsed.Body,dataParsed.fromAddress,dataParsed.toAddresses,false)}
+
+
+.as[totalDataWithStatus]  
+
+
+val lines = spark.readStream.format("kafka").option("kafka.bootstrap.servers","localhost:9092,localhost:9093,localhost:9094").option("subscribe","tmpTopic").option("offsets", "latest").option("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer").option("value.deserializer","org.apache.kafka.common.serialization.StringDeserializer").load.select(from_json(col("value").cast(StringType),schemaEvent).as("value")).selectExpr("value.*").withColumn("payloadParsed",from_json($"payload",schemaPayload)).selectExpr("jobName","timeStamp","payloadParsed.*").as[totalData].map(mailSender(_))
+
+
+*/
+
+
+/*case class dataFromKafka(event:String)
+case class dataWithMetaData(jobName:String,payload:String,timeStamp:String)
+case class dataInsideMetadata(Subject:String,Body:String)
+
+class wrapperForJsonConversion extends DefaultFormats with Serializable{   // this defaultFormats needs to be serializable in order to work 
+implicit val formats = net.liftweb.json.DefaultFormats
+def jsonConverterForMetadata(jsonString:String)=parse(jsonString).extract[dataWithMetaData]
+def jsonConverterForPayload(jsonString:String)=parse(jsonString).extract[dataInsideMetadata]
+}
+
+
+def jsonConverterForMetadata(jsonString:String)=parse(jsonString).extract[dataWithMetaData]
+def jsonConverterForPayload(jsonString:String)=parse(jsonString).extract[dataInsideMetadata]
+
+val jsonWrapperObject= new wrapperForJsonConversion
+
+spark.udf.register("jsonConverterForMetadata",jsonWrapperObject.jsonConverterForMetadata(_:String))
+spark.udf.register("jsonConverterForPayload",jsonWrapperObject.jsonConverterForPayload(_:String))
+
+
+val lines = spark.readStream.format("kafka").option("kafka.bootstrap.servers","localhost:9092,localhost:9093,localhost:9094").option("subscribe","tmpTopic").option("offsets", "latest").option("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer").option("value.deserializer","org.apache.kafka.common.serialization.StringDeserializer").load.select($"value".cast(StringType).as("event")).as[dataFromKafka].map(x => jsonConverterForMetadata(x.event)).map(x => jsonConverterForPayload(x.payload))
+
+
+*/
+
+lines.writeStream.format("console").outputMode("update").option("truncate","false").option("checkpointLocation","hdfs://localhost:8020/user/raptor/streams/ceckSream2/").start
+
+// send mail for each record.
+
+/*
+case class eventWithMetaData(jobName:String,payload:String,timestamp:String)
+lines.writeStream.format("console").outputMode("update").option("truncate","false").option("checkpointLocation","hdfs://localhost:8020/user/raptor/streams/ceckSream4/").foreachBatch((df:org.apache.spark.sql.DataFrame,batchId:Long) =>{spark.read.json(df.collect.map(_(0).toString).toSeq.toDF[eventWithMetaData]).select("jobName","payload","timestamp").selectExpr("cast(payload as string) as value").write.format("kafka").option("kafka.bootstrap.servers","localhost:9092,localhost:9093,localhost:9094").option("topic","tmpTopic2").option("checkpointLocation","hdfs://localhost:8020/user/raptor/streams/ceckSream5/").save}).start
+
+
+lines.writeStream.format("console").outputMode("update").option("truncate","false").option("checkpointLocation","hdfs://localhost:8020/user/raptor/streams/ceckSream4/").foreachBatch((df:org.apache.spark.sql.DataFrame,batchId:Long) =>
+{
+val dfDataTotal=df.collect.map(_(0).toString).toList
+for (dfData <- dfDataTotal)
+spark.read.json(dfData).show
+}
+).start
+*/
+
+
+///////////////////////////////////////
+
+Seq(("{\"jobname\":\"cool\",\"payload\":\"cool-2\",\"timestamp\":\"2020-09-08 11:20:13.333\"}")).toDF("value").select(from_json($"value",schemaEvent)).show(false)
+
+
+read from kafka, write to another kafka with metadata , read and parse it in another stream.--------------------------------------------
+
+sub-1,body-1,body-2,body3~driftking9696@outlook.in%drifting9696@gmail.com:jobName-1
+sub-2,body-1,body-2,body3~driftking9696@outlook.in%drifting9696@gmail.com:jobName-2
+sub-3,body-1,body-2,body3~driftking9696@outlook.in%drifting9696@gmail.com:jobName-3
+sub-4,body-1,body-2,body3~driftking9696@outlook.in%drifting9696@gmail.com$thulasitharan.gt96@gmail.com:jobName-4
+sub-5,body-1,body-2,body3~driftking9696@outlook.in%drifting9696@gmail.com$thulasitharan.gt96@gmail.com:jobName-5
+sub-6,body-1,body-2,body3~driftking9696@outlook.in%drifting9696@gmail.com$thulasitharan.gt96@gmail.com:jobName-6
+sub-7,body-1,body-2,body3~driftking9696@outlook.in%drifting9696@gmail.com$thulasitharan.gt96@gmail.com:jobName-7
+sub-8,body-1,body-2,body3~driftking9696@outlook.in%drifting9696@gmail.com$thulasitharan.gt96@gmail.com:jobName-8
+sub-9,body-1,body-2,body3~driftking9696@outlook.in%drifting9696@gmail.com$thulasitharan.gt96@gmail.com:jobName-9
+sub-10,body-1,body-2,body3~driftking9696@outlook.in%drifting9696@gmail.com:jobName-10
+sub-11,body-1,body-2,body3~driftking9696@outlook.in%drifting9696@gmail.com$thulasitharan.gt96@gmail.com:jobName-11
+
+// def mail sender 
+
+import java.util._  
+import javax.mail._  
+import javax.mail.internet._ 
+// import javax.activation._ 
+
+def mailSender(data:totalData)=
+{
+val props=new Properties
+props.put("mail.smtp.host","smtp-mail.outlook.com")
+props.put("mail.smtp.auth", "true")
+props.put("mail.smtp.port", "587")
+props.put("mail.smtp.starttls.enable", "true")
+val session= Session.getInstance(props,null)
+val message=new MimeMessage(session)
+message.setFrom(new InternetAddress(data.fromAddress)) 
+for (toAddress <- data.toAddresses.split("\\$")) 
+message.addRecipient(javax.mail.Message.RecipientType.TO,new InternetAddress(toAddress)) //Message.RecipientType.To,
+message.setSubject(data.Subject)
+//message.setText("Hi, This mail is to inform you...") // for text alone
+message.setContent(data.Body, "text/html;charset=utf-8")
+// Transport.send(message)
+val transport = session.getTransport("smtp")
+transport.connect("smtp-mail.outlook.com",data.fromAddress, "XXXX")
+transport.sendMessage(message,message.getAllRecipients)
+}
+
+
+val data=totalData("jobName",s"${dateFormat.format(new Timestamp(System.currentTimeMillis))}","tmpSubject","tmpBody<br>tmpBody1<br>tmpBody2<br>","driftking9696@outlook.in","drifting9696@gmail.com$thulasitharan.gt96@gmail.com")
+
+mailSender(data)
+
+/////////////////////////
+
+val arrayCols=ArrayType(StructType(Array(StructField("jobName",StringType,true),StructField("valueGiven",StringType,true))))
+
+// array of json
+Seq(("[{\"jobName\":\"J1\",\"valueGiven\":\"V1\"},{\"jobName\":\"J2\",\"valueGiven\":\"V2\"},{\"jobName\":\"J3\",\"valueGiven\":\"V3\"}]")).toDF("col").select(from_json($"col",arrayCols))
+
+
+
+import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.SparkSession
+
+//schema for the below string
+
+// {"num1":8,"num2":4,"bool1":true,"bool2":true,"double1":5.7,"double2":7.5,"str1":"t","str2":"k","arr1":[11,12,23],"map1":{"preserve":1,"medium":2,"fast":3},"carInfo":{"Engine":{"Make":"ta","Power":{"IC":"950","battery":"170"},"Redline":"12500"} ,"Tyres":{"Make":"Pirelli","Compound":"c3","Life":"80"}}}
+
+
+val arrayCols=StructType(Array(StructField("num1",IntegerType,true),StructField("num2",IntegerType,true),StructField("bool1",BooleanType,true),StructField("bool2",BooleanType,true),StructField("double1",DoubleType,true),StructField("double2",DoubleType,true),StructField("str1",StringType,true),StructField("str2",StringType,true),StructField("map1",StructType(Array(StructField("normal",IntegerType,true),StructField("preserve",IntegerType,true),StructField("agressive",IntegerType,true))),true),StructField("carInfo",StructType(Array(StructField("Engine",StructType(Array(StructField("Make",StringType,true),StructField("Power",StructType(Array(StructField("IC",StringType,true),StructField("battery",StringType,true))),true),StructField("Redline",StringType,true))),true),StructField("Tyres",StructType(Array(StructField("Make",StringType,true),StructField("Compound",StringType,true),StructField("Life",StringType,true))),true))),true)))
+
+
+// a datatype is defined as StructType(Array(StructFields))
+// a nested datatype comes inside a struct fields as StructType(Array(StructField("",StructType(Array(StructFields[*])),true))) , more nesting goes inside the [*]
+
+
+StructField("Tyres",MapType(StringType,StringType))
+// RDD  
+def jsonToDataFrame(spark:SparkSession,json: String) = spark.sparkContext.parallelize(Array(json))
+// false 
+def jsonToDataFrame(spark:SparkSession,json: String) = spark.read.json(spark.sparkContext.parallelize(Array(json)))
+
+var finalDF:org.apache.spark.sql.DataFrame=null
+Seq(("{\"num1\":7,\"num2\":9,\"bool1\":false,\"bool2\":true,\"double1\":33.2,\"double2\":7.5,\"str1\":\"b\",\"str2\":\"u\",\"arr1\":[12,14,5],\"map1\":{\"normal\":1,\"preserve\":2,\"agressive\":3},\"carInfo\":{\"Engine\":{\"Make\":\"pa\",\"Power\":{\"IC\":\"920\",\"battery\":\"160\"},\"Redline\":\"11800\"} ,\"Tyres\":{\"Make\":\"Pirelli\",\"Compound\":\"c4\",\"Life\":\"70\"}}}")).map( x => finalDF match {case null => finalDF = jsonToDataFrame(spark,x) case _ => finalDF= finalDF.union(jsonToDataFrame(spark,x))})
+
+///////our schema  
+val tempDF=Seq(("{\"num1\":7,\"num2\":9,\"bool1\":false,\"bool2\":true,\"double1\":33.2,\"double2\":7.5,\"str1\":\"b\",\"str2\":\"u\",\"arr1\":[12,14,5],\"map1\":{\"normal\":1,\"preserve\":2,\"agressive\":3},\"carInfo\":{\"Engine\":{\"Make\":\"pa\",\"Power\":{\"IC\":\"920\",\"battery\":\"160\"},\"Redline\":\"11800\"} ,\"Tyres\":{\"Make\":\"Pirelli\",\"Compound\":\"c4\",\"Life\":\"70\"}}}")).toDF("value").select(from_json($"value",arrayCols).as("nestedCols")).selectExpr("nestedCols.*")
+
+
+// flatten function 
+deepFlatten(Seq(("{\"num1\":7,\"num2\":9,\"bool1\":false,\"bool2\":true,\"double1\":33.2,\"double2\":7.5,\"str1\":\"b\",\"str2\":\"u\",\"arr1\":[12,14,5],\"map1\":{\"normal\":1,\"preserve\":2,\"agressive\":3},\"carInfo\":{\"Engine\":{\"Make\":\"pa\",\"Power\":{\"IC\":\"920\",\"battery\":\"160\"},\"Redline\":\"11800\"} ,\"Tyres\":{\"Make\":\"Pirelli\",\"Compound\":\"c4\",\"Life\":\"70\"}}}")).toDF("value").select(from_json($"value",arrayCols).as("nestedCols"))
+
+
+// usage deepFlatten(df)
+val mainArrayBuffer=collection.mutable.ArrayBuffer[String]()
+val conversionExpressionBuffer=collection.mutable.ArrayBuffer[String]()
+
+def flattenDF(df:org.apache.spark.sql.DataFrame)={ // val df=tempDF
+val mainArrayBufferTemp=collection.mutable.ArrayBuffer[String]()
+val conversionExpressionBufferTemp=collection.mutable.ArrayBuffer[String]()
+val dfCols=	df.dtypes
+var nonStructDFcols=dfCols.filter(! _._2.contains("StructType"))
+var structDFcols=dfCols.filter( _._2.contains("StructType"))
+nonStructDFcols.map(mainArrayBufferTemp+= _._1)
+for( structDFcol <- structDFcols ) //.map(x => s"${x._1}.*") // val structDFcol=structDFcols(0)
+{
+val tempDFCols=df.selectExpr(s"${structDFcol._1}.*").dtypes    //df.selectExpr((structDFcols.map(x => s"${x._1}.*").toSeq ++ Seq("*")):_*) 
+val nonStructDFcolsTemp=tempDFCols.filter(! _._2.contains("StructType"))
+val structDFcolsTemp=tempDFCols.filter( _._2.contains("StructType"))
+structDFcolsTemp.map(x => conversionExpressionBufferTemp += s"${structDFcol._1}.${x._1} as ${structDFcol._1}_${x._1}") 
+nonStructDFcolsTemp.map( x=> mainArrayBufferTemp+= s"${structDFcol._1}.${x._1} as ${structDFcol._1}_${x._1}")     
+}
+mainArrayBufferTemp.map( x=> mainArrayBuffer+= x)
+conversionExpressionBufferTemp.map( x => conversionExpressionBuffer += x)
+df.selectExpr(conversionExpressionBufferTemp.toSeq:_*)
+}
+
+def deepFlatten(df:org.apache.spark.sql.DataFrame,structTypeCols:Array[(String, String)])
+{
+conversionExpressionBuffer.clear
+mainArrayBuffer.clear
+val initialDF=df
+var outPutDF=df
+var structDFcolsSize=1
+while(structDFcolsSize>0)
+{
+outPutDF=flattenDF(outPutDF)
+val outPutDFDtypes=outPutDF.dtypes
+structDFcolsSize=tempDFCols.filter( _._2.contains("StructType")).size
+}
+var finalOutputDF=df
+for(conversionExpression <- conversionExpressionBuffer)
+	finalOutputDF=finalOutputDF.selectExpr("*",s"${conversionExpression}")
+finalOutputDF.selectExpr(mainArrayBuffer.toSeq:_*)
+}
+	
+
