@@ -1,0 +1,196 @@
+1. given a string, print the count of occurrence of each character in alphabetical order
+
+Eg: Mississippi
+M : 1
+i : 4
+p : 2
+s : 4
+
+Eg: programming
+a : 1
+g : 2
+i : 1
+m : 2
+n : 1
+o : 1
+p : 1
+r : 2
+
+
+val inputList="Mississippi".toLowerCase.toList.toSeq.map(_.toString).sortWith(_ < _) 
+
+import scala.util.Try
+val inputMap=collection.mutable.Map[String,Int]()
+for(input <- inputList)
+Try{inputMap(input)}.isSuccess match
+{
+case true => inputMap.put(input,inputMap(input)+1)
+case false => inputMap.put(input,1)
+}
+
+val mapKeys=inputMap.keys.toSeq.sortWith(_ < _)  // soet descending and put from behind
+val finalMap=collection.mutable.LinkedHashMap[String,Int]()
+for(mapKey <- mapKeys)
+finalMap.put(mapKey,inputMap(mapKey))
+// _1 is ke,_2 will do by value
+
+else ------------------------------
+
+val inputList="Mississippi".toLowerCase.toList.toSeq.map(_.toString)//.sortWith(_ < _) 
+import scala.util.Try
+val inputMap=collection.mutable.Map[String,Int]()
+for(input <- inputList)
+Try{map(input)}.isSuccess match
+{
+case true => inputMap.put(input,inputMap(input)+1)
+case false => inputMap.put(input,1)
+}
+
+inputMap.toSeq.sortBy(_._1).toMap 
+
+
+2. Given an array of size N-1 such that it can only contain distinct integers in the range of 1 to N. Find the missing element.
+
+eg: [1,2,3,4,5,7]
+op: 6
+
+//val inputArray=Array(1,2,3,4,5,7).sortWith(_ < _)
+//val inputArray=Array(1,2,4,5,6,7,8,9,10).sortWith(_ < _)
+val inputArray=Array(1,2,3,4,5,6,7,8,9,10).sortWith(_ < _)
+val inputArrayTmp=inputArray
+var arrayEndIndex=inputArray.size -1
+var arrayStartIndex=0
+var arrayEndIndexTmp=arrayEndIndex
+var arrayStartIndexTmp=arrayStartIndex
+var elementFindFlag=true
+var currentMidIndex=arrayEndIndexTmp/2
+
+//checks if the midle elemtnt is equal to the index (+1 is to stablize the index, id 0 is present in the list then +1 must be handled), if the index+ is is equal to the value then move to right hald, else move to left half
+while(elementFindFlag)
+{
+println(s"current Array - ${inputArrayTmp.slice(arrayStartIndexTmp,arrayEndIndexTmp).deep}")  // .deep is for elemnts to be converted from wrapped array to array
+// println(inputArrayTmp.slice(arrayStartIndexTmp,arrayEndIndexTmp).deep)
+println(s"currentMidIndex - ${currentMidIndex}")
+if ((arrayEndIndexTmp-arrayStartIndexTmp) ==1) //(inputArray.slice(arrayStartIndexTmp,arrayEndIndexTmp).size ==1)
+{
+if (inputArray(arrayStartIndexTmp)+1 == inputArray(arrayEndIndexTmp))
+{
+println(s"There is no missing Number")
+elementFindFlag=false
+}
+else
+{
+elementFindFlag=false
+println(s"Number Missing is ${currentMidIndex+1}")
+}
+}
+else if (currentMidIndex+1 == inputArray(currentMidIndex)) 
+arrayStartIndexTmp=currentMidIndex
+else 
+arrayEndIndexTmp=currentMidIndex
+
+currentMidIndex = arrayStartIndexTmp +  Math.ceil((arrayEndIndexTmp -arrayStartIndexTmp).toDouble /2.0).toInt
+println(s"currentMidIndex - ${currentMidIndex}")
+println(s"arrayStartIndexTmp - ${arrayStartIndexTmp}")
+println(s"arrayEndIndexTmp - ${arrayEndIndexTmp}")
+println(s"arrayStartIndex - ${arrayStartIndex}")
+println(s"arrayEndIndex - ${arrayEndIndex}")
+}
+
+
+
+================
+
+
+tableA(a,b,c)
+111
+222
+444
+tableB(a,b,c)
+111
+222
+333
+
+val columnNames=Seq("a","b","c")
+val tableA="""111
+222
+444""".split("\n").map(_.toList).map(x => (x(0).toString,x(1).toString,x(2).toString)).toSeq.toDF(columnNames:_*)
+val tableB="""111
+222
+333""".split("\n").map(_.toList).map(x => (x(0).toString,x(1).toString,x(2).toString)).toSeq.toDF(columnNames:_*)
+
+tableA.createOrReplaceTempView("tableA")
+tableB.createOrReplaceTempView("tableB")
+
+spark.sql("select * from tableA union all select * from tableB") // tableA.unionAll(tableB)
+spark.sql("select * from tableA union  select * from tableB") // tableA.union(tableB)
+spark.sql("select a,b,c,count(*) from (select * from tableA union all select * from tableB ) group by a,b,c having count(*) > 1") // tableA.unionAll(tableB).groupBy("a","b","c").agg(count("*").as("rowCount")).where("rowCount >1").show
+
+get all the records, get distinct records, find dupes
+
+select * from tableA union all tableB
+
+select distinct * from tableA union tableB
+
+select a,b,c,count(*) from (select * from tableA union all tableB) a group by a,b,c having count(*) = 1
+
+--- ----------------------------- in image find the second highest of things, if there is no second highest , return first highest.
+val salaryDF="""100,800
+101,950
+102,1100
+103,1250
+104,1250
+105,1500
+106,800""".split("\n").map(_.split(",")).map( x => (x(0),x(1))).toSeq.toDF("emp_id","sal")
+
+val employeeDF="""100,smith,100
+101,james,101
+102,adam,101
+103,martin,100
+104,waed,102
+105,tuner,102
+106,boomer,104""".split("\n").map(_.split(",")).map( x => (x(0),x(1),x(2))).toSeq.toDF("emp_id","name","dept_id")
+
+val deptDF="""100,sales
+101,HR
+102,Engineering
+104,Labour""".split("\n").map(_.split(",")).map( x => (x(0),x(1))).toSeq.toDF("dept_id","dept_name")
+
+find names of person per dept who gets second higest Sal
+
+import org.apache.spark.sql.expressions.Window
+import org.apache.spark.sql.functions._
+
+val rankColDF=employeeDF.join(salaryDF,Seq("emp_id")).join(deptDF,Seq("dept_id"),"left").withColumn("rankCol", dense_rank.over(Window.partitionBy("dept_id").orderBy(desc("sal"))))
+
+val rankCountDF= rankColDF.groupBy("dept_name").agg(count("*").as("rankCount"))
+
+val rankCountNDF= rankColDF.groupBy("dept_name").agg(count("*").as("rankCount")).where("rankCount >1")
+val rankCount1DF= rankColDF.groupBy("dept_name").agg(count("*").as("rankCount")).where("rankCount =1")
+
+
+val secondHigestSalaryDF= rankColDF.join(rankCountNDF,Seq("dept_name"),"right").where($"rankCol"=== "2")
+val higestSalaryDF= rankColDF.join(rankCount1DF,Seq("dept_name"),"right") //.where($"rankCol"=== "1")
+
+val finalResultDF=higestSalaryDF.union(secondHigestSalaryDF).withColumn("presentFlag",when(col("rankCol") ===2,lit(true)).otherwise(lit(false))).drop("rankCol","rankCount")
+
+
+---------------
+20 partions 
+5 cores per eq
+
+num-exectors 2 
+
+
+spark.read.option("header","true").option("inferSchema","true").option("delimiter","|").csv("")
+spark.read.format("").option("header","true").option("inferSchema","true").option("delimiter","|").load("")
+
+sc.textFile().take(3)
+
+soda , great expectations
+
+second highest lates
+
+"""111
+222
+444""".split("\n").map(_.toList.map(_.toString).toSeq).toTuple

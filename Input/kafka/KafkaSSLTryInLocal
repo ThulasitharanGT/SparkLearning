@@ -1,0 +1,143 @@
+openssl genrsa -out root.key
+openssl req -new -x509 -key root.key -out root.crt
+
+#Country Name (2 letter code) [AU]:US
+#State or Province Name (full name) [Some-State]:MA
+#Locality Name (eg, city) []:Cambridge
+#Organization Name (eg, company) [Internet Widgits Pty Ltd]:Datasoft Technologies Limited
+#Organizational Unit Name (eg, section) []:
+#Common Name (e.g. server FQDN or YOUR name) []:*.dstech.com
+#Email Address []:rootuser@dstech.com
+
+# kafka jks 
+keytool -certreq -keystore kafka.truststore.jks -alias CARoot -import -file root.crt
+#Pwd : test123
+		   
+keytool -keystore kafka.keystore.jks -alias localhost -validity 365 -genkey -keyalg RSA -ext SAN=DNS:localhost    
+
+#Pwd : test123
+#
+#  What is your first and last name?
+#  [Unknown]:  kafka.ssl.dstech.com
+#What is the name of your organizational unit?
+#  [Unknown]:  
+#What is the name of your organization?
+#  [Unknown]:  Dstasoft Tech
+#What is the name of your City or Locality?
+#  [Unknown]:  Cambridge
+#What is the name of your State or Province?
+#  [Unknown]:  MA
+#What is the two-letter country code for this unit?
+#  [Unknown]:  US
+#Is CN=kafka.ssl.dstech.com, OU=Unknown, O=Dstasoft Tech, L=Cambridge, ST=MA, C=US correct?
+#  [no]:  yes
+#
+#Enter key password for <localhost>
+#	(RETURN if same as keystore password): test123 
+
+keytool -keystore kafka.keystore.jks -alias localhost -certreq -file kafka.ssl.unsigned.crt
+
+#Enter keystore password:  
+#
+#Warning:
+#The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format using "keytool -importkeystore -srckeystore kafka.ssl.keystore.jks -destkeystore kafka.ssl.keystore.jks -deststoretype pkcs12".
+
+
+openssl x509 -req -CA root.crt -CAkey root.key -in kafka.ssl.unsigned.crt -out kafka.ssl.signed.crt -days 365 -CAcreateserial
+
+keytool -keystore kafka.keystore.jks -alias CARoot -import -file root.crt
+#Pwd : test123
+
+keytool -keystore kafka.keystore.jks -alias localhost -import -file kafka.ssl.signed.crt
+#Pwd : test123
+
+props for server.properties
+
+log.dirs=/home/raptor/Softwares/kafka_2.12-2.7.0/tmp/kafka-logs
+ssl.keystore.location=/home/raptor/Softwares/kafka_2.12-2.7.0/keys/kafka.keystore.jks
+ssl.keystore.password=test123
+ssl.key.password=test123
+ssl.truststore.location=/home/raptor/Softwares/kafka_2.12-2.7.0/keys/kafka.truststore.jks
+ssl.truststore.password=test123
+ssl.keystore.type=JKS
+ssl.truststore.type=JKS
+ssl.enabled.protocols=TLSv1.2,TLSv1.1,TLSv1
+ssl.client.auth=required
+ssl.endpoint.identification.algorithm=
+
+./bin/kafka-console-producer.sh --broker-list localhost:9194 --topic tmpTopic --producer.config ./keys/keysForCLI.txt
+
+./bin/kafka-console-consumer.sh --broker-list localhost:9194 --topic tmpTopic --consumer.config ./keys/keysForCLI.txt --from-beginning
+
+
+./bin/zookeeper-server-start.sh ./config/zookeeper.properties 
+./bin/kafka-server-start.sh ./config/server.properties
+./bin/kafka-server-start.sh ./config/server1.properties
+
+## tried addinf both keys local host and raptor-VirtualBox error
+
+
+
+openssl genrsa -out root.key
+openssl req -new -x509 -key root.key -out root.crt
+
+#Country Name (2 letter code) [AU]:US
+#State or Province Name (full name) [Some-State]:MA
+#Locality Name (eg, city) []:Cambridge
+#Organization Name (eg, company) [Internet Widgits Pty Ltd]:Datasoft Technologies Limited
+#Organizational Unit Name (eg, section) []:
+#Common Name (e.g. server FQDN or YOUR name) []:*.dstech.com
+#Email Address []:rootuser@dstech.com
+
+# kafka jks 
+keytool -certreq -keystore kafka.truststore.jks -alias CARoot -import -file root.crt
+#Pwd : test123
+		   
+keytool -keystore kafka.keystore.jks -alias raptor-VirtualBox -validity 365 -genkey -keyalg RSA -ext SAN=DNS:raptor-VirtualBox    
+
+keytool -keystore kafka.keystore.jks -alias localhost -validity 365 -genkey -keyalg RSA -ext SAN=DNS:localhost   
+
+#Pwd : test123
+#
+#  What is your first and last name?
+#  [Unknown]:  localhost
+#What is the name of your organizational unit?
+#  [Unknown]:  
+#What is the name of your organization?
+#  [Unknown]:  Datasoft Technologies Limited
+#What is the name of your City or Locality?
+#  [Unknown]:  Cambridge
+#What is the name of your State or Province?
+#  [Unknown]:  MA
+#What is the two-letter country code for this unit?
+#  [Unknown]:  US
+#Is CN=kafka.ssl.dstech.com, OU=Unknown, O=Dstasoft Tech, L=Cambridge, ST=MA, C=US correct?
+#  [no]:  yes
+#
+#Enter key password for <localhost>
+#	(RETURN if same as keystore password): test123 
+
+keytool -keystore kafka.keystore.jks -alias raptor-VirtualBox -certreq -file kafka.ssl.unsigned1.crt
+keytool -keystore kafka.keystore.jks -alias localhost -certreq -file kafka.ssl.unsigned.crt
+
+#Enter keystore password:  
+#
+#Warning:
+#The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format using "keytool -importkeystore -srckeystore kafka.ssl.keystore.jks -destkeystore kafka.ssl.keystore.jks -deststoretype pkcs12".
+
+
+openssl x509 -req -CA root.crt -CAkey root.key -in kafka.ssl.unsigned.crt -out kafka.ssl.signed.crt -days 365 -CAcreateserial
+
+openssl x509 -req -CA root.crt -CAkey root.key -in kafka.ssl.unsigned1.crt -out kafka.ssl.signed1.crt -days 365 -CAcreateserial
+
+keytool -keystore kafka.keystore.jks -alias CARoot -import -file root.crt
+
+keytool -keystore kafka.keystore.jks -alias CARoot1 -import -file root.crt
+
+#Pwd : test123
+
+keytool -keystore kafka.keystore.jks -alias raptor-VirtualBox -import -file kafka.ssl.signed1.crt
+keytool -keystore kafka.keystore.jks -alias localhost -import -file kafka.ssl.signed.crt
+
+
+
