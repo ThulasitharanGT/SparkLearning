@@ -1,0 +1,106 @@
+import scala.xml.XML
+import scala.xml.Node
+import scala.xml.Elem
+
+val tmpXML="""<formula1>
+<Teams>
+<team>
+<teamName>Redbull racing</teamName>
+<constructorPoints>400</constructorPoints>
+<constructorStanding>2nd</constructorStanding>
+<drivers> 
+<driver raceEntries="100" nationality="Dutch">
+<driverName>Max Verstappen</driverName>
+<avgFinishPosition>3</avgFinishPosition>
+<points>300</points>
+</driver>
+<driver raceEntries="50" nationality="Thai">
+<driverName>Alex Albon</driverName>
+<avgFinishPosition>10</avgFinishPosition>
+<points>90</points>
+</driver>
+</drivers>
+</team>
+<team>
+<teamName>Mclaren Racing</teamName>
+<constructorPoints>350</constructorPoints>
+<constructorStanding>3 rd</constructorStanding>
+<drivers> 
+<driver raceEntries="100" nationality="British">
+<driverName>Lando Norris</driverName>
+<avgFinishPosition>6</avgFinishPosition>
+<points>80</points>
+</driver>
+<driver raceEntries="90" nationality="Spain">
+<driverName>Carlos Sainz</driverName>
+<avgFinishPosition>5</avgFinishPosition>
+<points>85</points>
+</driver>
+</drivers>
+</team>
+</Teams>
+</formula1>
+"""
+
+val tmpXMLParsed=XML.loadString(tmpXML)
+
+val points=tmpXMLParsed \\ "points"  // all tags named points will be pulled here.
+
+points.map(_.child)
+scala.collection.immutable.Seq[Seq[scala.xml.Node]] = List(List(300), List(90), List(80), List(85))
+
+points.map(_.child.head)
+scala.xml.NodeSeq = NodeSeq(300, 90, 80, 85)
+
+points.flatMap(_.child).head
+scala.xml.Node = 300
+
+points.flatMap(_.child).head.text
+300
+
+points.map(_.label)
+scala.collection.immutable.Seq[String] = List(points, points, points, points)
+
+// dig deeper tag by tag 
+
+val drivers=tmpXMLParsed \\ "formula1" \\ "Teams" \\ "team" \\ "drivers" \\ "driver" 
+
+val driverNationality=tmpXMLParsed \\ "formula1" \\ "Teams" \\ "team" \\ "drivers" \\ "driver" \\ "@nationality"
+
+val teamNames=(tmpXMLParsed \\ "formula1" \\ "Teams" \\ "team" \\ "teamName").map(_.child.text)
+
+val teamsTree=tmpXMLParsed \\ "formula1" \\ "Teams" \\ "team"
+
+case class driverInfo(name:String,raceEntries:String,avgFinishPosition:String,points:String,nationality:String)
+case class teamInfo(name:String,drivers:Seq[driverInfo])
+case class teamInfoFlattened(name:String,driverDetail:driverInfo,constructorPoints:String,constructorStanding:String)
+
+val driversTree=tmpXMLParsed \\ "formula1" \\ "Teams" \\ "team" \\ "drivers" 
+
+def driverInfoGenerator(node: Node) ={
+    //val driverBuffer=collection.mutable.ArrayBuffer[driverInfo]()
+   // val driverInfoNode= node \\ "driver"
+    val driverName=  (node \\"driverName").map(_.child.text).head
+    val driverNationality=  (node \\ "@nationality").map(_.text).head
+    val driverRaceEntries=  (node \\ "@raceEntries").map(_.text).head
+    val driverAvgFinishPosition=  (node \\ "avgFinishPosition").map(_.child.text).head
+    val driverPoints=  (node \\ "points").map(_.child.text).head
+    driverInfo(driverName,driverRaceEntries,driverAvgFinishPosition,driverPoints,driverNationality)
+  }
+  
+
+val driversAndTeams= teamsTree.map(x => ((x \\ "teamName").map(_.child.text).head ,(x \\ "drivers"\\ "driver").map(driverInfoGenerator),(x \\ "constructorPoints").map(_.child.text).head,(x \\ "constructorStanding").map(_.child.text).head))
+
+val driversAndTeams= teamsTree.map(x => teamInfo((x \\ "teamName").map(_.child.text).head ,(x \\ "drivers"\\ "driver").map(driverInfoGenerator)))
+
+val driverAndTeamsFlattened=driversAndTeams.flatMap(teamAndDriverInfoFlatten).toDF
+
+def teamAndDriverInfoFlatten(teamAndDriverInfo:(String, scala.collection.immutable.Seq[driverInfo], String, String)):Seq[teamInfoFlattened] ={
+val teamAndDriverInfoArrayBuffer=collection.mutable.ArrayBuffer[teamInfoFlattened]()
+val teamName=teamAndDriverInfo._1
+val constructorPoints=teamAndDriverInfo._3
+val constructorStanding=teamAndDriverInfo._4
+for(driverInfoTmp <- teamAndDriverInfo._2)
+teamAndDriverInfoArrayBuffer+=teamInfoFlattened(teamName,driverInfoTmp,constructorPoints,constructorStanding)
+teamAndDriverInfoArrayBuffer.toSeq
+}

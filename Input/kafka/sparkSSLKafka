@@ -1,0 +1,74 @@
+spark-shell --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0 
+
+val readStreamDF=spark.readStream.format("kafka").option("subscribe","tmpTopic").option("kafka.bootstrap.servers","raptor-VirtualBox/127.0.1.1:9195,raptor-VirtualBox/127.0.1.1:9194").option("offset","earliest").option("includeHeaders","true").option("checkpointLocation","hdfs://localhost:8020/user/raptor/streams/tmpCheckpoint1").option("kafka.security.protocol", "SSL").option("kafka.ssl.endpoint.identification.algorithm", "").option("kafka.ssl.truststore.location", "/home/raptor/Softwares/kafka_2.12-2.7.0/keys/kafka.truststore.jks").option("kafka.ssl.truststore.password", "test123").option("kafka.ssl.truststore.type", "jks").option("kafka.ssl.keystore.location", "/home/raptor/Softwares/kafka_2.12-2.7.0/keys/client.keystore.jks").option("kafka.ssl.keystore.password", "test123").option("kafka.ssl.key.password", "test123").load
+
+
+readStreamDF.writeStream.format("console").outputMode("Update").option("checkpointLocation","hdfs://localhost:8020/user/raptor/streams/tmpCheckpoint3").option("truncate","false").start
+
+
+// changine modification time of a file
+touch -d "2 hours ago" kafka.keystore.jks
+touch -d "2 hours ago" kafka.truststore.jks
+touch -d "2 hours ago" client.keystore.jks
+
+stat kafka.keystore.jks
+stat kafka.truststore.jks
+stat client.keystore.jks
+
+
+import java.nio.file.{Files,Path,Paths}
+// this was the proble,giving file:// in absolute path wwas causing issue.
+
+val filesTemp=Files.getLastModifiedTime(Paths.get("/home/raptor/Softwares/kafka_2.12-2.7.0/keys/client.keystore.jks"))
+filesTemp: java.nio.file.attribute.FileTime = 2021-02-27T07:59:15Z
+
+val filesTemp=Files.getLastModifiedTime(Paths.get("/home/raptor/Softwares/kafka_2.12-2.7.0/keys/client.keystore.jks")).toMillis()
+filesTemp: Long = 1614412755000
+
+//absolute path is the actual path of the file.
+// relative path
+
+Files.getLastModifiedTime(Paths.get("/home/raptor/Softwares/kafka_2.12-2.7.0/keys/client.keystore.jks"))
+
+Files.getLastModifiedTime(Paths.get("/home/raptor/Softwares/","kafka_2.12-2.7.0/keys/client.keystore.jks")) 
+
+Files.getLastModifiedTime(Paths.get("/home/raptor/Softwares/","kafka_2.12-2.7.0/keys/client.keystore.jks")).toAbsolutePath
+
+
+val basePath=Paths.get("/home/raptor/Softwares/")  // we need to have same roots in this path to relaivize these paths
+val filePath=Paths.get("/home/raptor/Softwares/kafka_2.12-2.7.0/keys/")
+basePath.relativize(filePath) 
+//java.nio.file.Path = kafka_2.12-2.7.0/keys
+
+
+
+// if the paths are relative path, you have to convert to absolute path and then relativize
+val basePath=Paths.get("/home/raptor/Softwares/").toAbsolutePath()
+val filePath=Paths.get("kafka_2.12-2.7.0/keys/","client.keystore.jks").toAbsolutePath()
+basePath.relativize(filePath) 
+//java.nio.file.Path = kafka_2.12-2.7.0/kafka_2.12-2.7.0/keys/client.keystore.jks
+
+
+
+val basePath=Paths.get("..").toAbsolutePath
+basePath: java.nio.file.Path = /home/raptor/Softwares/kafka_2.12-2.7.0/..
+
+val basePath=Paths.get("..").toAbsolutePath.normalize
+basePath: java.nio.file.Path = /home/raptor/Softwares
+
+val basePath=Paths.get(".").toAbsolutePath.normalize
+basePath: java.nio.file.Path = /home/raptor/Softwares/kafka_2.12-2.7.0
+
+val basePath=Paths.get("/home/raptor/Softwares/./kafka_2.12-2.7.0/").toAbsolutePath.normalize
+basePath: java.nio.file.Path = /home/raptor/Softwares/kafka_2.12-2.7.0
+
+
+val basePath=Paths.get("/home/raptor/Softwares/./kafka_2.12-2.7.0/bin/..").toAbsolutePath.normalize
+basePath: java.nio.file.Path = /home/raptor/Softwares/kafka_2.12-2.7.0
+
+val basePath=Paths.get("/home/raptor/Softwares/./kafka_2.12-2.7.0/bin/.").toAbsolutePath.normalize
+basePath: java.nio.file.Path = /home/raptor/Softwares/kafka_2.12-2.7.0/bin
+
+
+val basePath=Paths.get("/home/raptor/Softwares/hadoop-2.7.3/../kafka_2.12-2.7.0/bin/.").toAbsolutePath.normalize //.. is used for directory in which current dir is present , . is used for current dir
+basePath: java.nio.file.Path = /home/raptor/Softwares/kafka_2.12-2.7.0/bin

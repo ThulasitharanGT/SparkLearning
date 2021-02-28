@@ -106,6 +106,7 @@ security.protocol=SSL
 
 # Reference from 
 https://www.vertica.com/docs/9.2.x/HTML/Content/Authoring/KafkaIntegrationGuide/TLS-SSL/KafkaTLS-SSLExamplePart3ConfigureKafka.htm
+https://docs.confluent.io/2.0.0/kafka/ssl.html
 
 # You dont need client keystore because your broker and client is from same machine. will try client too.
 
