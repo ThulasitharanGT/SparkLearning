@@ -7,7 +7,7 @@ import org.apache.spark.sql.SparkSession
 trait SparkOpener
 {
 
-  def SparkSessionLoc(name:String):SparkSession={
+  def SparkSessionLoc(name:String =""):SparkSession={
     val conf=new SparkConf().setAppName(name +"Local" ).setMaster("local")
     conf.set("spark.sql.parquet.binaryAsString","true").set("spark.sql.avro.binaryAsString","true")
     //conf.set("spark.testing.memory","671859200").set("spark.ui.enabled","true").set("spark.sql.parquet.binaryAsString","true").set("spark.sql.avro.binaryAsString","true")

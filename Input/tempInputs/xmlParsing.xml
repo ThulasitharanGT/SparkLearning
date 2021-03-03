@@ -1,0 +1,38 @@
+<formula1>
+    <Teams>
+        <team>
+            <teamName>Redbull racing</teamName>
+            <constructorPoints>400</constructorPoints>
+            <constructorStanding>2nd</constructorStanding>
+            <drivers>
+                <driver raceEntries="100" nationality="Dutch">
+                    <driverName>Max Verstappen</driverName>
+                    <avgFinishPosition>3</avgFinishPosition>
+                    <points>300</points>
+                </driver>
+                <driver raceEntries="50" nationality="Thai">
+                    <driverName>Alex Albon</driverName>
+                    <avgFinishPosition>10</avgFinishPosition>
+                    <points>90</points>
+                </driver>
+            </drivers>
+        </team>
+        <team>
+            <teamName>Mclaren Racing</teamName>
+            <constructorPoints>350</constructorPoints>
+            <constructorStanding>3 rd</constructorStanding>
+            <drivers>
+                <driver raceEntries="100" nationality="British">
+                    <driverName>Lando Norris</driverName>
+                    <avgFinishPosition>6</avgFinishPosition>
+                    <points>80</points>
+                </driver>
+                <driver raceEntries="90" nationality="Spain">
+                    <driverName>Carlos Sainz</driverName>
+                    <avgFinishPosition>5</avgFinishPosition>
+                    <points>85</points>
+                </driver>
+            </drivers>
+        </team>
+    </Teams>
+</formula1>

@@ -57,6 +57,19 @@ products:
    src/main/scala/org/controller/UDFOnSurvey.scala -> build/classes/scala/main/org/controller/UDFOnSurvey$$typecreator4$1.class
    src/main/scala/org/controller/UDFOnSurvey.scala -> build/classes/scala/main/org/controller/UDFOnSurvey$.class
    src/main/scala/org/controller/UDFOnSurvey.scala -> build/classes/scala/main/org/controller/UDFOnSurvey.class
+   src/main/scala/org/controller/XMLprocessing.scala -> build/classes/scala/main/org/controller/XMLprocessing$$typecreator13$1.class
+   src/main/scala/org/controller/XMLprocessing.scala -> build/classes/scala/main/org/controller/XMLprocessing$$typecreator5$1.class
+   src/main/scala/org/controller/XMLprocessing.scala -> build/classes/scala/main/org/controller/XMLprocessing$$typecreator9$1.class
+   src/main/scala/org/controller/XMLprocessing.scala -> build/classes/scala/main/org/controller/XMLprocessing$.class
+   src/main/scala/org/controller/XMLprocessing.scala -> build/classes/scala/main/org/controller/XMLprocessing$driverInfo$.class
+   src/main/scala/org/controller/XMLprocessing.scala -> build/classes/scala/main/org/controller/XMLprocessing$driverInfo.class
+   src/main/scala/org/controller/XMLprocessing.scala -> build/classes/scala/main/org/controller/XMLprocessing$teamInfo$.class
+   src/main/scala/org/controller/XMLprocessing.scala -> build/classes/scala/main/org/controller/XMLprocessing$teamInfo.class
+   src/main/scala/org/controller/XMLprocessing.scala -> build/classes/scala/main/org/controller/XMLprocessing$teamInfoDeepFlattened$.class
+   src/main/scala/org/controller/XMLprocessing.scala -> build/classes/scala/main/org/controller/XMLprocessing$teamInfoDeepFlattened.class
+   src/main/scala/org/controller/XMLprocessing.scala -> build/classes/scala/main/org/controller/XMLprocessing$teamInfoFlattened$.class
+   src/main/scala/org/controller/XMLprocessing.scala -> build/classes/scala/main/org/controller/XMLprocessing$teamInfoFlattened.class
+   src/main/scala/org/controller/XMLprocessing.scala -> build/classes/scala/main/org/controller/XMLprocessing.class
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample$.class
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample.class
    src/main/scala/org/controller/breakExample.scala -> build/classes/scala/main/org/controller/breakExample$.class
@@ -126,6 +139,8 @@ products:
    src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/dataPullFromKafka.class
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/deltaStreamRead$.class
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/deltaStreamRead.class
+   src/main/scala/org/controller/kafkaStreamExample/kafkaSSLReadAndWriteStream.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaSSLReadAndWriteStream$.class
+   src/main/scala/org/controller/kafkaStreamExample/kafkaSSLReadAndWriteStream.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaSSLReadAndWriteStream.class
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead$.class
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamRead.class
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamsWithFilterUsingHeaders.scala -> build/classes/scala/main/org/controller/kafkaStreamExample/kafkaStreamsWithFilterUsingHeaders$.class
@@ -296,6 +311,12 @@ binary dependencies:
    src/main/scala/org/controller/UDFOnSurvey.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/UDFOnSurvey.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/UDFOnSurvey.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/XMLprocessing.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
+   src/main/scala/org/controller/XMLprocessing.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
+   src/main/scala/org/controller/XMLprocessing.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-xml_2.11/1.0.6/4ebd108453e6455351c0ec50d32509ae1154fdb1/scala-xml_2.11-1.0.6.jar
+   src/main/scala/org/controller/XMLprocessing.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/XMLprocessing.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/XMLprocessing.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/ZipExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/ZipExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/breakExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
@@ -441,6 +462,8 @@ binary dependencies:
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/kafkaStreamExample/kafkaSSLReadAndWriteStream.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/kafkaStreamExample/kafkaSSLReadAndWriteStream.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
@@ -666,6 +689,8 @@ source dependencies:
    src/main/scala/org/controller/UDFNewTry.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/UDFNewTry.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/UDFOnSurvey.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/XMLprocessing.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/XMLprocessing.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> src/main/scala/org/util/readWriteUtil.scala
@@ -860,6 +885,19 @@ class names:
    src/main/scala/org/controller/UDFOnSurvey.scala -> org.controller.UDFOnSurvey$$typecreator2$1
    src/main/scala/org/controller/UDFOnSurvey.scala -> org.controller.UDFOnSurvey$$typecreator3$1
    src/main/scala/org/controller/UDFOnSurvey.scala -> org.controller.UDFOnSurvey$$typecreator4$1
+   src/main/scala/org/controller/XMLprocessing.scala -> org.controller.XMLprocessing
+   src/main/scala/org/controller/XMLprocessing.scala -> org.controller.XMLprocessing$
+   src/main/scala/org/controller/XMLprocessing.scala -> org.controller.XMLprocessing$$typecreator13$1
+   src/main/scala/org/controller/XMLprocessing.scala -> org.controller.XMLprocessing$$typecreator5$1
+   src/main/scala/org/controller/XMLprocessing.scala -> org.controller.XMLprocessing$$typecreator9$1
+   src/main/scala/org/controller/XMLprocessing.scala -> org.controller.XMLprocessing$driverInfo
+   src/main/scala/org/controller/XMLprocessing.scala -> org.controller.XMLprocessing$driverInfo$
+   src/main/scala/org/controller/XMLprocessing.scala -> org.controller.XMLprocessing$teamInfo
+   src/main/scala/org/controller/XMLprocessing.scala -> org.controller.XMLprocessing$teamInfo$
+   src/main/scala/org/controller/XMLprocessing.scala -> org.controller.XMLprocessing$teamInfoDeepFlattened
+   src/main/scala/org/controller/XMLprocessing.scala -> org.controller.XMLprocessing$teamInfoDeepFlattened$
+   src/main/scala/org/controller/XMLprocessing.scala -> org.controller.XMLprocessing$teamInfoFlattened
+   src/main/scala/org/controller/XMLprocessing.scala -> org.controller.XMLprocessing$teamInfoFlattened$
    src/main/scala/org/controller/ZipExample.scala -> org.controller.ZipExample
    src/main/scala/org/controller/ZipExample.scala -> org.controller.ZipExample$
    src/main/scala/org/controller/breakExample.scala -> org.controller.breakExample
@@ -929,6 +967,8 @@ class names:
    src/main/scala/org/controller/kafkaStreamExample/dataPullFromKafka.scala -> org.controller.kafkaStreamExample.dataPullFromKafka$
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> org.controller.kafkaStreamExample.deltaStreamRead
    src/main/scala/org/controller/kafkaStreamExample/deltaStreamRead.scala -> org.controller.kafkaStreamExample.deltaStreamRead$
+   src/main/scala/org/controller/kafkaStreamExample/kafkaSSLReadAndWriteStream.scala -> org.controller.kafkaStreamExample.kafkaSSLReadAndWriteStream
+   src/main/scala/org/controller/kafkaStreamExample/kafkaSSLReadAndWriteStream.scala -> org.controller.kafkaStreamExample.kafkaSSLReadAndWriteStream$
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamRead.scala -> org.controller.kafkaStreamExample.kafkaStreamRead$
    src/main/scala/org/controller/kafkaStreamExample/kafkaStreamsWithFilterUsingHeaders.scala -> org.controller.kafkaStreamExample.kafkaStreamsWithFilterUsingHeaders

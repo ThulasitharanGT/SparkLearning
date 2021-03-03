@@ -4,6 +4,10 @@ import org.apache.spark.sql.SparkSession
 import org.constants.projectConstants
 import io.delta.tables._
 import org.apache.spark.sql.execution.datasources.hbase.HBaseTableCatalog
+
+import scala.io.BufferedSource
+import scala.util.{Failure, Success, Try}
+
 object readWriteUtil {
   def readDF(spark:SparkSession,inputMap:collection.mutable.Map[String,String]):DataFrame ={
      var dfTemp=spark.createDataFrame(Seq(("invalid Scn"," Error"))).toDF("Scn","Desc")
@@ -84,6 +88,26 @@ object readWriteUtil {
   def writeStreamAsDelta(spark:SparkSession,inputMap:collection.mutable.Map[String,String],DataframeToStream: DataFrame)=DataframeToStream.writeStream.outputMode(inputMap(projectConstants.outputModeArg)).format(inputMap(projectConstants.fileFormatArg)).option(projectConstants.checkPointLocationArg,inputMap(projectConstants.checkPointLocationArg)).option(projectConstants.deltaMergeSchemaClause, inputMap(projectConstants.deltaMergeSchemaClause)).option(projectConstants.deltaOverWriteSchemaClause, inputMap(projectConstants.deltaOverWriteSchemaClause)).option(projectConstants.pathArg, inputMap(projectConstants.pathArg))
 
   //def toJson(topic:String,key:String,value:String,partition:String,offset:String,timestamp:String,timestampType:String)=s"{\"topic\":\"${topic}\",\"key\":\"${key}\",\"value\":\"${value}\",\"partition\":\"${partition}\",\"offset\":\"${offset}\",\"timestamp\":\"${timestamp}\",\"timestampType\":\"${timestampType}\"}"
+
+  def scalaFileReader(filePath:String)= {
+    var tmpBufferedSource:BufferedSource=null
+    try {
+      tmpBufferedSource= scala.io.Source.fromFile(filePath)
+      tmpBufferedSource
+    }  catch
+  {
+    case e:Exception =>
+      println(s"Error while reading fie from path ${filePath}\n Error - ${e.printStackTrace()}")
+      tmpBufferedSource
+  }
+  }
+
+/*  def scalaFileReader(filePath:String)=Try{scala.io.Source.fromFile(filePath)} match
+  {
+    case Success(buferedSource) => buferedSource
+    case Failure(error) => println(s"Error while reading fie from path ${filePath}\n Error - ${error}")
+  }*/
+
 
 }
 
