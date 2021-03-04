@@ -42,6 +42,7 @@ object deltaHadoopJobTest extends SparkOpener{
     println("mergeSchemaNeeded === "+mergeSchemaNeeded)
     println("mergeSchema === "+mergeSchema)
 
+
     inputMap.put(projectConstants.fileTypeArgConstant,projectConstants.fileTypeCsvValue)
     inputMap.put(projectConstants.delimiterArgConstant,projectConstants.delimiterOr)
     inputMap.put(projectConstants.headerArgConstant,projectConstants.stringTrue)

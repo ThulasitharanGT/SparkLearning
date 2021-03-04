@@ -3,10 +3,14 @@ import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.SparkSession
 import org.constants.projectConstants
 import io.delta.tables._
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.spark.sql.execution.datasources.hbase.HBaseTableCatalog
 
+import java.io.InputStreamReader
+import java.util.Properties
 import scala.io.BufferedSource
-import scala.util.{Failure, Success, Try}
+// import scala.util.{Failure, Success, Try}
 
 object readWriteUtil {
   def readDF(spark:SparkSession,inputMap:collection.mutable.Map[String,String]):DataFrame ={
@@ -33,7 +37,18 @@ object readWriteUtil {
       }
     dfTemp
   }
-
+  def loadProperties(propPath: String):Properties= {
+    val prop = new Properties
+    val fs = FileSystem.get(new Configuration)
+    try {
+      val hdfsPath = new Path(propPath)
+      val fis = new InputStreamReader(fs.open(hdfsPath))
+      prop.load(fis)
+    } catch {
+      case ex: Exception => println(s"Properties file ${propPath} doesn't exists (or) error in accessing it \n ${ex.printStackTrace}")
+    }
+    prop
+  }
   //Hbase table read
   def withCatalog(spark:SparkSession,catalog:String): DataFrame ={
     spark.read.options(Map(HBaseTableCatalog.tableCatalog->catalog)).format(projectConstants.hbaseFormat).load()
