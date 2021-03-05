@@ -170,6 +170,10 @@ products:
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> build/classes/scala/main/org/controller/reRunnableJob/readWriteUtil$.class
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> build/classes/scala/main/org/controller/reRunnableJob/readWriteUtil.class
    src/main/scala/org/controller/reRunnableJob/sparkOpener.scala -> build/classes/scala/main/org/controller/reRunnableJob/sparkOpener.class
+   src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> build/classes/scala/main/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable$.class
+   src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> build/classes/scala/main/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.class
+   src/main/scala/org/controller/samePointsAndDifferentTime/sortingDataWithFirstReach.scala -> build/classes/scala/main/org/controller/samePointsAndDifferentTime/sortingDataWithFirstReach$.class
+   src/main/scala/org/controller/samePointsAndDifferentTime/sortingDataWithFirstReach.scala -> build/classes/scala/main/org/controller/samePointsAndDifferentTime/sortingDataWithFirstReach.class
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> build/classes/scala/main/org/controller/scDotTextFileMethodOfFirstAndLastLine$$typecreator1$1.class
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> build/classes/scala/main/org/controller/scDotTextFileMethodOfFirstAndLastLine$.class
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> build/classes/scala/main/org/controller/scDotTextFileMethodOfFirstAndLastLine.class
@@ -526,6 +530,15 @@ binary dependencies:
    src/main/scala/org/controller/reRunnableJob/sparkOpener.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
    src/main/scala/org/controller/reRunnableJob/sparkOpener.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/reRunnableJob/sparkOpener.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.0/9eac59ba21a197b65570727fd5305013661a88d/delta-core_2.11-0.6.0.jar
+   src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
+   src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
+   src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/samePointsAndDifferentTime/sortingDataWithFirstReach.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.1/320f340b950e41d3d3793ed4be922396e017ba1c/spark-catalyst_2.11-2.4.1.jar
+   src/main/scala/org/controller/samePointsAndDifferentTime/sortingDataWithFirstReach.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
+   src/main/scala/org/controller/samePointsAndDifferentTime/sortingDataWithFirstReach.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/samePointsAndDifferentTime/sortingDataWithFirstReach.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.1/125cf177720bb7b479c694e72f022a81c46d42d0/spark-core_2.11-2.4.1.jar
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-mllib_2.11/2.4.1/f27053cb7a35ca512294ec657251e90b0689c28f/spark-mllib_2.11-2.4.1.jar
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.1/a4c0b802e6b37179a4a4709f41c4cbba652b2280/spark-sql_2.11-2.4.1.jar
@@ -786,6 +799,12 @@ source dependencies:
    src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala
    src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> src/main/scala/org/controller/reRunnableJob/sparkOpener.scala
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> src/main/scala/org/controller/reRunnableJob/constants.scala
+   src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> src/main/scala/org/constants/projectConstants.scala
+   src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> src/main/scala/org/util/readWriteUtil.scala
+   src/main/scala/org/controller/samePointsAndDifferentTime/sortingDataWithFirstReach.scala -> src/main/scala/org/constants/projectConstants.scala
+   src/main/scala/org/controller/samePointsAndDifferentTime/sortingDataWithFirstReach.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/samePointsAndDifferentTime/sortingDataWithFirstReach.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/seqOverTry.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/slickEG/DAO/addressesTable.scala -> src/main/scala/org/controller/slickEG/caseClass/address.scala
@@ -1004,6 +1023,10 @@ class names:
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> org.controller.reRunnableJob.readWriteUtil
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> org.controller.reRunnableJob.readWriteUtil$
    src/main/scala/org/controller/reRunnableJob/sparkOpener.scala -> org.controller.reRunnableJob.sparkOpener
+   src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> org.controller.samePointsAndDifferentTime.deltaStreamToUpdateTheFinalTable
+   src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> org.controller.samePointsAndDifferentTime.deltaStreamToUpdateTheFinalTable$
+   src/main/scala/org/controller/samePointsAndDifferentTime/sortingDataWithFirstReach.scala -> org.controller.samePointsAndDifferentTime.sortingDataWithFirstReach
+   src/main/scala/org/controller/samePointsAndDifferentTime/sortingDataWithFirstReach.scala -> org.controller.samePointsAndDifferentTime.sortingDataWithFirstReach$
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> org.controller.scDotTextFileMethodOfFirstAndLastLine
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> org.controller.scDotTextFileMethodOfFirstAndLastLine$
    src/main/scala/org/controller/scDotTextFileMethodOfFirstAndLastLine.scala -> org.controller.scDotTextFileMethodOfFirstAndLastLine$$typecreator1$1

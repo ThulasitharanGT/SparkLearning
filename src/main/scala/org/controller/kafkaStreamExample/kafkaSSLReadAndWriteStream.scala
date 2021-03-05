@@ -3,7 +3,8 @@ package org.controller.kafkaStreamExample
 
 import org.constants.projectConstants
 import org.util.SparkOpener
-import org.util.readWriteUtil.{loadProperties, writeStreamAsDelta}
+import org.util.readWriteUtil.{loadProperties, readStreamFunction, writeStreamAsDelta}
+
 import sys.process._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
@@ -71,14 +72,33 @@ val deltaTable=DeltaTable.forPath(spark,"hdfs://localhost:8020/user/raptor/hadoo
 deltaTable.toDF.show(false)
 
 */
-  println(" prop.getProperty(\"ssl.truststore.location\") "+prop.getProperty("ssl.truststore.location"))
+/*  println(" prop.getProperty(\"ssl.truststore.location\") "+prop.getProperty("ssl.truststore.location"))
   println(" prop.getProperty(\"ssl.truststore.password\") "+prop.getProperty("ssl.truststore.password"))
   println(" prop.getProperty(\"ssl.keystore.location\") "+prop.getProperty("ssl.keystore.location"))
   println(" prop.getProperty(\"ssl.keystore.password\") "+prop.getProperty("ssl.keystore.password"))
-  println(" prop.getProperty(\"ssl.key.password\") "+prop.getProperty("ssl.key.password"))
+  println(" prop.getProperty(\"ssl.key.password\") "+prop.getProperty("ssl.key.password"))*/
 
- // val columnSeq="cast (key as string) key, cast (value as string) value, cast (topic as string) topic, cast (partition as string) partition, cast (offset as string) offset, cast (timestamp as string) timestamp, cast (timestampType as string) timestampType".split(",").toSeq
-  val readStreamDF=spark.readStream.format("kafka").option("key.deserializer",keyDeSerializer).option("value.deserializer",valueDeSerializer).option("subscribe",topic).option("offsets",offset).option("kafka.bootstrap.servers",broker).option("kafka.ssl.endpoint.identification.algorithm", "").option("kafka.ssl.truststore.location", prop.getProperty("ssl.truststore.location")).option("kafka.ssl.truststore.password", prop.getProperty("ssl.truststore.password")/*"test123"*/).option("kafka.security.protocol", kafkaSecurityProtocol).option("kafka.ssl.truststore.type", kafkaTrustStoreType/*"jks"*/).option("kafka.ssl.keystore.location", prop.getProperty("ssl.keystore.location")).option("kafka.ssl.keystore.password", prop.getProperty("ssl.keystore.password")/*"test123"*/).option("kafka.ssl.key.password", prop.getProperty("ssl.key.password")/*"test123"*/).load//.selectExpr(columnSeq:_*)
+  inputMap.put(projectConstants.fileFormatArg,projectConstants.kafkaFormat)
+  inputMap.put(projectConstants.kafkaKeyDeserializerArg,keyDeSerializer)
+  inputMap.put(projectConstants.kafkaValueDeserializerArg,valueDeSerializer)
+  inputMap.put(projectConstants.subscribeArg,topic)
+  inputMap.put(projectConstants.startingOffsetsArg,offset)
+  inputMap.put(projectConstants.kafkaBootStrapServersArg,broker)
+
+  inputMap.put(projectConstants.kafkaSecurityProtocolArg,kafkaSecurityProtocol)
+  inputMap.put(projectConstants.kafkaSSLEndpointIdentificationAlgorithmArg,"")
+  inputMap.put(projectConstants.kafkaSSLTrustStoreLocationArg,prop.getProperty("ssl.truststore.location"))
+  inputMap.put(projectConstants.kafkaSSLTrustStorePasswordArg,prop.getProperty("ssl.truststore.password"))
+  inputMap.put(projectConstants.kafkaSSLKeyStoreLocationArg,prop.getProperty("ssl.keystore.location"))
+  inputMap.put(projectConstants.kafkaSSLKeyStorePasswordArg,prop.getProperty("ssl.keystore.password"))
+  inputMap.put(projectConstants.kafkaSSLKeyPasswordArg,prop.getProperty("ssl.key.password"))
+  inputMap.put(projectConstants.kafkaSSLTruststoreTypeArg,kafkaTrustStoreType)
+
+
+  // val columnSeq="cast (key as string) key, cast (value as string) value, cast (topic as string) topic, cast (partition as string) partition, cast (offset as string) offset, cast (timestamp as string) timestamp, cast (timestampType as string) timestampType".split(",").toSeq
+ // val readStreamDF=spark.readStream.format("kafka").option("key.deserializer",keyDeSerializer).option("value.deserializer",valueDeSerializer).option("subscribe",topic).option("offsets",offset).option("kafka.bootstrap.servers",broker).option("kafka.ssl.endpoint.identification.algorithm", "").option("kafka.ssl.truststore.location", prop.getProperty("ssl.truststore.location")).option("kafka.ssl.truststore.password", prop.getProperty("ssl.truststore.password")/*"test123"*/).option("kafka.security.protocol", kafkaSecurityProtocol).option("kafka.ssl.truststore.type", kafkaTrustStoreType/*"jks"*/).option("kafka.ssl.keystore.location", prop.getProperty("ssl.keystore.location")).option("kafka.ssl.keystore.password", prop.getProperty("ssl.keystore.password")/*"test123"*/).option("kafka.ssl.key.password", prop.getProperty("ssl.key.password")/*"test123"*/).load//.selectExpr(columnSeq:_*)
+ val readStreamDF=readStreamFunction(spark,inputMap)
+
     inputMap.put(projectConstants.outputModeArg,projectConstants.fileAppendValue)
     inputMap.put(projectConstants.fileFormatArg,projectConstants.deltaFormat)
     inputMap.put(projectConstants.checkPointLocationArg,checkpointLocation)
@@ -86,7 +106,6 @@ deltaTable.toDF.show(false)
     inputMap.put(projectConstants.deltaOverWriteSchemaClause,projectConstants.stringTrue) //stringFalse
     inputMap.put(projectConstants.pathArg,persistPath)
     writeStreamAsDelta(spark,inputMap,readStreamDF.select(col("key").cast(StringType),col("value").cast(StringType),col("topic").cast(StringType),col("partition").cast(StringType),col("offset").cast(StringType),col("timestamp").cast(StringType),col("timestampType").cast(StringType))).start
-
     spark.streams.awaitAnyTermination
     /*
  ssl.keystore.location=/home/raptor/Softwares/kafka_2.12-2.7.0/keys/kafka.keystore.jks

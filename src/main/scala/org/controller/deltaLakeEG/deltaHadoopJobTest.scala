@@ -30,7 +30,7 @@ object deltaHadoopJobTest extends SparkOpener{
     val dateConversionNeeded=inputMap("dateConversionNeeded").toLowerCase
 
     var mergeSchema:String=""
-    mergeSchemaNeeded match {case "yes"=> mergeSchema="true" ;case "no" =>  mergeSchema="false"; case "no" => println("invalid mergeSchemaNeeded option, available option : yes or no   ---- Setting merge schema to false"); mergeSchema="false"}
+    mergeSchemaNeeded match {case "yes"=> mergeSchema="true" ;case "no" =>  mergeSchema="false"; case _ => println("invalid mergeSchemaNeeded option, available option : yes or no   ---- Setting merge schema to false"); mergeSchema="false"}
     println("------------------------------Param----------------------------" )
     println("modeForDeltaWrite === "+modeForDeltaWrite)
     println("createOrAppendOrOverwriteForDeltaWrite === "+createOrAppendOrOverwriteForDeltaWrite)
@@ -53,7 +53,7 @@ object deltaHadoopJobTest extends SparkOpener{
 
     var df:DataFrame=null
     dateConversionNeeded match {
-      case "yes" =>  df= readWriteUtil.readDF(spark, inputMap) ;df.columns.contains("number_of_owners") match {case true =>df=df.selectExpr("Vehicle_id", "model", "brand", "year", "month", "miles", "CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time","number_of_owners") case false =>df=df.selectExpr("Vehicle_id", "model", "brand", "year", "month", "miles", "CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time") case _ => println("invalid secect Expr")}
+      case "yes" =>  df= readWriteUtil.readDF(spark, inputMap) ;df.columns.contains("number_of_owners") match {case true =>df=df.selectExpr("Vehicle_id", "model", "brand", "year", "month", "miles", "CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time","number_of_owners") case false =>df=df.selectExpr("Vehicle_id", "model", "brand", "year", "month", "miles", "CAST(concat(substring(intake_date_time,7,4),concat(substring(intake_date_time,3,4),concat(substring(intake_date_time,1,2),substring(intake_date_time,11,9)))) AS TIMESTAMP) as intake_date_time") case _ => println("invalid select Expr")}
       case "no"=> df= readWriteUtil.readDF(spark, inputMap);df.columns.contains("number_of_owners") match {case true =>df=df.selectExpr("Vehicle_id", "model", "brand", "year", "month", "miles", "CAST(intake_date_time AS TIMESTAMP) as intake_date_time","number_of_owners") case false =>df=df.selectExpr("Vehicle_id", "model", "brand", "year", "month", "miles", "CAST(intake_date_time AS TIMESTAMP) as intake_date_time") case _ => println("invalid secect Expr")}
       case _ => println("wrong selectExprNeeded selection")
     }
