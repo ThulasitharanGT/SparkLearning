@@ -40,7 +40,7 @@ def Splitting(TripRecord:Row) =
 
       OutputList+=List(TripRecord.getString(0),TripRecord.getString(1),TripRecord.getString(2),newStartTime.toString(),minuteArray(0).toString,minuteArray(1).toString,minuteArray(2).toString,minuteArray(3).toString,minuteArray(4).toString,minuteArray(5).toString,minuteArray(6).toString,minuteArray(7).toString,minuteArray(8).toString,minuteArray(9).toString,minuteArray(10).toString,minuteArray(11).toString,minuteArray(12).toString,minuteArray(13).toString,minuteArray(14).toString)
      newStartTime=newEndTime
-     newEndTime match { case endTime => splitNeeded=false case _ => splitNeeded=true}
+     newEndTime match { case value if value ==endTime => splitNeeded=false case _ => splitNeeded=true}
     }
   OutputList
     }

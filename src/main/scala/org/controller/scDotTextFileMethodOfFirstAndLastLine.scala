@@ -6,7 +6,7 @@ import org.util.SparkOpener
 object scDotTextFileMethodOfFirstAndLastLine extends SparkOpener{
 
   //taking first and last line of a text file which is loaded by sc.textFile()
-def main(args:Array[String]) ={
+def main(args:Array[String]):Unit ={
     val spark=SparkSessionLoc("testScDotTextFile")
     val sc=spark.sparkContext
     val fileRdd=sc.textFile(System.getProperty("user.dir")+"\\Input\\dept.txt")

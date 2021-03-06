@@ -2,9 +2,33 @@ package org.controller.samePointsAndDifferentTime
 
 import org.constants.projectConstants
 import org.util.SparkOpener
-import org.util.readWriteUtil.{loadProperties, readStreamFunction, writeStreamAsDelta}
-import sys.process._
+import org.util.readWriteUtil.{checkPointLocationCleaner, loadProperties, readStreamFunction, writeStreamAsDelta}
 
+import sys.process._
+/*
+spark-submit --class org.controller.samePointsAndDifferentTime.sortingDataWithFirstReach --driver-cores 2 --driver-memory 2g --executor-memory 1g --executor-cores 2 --num-executors 2 --conf spark.dynamic.memory.allocation.enabled=false --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.7.0  /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar checkpointLocation=hdfs://localhost:8020/user/raptor/streams/tmp/ propFileLocation=hdfs://localhost:8020/user/raptor/hadoop/keys/keysForCLI.txt topic=tmpTopic offset=earliest broker="raptor-VirtualBox:9194,raptor-VirtualBox:9195" kafkaTrustStoreType=jks keyDeSerializer="org.apache.kafka.common.serialization.StringDeserializer" valueDeSerializer="org.apache.kafka.common.serialization.StringDeserializer" persistPath="hdfs://localhost:8020/user/raptor/hadoop/deltaLake/tmp2/" clearCheckpointFlag=y kafkaSecurityProtocol=SSL
+spark-submit --class org.controller.samePointsAndDifferentTime.deltaStreamToUpdateTheFinalTable --driver-cores 2 --driver-memory 2g --executor-memory 1g --executor-cores 2 --num-executors 2 --conf spark.dynamic.memory.allocation.enabled=false --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.7.0  /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar checkpointLocation=hdfs://localhost:8020/user/raptor/streams/tmp2/ propFileLocation=hdfs://localhost:8020/user/raptor/hadoop/keys/keysForCLI.txt topic=tmpTopic offset=earliest broker="raptor-VirtualBox:9194,raptor-VirtualBox:9195" kafkaTrustStoreType=jks keyDeSerializer="org.apache.kafka.common.serialization.StringDeserializer" valueDeSerializer="org.apache.kafka.common.serialization.StringDeserializer" inputPath="hdfs://localhost:8020/user/raptor/hadoop/deltaLake/tmp2/"  persistPath="hdfs://localhost:8020/user/raptor/hadoop/deltaLake/tmpFinal/"  clearCheckpointFlag=y kafkaSecurityProtocol=SSL persistAggPath="hdfs://localhost:8020/user/raptor/hadoop/deltaLake/tmpFinalAgg/"
+
+./bin/kafka-console-producer.sh --topic tmpTopic --broker-list raptor-VirtualBox:9194,raptor-VirtualBox:9195 --producer.config ./keys/keysForCLI.txt  --property parse.key=true --property key.separator=:
+
+// tmp KafkaInputs
+ty:Max,20,2020-01-04 11:22:33.667
+ty:Max,10,2020-01-05 11:22:33.627
+vy:Vettel,20,2020-01-04 11:22:33.657
+ty:Vettel,10,2020-01-04 11:22:33.696
+ty:Senna,50,2020-01-08 11:22:33.696
+ty:Senna,10,2020-01-08 11:22:33.899
+ty:Senna,10,2020-01-09 11:22:33.899
+// read from that delta stream and insert into anther table. use that table as base and over write data
+
+1)reads from kafka and persists in bronze lake.
+2)reads from bronze lake and updates the bronze level data
+--> updates two tables
+2.1>little bit of aggregation of points and max timestamp
+2.2>then the first point scored person will be shown first in AGG part , this is done by sorting accrding to asc of timestamp and desc of points. If tie , first person scored that point gets 1st priority
+
+
+*/
 object sortingDataWithFirstReach extends SparkOpener {
   def main(args: Array[String]): Unit = {
     val spark = SparkSessionLoc()
@@ -28,7 +52,7 @@ object sortingDataWithFirstReach extends SparkOpener {
     val kafkaSecurityProtocol = inputMap("kafkaSecurityProtocol")
 
     println(s"Checking if checkpoint exists in ${checkpointLocation}")
-    val checkpointExists = s"hdfs dfs -ls ${checkpointLocation}" !; // run time error might occur if you fail to terminate the statement
+   /* val checkpointExists = s"hdfs dfs -ls ${checkpointLocation}" !; // run time error might occur if you fail to terminate the statement
     checkpointExists match {
       case value if value == 0 =>
         println(s"Checkpoint exists in ${checkpointLocation}")
@@ -48,8 +72,9 @@ object sortingDataWithFirstReach extends SparkOpener {
         }
       case value if value != 0 =>
         println(s"Checkpoint does not exists in ${checkpointLocation}")
-    }
+    }*/
 
+    checkPointLocationCleaner(checkpointLocation,clearCheckpointFlag)
     /*  println(" prop.getProperty(\"ssl.truststore.location\") "+prop.getProperty("ssl.truststore.location"))
       println(" prop.getProperty(\"ssl.truststore.password\") "+prop.getProperty("ssl.truststore.password"))
       println(" prop.getProperty(\"ssl.keystore.location\") "+prop.getProperty("ssl.keystore.location"))
@@ -83,13 +108,7 @@ object sortingDataWithFirstReach extends SparkOpener {
       case value if value == false => x
     }).toSeq
     writeStreamAsDelta(spark, inputMap, readStreamDF.selectExpr(columnSeq: _*)).start
-    /*
- spark-submit --class org.controller.samePointsAndDifferentTime.sortingDataWithFirstReach --driver-cores 2 --driver-memory 2g --executor-memory 1g --executor-cores 2 --num-executors 2 --conf spark.dynamic.memory.allocation.enabled=false --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.7.0  /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar checkpointLocation=hdfs://localhost:8020/user/raptor/streams/tmp/ propFileLocation=hdfs://localhost:8020/user/raptor/hadoop/keys/keysForCLI.txt topic=tmpTopic offset=earliest broker="raptor-VirtualBox:9194,raptor-VirtualBox:9195" kafkaTrustStoreType=jks keyDeSerializer="org.apache.kafka.common.serialization.StringDeserializer" valueDeSerializer="org.apache.kafka.common.serialization.StringDeserializer" persistPath="hdfs://localhost:8020/user/raptor/hadoop/deltaLake/tmp2/" clearCheckpointFlag=y kafkaSecurityProtocol=SSL
 
-./bin/kafka-console-producer.sh --topic tmpTopic --broker-list raptor-VirtualBox:9194,raptor-VirtualBox:9195 --producer.config ./keys/keysForCLI.txt  --property parse.key=true --property key.separator=:
-
-// read from that delta stream and insert into anther table. use that table as base and over write data
-*/
     spark.streams.awaitAnyTermination
 
   }

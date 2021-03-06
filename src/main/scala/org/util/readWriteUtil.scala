@@ -11,6 +11,7 @@ import java.io.InputStreamReader
 import java.util.Properties
 import scala.io.BufferedSource
 // import scala.util.{Failure, Success, Try}
+import sys.process._
 
 object readWriteUtil {
   def readDF(spark:SparkSession,inputMap:collection.mutable.Map[String,String]):DataFrame ={
@@ -50,13 +51,9 @@ object readWriteUtil {
     prop
   }
   //Hbase table read
-  def withCatalog(spark:SparkSession,catalog:String): DataFrame ={
-    spark.read.options(Map(HBaseTableCatalog.tableCatalog->catalog)).format(projectConstants.hbaseFormat).load()
-  }
+  def withCatalog(spark:SparkSession,catalog:String): DataFrame =    spark.read.options(Map(HBaseTableCatalog.tableCatalog->catalog)).format(projectConstants.hbaseFormat).load()
 
-  def deltaTableRead(spark:SparkSession,inputMap:collection.mutable.Map[String,String]) ={
-    DeltaTable.forPath(spark,inputMap(projectConstants.filePathArgValue))
-  }
+  def deltaTableRead(spark:SparkSession,inputMap:collection.mutable.Map[String,String]) =    DeltaTable.forPath(spark,inputMap(projectConstants.filePathArgValue))
 
   def deltaTableWriteFromDeltaTable(spark:SparkSession,inputMap:collection.mutable.Map[String,String],detlaTable:DeltaTable) ={
     inputMap.put(projectConstants.fileTypeArgConstant,projectConstants.fileTypeDeltaValue)
@@ -120,6 +117,29 @@ object readWriteUtil {
       println(s"Error while reading fie from path ${filePath}\n Error - ${e.printStackTrace()}")
       tmpBufferedSource
   }
+  }
+  def checkPointLocationCleaner(checkpointLocation:String,clearCheckpointFlag:String="Y"):Unit={
+    val checkpointExists = s"hdfs dfs -ls ${checkpointLocation}" !; // run time error might occur if you fail to terminate the statement
+    checkpointExists match {
+      case value if value == 0 =>
+        println(s"Checkpoint exists in ${checkpointLocation}")
+        clearCheckpointFlag match {
+          case value if value.toUpperCase == "Y" =>
+            val checkpointClear = s"hdfs dfs -rm -r ${checkpointLocation}" !;
+            checkpointClear match {
+              case value if value == 0 =>
+                println(s"Checkpoint cleared  in ${checkpointLocation}")
+              case value if value != 0 =>
+                println(s"Error in clearing checkpoint  ${checkpointLocation}")
+            }
+          case value if value.toUpperCase == "N" =>
+            println(s"Checkpoint wont be cleared  in ${checkpointLocation}")
+          case value =>
+            println(s"Invalid option for clearCheckpointFlag - ${value}")
+        }
+      case value if value != 0 =>
+        println(s"Checkpoint does not exists in ${checkpointLocation}")
+    }
   }
 
 /*  def scalaFileReader(filePath:String)=Try{scala.io.Source.fromFile(filePath)} match
