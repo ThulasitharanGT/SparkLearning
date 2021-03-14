@@ -13,21 +13,21 @@
     <orderEntry type="library" name="Gradle: org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.kafka:kafka-clients:2.3.1" level="project" />
     <orderEntry type="library" name="Gradle: org.scala-lang:scala-compiler:2.11.12" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-mllib_2.11:2.4.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-hive_2.11:2.4.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-mllib_2.11:2.4.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-hive_2.11:2.4.5" level="project" />
     <orderEntry type="library" name="Gradle: com.hortonworks:shc-core:1.1.1-2.1-s_2.11" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-sql_2.11:2.4.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-catalyst_2.11:2.4.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-graphx_2.11:2.4.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-sql_2.11:2.4.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-catalyst_2.11:2.4.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-graphx_2.11:2.4.5" level="project" />
     <orderEntry type="library" name="Gradle: org.scala-lang:scala-reflect:2.11.12" level="project" />
     <orderEntry type="library" name="Gradle: org.scala-lang.modules:scala-parser-combinators_2.11:1.1.2" level="project" />
     <orderEntry type="library" name="Gradle: io.delta:delta-core_2.11:0.6.0" level="project" />
     <orderEntry type="library" name="Gradle: com.databricks:spark-avro_2.11:4.0.0" level="project" />
     <orderEntry type="library" name="Gradle: org.scala-lang.modules:scala-swing_2.11:2.0.3" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-streaming_2.11:2.4.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-core_2.11:2.4.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-streaming_2.11:2.4.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-core_2.11:2.4.5" level="project" />
     <orderEntry type="library" name="Gradle: com.typesafe.slick:slick_2.11:3.1.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-launcher_2.11:2.4.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-launcher_2.11:2.4.5" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.bahir:spark-streaming-twitter_2.11:2.4.0" level="project" />
     <orderEntry type="library" name="Gradle: org.scala-lang:scala-library:2.12.7" level="project" />
     <orderEntry type="library" name="Gradle: com.zaxxer:HikariCP:3.4.5" level="project" />
@@ -68,13 +68,13 @@
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.10.0" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.10.0" level="project" />
     <orderEntry type="library" name="Gradle: net.sf.jopt-simple:jopt-simple:5.0.4" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-tags_2.11:2.4.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-tags_2.11:2.4.5" level="project" />
     <orderEntry type="library" name="Gradle: org.spark-project.spark:unused:1.0.0" level="project" />
     <orderEntry type="library" name="Gradle: com.github.luben:zstd-jni:1.4.0-1" level="project" />
     <orderEntry type="library" name="Gradle: org.lz4:lz4-java:1.6.0" level="project" />
     <orderEntry type="library" name="Gradle: org.xerial.snappy:snappy-java:1.1.7.3" level="project" />
     <orderEntry type="library" name="Gradle: org.scala-lang.modules:scala-xml_2.11:1.0.6" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-mllib-local_2.11:2.4.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-mllib-local_2.11:2.4.5" level="project" />
     <orderEntry type="library" name="Gradle: org.scalanlp:breeze_2.11:0.13.2" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-math3:3.4.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.avro:avro-mapred:hadoop2:1.8.2" level="project" />
@@ -96,7 +96,7 @@
     <orderEntry type="library" name="Gradle: org.apache.derby:derby:10.12.1.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.phoenix:phoenix-core:4.9.0-HBase-1.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.hbase:hbase-common:tests:1.4.12" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-sketch_2.11:2.4.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-sketch_2.11:2.4.5" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.parquet:parquet-hadoop:1.10.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.orc:orc-core:nohive:1.5.5" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.arrow:arrow-vector:0.10.0" level="project" />
@@ -104,21 +104,21 @@
     <orderEntry type="library" name="Gradle: com.univocity:univocity-parsers:2.7.3" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.orc:orc-mapreduce:nohive:1.5.5" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.xbean:xbean-asm6-shaded:4.8" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-unsafe_2.11:2.4.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-unsafe_2.11:2.4.5" level="project" />
     <orderEntry type="library" name="Gradle: org.antlr:antlr4-runtime:4.7" level="project" />
     <orderEntry type="library" name="Gradle: org.codehaus.janino:janino:3.0.9" level="project" />
     <orderEntry type="library" name="Gradle: org.codehaus.janino:commons-compiler:3.0.9" level="project" />
     <orderEntry type="library" name="Gradle: com.github.fommil.netlib:core:1.1.2" level="project" />
     <orderEntry type="library" name="Gradle: net.sourceforge.f2j:arpack_combined_all:0.1" level="project" />
     <orderEntry type="library" name="Gradle: org.antlr:antlr4:4.7" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-kvstore_2.11:2.4.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-kvstore_2.11:2.4.5" level="project" />
     <orderEntry type="library" name="Gradle: com.twitter:chill_2.11:0.9.3" level="project" />
     <orderEntry type="library" name="Gradle: org.json4s:json4s-jackson_2.11:3.5.3" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.curator:curator-recipes:2.7.1" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:jul-to-slf4j:1.7.16" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:jcl-over-slf4j:1.7.16" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-network-shuffle_2.11:2.4.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.spark:spark-network-common_2.11:2.4.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-network-shuffle_2.11:2.4.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.spark:spark-network-common_2.11:2.4.5" level="project" />
     <orderEntry type="library" name="Gradle: io.dropwizard.metrics:metrics-jvm:3.1.5" level="project" />
     <orderEntry type="library" name="Gradle: io.dropwizard.metrics:metrics-json:3.1.5" level="project" />
     <orderEntry type="library" name="Gradle: io.dropwizard.metrics:metrics-graphite:3.1.5" level="project" />
@@ -130,14 +130,14 @@
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.5" level="project" />
     <orderEntry type="library" name="Gradle: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" name="Gradle: com.ning:compress-lzf:1.0.3" level="project" />
-    <orderEntry type="library" name="Gradle: org.roaringbitmap:RoaringBitmap:0.5.11" level="project" />
+    <orderEntry type="library" name="Gradle: org.roaringbitmap:RoaringBitmap:0.7.45" level="project" />
     <orderEntry type="library" name="Gradle: commons-net:commons-net:3.1" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.jersey.containers:jersey-container-servlet:2.22.2" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.jersey.containers:jersey-container-servlet-core:2.22.2" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.jersey.core:jersey-server:2.22.2" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.jersey.core:jersey-client:2.22.2" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.jersey.core:jersey-common:2.22.2" level="project" />
-    <orderEntry type="library" name="Gradle: io.netty:netty-all:4.1.17.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-all:4.1.42.Final" level="project" />
     <orderEntry type="library" name="Gradle: io.netty:netty:3.10.6.Final" level="project" />
     <orderEntry type="library" name="Gradle: com.clearspring.analytics:stream:2.7.0" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.ivy:ivy:2.4.0" level="project" />
@@ -255,6 +255,7 @@
     <orderEntry type="library" name="Gradle: com.ibm.icu:icu4j:58.2" level="project" />
     <orderEntry type="library" name="Gradle: com.esotericsoftware:kryo-shaded:4.0.2" level="project" />
     <orderEntry type="library" name="Gradle: org.json4s:json4s-core_2.11:3.5.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.roaringbitmap:shims:0.7.45" level="project" />
     <orderEntry type="library" name="Gradle: javax.ws.rs:javax.ws.rs-api:2.0.1" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.hk2.external:javax.inject:2.4.0-b34" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.jersey.media:jersey-media-jaxb:2.22.2" level="project" />

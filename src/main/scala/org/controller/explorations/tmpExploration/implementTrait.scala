@@ -4,6 +4,7 @@ object implementTrait extends traitTmp with traitTwo { //we can do multiple inhe
   override def cool: Unit = {
     println("Cool")
   }
+  override val t ="tmp"
     override def good(): Unit = {
       println("Good")
     }
