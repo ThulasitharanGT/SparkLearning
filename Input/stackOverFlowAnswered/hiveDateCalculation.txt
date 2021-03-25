@@ -1,0 +1,69 @@
+
+import org.joda.time.format.DateTimeFormat
+
+
+def dayDiffWithExcludeWeekendAndHoliday(startDate:String,endDate:String,holidayExclusion:Seq[String]) ={ 
+@transient val datePattern="yyyy-MM-dd"
+@transient val dateformatter=DateTimeFormat.forPattern(datePattern)
+var numWeekDaysValid=0
+var numWeekends=0
+var numWeekDaysInValid=0
+val holidayExclusionJoda=holidayExclusion.map(dateformatter.parseDateTime(_))
+val startDateJoda=dateformatter.parseDateTime(startDate)
+var startDateJodaLatest=dateformatter.parseDateTime(startDate)
+val endDateJoda=dateformatter.parseDateTime(endDate)
+while (startDateJodaLatest.compareTo(endDateJoda) !=0)
+{
+startDateJodaLatest.getDayOfWeek match {
+case value if value >5 => numWeekends=numWeekends+1
+case value if value <= 5  => holidayExclusionJoda.contains(startDateJodaLatest) match {case value if value == true => numWeekDaysInValid=numWeekDaysInValid+1 case value if value == false => numWeekDaysValid=numWeekDaysValid+1 }
+}
+startDateJodaLatest = startDateJodaLatest.plusDays(1)
+}
+Array(numWeekDaysValid,numWeekends,numWeekDaysInValid)
+}
+
+spark.udf.register("dayDiffWithExcludeWeekendAndHoliday",dayDiffWithExcludeWeekendAndHoliday(_:String,_:String,_:Seq[String]))
+
+case class tmpDateInfo(startDate:String,endDate:String,holidayExclusion:Array[String])
+case class tmpDateInfoFull(startDate:String,endDate:String,holidayExclusion:Array[String],numWeekDaysValid:Int,numWeekends:Int,numWeekDaysInValid:Int)
+
+
+def dayDiffWithExcludeWeekendAndHolidayCase(tmpInfo:tmpDateInfo) ={ 
+@transient val datePattern="yyyy-MM-dd"
+@transient val dateformatter=DateTimeFormat.forPattern(datePattern)
+var numWeekDaysValid=0
+var numWeekends=0
+var numWeekDaysInValid=0
+val holidayExclusionJoda=tmpInfo.holidayExclusion.map(dateformatter.parseDateTime(_))
+val startDateJoda=dateformatter.parseDateTime(tmpInfo.startDate)
+var startDateJodaLatest=dateformatter.parseDateTime(tmpInfo.startDate)
+val endDateJoda=dateformatter.parseDateTime(tmpInfo.endDate)
+while (startDateJodaLatest.compareTo(endDateJoda) !=0)
+{
+startDateJodaLatest.getDayOfWeek match {
+case value if value >5 => numWeekends=numWeekends+1
+case value if value <= 5  => holidayExclusionJoda.contains(startDateJodaLatest) match {case value if value == true => numWeekDaysInValid=numWeekDaysInValid+1 case value if value == false => numWeekDaysValid=numWeekDaysValid+1 }
+}
+startDateJodaLatest = startDateJodaLatest.plusDays(1)
+}
+tmpDateInfoFull(tmpInfo.startDate,tmpInfo.endDate,tmpInfo.holidayExclusion,numWeekDaysValid,numWeekends,numWeekDaysInValid)
+}
+
+//df way 1
+val tmpDF=Seq(("2020-05-03","2020-06-08",List("2020-05-08","2020-06-05"))).toDF("startDate","endDate","holidayExclusion").select(col("startDate").cast(StringType),col("endDate").cast(StringType),col("holidayExclusion"))
+
+tmpDF.as[tmpDateInfo].map(dayDiffWithExcludeWeekendAndHolidayCase).show(false)
+
+//df way 2
+
+tmpDF.selectExpr("*","dayDiffWithExcludeWeekendAndHoliday(cast(startDate as string),cast(endDate as string),cast(holidayExclusion as array<string>)) as resultDays").selectExpr("startDate","endDate","holidayExclusion","resultDays[0] as numWeekDaysValid","resultDays[1] as numWeekends","resultDays[2] as numWeekDaysInValid").show(false)
+
+
+tmpDF.selectExpr("*","dayDiffWithExcludeWeekendAndHoliday(cast(startDate as string),cast(endDate as string),cast(holidayExclusion as array<string>)) as resultDays").selectExpr("startDate","endDate","holidayExclusion","resultDays[0] as numWeekDaysValid","resultDays[1] as numWeekends","resultDays[2] as numWeekDaysInValid").show(false)
+
+// spark sql way, works with hive table when configured in hive metastore
+
+tmpDF.createOrReplaceTempView("tmpTable")
+spark.sql("select startDate,endDate,holidayExclusion,dayDiffWithExcludeWeekendAndHoliday(startDate,endDate,holidayExclusion) from tmpTable").show(false)
+
