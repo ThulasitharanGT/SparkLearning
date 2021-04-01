@@ -1,0 +1,39 @@
+// read from a topic which does not have compression and compress and write to a compressed topic
+
+./bin/kafka-topics.sh --create --topic uncompressedTopic --partitions 2 --replication-factor 2 --config max.message.bytes=999999999 --zookeeper localhost:3039 
+
+./bin/kafka-topics.sh --create --topic compressedGzipTopicFinal --partitions 2 --replication-factor 2 --config max.message.bytes=1048576 --config compression.type=gzip --bootstrap-server localhost:9092,localhost:9093,localhost:9094
+
+./bin/kafka-topics.sh --describe --topic uncompressedTopic --bootstrap-server localhost:9092,localhost:9093,localhost:9094 
+
+./bin/kafka-topics.sh --describe --topic compressedGzipTopicFinal --bootstrap-server localhost:9092,localhost:9093,localhost:9094 
+
+./bin/kafka-topics.sh --list --bootstrap-server localhost:9092,localhost:9093,localhost:9094 
+
+// buffer.memory is torage space for batch messages and also this is where the messages will be stored and compressed, so this must be bigger than the size of uncompressed message
+// max.request.size this is uncompressed message size
+// message.max.bytes this is also uncompressed message size
+
+def toJsonVal(msg:String)="{\"message\":\""+s"${msg}"+"\""
+//  message.max.bytes config is for old kafka it seems
+
+spark.readStream.format("kafka").option("kafka.bootstrap.servers","localhost:9092,localhost:9093,localhost:9094").option("offsets","latest").option("subscribe","uncompressedTopic").load.select(col("value").cast(StringType)).map(x => toJsonVal(x(0).toString)).writeStream.format("kafka").option("topic","compressedGzipTopicFinal").option("kafka.bootstrap.servers","localhost:9092,localhost:9093,localhost:9094").option("kafka.compression.type","gzip").option("kafka.buffer.memory","999999999").option("kafka.max.request.size","999999999").option("kafka.message.max.bytes","999999999").option("checkpointLocation","hdfs://localhost:8020/user/raptor/streams/checkpoint1/").start
+
+// 11 MB, need to gice size more than 11mb because whatever is set in topic is okay, but producer default is 1 mb. we need to increase it to pass phase 1 (ie) to pass from producer to broker. memory.bufer is 30 mb by default
+
+./bin/kafka-console-producer.sh --topic uncompressedTopic --broker-list localhost:9092,localhost:9093,localhost:9094 --producer-property max.request.size=11534336 < /home/raptor/IdeaProjects/SparkLearning/Input/kafka/topicLevelCompression/10MB.txt
+
+10 mb file while compressed is 800 kb
+
+./bin/kafka-console-producer.sh --topic uncompressedTopic --broker-list localhost:9092,localhost:9093,localhost:9094 --producer-property max.request.size=11534336 < /home/raptor/IdeaProjects/SparkLearning/Input/kafka/topicLevelCompression/700KB.txt
+
+
+3mb file when compressed is 1.2 MB, aximum compressed messageTopc can take is 1 mb so 1.2 mmb when compressed will not cut it.
+
+./bin/kafka-console-producer.sh --topic uncompressedTopic --broker-list localhost:9092,localhost:9093,localhost:9094 --producer-property max.request.size=4194304 < /home/raptor/IdeaProjects/SparkLearning/Input/kafka/topicLevelCompression/3MB.txt
+
+Failed as expected:
+
+Caused by: org.apache.spark.SparkException: Job aborted due to stage failure: Task 0 in stage 3.0 failed 1 times, most recent failure: Lost task 0.0 in stage 3.0 (TID 3, raptor-VirtualBox, executor driver): org.apache.kafka.common.errors.RecordTooLargeException: The request included a message larger than the max message size the server will accept.
+
+

@@ -1,0 +1,48 @@
+// creatig a gzipped txt file through scala and writing data to it, reading a gzip txt file in java. for each message we can map it to each row or map for each row using foreach in old version or foreachbatch for all row in a DF.
+
+using hdfs and local fs, we cannot read from s3 directly or write to s3 using java/scala (but with writestream we can in spark) so we write to hdfs and copy to s3, put this as a function and then call it in a writeStream
+
+val hdfsDomain="hdfs://localhost:8020"
+
+// write
+val config=new Configuration
+config.set("fs.defaultFS",hdfsDomain)
+val fs=new FileSystem.get(config)
+"hdf dfs -mkdir -p ${hdfsDomain}/user/raptor/tmp/gZipFile/"!
+val pathTmp=new Path(s"${hdfsDomain}/user/raptor/tmp/gZipFile/tmp.gz")
+val fileOutputObj=fs.create(pathTmp)
+val writer=new OutputStreamWriter(new GZIPOutputStream(fileOutputObj),"UTF-8") // gzip
+// val writer=new PrintWriter(fileOutputObj) // notmap
+writer.write("string")
+writer.close
+
+// read
+
+val fs=new FileSystem.get(new URI(hdfsDomain),new Configuration)
+val pathTmp=new Path(s"${hdfsDomain}/user/raptor/tmp/gZipFile/tmp.gz")
+val hdfsInputStream=fs.open(pathTmp)
+val inputStream=new GZIPInputStream(hdfsInputStream)
+val bufferedStreamReader=new BufferedReader(new InputStreamReader(inputStream,"UTF-8"))
+// val bufferedStreamReader=new BufferedReader(new FileInputStream(inputStream)) // normal Txt file
+var fileContent=""
+var readFlag=true
+val newLine="\n"
+while(readFlag)
+bufferedStreamReader.readLine match{
+case value if value != null  => fileContent=fileContent+ newLine+ value
+case _ =>
+readFlag = false
+}
+/*
+import scala.util.control.Breaks._
+breakable
+{
+while(true)
+bufferedStreamReader.readLine match{
+case value if value != null  => fileContent=fileContent+ newLine+ value
+case _ =>
+break
+}
+}
+*/
+println(fileContent)

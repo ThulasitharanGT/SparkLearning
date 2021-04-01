@@ -1,0 +1,60 @@
+./bin/kafka-topics.sh --create --topic tmpInputTopic2 --partitions 2 --replication-factor 2 --config max.message.bytes=1048576 --config compression.type=gzip --zookeeper localhost:3039 
+
+./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --topic tmpInputTopic2
+
+# this wont work (message size is 3mb and the limit set is 1 mb)
+
+./bin/kafka-console-producer.sh --topic tmpInputTopic2 --broker-list localhost:9092,localhost:9093,localhost:9094 < /home/raptor/IdeaProjects/SparkLearning/Input/kafka/topicLevelCompression/3MB.txt
+
+// apply compression and pass 3mb message , it must pass through without any issue GIVEN THAT THE 3MB MESSAGE WHEN GUNZIPPED MUST BE LESS THAN 1 MB
+// 3 MB message is greater than 1 MB when compressed.
+
+
+// max memory bytes set to 4 mb
+./bin/kafka-console-producer.sh --topic tmpInputTopic2 --max-memory-bytes 4194304 --producer-property max.request.size=4194304 --compression-codec gzip  --broker-list localhost:9092,localhost:9093,localhost:9094 < /home/raptor/IdeaProjects/SparkLearning/Input/kafka/topicLevelCompression/2MB.txt 
+
+the above file is 2 mb but when compressed it is 700 kb, so it will work
+
+./bin/kafka-console-consumer.sh --topic tmpInputTopic2 --bootstrap-server localhost:9092,localhost:9093,localhost:9094
+
+./bin/kafka-topics.sh --describe --topic tmpInputTopic2 --bootstrap-server localhost:9092,localhost:9093,localhost:9094
+
+./bin/kafka-log-dirs.sh --describe --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --topic-list tmpInputTopic2
+
+The message size in log dir is 700 KB (709230)
+
+Received log directory information from brokers 0,2,1
+{"version":1,"brokers":[{"broker":0,"logDirs":[{"logDir":"/home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-1","error":null,"partitions":[{"partition":"tmpInputTopic2-1","size":709230,"offsetLag":0,"isFuture":false}]}]},{"broker":1,"logDirs":[{"logDir":"/home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-2","error":null,"partitions":[{"partition":"tmpInputTopic2-0","size":0,"offsetLag":0,"isFuture":false}]}]},{"broker":2,"logDirs":[{"logDir":"/home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-3","error":null,"partitions":[{"partition":"tmpInputTopic2-0","size":0,"offsetLag":0,"isFuture":false},{"partition":"tmpInputTopic2-1","size":709230,"offsetLag":0,"isFuture":false}]}]}]}
+
+// we need to push a 700kb message without specifying comppression type in producer and see if topic compresses it to GZIP
+
+./bin/kafka-console-producer.sh --topic tmpInputTopic2 --broker-list localhost:9092,localhost:9093,localhost:9094 < /home/raptor/IdeaProjects/SparkLearning/Input/kafka/topicLevelCompression/700KB.txt 
+
+//the above got  compressed to 285 KB -- 292311
+
+{"version":1,"brokers":[{"broker":0,"logDirs":[{"logDir":"/home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-1","error":null,"partitions":[{"partition":"tmpInputTopic2-1","size":709230,"offsetLag":0,"isFuture":false}]}]},{"broker":1,"logDirs":[{"logDir":"/home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-2","error":null,"partitions":[{"partition":"tmpInputTopic2-0","size":292311,"offsetLag":0,"isFuture":false}]}]},{"broker":2,"logDirs":[{"logDir":"/home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-3","error":null,"partitions":[{"partition":"tmpInputTopic2-0","size":292311,"offsetLag":0,"isFuture":false},{"partition":"tmpInputTopic2-1","size":709230,"offsetLag":0,"isFuture":false}]}]}]}
+
+// all messages are compressed to gzip
+
+./bin/kafka-run-class.sh kafka.tools.DumpLogSegments --deep-iteration --files /home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-1/tmpInputTopic2-1/00000000000000000000.log,/home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-2/tmpInputTopic2-0/00000000000000000000.log,/home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-3/tmpInputTopic2-0/00000000000000000000.log,/home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-3/tmpInputTopic2-1/00000000000000000000.log
+
+
+// we need to push a 700kb message with compression type snappy in producer and check if broker is recompressing it to snappy
+
+./bin/kafka-console-producer.sh --topic tmpInputTopic2 --producer-property compression.type=snappy --broker-list localhost:9092,localhost:9093,localhost:9094 < /home/raptor/IdeaProjects/SparkLearning/Input/kafka/topicLevelCompression/700KB.txt
+
+after pushing message got pusged and bytes got updated 584622  == 292311*2 (Means compression happened to gzip lets verify)
+
+{"version":1,"brokers":[{"broker":0,"logDirs":[{"logDir":"/home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-1","error":null,"partitions":[{"partition":"tmpInputTopic2-1","size":709230,"offsetLag":0,"isFuture":false}]}]},{"broker":1,"logDirs":[{"logDir":"/home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-2","error":null,"partitions":[{"partition":"tmpInputTopic2-0","size":584622,"offsetLag":0,"isFuture":false}]}]},{"broker":2,"logDirs":[{"logDir":"/home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-3","error":null,"partitions":[{"partition":"tmpInputTopic2-0","size":584622,"offsetLag":0,"isFuture":false},{"partition":"tmpInputTopic2-1","size":709230,"offsetLag":0,"isFuture":false}]}]}]}
+raptor@raptor-VirtualBox:~/Softwares/kafka_2.12-2.3.1$ 
+
+All messages stored in broker are in GZIP format
+
+./bin/kafka-run-class.sh kafka.tools.DumpLogSegments --deep-iteration --files /home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-1/tmpInputTopic2-1/00000000000000000000.log,/home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-2/tmpInputTopic2-0/00000000000000000000.log,/home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-3/tmpInputTopic2-0/00000000000000000000.log,/home/raptor/Softwares/kafka_2.12-2.3.1/tmp/kafka-logs-3/tmpInputTopic2-1/00000000000000000000.log
+
+
+
+
+
+
+
