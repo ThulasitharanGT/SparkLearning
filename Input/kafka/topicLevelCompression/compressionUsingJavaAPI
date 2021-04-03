@@ -1,3 +1,21 @@
+kafka compression
+
+producer
+compression.type
+message.max.bytes
+max.request.size
+buffer.memory
+
+topic
+max.message.bytes
+compression.type
+
+
+// compressed message type must be specidied in topic
+
+// uncompressed message size must be specified in producer
+
+
 ./bin/kafka-topics.sh --create --topic tmpInputTopic2 --partitions 2 --replication-factor 2 --config max.message.bytes=1048576 --config compression.type=gzip --zookeeper localhost:3039 
 
 ./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --topic tmpInputTopic2
