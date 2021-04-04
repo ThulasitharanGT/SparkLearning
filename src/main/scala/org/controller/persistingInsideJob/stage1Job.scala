@@ -88,6 +88,19 @@ team_name,team_id,team_valid_flag,delete_timestamp
   }*/
 
 
+/*
+
+{"eventInfo":"teamEvent","eventData":"{\"teamName\":\"Redbull Racing\",\"teamId\":\"T001\",\"checkFlag\":\"Y\"}"}
+{"eventInfo":"teamEvent","eventData":"{\"teamName\":\"Alpha Tauri\",\"teamId\":\"T002\",\"checkFlag\":\"Y\"}"}
+{"eventInfo":"teamEvent","eventData":"{\"teamName\":\"Mclaren Racing\",\"teamId\":\"T003\",\"checkFlag\":\"Y\"}"}
+{"eventInfo":"teamEvent","eventData":"{\"teamName\":\"Aston Martin Racing\",\"teamId\":\"T004\",\"checkFlag\":\"Y\"}"}
+{"eventInfo":"teamEvent","eventData":"{\"teamName\":\"Alpine Racing\",\"teamId\":\"T005\",\"checkFlag\":\"Y\"}"}
+{"eventInfo":"teamEvent","eventData":"{\"teamName\":\"Williams Racing\",\"teamId\":\"T008\",\"checkFlag\":\"Y\"}"}
+
+
+// reads data and updates into reference table
+
+spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,mysql:mysql-connector-java:8.0.23 --class org.controller.persistingInsideJob.stage1Job --num-executors 2 --executor-cores 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --deploy-mode client --master local[*] /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar bootstrapServer=localhost:9092,localhost:9093,localhost:9094 topic=teamInfoTopic checkpointLocation=hdfs://localhost:8020/user/raptor/streams/tst1/ offsetForTopic=latest driverMYSQL="com.mysql.cj.jdbc.Driver" username=raptor password= urlJDBC="jdbc:mysql://localhost:3306/testPersist" databaseName=testPersist tableName=team_info*/
 
 
   def insertingAllRecords(batchDF:DataFrame,inputMap:collection.mutable.Map[String,String])= batchDF.select(col("teamName").as("team_name"),col("teamId").as("team_id"),col("checkFlag").as("team_valid_flag"))/*.withColumn("delete_timestamp",lit(null))*/.write.format("jdbc").mode("append").option("driver",inputMap("driverMYSQL")).option("user",inputMap("username")).option("password",inputMap("password")).option("url",inputMap("urlJDBC")).option("dbtable",s"${inputMap("databaseName")}.${inputMap("tableName")}").save

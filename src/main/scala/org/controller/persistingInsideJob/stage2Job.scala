@@ -25,8 +25,35 @@ active_flag VARCHAR(50) ,
 insert_timestamp TIMESTAMP DEFAULT current_timestamp(),
 delete_timestamp TIMESTAMP DEFAULT NULL);
 
-teamTableName
-driverTableName
+
+// This job gets driver event which has dependency on teamEvent. if that team id is not present in team table then it is preserved in a DF which is job bound like in state. and release those records if the id is present. If the record is sent to first job this will recieve an event ass this subscribes from both topic's and filter's driver event alone.
+
+// read from teamInfo topic too because if driver comes first and team comes second we can use it as event based trigger.
+
+// if the team as more than 4 active driver the driver would be dropped.
+// do an update on driver 's, disable existing driver id's flag and timestamp and insert new driver
+
+// state expires after the expression which you have given
+// state release if db has records.
+
+// if a team has four actve driver's then the record for 5th driver will be dropped.
+
+spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,mysql:mysql-connector-java:8.0.23 --class org.controller.persistingInsideJob.stage2Job --num-executors 2 --executor-cores 2 --executor-memory 1g --driver-memory 1g --driver-cores 2 --deploy-mode client --master local[*] --conf 'spark.driver.extraJavaOptions=-DXmx=512m' --conf 'spark.driver.extraJavaOptions=-DXms=64m' /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar bootstrapServer=localhost:9092,localhost:9093,localhost:9094 topic=driverInfoTopic,teamInfoTopic checkpointLocation=hdfs://localhost:8020/user/raptor/streams/tst2/ offsetForTopic=latest driverMYSQL="com.mysql.cj.jdbc.Driver" username=raptor password= urlJDBC="jdbc:mysql://localhost:3306/testPersist" databaseName=testPersist teamTableName=team_info driverTableName=driver_info stateExpiry="INTERVAL 15 MINUTE"
+
+
+{"eventInfo":"driverEvent","eventData":"{\"driverId\":\"D005\",\"teamId\":\"T005\",\"driverName\":\"Senna\",\"activeFlag\":\"Y\"}"}
+{"eventInfo":"driverEvent","eventData":"{\"driverId\":\"D004\",\"teamId\":\"T001\",\"driverName\":\"Senna\",\"activeFlag\":\"Y\"}"}
+{"eventInfo":"driverEvent","eventData":"{\"driverId\":\"D001\",\"teamId\":\"T008\",\"driverName\":\"Senna\",\"activeFlag\":\"Y\"}"}
+{"eventInfo":"driverEvent","eventData":"{\"driverId\":\"D002\",\"teamId\":\"T004\",\"driverName\":\"Max\",\"activeFlag\":\"Y\"}"}
+{"eventInfo":"driverEvent","eventData":"{\"driverId\":\"D003\",\"teamId\":\"T002\",\"driverName\":\"Senna\",\"activeFlag\":\"Y\"}"}
+
+// 4 extra records for existing driver team
+{"eventInfo":"driverEvent","eventData":"{\"driverId\":\"D006\",\"teamId\":\"T002\",\"driverName\":\"Senna1\",\"activeFlag\":\"Y\"}"}
+{"eventInfo":"driverEvent","eventData":"{\"driverId\":\"D007\",\"teamId\":\"T002\",\"driverName\":\"Senna2\",\"activeFlag\":\"Y\"}"}
+{"eventInfo":"driverEvent","eventData":"{\"driverId\":\"D008\",\"teamId\":\"T002\",\"driverName\":\"Senna3\",\"activeFlag\":\"Y\"}"}
+{"eventInfo":"driverEvent","eventData":"{\"driverId\":\"D009\",\"teamId\":\"T002\",\"driverName\":\"Senna4\",\"activeFlag\":\"Y\"}"}
+
+
 
  */
     val driverSchema=StructType(Array(StructField("teamId",StringType,true),StructField("driverId",StringType,true),StructField("driverName",StringType,true),StructField("activeFlag",StringType,true)))
@@ -53,7 +80,7 @@ driverTableName
      //       println("Records are in State")
             // expiry of stateDF. This will expire according to the expression given through CLI
             val tmpDFManipulated=tmpDataFrameIn.withColumn("presentTime",current_timestamp).withColumn("minusTimeStamp",col("presentTime")- expr(inputMap("stateExpiry"))).withColumn("plusTimeStamp",col("receivedTimeStamp")+ expr(inputMap("stateExpiry")))
-            tmpDFManipulated.withColumn("tmpManipulated",lit("tmpManipulated")).show(false)
+          //  tmpDFManipulated.withColumn("tmpManipulated",lit("tmpManipulated")).show(false)
             val tmpDataFrameExpired=tmpDFManipulated.where("receivedTimeStamp <= minusTimeStamp")
             val tmpDataFrameRetained=tmpDFManipulated.where("plusTimeStamp >= presentTime")
             tmpDataFrameExpired.collect.map(x => println(s"Expired from state ${x} in batch ${batchID}"))
@@ -96,7 +123,7 @@ driverTableName
          //   tmpDataFrameOut.withColumn("stateTmpFalse",lit("stateTmpFalse")).show(false)
             tmpDataFrameOut.collect.map(x => println(s"Records in state ${x} in batch ${batchID}"))
           case true =>
-            tmpDataFrameIn.withColumn("stateTmpTrueBefore",lit("stateTmpTrueBefore")).show(false)
+           // tmpDataFrameIn.withColumn("stateTmpTrueBefore",lit("stateTmpTrueBefore")).show(false)
            // tmpDataFrame.printSchema
            // invalidIncomingRecordsBatch.selectExpr("batch.*").printSchema
             // if records are in state then add unresolved batch records along with it
@@ -121,8 +148,8 @@ driverTableName
     inputMap.put("whereCondition","and delete_timestamp is NULL and active_flag='Y' ")
  //   inputMap.put("queryString",s"(select * from ${inputMap("databaseName")}.${inputMap("driverTableName")} where driver_id in (${driverIDList}) ${Try{inputMap("whereCondition")}.isSuccess match {case true => inputMap("whereCondition") case false =>""}}) a")
  //   val existingDriverIDInDB=getExistingRecords(inputMap,spark)
-    println(s"Query String - select team_id,count(driver_id) as driver_count from ${inputMap("databaseName")}.${inputMap("driverTableName")} where team_id in (${idListToStringManipulator(teamIDList)}) ${Try{inputMap("whereCondition")}.isSuccess match {case true => inputMap("whereCondition") case false =>""}} group by team_id having count(driver_id) >4 ")
-    inputMap.put("queryString",s"(select team_id,count(driver_id) as driver_count from ${inputMap("databaseName")}.${inputMap("driverTableName")} where team_id in (${idListToStringManipulator(teamIDList)}) ${Try{inputMap("whereCondition")}.isSuccess match {case true => inputMap("whereCondition") case false =>""}} group by team_id having count(driver_id) >4 ) a")
+    println(s"Query String - select team_id,count(driver_id) as driver_count from ${inputMap("databaseName")}.${inputMap("driverTableName")} where team_id in (${idListToStringManipulator(teamIDList)}) and driver_id not in (${idListToStringManipulator(driverIDList)}) ${Try{inputMap("whereCondition")}.isSuccess match {case true => inputMap("whereCondition") case false =>""}} group by team_id having count(driver_id) >= 4 ")
+    inputMap.put("queryString",s"(select team_id,count(driver_id) as driver_count from ${inputMap("databaseName")}.${inputMap("driverTableName")} where team_id in (${idListToStringManipulator(teamIDList)}) and driver_id not in (${idListToStringManipulator(driverIDList)}) ${Try{inputMap("whereCondition")}.isSuccess match {case true => inputMap("whereCondition") case false =>""}} group by team_id having count(driver_id) >= 4 ) a")
     val existingDriverIDInDBPerTeam=getExistingRecords(inputMap,spark)
     val exceededTeamIdList=idGetterTeam(existingDriverIDInDBPerTeam)
     val validFinalDF=validRecordsDF.filter(s"teamID not in (${idListToStringManipulator(exceededTeamIdList)})")
@@ -132,6 +159,7 @@ driverTableName
       case value if value.size >0 =>  println(s"Excluded driver id's ${driverIDList.diff(finalDriverIDList)}")
       case _ => println(s"No driver id's excluded")
     }
+    // disabling existing records
     inputMap.put("sqlQuery",s"update ${inputMap("databaseName")}.${inputMap("driverTableName")} set active_flag ='N',delete_timestamp=current_timestamp() where driver_id in (${idListToStringManipulator(finalDriverIDList)}) and delete_timestamp is null")
     updateExistingValidRecords(inputMap)
     saveFinalResultToDB(validFinalDF,inputMap)
