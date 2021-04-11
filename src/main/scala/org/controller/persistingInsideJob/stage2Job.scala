@@ -56,7 +56,6 @@ spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,mysql:m
 
 
  */
-    val driverSchema=StructType(Array(StructField("teamId",StringType,true),StructField("driverId",StringType,true),StructField("driverName",StringType,true),StructField("activeFlag",StringType,true)))
 
     var tmpDataFrameOut:DataFrame=null // stateDF
     val readStreamDF=spark.readStream.format("kafka").option("kafka.bootstrap.servers",inputMap("bootstrapServer")).option("subscribe",inputMap("topic")).option("offset",inputMap("offsetForTopic")).load.select(from_json(col("value").cast(StringType),schemaOfMessage).as("eventConverted")).selectExpr("eventConverted.*").filter(s"eventInfo = '${driverEvent}'").select(from_json(col("eventData").cast(StringType),driverSchema).as("driverCols")).selectExpr("driverCols.*")
@@ -139,8 +138,6 @@ spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,mysql:m
     spark.streams.awaitAnyTermination
   }
 
-  def idGetterDriver(df:DataFrame)=idGetter(df,1)
-  def idGetterTeam(df:DataFrame)=idGetter(df,0)
 
   def insertIntoDriverTable(validRecordsDF:DataFrame,spark:SparkSession,inputMap:collection.mutable.Map[String,String])={
     val driverIDList=idGetterDriver(validRecordsDF)

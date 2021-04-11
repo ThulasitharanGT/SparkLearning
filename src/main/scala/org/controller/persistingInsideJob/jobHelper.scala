@@ -1,7 +1,7 @@
 package org.controller.persistingInsideJob
 
 import org.apache.spark.sql.{DataFrame, SparkSession}
-import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.functions._
 
 import java.sql.DriverManager
 import java.util.Properties
@@ -18,6 +18,9 @@ object jobHelper {
     }
     inputMap
   }
+
+  def idGetterDriver(df:DataFrame)=idGetter(df,1)
+  def idGetterTeam(df:DataFrame)=idGetter(df,0)
 
   def idGetter(df:DataFrame,indexNum:Int):List[String]={
     var tmpArrayBuffer=collection.mutable.ArrayBuffer[String]()
@@ -36,6 +39,12 @@ object jobHelper {
   def getExistingRecords(inputMap:collection.mutable.Map[String,String],spark:SparkSession):DataFrame={
     spark.read.format("jdbc").option("driver",inputMap("driverMYSQL")).option("user",inputMap("username")).option("password",inputMap("password")).option("url",inputMap("urlJDBC")).option("dbtable",inputMap("queryString")).load
   }
+  def getExistingRecords(inputMap:collection.mutable.Map[String,String],spark:SparkSession,query:String):DataFrame={
+    spark.read.format("jdbc").option("driver",inputMap("driverMYSQL")).option("user",inputMap("username")).option("password",inputMap("password")).option("url",inputMap("urlJDBC")).option("dbtable",/*inputMap("queryString")*/query).load
+  }
+
+  def writeToTable(df:DataFrame,inputMap:collection.mutable.Map[String,String],tableName:String)=df.write.mode("append").format("jdbc").option("driver",inputMap("driverMYSQL")).option("user",inputMap("username")).option("password",inputMap("password")).option("url",inputMap("urlJDBC")).option("dbtable",/*inputMap("queryString")*/s"${inputMap("databaseName")}.${tableName}").save
+
   def updateExistingValidRecords(inputMap:collection.mutable.Map[String,String]) ={
     Class.forName(inputMap("driverMYSQL"))
     val props=new Properties
@@ -49,5 +58,12 @@ object jobHelper {
     val rowsAffected=preparedStatement.executeUpdate
     connectionInstance.close
     rowsAffected
+  }
+
+  def expiryCheck(df:DataFrame,inputMap:collection.mutable.Map[String,String]) ={
+    val stateInfoDF=df.withColumn("currentTime",lit(current_timestamp)).withColumn("plusMinutes",col("receivedTimestamp")+expr(inputMap("stateExpiry"))).withColumn("minusMinutes",col("currentTime")-expr(inputMap("stateExpiry")))
+    val expiredDF=stateInfoDF.where("plusMinutes <= currentTime")
+    val retainedDF=stateInfoDF.where("minusMinutes <= receivedTimestamp")
+    (retainedDF,expiredDF)
   }
 }

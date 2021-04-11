@@ -31,8 +31,7 @@ object stage1Job extends SparkOpener{
     val offsetForTopic=inputMap("offsetForTopic")
  // {teamName,"teamId",checkFlag}
 
-    val schemaOfEvent=StructType(Array(StructField("teamName",StringType,true),StructField("teamId",StringType,true),StructField("checkFlag",StringType,true)))
-    val readStreamDF=spark.readStream.format("kafka").option("kafka.bootstrap.servers",bootstrapServer).option("subscribe",topic).option("offset",offsetForTopic).load.select(from_json(col("value").cast(StringType),schemaOfMessage).as("eventConverted")).selectExpr("eventConverted.*").filter(s"eventInfo = '${teamEvent}'").select(from_json(col("eventData").cast(StringType),schemaOfEvent).as("valueTmp")).selectExpr("valueTmp.*")
+    val readStreamDF=spark.readStream.format("kafka").option("kafka.bootstrap.servers",bootstrapServer).option("subscribe",topic).option("offset",offsetForTopic).load.select(from_json(col("value").cast(StringType),schemaOfMessage).as("eventConverted")).selectExpr("eventConverted.*").filter(s"eventInfo = '${teamEvent}'").select(from_json(col("eventData").cast(StringType),teamSchema).as("valueTmp")).selectExpr("valueTmp.*")
 
     readStreamDF.writeStream.format("console").outputMode("append").foreachBatch(
       (batchDF:DataFrame,batchID:Long)=>
