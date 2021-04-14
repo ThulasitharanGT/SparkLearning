@@ -209,12 +209,23 @@ products:
    src/main/scala/org/controller/persistingInsideJob/combinedResolvingStateAlone.scala -> build/classes/scala/main/org/controller/persistingInsideJob/combinedResolvingStateAlone.class
    src/main/scala/org/controller/persistingInsideJob/jobConstantsPersist.scala -> build/classes/scala/main/org/controller/persistingInsideJob/jobConstantsPersist$.class
    src/main/scala/org/controller/persistingInsideJob/jobConstantsPersist.scala -> build/classes/scala/main/org/controller/persistingInsideJob/jobConstantsPersist.class
+   src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> build/classes/scala/main/org/controller/persistingInsideJob/jobHelper$$typecreator13$1.class
+   src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> build/classes/scala/main/org/controller/persistingInsideJob/jobHelper$$typecreator17$1.class
+   src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> build/classes/scala/main/org/controller/persistingInsideJob/jobHelper$$typecreator5$1.class
    src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> build/classes/scala/main/org/controller/persistingInsideJob/jobHelper$.class
    src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> build/classes/scala/main/org/controller/persistingInsideJob/jobHelper.class
    src/main/scala/org/controller/persistingInsideJob/stage1Job.scala -> build/classes/scala/main/org/controller/persistingInsideJob/stage1Job$.class
    src/main/scala/org/controller/persistingInsideJob/stage1Job.scala -> build/classes/scala/main/org/controller/persistingInsideJob/stage1Job.class
    src/main/scala/org/controller/persistingInsideJob/stage2Job.scala -> build/classes/scala/main/org/controller/persistingInsideJob/stage2Job$.class
    src/main/scala/org/controller/persistingInsideJob/stage2Job.scala -> build/classes/scala/main/org/controller/persistingInsideJob/stage2Job.class
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> build/classes/scala/main/org/controller/persistingInsideJob/streamToStaticDF$$typecreator13$1.class
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> build/classes/scala/main/org/controller/persistingInsideJob/streamToStaticDF$$typecreator17$1.class
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> build/classes/scala/main/org/controller/persistingInsideJob/streamToStaticDF$$typecreator4$1.class
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> build/classes/scala/main/org/controller/persistingInsideJob/streamToStaticDF$$typecreator9$1.class
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> build/classes/scala/main/org/controller/persistingInsideJob/streamToStaticDF$.class
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> build/classes/scala/main/org/controller/persistingInsideJob/streamToStaticDF$statsTable$.class
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> build/classes/scala/main/org/controller/persistingInsideJob/streamToStaticDF$statsTable.class
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> build/classes/scala/main/org/controller/persistingInsideJob/streamToStaticDF.class
    src/main/scala/org/controller/rankEmployeeTest.scala -> build/classes/scala/main/org/controller/rankEmployeeTest$.class
    src/main/scala/org/controller/rankEmployeeTest.scala -> build/classes/scala/main/org/controller/rankEmployeeTest.class
    src/main/scala/org/controller/reRunnableJob/constants.scala -> build/classes/scala/main/org/controller/reRunnableJob/constants$.class
@@ -607,6 +618,7 @@ binary dependencies:
    src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/persistingInsideJob/stage1Job.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/persistingInsideJob/stage1Job.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
@@ -618,6 +630,12 @@ binary dependencies:
    src/main/scala/org/controller/persistingInsideJob/stage2Job.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/persistingInsideJob/stage2Job.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/persistingInsideJob/stage2Job.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
@@ -921,12 +939,16 @@ source dependencies:
    src/main/scala/org/controller/persistingInsideJob/combinedResolvingStateAlone.scala -> src/main/scala/org/controller/persistingInsideJob/jobConstantsPersist.scala
    src/main/scala/org/controller/persistingInsideJob/combinedResolvingStateAlone.scala -> src/main/scala/org/controller/persistingInsideJob/jobHelper.scala
    src/main/scala/org/controller/persistingInsideJob/combinedResolvingStateAlone.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala
    src/main/scala/org/controller/persistingInsideJob/stage1Job.scala -> src/main/scala/org/controller/persistingInsideJob/jobConstantsPersist.scala
    src/main/scala/org/controller/persistingInsideJob/stage1Job.scala -> src/main/scala/org/controller/persistingInsideJob/jobHelper.scala
    src/main/scala/org/controller/persistingInsideJob/stage1Job.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/persistingInsideJob/stage2Job.scala -> src/main/scala/org/controller/persistingInsideJob/jobConstantsPersist.scala
    src/main/scala/org/controller/persistingInsideJob/stage2Job.scala -> src/main/scala/org/controller/persistingInsideJob/jobHelper.scala
    src/main/scala/org/controller/persistingInsideJob/stage2Job.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> src/main/scala/org/controller/persistingInsideJob/jobConstantsPersist.scala
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> src/main/scala/org/controller/persistingInsideJob/jobHelper.scala
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/rankEmployeeTest.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/rankEmployeeTest.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/rankEmployeeTest.scala -> src/main/scala/org/util/readWriteUtil.scala
@@ -1205,10 +1227,21 @@ class names:
    src/main/scala/org/controller/persistingInsideJob/jobConstantsPersist.scala -> org.controller.persistingInsideJob.jobConstantsPersist$
    src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> org.controller.persistingInsideJob.jobHelper
    src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> org.controller.persistingInsideJob.jobHelper$
+   src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> org.controller.persistingInsideJob.jobHelper$$typecreator13$1
+   src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> org.controller.persistingInsideJob.jobHelper$$typecreator17$1
+   src/main/scala/org/controller/persistingInsideJob/jobHelper.scala -> org.controller.persistingInsideJob.jobHelper$$typecreator5$1
    src/main/scala/org/controller/persistingInsideJob/stage1Job.scala -> org.controller.persistingInsideJob.stage1Job
    src/main/scala/org/controller/persistingInsideJob/stage1Job.scala -> org.controller.persistingInsideJob.stage1Job$
    src/main/scala/org/controller/persistingInsideJob/stage2Job.scala -> org.controller.persistingInsideJob.stage2Job
    src/main/scala/org/controller/persistingInsideJob/stage2Job.scala -> org.controller.persistingInsideJob.stage2Job$
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> org.controller.persistingInsideJob.streamToStaticDF
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> org.controller.persistingInsideJob.streamToStaticDF$
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> org.controller.persistingInsideJob.streamToStaticDF$$typecreator13$1
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> org.controller.persistingInsideJob.streamToStaticDF$$typecreator17$1
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> org.controller.persistingInsideJob.streamToStaticDF$$typecreator4$1
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> org.controller.persistingInsideJob.streamToStaticDF$$typecreator9$1
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> org.controller.persistingInsideJob.streamToStaticDF$statsTable
+   src/main/scala/org/controller/persistingInsideJob/streamToStaticDF.scala -> org.controller.persistingInsideJob.streamToStaticDF$statsTable$
    src/main/scala/org/controller/rankEmployeeTest.scala -> org.controller.rankEmployeeTest
    src/main/scala/org/controller/rankEmployeeTest.scala -> org.controller.rankEmployeeTest$
    src/main/scala/org/controller/reRunnableJob/constants.scala -> org.controller.reRunnableJob.constants
