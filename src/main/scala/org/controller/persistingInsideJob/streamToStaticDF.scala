@@ -85,7 +85,14 @@ total_wins VARCHAR(50) ,
 total_laps_lead VARCHAR(50) ,
 recorded_date DATE );
 
-/// this is not working the batch df inside the streaming df mapping and generation is only execute once. We need to go with map on streaming df to get the job done.
+
+{"eventInfo":"driverStatsEvent","eventData":"{\"driverName\":\"Senna\",\"driverId\":\"D001\",\"totalPoles\":\"65\",\"totalWins\":\"41\",\"totalLapsLead\":\"2000\",\"recordedDate\":\"2021-05-01\"}"}
+
+{"eventInfo":"driverStatsEvent","eventData":"{\"driverName\":\"Senna\",\"driverId\":\"D001\",\"totalPoles\":\"65\",\"totalWins\":\"41\",\"totalLapsLead\":\"2000\",\"recordedDate\":\"2021-05-05\"}"}
+{"eventInfo":"driverStatsEvent","eventData":"{\"driverName\":\"Senna\",\"driverId\":\"D001\",\"totalPoles\":\"65\",\"totalWins\":\"41\",\"totalLapsLead\":\"2000\",\"recordedDate\":\"2021-05-07\"}"}
+{"eventInfo":"driverStatsEvent","eventData":"{\"driverName\":\"Max\",\"driverId\":\"D002\",\"totalPoles\":\"6\",\"totalWins\":\"11\",\"totalLapsLead\":\"100\",\"recordedDate\":\"2021-05-07\"}"}
+
+///////////////////////////// this is not working the batch df inside the streaming df mapping and generation is only execute once. We need to go with map on streaming df to get the job done.
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,mysql:mysql-connector-java:8.0.23 --class org.controller.persistingInsideJob.streamToStaticDF --num-executors 2 --executor-cores 2 --executor-memory 1g --driver-memory 1g --driver-cores 2 --deploy-mode client --master local[*] --conf 'spark.driver.extraJavaOptions=-DXmx=512m' --conf 'spark.driver.extraJavaOptions=-DXms=64m' /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar kafkaBootstrapServers=localhost:9092,localhost:9093,localhost:9094 topic=driverStatsTopic checkpointLocation=hdfs://localhost:8020/user/raptor/streams/tstDriverStats/  startingOffsets=latest driverMYSQL="com.mysql.cj.jdbc.Driver" username=raptor password= urlJDBC="jdbc:mysql://localhost:3306/testPersist" databaseName=testPersist teamTableName=team_info driverTableName=driver_info stateExpiry="INTERVAL 15 MINUTE" totalTotalPolesColumn=total_poles totalTotalWinsColumn=total_wins  totalTotalLapsLeadColumn=total_laps_lead driverStatsTableName=driver_stats checkpointLocationInvalidate=hdfs://localhost:8020/user/raptor/streams/tstDriverInvalidate/ driverStatsTableNameTmp=driver_archive
 
 */
