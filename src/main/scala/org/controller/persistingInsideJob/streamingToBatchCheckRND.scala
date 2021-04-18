@@ -12,6 +12,7 @@ object streamingToBatchCheckRND extends SparkOpener{
   case class statsTable(driver_id:String,driver_name:String,total_poles:String,total_wins:String,total_laps_lead:String,recorded_date:java.sql.Date)
   case class statsTableWithUpdatedInfo(driver_id:String,driver_name:String,total_poles:String,total_wins:String,total_laps_lead:String,recorded_date:java.sql.Date,numRecordsAffected:Int)
 // spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,mysql:mysql-connector-java:8.0.23 --class org.controller.persistingInsideJob.combinedResolvingStateAlone --num-executors 2 --executor-cores 2 --executor-memory 1g --driver-memory 1g --driver-cores 2 --deploy-mode client --master local[*] --conf 'spark.driver.extraJavaOptions=-DXmx=512m' --conf 'spark.driver.extraJavaOptions=-DXms=64m' /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar bootstrapServer=localhost:9092,localhost:9093,localhost:9094 topics=driverInfoTopic,teamInfoTopic driverStreamCheckpoint=hdfs://localhost:8020/user/raptor/streams/tstDriver/ teamStreamCheckpoint=hdfs://localhost:8020/user/raptor/streams/tstTeam/ offsetForTopic=latest driverMYSQL="com.mysql.cj.jdbc.Driver" username=raptor password= urlJDBC="jdbc:mysql://localhost:3306/testPersist" databaseName=testPersist teamTableName=team_info driverTableName=driver_info stateExpiry="INTERVAL 15 MINUTE"
+// doesn't work the invalidate function only runs once
   val spark=SparkSessionLoc()
   import spark.implicits._
   spark.sparkContext.setLogLevel("ERROR")
