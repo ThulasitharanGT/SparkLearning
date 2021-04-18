@@ -111,15 +111,6 @@ spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,mysql:m
 
   }
 
-  def invalidateInfo(row:statsTable,inputMap:collection.mutable.Map[String,String])={
-  //  val statsTableRecord= statsTable(row.getString(0),row.getString(1),row.getString(2),row.getString(3),row.getString(4),row.getDate(5))
-    val conn=getJDBCConnection(inputMap)
-    val updateQuery=s"update ${inputMap("databaseName")}.${inputMap("driverStatsTableName")} set ${inputMap("totalTotalPolesColumn")}='0' ,${inputMap("totalTotalWinsColumn")}='0',${inputMap("totalTotalLapsLeadColumn")}='0' where driver_id='${row.driver_id}' and recorded_date='${row.recorded_date}'"
-    val updateStatement=conn.prepareStatement(updateQuery)
-    val numRecordsAffected=updateStatement.executeUpdate
-    conn.close
-    statsTableWithUpdatedInfo(row.driver_id,row.driver_name,row.total_poles,row.total_wins,row.total_laps_lead,row.recorded_date,numRecordsAffected)
-  }
 
   def invalidateFunction(df:Dataset[statsTable],inputMap:collection.mutable.Map[String,String]/*,spark:SparkSession*/)={
   //  import spark.implicits._
@@ -148,8 +139,19 @@ spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,mysql:m
     val recordsToBeInvalidated=currentStateDF.as("hist").join(finalStaticDF.as("curr"),col("curr.driver_id")===col("hist.driver_id") && to_date(col("curr.recorded_date"))===to_date(col("hist.recorded_date"),"yyyy-MM-dd"),"left").where("curr.driver_id is null").selectExpr("hist.*")
     println(s"invalidateFunction :: recordsToBeInvalidated")
 
-    recordsToBeInvalidated.map(invalidateInfo(_,inputMap)).show(false)   // invalidating records acion triggers the dag to be computed
+    recordsToBeInvalidated.map(invalidateInfo(_,inputMap)).withColumn("recordsToBeInvalidated",lit("recordsToBeInvalidated")).show(false)   // invalidating records acion triggers the dag to be computed
     driverIdAndStreamingDF._2 //,recordsToBeInvalidated)
+  }
+
+  def invalidateInfo(row:statsTable,inputMap:collection.mutable.Map[String,String])={
+    val conn=getJDBCConnection(inputMap)
+    //  val updateQuery=s"update ${inputMap("databaseName")}.${inputMap("driverStatsTableName")} set ${inputMap("totalTotalPolesColumn")}='0' ,${inputMap("totalTotalWinsColumn")}='0',${inputMap("totalTotalLapsLeadColumn")}='0' where driver_id='${row.driver_id}' and recorded_date!='${row.recorded_date}'"
+    val updateQuery=s"update ${inputMap("databaseName")}.${inputMap("driverStatsTableName")} set ${inputMap("totalTotalPolesColumn")}='0' ,${inputMap("totalTotalWinsColumn")}='0',${inputMap("totalTotalLapsLeadColumn")}='0' where driver_id='${row.driver_id}' and recorded_date>=current_date()"  /*'${row.recorded_date}'*/ // condition change for checking
+    println(updateQuery)
+    val updateStatement=conn.prepareStatement(updateQuery)
+    val numRecordsAffected=updateStatement.executeUpdate
+    conn.close
+    statsTableWithUpdatedInfo(row.driver_id,row.driver_name,row.total_poles,row.total_wins,row.total_laps_lead,row.recorded_date,numRecordsAffected)
   }
 
   def idGetterDriverCaseClass(df:Dataset[statsTable]/*,spark:SparkSession*/)= {
