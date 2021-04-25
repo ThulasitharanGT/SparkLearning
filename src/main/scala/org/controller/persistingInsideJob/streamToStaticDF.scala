@@ -7,16 +7,19 @@ import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 import org.controller.persistingInsideJob.jobConstantsPersist._
 
+
+
+
+
+
 object streamToStaticDF extends SparkOpener{
   val columnNamesSeq="driver_id, driver_name, total_poles, total_wins, total_laps_lead, recorded_date".split(",").map(_.trim)
-
   case class statsTable(driver_id:String,driver_name:String,total_poles:String,total_wins:String,total_laps_lead:String,recorded_date:java.sql.Date)
   case class statsTableWithUpdatedInfo(driver_id:String,driver_name:String,total_poles:String,total_wins:String,total_laps_lead:String,recorded_date:java.sql.Date,numRecordsAffected:Int)
 
   val spark=SparkSessionLoc()
   import spark.implicits._
   spark.sparkContext.setLogLevel("ERROR")
-
   def main(args:Array[String]):Unit={
     val inputMap=argsToMapConvert(args)
     val readStreamDF=spark.readStream.format("kafka").option("kafka.bootstrap.servers",inputMap("kafkaBootstrapServers")).option("subscribe",inputMap("topic")).option("offsets",inputMap("startingOffsets")).load.select(col("value").cast(StringType))
