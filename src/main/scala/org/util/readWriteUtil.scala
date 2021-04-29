@@ -34,6 +34,10 @@ object readWriteUtil {
       case value if value== projectConstants.fileTypeOrcValue => dfTemp= spark.read.format(value).option(projectConstants.inferSchemaArgConstant,inputMap(projectConstants.inferSchemaArgConstant)).load(inputMap(projectConstants.filePathArgValue))
       case value if value== projectConstants.fileTypeXmlValue => dfTemp= spark.read.format(projectConstants.fileTypeXmlFormatValue).option(projectConstants.fileRootTagXmlArg,inputMap(projectConstants.fileRootTagXmlArg)).option(projectConstants.fileRowTagXmlArg,inputMap(projectConstants.fileRowTagXmlArg)).load(inputMap(projectConstants.filePathArgValue))
       case value if value== projectConstants.fileTypeDeltaValue => dfTemp= spark.read.format(projectConstants.fileTypeDeltaValue).load(inputMap(projectConstants.filePathArgValue))
+      case value if value== projectConstants.fileTypeJDBCValue =>
+        println("Inside JDBC case")
+        dfTemp= spark.read.format(projectConstants.fileTypeJDBCValue).option(projectConstants.driverOption,inputMap(projectConstants.driverOption)).option(projectConstants.userOption,inputMap(projectConstants.userOption)).option(projectConstants.passwordOption,inputMap(projectConstants.passwordOption)).option(projectConstants.urlOption,inputMap(projectConstants.urlOption)).option(projectConstants.dbtableOption,inputMap(projectConstants.dbtableReadOption)).load
+        dfTemp.printSchema
       case _ => println("Invalid selection")
       }
     dfTemp
@@ -74,6 +78,12 @@ object readWriteUtil {
       case value if value== projectConstants.fileTypeXmlValue =>df.write.mode(inputMap(projectConstants.fileOverwriteAppendArg)).format(projectConstants.fileTypeXmlFormatValue).option(projectConstants.fileRowTagXmlArg,inputMap(projectConstants.fileRowTagXmlArg)).option(projectConstants.fileRootTagXmlArg,inputMap(projectConstants.fileRootTagXmlArg)).save(inputMap(projectConstants.filePathArgValue))
       case value if value== projectConstants.fileTypeOrcValue =>df.write.format( projectConstants.fileTypeOrcValue ).mode(inputMap(projectConstants.fileOverwriteAppendArg)).save(inputMap(projectConstants.filePathArgValue))
       case value if value== projectConstants.fileTypeDeltaValue =>df.write.format( projectConstants.fileTypeDeltaValue ).mode(inputMap(projectConstants.fileOverwriteAppendArg)).save(inputMap(projectConstants.filePathArgValue))
+      case value if value== projectConstants.fileTypeJDBCValue =>df.write.format(value).mode(inputMap(projectConstants.fileOverwriteAppendArg)).option(projectConstants.driverOption,inputMap(projectConstants.driverOption))
+        .option(projectConstants.userOption,inputMap(projectConstants.userOption))
+        .option(projectConstants.passwordOption,inputMap(projectConstants.passwordOption))
+        .option(projectConstants.urlOption,inputMap(projectConstants.urlOption))
+        .option(projectConstants.dbtableOption,inputMap(projectConstants.dbtableWriteOption))
+        .save
 
       //default TextFile
       case _=>df.write.mode(inputMap(projectConstants.fileOverwriteAppendArg)).option(projectConstants.delimiterArgConstant,inputMap(projectConstants.delimiterArgConstant)).option(projectConstants.headerArgConstant,inputMap(projectConstants.headerArgConstant)).text(inputMap(projectConstants.filePathArgValue))
@@ -91,7 +101,7 @@ object readWriteUtil {
       case value if value== projectConstants.kafkaFormat =>
         spark.readStream.format (inputMap (projectConstants.fileFormatArg) ).option(projectConstants.checkPointLocationArg,inputMap(projectConstants.checkPointLocationArg)).option (projectConstants.kafkaBootStrapServersArg, inputMap (projectConstants.kafkaBootStrapServersArg) ).option (projectConstants.kafkaValueDeserializerArg, inputMap (projectConstants.kafkaValueDeserializerArg) ).option (projectConstants.kafkaKeyDeserializerArg, inputMap (projectConstants.kafkaKeyDeserializerArg) ).option (projectConstants.startingOffsetsArg, inputMap (projectConstants.startingOffsetsArg) ).option (projectConstants.subscribeArg, inputMap (projectConstants.subscribeArg) ).load ()
       case value if value== projectConstants.deltaFormat =>
-        spark.readStream.format (inputMap (projectConstants.fileFormatArg) ).load(inputMap(projectConstants.filePathArgValue))
+        spark.readStream.format(inputMap (projectConstants.fileFormatArg) ).load(inputMap(projectConstants.filePathArgValue))
       case value if value== projectConstants.kafkaSSLFormat =>
      //   inputMap.map(x => println(s"map inside = ${x}"))
         spark.readStream.format(/*inputMap (projectConstants.fileFormatArg)*/projectConstants.kafkaFormat).option(projectConstants.checkPointLocationArg,inputMap(projectConstants.checkPointLocationArg)).option (projectConstants.kafkaBootStrapServersArg, inputMap (projectConstants.kafkaBootStrapServersArg) ).option (projectConstants.kafkaValueDeserializerArg, inputMap (projectConstants.kafkaValueDeserializerArg) ).option (projectConstants.kafkaKeyDeserializerArg, inputMap (projectConstants.kafkaKeyDeserializerArg) ).option (projectConstants.startingOffsetsArg, inputMap (projectConstants.startingOffsetsArg) ).option (projectConstants.subscribeArg, inputMap (projectConstants.subscribeArg) ).option(projectConstants.kafkaSecurityProtocol, inputMap(projectConstants.kafkaSecurityProtocolArg)).option(projectConstants.kafkaSSLEndpointIdentificationAlgorithm,inputMap(projectConstants.kafkaSSLEndpointIdentificationAlgorithmArg)).option(projectConstants.kafkaSSLKeyPassword, inputMap(projectConstants.kafkaSSLKeyPasswordArg)).option(projectConstants.kafkaSSLKeyStoreLocation, inputMap(projectConstants.kafkaSSLKeyStoreLocationArg)).option(projectConstants.kafkaSSLKeyStorePassword, inputMap(projectConstants.kafkaSSLKeyStorePasswordArg)).option(projectConstants.kafkaSSLTrustStoreLocation, inputMap(projectConstants.kafkaSSLTrustStoreLocationArg)).option(projectConstants.kafkaSSLTrustStorePassword, inputMap(projectConstants.kafkaSSLTrustStorePasswordArg)).option(projectConstants.kafkaSSLTruststoreType,inputMap(projectConstants.kafkaSSLTruststoreTypeArg)).load
@@ -103,6 +113,8 @@ object readWriteUtil {
   //readStreamDF.writeStream.outputMode("append").format(projectConstants.deltaFormat).option("checkpointLocation",checkPointLocation).option("path",outputPath)
 
   def writeStreamAsDelta(spark:SparkSession,inputMap:collection.mutable.Map[String,String],DataframeToStream: DataFrame)=DataframeToStream.writeStream.outputMode(inputMap(projectConstants.outputModeArg)).format(inputMap(projectConstants.fileFormatArg)).option(projectConstants.checkPointLocationArg,inputMap(projectConstants.checkPointLocationArg)).option(projectConstants.deltaMergeSchemaClause, inputMap(projectConstants.deltaMergeSchemaClause)).option(projectConstants.deltaOverWriteSchemaClause, inputMap(projectConstants.deltaOverWriteSchemaClause)).option(projectConstants.pathArg, inputMap(projectConstants.pathArg))
+
+  def writeStreamConsole(spark:SparkSession,inputMap:collection.mutable.Map[String,String],DataframeToStream: DataFrame)=DataframeToStream.writeStream.outputMode(inputMap(projectConstants.outputModeArg)).format(inputMap(projectConstants.fileFormatArg)).option(projectConstants.checkPointLocationArg,inputMap(projectConstants.checkPointLocationArg))
 
   //def toJson(topic:String,key:String,value:String,partition:String,offset:String,timestamp:String,timestampType:String)=s"{\"topic\":\"${topic}\",\"key\":\"${key}\",\"value\":\"${value}\",\"partition\":\"${partition}\",\"offset\":\"${offset}\",\"timestamp\":\"${timestamp}\",\"timestampType\":\"${timestampType}\"}"
 
