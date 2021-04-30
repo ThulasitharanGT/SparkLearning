@@ -8,6 +8,8 @@ import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.spark.sql.execution.datasources.hbase.HBaseTableCatalog
 
 import java.io.InputStreamReader
+import java.sql.DriverManager
+import java.text.SimpleDateFormat
 import java.util.Properties
 import scala.io.BufferedSource
 // import scala.util.{Failure, Success, Try}
@@ -35,12 +37,26 @@ object readWriteUtil {
       case value if value== projectConstants.fileTypeXmlValue => dfTemp= spark.read.format(projectConstants.fileTypeXmlFormatValue).option(projectConstants.fileRootTagXmlArg,inputMap(projectConstants.fileRootTagXmlArg)).option(projectConstants.fileRowTagXmlArg,inputMap(projectConstants.fileRowTagXmlArg)).load(inputMap(projectConstants.filePathArgValue))
       case value if value== projectConstants.fileTypeDeltaValue => dfTemp= spark.read.format(projectConstants.fileTypeDeltaValue).load(inputMap(projectConstants.filePathArgValue))
       case value if value== projectConstants.fileTypeJDBCValue =>
-        println("Inside JDBC case")
+       // println("Inside JDBC case")
         dfTemp= spark.read.format(projectConstants.fileTypeJDBCValue).option(projectConstants.driverOption,inputMap(projectConstants.driverOption)).option(projectConstants.userOption,inputMap(projectConstants.userOption)).option(projectConstants.passwordOption,inputMap(projectConstants.passwordOption)).option(projectConstants.urlOption,inputMap(projectConstants.urlOption)).option(projectConstants.dbtableOption,inputMap(projectConstants.dbtableReadOption)).load
-        dfTemp.printSchema
+       // dfTemp.printSchema
       case _ => println("Invalid selection")
       }
     dfTemp
+  }
+  def javaUtilDateToSqlDateConversion(dateString:String)=   {
+    val simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd")
+    new java.sql.Date(simpleDateFormat.parse(dateString).getTime)
+  }
+
+  def getJDBCConnection(inputMap:collection.mutable.Map[String,String])  =
+  {
+    Class.forName(inputMap(projectConstants.driverOption))
+    val props=new java.util.Properties()
+    props.put("url",inputMap(projectConstants.urlOption))
+    props.put("user",inputMap(projectConstants.userOption))
+    props.put("password",inputMap(projectConstants.passwordOption))
+    DriverManager.getConnection(inputMap(projectConstants.urlOption),props)
   }
   def loadProperties(propPath: String):Properties= {
     val prop = new Properties

@@ -37,8 +37,20 @@ object readFromKafkaAndWriteToDelta extends SparkOpener{
     writeStreamAsDelta(spark,inputMap,readStreamDF).start
 
     spark.streams.awaitAnyTermination
+/*
+*
+{"intValue":"1","strValue":"str1","dateValue":"2020-02-01"}
+{"intValue":"2","strValue":"str2","dateValue":"2020-02-02"}
+{"intValue":"3","strValue":"str3","dateValue":"2020-02-03"}
+{"intValue":"4","strValue":"str2","dateValue":"2020-02-02"}
+{"intValue":"6","strValue":"str2","dateValue":"2020-02-03"}
+*
+spark-submit --class org.controller.deltaLakeEG.readFromKafkaAndWriteToDelta --packages io.delta:delta-core_2.12:0.8.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0 --driver-memory 512m --driver-cores 1 --num-executors 1 --executor-memory 512m --executor-cores 1  --master local[*] --conf spark.dynamicAllocation.enabled=false /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar bootstrapServers=localhost:9092,localhost:9093,localhost:9094 topic=deltaCheckTopic checkpointLocation=hdfs://localhost:8020/user/raptor/streams/deltaWriteStream/ deltaOutputPath=hdfs://localhost:8020/user/raptor/persist/deltaPersistPath/ startingOffsets=latest
 
-// spark-submit --class org.controller.deltaLakeEG.readFromKafkaAndWriteToDelta --packages io.delta:delta-core_2.12:0.8.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0 --driver-memory 512m --driver-cores 1 --num-executors 1 --executor-memory 512m --executor-cores 1  --master local[*] --conf spark.dynamicAllocation.enabled=false /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar bootstrapServers=localhost:9092,localhost:9093,localhost:9094 topic=deltaCheckTopic checkpointLocation=hdfs://localhost:8020/user/raptor/streams/deltaWriteStream/ deltaOutputPath=hdfs://localhost:8020/user/raptor/persist/deltaPersistPath/ startingOffsets=latest
+
+*
+* reads from kafka and writes to a delta stream
+* */
   }
 
 }

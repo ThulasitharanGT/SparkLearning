@@ -21,6 +21,7 @@ trait SparkOpener
   def numberGenerator(minValue:Int=0,maxValue:Int=Int.MaxValue)=numberList(ThreadLocalRandom.current.nextInt(minValue,maxValue-1))
 
   def randomNameGenerator = s"${stringGenerator(ThreadLocalRandom.current.nextInt(5,10))}_${numberGenerator(0,Int.MaxValue)}"
+
   def SparkSessionLoc(name:String =randomNameGenerator):SparkSession={
     val conf=new SparkConf().setAppName(name +"Local" ).setMaster("local")
     conf.set("spark.sql.parquet.binaryAsString","true").set("spark.sql.avro.binaryAsString","true")
@@ -28,4 +29,11 @@ trait SparkOpener
     //System.setProperty("hadoop.home.dir",PathConstants.WINUTILS_EXE_PATH)
     SparkSession.builder().config(conf).getOrCreate()
     }
+  def SparkSessionLocWithConf(conf:SparkConf,name:String =randomNameGenerator):SparkSession={
+    val config=conf.setAppName(name +"Local" ).setMaster("local")
+    config.set("spark.sql.parquet.binaryAsString","true").set("spark.sql.avro.binaryAsString","true")
+    //conf.set("spark.testing.memory","671859200").set("spark.ui.enabled","true").set("spark.sql.parquet.binaryAsString","true").set("spark.sql.avro.binaryAsString","true")
+    //System.setProperty("hadoop.home.dir",PathConstants.WINUTILS_EXE_PATH)
+    SparkSession.builder().config(config).getOrCreate()
+  }
 }
