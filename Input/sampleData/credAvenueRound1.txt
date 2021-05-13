@@ -1,0 +1,97 @@
+1) Given an array with only 0's and 1's. The task is to find the longest subarray with only 1's 
+
+Eg:) 
+
+I/p:) 
+
+a[] = 1 0 1 1 1 0 1 1 
+
+O/p  = 3
+
+var highestContinuousSize=0
+var countOfCurrent=0
+val arrayVar=Array(0,1,1,0,0,0,1,1,0,0)
+for (item <- arrayVar)
+item match {
+case value if value ==1 =>
+countOfCurrent=countOfCurrent+1
+case value if value ==0 =>
+highestContinuousSize  match 
+{
+case value if value >= countOfCurrent=>highestContinuousSize=highestContinuousSize
+case value if value < countOfCurrent=>highestContinuousSize=countOfCurrent
+}
+countOfCurrent=0
+}
+
+println(highestContinuousSize)
+
+2) Find all triplets with zero sum 
+
+Ex: [4, 5, -3, -1,  6, -9] 
+
+Ans: [4, -3, -1], [4,5, -9] 
+val arr=Array(4, 5, -3, -1,  6, -9)
+var tmpBuffer=collection.mutable.ArrayBuffer[(Int,Int,Int)]()
+for (i <- 0 to arr.size-3)
+{ 
+println(s"i - ${i}")
+for (j <- i+1 to arr.size-2)
+{ 
+println(s"j - ${j}")
+for (k <- j+1 to arr.size-1)
+{ 
+println(s"k - ${k}")
+(arr(i)+arr(j)+arr(k)) match {
+case value if value ==0 => tmpBuffer+=((arr(i),arr(j),arr(k)))
+case _ => println("No Match")
+}
+}
+}
+}
+
+A+B+C=0
+A+B=-C
+
+map of neg int in(key)
+take possitive in sep array and pos+pos =neg
+
+val arr=Array(4, 5, -3, -1,  6, -9)
+var tmpBuffer=collection.mutable.ArrayBuffer[(Int,Int,Int)]()
+val negArr=arr.filter(_ <0)
+val posArr=arr.filter(_ >0)
+val negMap=collection.mutable.Map[Int,Int]()
+negArr.map(x => negMap.put(x,0))
+
+val resultArrayBuffer=collection.mutable.ArrayBuffer[(Int,Int,Int)]()
+
+// 2 positive and 1 neg
+
+for (k <- 0 to negArr.size -1)
+for (i <- 0 to posArr.size -2)
+for (j <- i+1 to posArr.size -1)
+negArr(k) + (posArr(i)+posArr(j)) match  {
+case value if value == 0 => resultArrayBuffer += ((negArr(k),posArr(i),posArr(j)))
+case _ => println("No Match")
+}
+
+// 2 neg and 1 pos 
+
+for (k <- 0 to posArr.size -1)
+for (i <- 0 to negArr.size -2)
+for (j <- i+1 to negArr.size -1)
+posArr(k) + (negArr(i)+negArr(j)) match  {
+case value if value == 0 => resultArrayBuffer += ((posArr(k),negArr(i),negArr(j)))
+case _ => println("No Match")
+}
+
+// using map , 2 positive 1 neg only can be achieved here
+
+for (i <- 0 to posArr.size -2)
+for (j <- i+1 to posArr.size -1)
+negMap.contains((posArr(i)+posArr(j)) * -1) match  {
+case value if value == true => resultArrayBuffer += (((posArr(i)+posArr(j)) * -1,posArr(i),posArr(j)))
+case _ => println("No Match")
+}
+
+
