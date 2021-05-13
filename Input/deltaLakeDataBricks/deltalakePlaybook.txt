@@ -1,0 +1,147 @@
+val dfSchema1=Seq(("Ram",3)).toDF("name,age".split(",").toSeq:_*)
+dfSchema1.write.format("delta").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck/")
+
+spark.read.load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck/").show(false)
+
+val dfSchema2=Seq(("Cam",3,6.8)).toDF("name,age,height".split(",").toSeq:_*)
+
+dfSchema2.write.format("delta").mode("append").option("mergeSchema", "true").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck/")
+
+val dfSchema3=Seq(("Mam",3,6.8,true)).toDF("name,age,height,isGood".split(",").toSeq:_*)
+
+dfSchema3.write.format("delta").mode("append").option("mergeSchema", "true").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck/")
+
+spark.read.format("delta").load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck/").show(false)
+
+
+spark.read.format("delta").load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck/").show(false)
+
+import io.delta.implicits._
+spark.read.delta("hdfs://localhost:8020/user/raptor/tmp/detlaCheck/").show(false)
+
+DeltaTable.forPath(spark,"hdfs://localhost:8020/user/raptor/tmp/detlaCheck/")
+
+spark.read.format("delta").load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck/").filter("height is null").drop("height").withColumn("height",lit(3.4))
+
+DeltaTable.forPath(spark,"hdfs://localhost:8020/user/raptor/tmp/detlaCheck/").as("table").merge(spark.read.format("delta").load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck/").filter("height is null").drop("height").withColumn("height",lit(3.4)).as("df"),"table.name =df.name").whenMatched.updateExpr(Map("table.height"->"df.height")).execute
+
+
+spark.read.format("delta").load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck/").filter("height is null").drop("isGood").withColumn("isGood",lit(false)).write.format("delta").mode("overwrite").option("replaceWhere","isGood is null").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck/")
+
+// replace where check
+
+val dfSchema1=Seq(("Ram",3)).toDF("name,age".split(",").toSeq:_*)
+dfSchema1.write.format("delta").partitionBy("name").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck2/")
+
+spark.read.load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck2/").show(false)
+
+val dfSchema2=Seq(("Cam",3,6.8)).toDF("name,age,height".split(",").toSeq:_*)
+
+dfSchema2.write.format("delta").mode("append").partitionBy("name").option("mergeSchema", "true").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck2/")
+
+val dfSchema3=Seq(("Mam",3,6.8,true)).toDF("name,age,height,isGood".split(",").toSeq:_*)
+
+dfSchema3.write.format("delta").mode("append").partitionBy("name").option("mergeSchema", "true").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck2/")
+
+// isGood update
+
+spark.read.format("delta").load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck2/").filter("isGood is null").drop("isGood").withColumn("isGood",lit(false)).write.format("delta").mode("overwrite").option("replaceWhere","name in ('Cam','Ram')").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck2/")
+
+// height update  -- replaceWhere re-writes entire partition, non incoming records might be lost. check upsert in next scenario
+
+spark.read.format("delta").load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck2/").filter("height is null").drop("height").withColumn("height",lit(9.7)).write.format("delta").mode("overwrite").option("replaceWhere","name in ('Ram')").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck2/")
+
+
+
+// replace where check, 2 records in single partition check
+
+val dfSchema1=Seq(("Ram",3)).toDF("name,age".split(",").toSeq:_*)
+dfSchema1.write.format("delta").partitionBy("name").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck4/")
+
+val dfSchema1_1=Seq(("Mam",4)).toDF("name,age".split(",").toSeq:_*)
+dfSchema1_1.write.format("delta").mode("append").partitionBy("name").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck4/")
+
+spark.read.load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck4/").show(false)
+
+val dfSchema2=Seq(("Cam",3,6.8)).toDF("name,age,height".split(",").toSeq:_*)
+
+dfSchema2.write.format("delta").mode("append").partitionBy("name").option("mergeSchema", "true").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck4/")
+
+val dfSchema3=Seq(("Mam",3,6.8,true)).toDF("name,age,height,isGood".split(",").toSeq:_*)
+
+dfSchema3.write.format("delta").mode("append").partitionBy("name").option("mergeSchema", "true").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck4/")
+
+
+
+// isGood update
+
+spark.read.format("delta").load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck4/").filter("isGood is null").drop("isGood").withColumn("isGood",lit(false)).write.format("delta").mode("overwrite").option("replaceWhere",s"name in ('${spark.read.format("delta").load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck4/").filter("isGood is null").select("name").distinct.collect.map(_(0).toString).mkString("','")}')").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck4/") // replaceWhere // ovewrites partition
+
+
+// replace where check, 2 records in single partition check, using append
+
+val dfSchema1=Seq(("Ram",3)).toDF("name,age".split(",").toSeq:_*)
+dfSchema1.write.format("delta").partitionBy("name").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck5/")
+
+val dfSchema1_1=Seq(("Mam",4)).toDF("name,age".split(",").toSeq:_*)
+dfSchema1_1.write.format("delta").mode("append").partitionBy("name").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck5/")
+
+spark.read.load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck5/").show(false)
+
+val dfSchema2=Seq(("Cam",3,6.8)).toDF("name,age,height".split(",").toSeq:_*)
+
+dfSchema2.write.format("delta").mode("append").partitionBy("name").option("mergeSchema", "true").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck5/")
+
+val dfSchema3=Seq(("Mam",3,6.8,true)).toDF("name,age,height,isGood".split(",").toSeq:_*)
+
+dfSchema3.write.format("delta").mode("append").partitionBy("name").option("mergeSchema", "true").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck5/")
+
+// upsert fix without re writing entire partition, unlike replaceWhere.
+
+DeltaTable.forPath(spark,"hdfs://localhost:8020/user/raptor/tmp/detlaCheck5/").as("table").merge(spark.read.format("delta").load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck5/").filter("isGood is null").drop("isGood").withColumn("isGood",lit(false)).as("df"),"table.name = df.name and table.isGood is null").whenMatched.updateExpr(Map("table.isGood"-> "df.isGood"))
+
+// creates dulpicate records
+spark.read.format("delta").load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck5/").filter("height is null").drop("height").withColumn("height",lit(5.5)).write.format("delta").mode("append").option("replaceWhere",s"name in ('${spark.read.format("delta").load("hdfs://localhost:8020/user/raptor/tmp/detlaCheck5/").filter("height is null").select("name").distinct.collect.map(_(0).toString).mkString("','")}')").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck5/")
+
+// scd 2
+
+import org.apache.spark.sql.types._
+
+val cols="id,car,startTime,endTime".split(",").map(_.toString)
+val strunctSchema=StructType(Array(StructField(cols(0),IntegerType,true),StructField(cols(1),StringType,true),StructField(cols(2),TimestampType,true),StructField(cols(3),TimestampType,true)))
+
+
+import java.text.SimpleDateFormat
+import java.util.TimeZone
+val dateFormat=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS")
+dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"))
+//dateFormat.setTimeZone(TimeZone.getTimeZone("IST"))
+dateFormat.parse("2021-02-03 06:07:08.111").getTime
+new java.sql.Timestamp(dateFormat.parse("2021-02-03 06:07:08.111").getTime)
+
+def timeStampGenerator(timeString:String)=new java.sql.Timestamp(dateFormat.parse(timeString).getTime)
+val tmpDF=spark.createDataFrame(Seq((1,"Mclaren",timeStampGenerator("2021-02-03 06:07:08.111"),null),(2,"Minardi",timeStampGenerator("2021-03-03 06:07:08.111"),timeStampGenerator("2021-04-04 06:07:08.111")),(3,"Williams",timeStampGenerator("2021-03-03 06:07:08.111"),null)).toDF.rdd,strunctSchema)
+
+tmpDF.write.format("delta").save("hdfs://localhost:8020/user/raptor/tmp/detlaCheck6/")
+
+val tmpDF2=spark.createDataFrame(Seq((1,"Mclaren",timeStampGenerator("2021-07-03 06:07:08.111"),null),(3,"Williams",timeStampGenerator("2021-09-03 06:07:08.111"),null),(4,"Lotus",timeStampGenerator("2021-03-03 06:07:08.111"),null)).toDF.rdd,strunctSchema)
+
+val deltaTableTemp=DeltaTable.forPath(spark,"hdfs://localhost:8020/user/raptor/tmp/detlaCheck6/")
+// SCD 2 logic
+// invalidating existing record
+deltaTableTemp.as("table").merge(tmpDF2.selectExpr("*","timeStampManipulate(startTime,-1) as endTimeManipulated").as("df"),"table.id = df.id and table.endTime is null").whenMatched.updateExpr(Map("table.endTime"->"df.endTimeManipulated")).execute
+
+// inserting new records
+deltaTableTemp.as("table").merge(tmpDF2.selectExpr("*","timeStampManipulate(startTime,-1) as endTimeManipulated").as("df"),"table.id = df.id and table.endTime is null").whenNotMatched.insertAll
+
+//whenMatched only has update expr's , doesnt have insert exprs, to take timestamp is null and manipiulate when not matched
+
+val hours=24
+val mins=60
+val seconds=60
+val milliSeconds=1000
+val oneDayInMilliSeconds:Long=hours*mins*seconds*milliSeconds
+
+def timeStampDayManipulator(timeStamp:java.sql.Timestamp,numDays:Int) =  new java.sql.Timestamp(timeStamp.getTime+(numDays*oneDayInMilliSeconds))
+
+spark.udf.register("timeStampManipulate",timeStampDayManipulator(_:java.sql.Timestamp,_:Int))
