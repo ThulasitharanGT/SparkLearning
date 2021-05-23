@@ -1,0 +1,174 @@
+val finalDF="001 Tx1 2021-01-01 10 10 100 1000,002 Tx2 2021-01-02 60 70 500 2000,003 Tx3 2021-01-03 20 80 60 500,004 Tx4 2021-01-04 40 60 50 100".split(",").map(_.split(" ")).map(x=> (x(0),x(1),dateObjCreator(x(2)),x(3),x(4),x(5),x(6))).toSeq.toDF("Id Trans Txn_date Tans_amt Last_2_days last_1_week last_1_month".split(" ").toSeq:_*)
+
+// df needs to be grouped by date and then contain sum of amount for that date already.
+
+// last 3 columns required. need o create a row frame with the required number of days in cumulative sum.
+val inputDF=finalDF.select("Id","Trans","Txn_date","Tans_amt")
+
+import org.apache.spark.sql.expressions.Window
+//   This needs a row frame
+// following logic
+inputDF.withColumn("cumSum",sum("Tans_amt").over(Window.orderBy("Txn_date").rowsBetween(Window.currentRow,1)))
+
+// preceding logic
+inputDF.withColumn("cumSum",sum("Tans_amt").over(Window.orderBy("Txn_date").rowsBetween(Window.currentRow -1,Window.currentRow))).show(false)
+
+Window.orderBy("Txn_date").rowsBetween(Window.unboundedPreceding - (Window.currentRow -1) ,Window.currentRow)
+
+// req logic
+spark.sql("select *, sum(Tans_amt) over (order by Txn_date rows between current row and 1 following) from tmpInput").show
+
+spark.sql("select *, sum(Tans_amt) over (order by Txn_date rows between current row and 1 preceding) from tmpInput").show
+
+/*
+val inputDFTemp=generateRecords(30,"2020-01-01").split(",").map(_.split(" ")).map(x=> (x(0),x(1),dateObjCreator(x(2)),x(3))).toSeq.toDF("Id Trans Txn_date Tans_amt".split(" ").toSeq:_*)
+
+
+inputDFTemp.withColumn("cumSum2Days",sum("Tans_amt").over(Window.orderBy("Txn_date").rowsBetween(Window.currentRow -1,Window.currentRow))).withColumn("cumSum7Days",sum("Tans_amt").over(Window.orderBy("Txn_date").rowsBetween(Window.currentRow -7,Window.currentRow))).withColumn("cumSum21Days",sum("Tans_amt").over(Window.orderBy("Txn_date").rowsBetween(Window.currentRow -21,Window.currentRow))).show(false)
+
+
+def generateRecords(numRecords:Int,startDate:String) ={
+var outPutString=""
+for (i <- 1 to numRecords)
+i match {
+case value if value ==1 =>
+outPutString=outPutString+s"${randomRecordGenerator(value,startDate)}"
+case value if value >1 =>
+outPutString=outPutString+s",${randomRecordGenerator(value,startDate)}"
+}
+outPutString
+}
+
+def randomRecordGenerator(id:Int,startDate:String)= s"${idGenerator(id)} ${tIdGenerator(id)} ${dateGenerator(id,startDate)} ${transactionAmtGenerator}"
+
+
+def idGenerator(idValue:Int)= idValue match {
+case value if value >0 && value <=9 => s"00${idValue}"
+case value if value >9 && value <=99=> s"0${idValue}"
+case value if value >99=> s"${idValue}"
+}
+def tIdGenerator(idValue:Int)=  s"Tx${idValue}"
+
+val dateFormat= new java.text.SimpleDateFormat("yyyy-MM-dd")
+val calenderInstance=  java.util.Calendar.getInstance
+
+def dateGenerator(idValue:Int,defaultDate:String)=  {
+calenderInstance.setTime(dateFormat.parse(defaultDate))
+calenderInstance.add(java.util.Calendar.DAY_OF_MONTH, idValue)
+new java.sql.Date(calenderInstance.getTime.getTime)
+}
+
+val txAmountRange= 10 to 200 by 10
+def transactionAmtGenerator=  txAmountRange(ThreadLocalRandom.current.nextInt(0 , txAmountRange.size-1))
+
+import java.sql.Date
+import java.util.Date
+import java.text.SimpleDateFormat
+
+// val dateFormat= new SimpleDateFormat("yyyy-MM-dd")
+
+def dateObjCreator(dateString:String)=new java.sql.Date(dateFormat.parse(dateString).getTime)
+
+// range frame eg
+
+val inputDF2="001 digital cellphone 20,002 digital headset 30,003 analog joystick 30,004 digital mouse 10,005 digital keyboard 60,006 digital charger 100,007 digital lens 300".split(",").map(_.split(" ")).map(x => (x(0),x(1),x(2),x(3).toInt)).toSeq.toDF("id,category,product,amt".split(",").toSeq:_*)
+
+inputDF2.withColumn("cumSum",sum("amt").over(Window.partitionBy("category").orderBy(desc("amt")).rangeBetween(10,10)))
+inputDF2.withColumn("cumSum",sum("amt").over(Window.partitionBy("category").orderBy("amt").rangeBetween(10,10)))
+
+// NOTE:  [current revenue value - Value given in preceeding, current revenue value + Value given in following]
+
+inputDF2.createOrReplaceTempView("inputDF2")
+
+spark.sql("select *, sum(amt) over(partition by(category) order by (amt) desc range between 10 preceding and 10 following) from inputDF2").show(false)
+
+spark.sql("select *, sum(amt) over(partition by(category) order by (amt) range between 10 preceding and 10 following ) from inputDF2").show(false) // ONLY DOES IN IN ASCENDING ORDER and then sorts it out by desc if specfied
+
+// desc
+
+// if current row is 50 => 50 -10 is minimum range and 50 +40 is maximum range
+
+// cum some from bottom up
+inputDF.withColumn("cumSum",sum("Tans_amt").over(Window.orderBy("Txn_date").rowsBetween(Window.currentRow ,Window.unboundedFollowing))).show(false)
+// cum some from top down
+inputDF.withColumn("cumSum",sum("Tans_amt").over(Window.orderBy("Txn_date").rowsBetween(Window.unboundedPreceding ,Window.currentRow))).show(false)
+
+
+*/
+
+
+1,2,3,4
+a,null,null,6
+null,b,null,null
+null,null,c,null
+null,null,null,5
+1,null,null,5
+
+req output - 1,b,c,5
+
+val tmpDF=Seq(("a",null,null,"6"), (null,"b",null,null), (null,null,"c",null), (null,null,null,"5"), (1,null,null,"5")).toDF("1","2","3","4")
+
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.Row
+import org.apache.spark.sql.Dataset
+
+val schemaStruct= StructType(Array(StructField("1",StringType,true),StructField("2",StringType,true),StructField("3",StringType,true),StructField("4",StringType,true)))
+
+val dataSeq=Seq(("a",null,null,"6"), (null,"b",null,null), (null,null,"c",null), (null,null,null,"5"), (1,null,null,"5"))
+
+val rddData=spark.sparkContext.parallelize(dataSeq).map(x=> Row(x))
+//rddData.saveAsTextFile("file:///home/raptor/IdeaProjects/SparkLearning/Input/fileCheck_fromRDD.txt")
+
+val rawRddData=spark.sparkContext.parallelize(dataSeq)
+val rawRddData=spark.sparkContext.parallelize(dataSeq.map(x=>s"${x._1},${x._2},${x._3},${x._4}"),1) // creates rdd with 1 partition
+
+
+//rawRddData.saveAsTextFile("file:///home/raptor/IdeaProjects/SparkLearning/Input/fileCheck_fromRDD.txt")
+
+spark.createDataFrame(rddData,schemaStruct) // causing issue while casting null to string
+
+val fromFileDF=spark.read.option("header","false").option("inferSchema","false").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/fileCheck.txt")
+
+val fromRddFileDF=spark.read.option("header","false").option("inferSchema","false").csv("file:///home/raptor/IdeaProjects/SparkLearning/Input/fileCheck_fromRDD.txt").toDF("one,two,three,four".split(",").toSeq :_*)
+
+fromRddFileDF.show(false)
+
+// .selectExpr("*","cast(num as double)")
+
+fromRddFileDF.createOrReplaceTempView("tempTable")
+
+// spark.sql("select *, cast(one as double), 1 as indexCol from tempTable")
+
+// spark.sql("select max(cast(one as double)) from tempTable")
+
+spark.sql("select max(cast(one as double)), min(cast(one as double)),max(one),max(nvl(one,'')),min(one),max(cast(two as double)), min(cast(two as double)),max(two),min(two) from tempTable").show(false)
+
+// min() only works on alphablets. Max (string) doesnt bring any alphabets in a colum which has num, even with NVL
+
+// output query 
+
+spark.sql("select min(cast(one as double)) min_num_one,min(one) min_one, min(cast(two as double)) min_num_two,min(two) min_two, min(cast(three as double)) min_num_three,min(three) min_three, min(cast(four as double)) min_num_four,min(four) min_four from tempTable").createOrReplaceTempView("crunchedTempTable")
+
+sql("select nvl(min_num_one,min_one) as final_one,nvl(min_num_two,min_two) final_two,nvl(min_num_three,min_three)final_three,nvl(min_num_four,min_four)final_four from crunchedTempTable")
+
+// macro is like UDF in hive  
+
+create temporary macro isNumber(s string)
+cast(s as double) is not null;
+	   
+Ex:
+
+if data frame has 10 partitions : =
+
+val tempDF= df.repartition(20) 
+then ,
+
+tempDF.rdd.partitions.size =20
+
+
+val tempDF= df.coalesce(20) 
+then ,
+
+tempDF.rdd.partitions.size =10
+
+.. coalesce is only for reducing partitions, not increasing it . coalesce will lead to data skew

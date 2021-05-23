@@ -134,7 +134,7 @@ deltaTableTemp.as("table").merge(tmpDF2.selectExpr("*","timeStampManipulate(star
 // inserting new records
 deltaTableTemp.as("table").merge(tmpDF2.selectExpr("*","timeStampManipulate(startTime,-1) as endTimeManipulated").as("df"),"table.id = df.id and table.endTime is null").whenNotMatched.insertAll
 
-//whenMatched only has update expr's , doesnt have insert exprs, to take timestamp is null and manipiulate when not matched
+//whenMatched only has update expr's , doesnt have insert exprs, to take timestamp is null and manipulate when not matched
 
 val hours=24
 val mins=60

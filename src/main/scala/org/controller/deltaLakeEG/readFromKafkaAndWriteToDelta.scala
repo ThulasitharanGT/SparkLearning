@@ -5,7 +5,6 @@ import org.util.SparkOpener
 import org.util.readWriteUtil._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
-import io.delta.tables._
 
 object readFromKafkaAndWriteToDelta extends SparkOpener{
   val spark=SparkSessionLoc()

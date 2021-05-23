@@ -1,0 +1,56 @@
+fold left example. 
+
+fold left takes a parameter of type b as given in the syntax and returns a value of type b according to the method written.
+
+Iterable.foldLeft(d)((var1:b,var2:s) => var2 match {case value if value==x => value of type d case _ => value 2 of type d})
+
+where ,
+iterable is of type Iterator/Seq/Array/List or any Iterable type of type s 
+d is of type b
+
+For each iteration var 1 will be updated according to the condition of var 2 match case and final result will be the value yielded by the final value in iterator
+
+val mapTemp=collection.mutable.Map[String,String]()
+
+mapTemp.foldLeft("")((x:String,y:(String,String))=>{ println(s"x = ${x} y = ${y} z = ${z}"); x.size>2 match {case value if value == true => "+1" case false =>"-1" }})
+
+// map (String,String is represented as tuple of string,string)
+
+mapTemp.put("cool",null)
+mapTemp.put("fool","trpo")
+mapTemp.put("rule","gdpr")
+mapTemp.put("mule","nmpu")
+mapTemp.put("fule",null)
+
+val totalErrors=mapTemp.foldLeft(0)((numOccurances:Int,y:(String,String))=> y._2 match {
+case value if value ==null => mapTemp.put(s"${y._1}_Error",s"Value for ${y._1} is null")
+numOccurances+1
+case value => 
+numOccurances
+}
+)
+
+
+// seq try
+val seqTemp=Seq("cool","fools","toolsz","rule")
+
+var seqTempFinal=seqTemp
+
+seqTemp.foldLeft(Seq(""))((z:Seq[String],y:String) => y match {case value if value.size>4 => 
+seqTempFinal = seqTempFinal ++ Seq("Error") 
+Seq("Error") 
+case _ => Seq("")})
+
+/////////////////// yield keyword
+
+val tmpList=for(i <- 1 to 10) yield ((i+i)*(i*i))
+
+val a = Array( 8, 3, 1, 6, 4, 5)
+//both are same
+for (e <- a if e > 4) yield e
+a.filter(_ > 4)
+
+for (e <- a if e > 4) yield e*2
+a.filter(_ > 4).map(_ *2)
+
+// this
