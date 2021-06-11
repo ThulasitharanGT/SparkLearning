@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.bahir:spark-streaming-twitter_2.12:2.4.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.bahir/spark-streaming-twitter_2.12/2.4.0/3bbb4927d9754fbc08dc488021cac1e386e82d2e/spark-streaming-twitter_2.12-2.4.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.bahir/spark-streaming-twitter_2.12/2.4.0/14a667fb77d30ce021d6a7881c6b6970a81a9a57/spark-streaming-twitter_2.12-2.4.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

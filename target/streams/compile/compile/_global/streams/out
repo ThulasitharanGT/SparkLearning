@@ -1,0 +1,301 @@
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/SparkOpener.scala:5:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.SparkSession[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/SparkOpener.scala:25:57: not found: type SparkSession[0m
+[0m[[0m[31merror[0m] [0m[0m  def SparkSessionLoc(name:String =randomNameGenerator):SparkSession={[0m
+[0m[[0m[31merror[0m] [0m[0m                                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala:3:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.DataFrame[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:5:11: object delta is not a member of package io[0m
+[0m[[0m[31merror[0m] [0m[0mimport io.delta.tables._[0m
+[0m[[0m[31merror[0m] [0m[0m          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:2:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.DataFrame[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:19:81: not found: type DataFrame[0m
+[0m[[0m[31merror[0m] [0m[0m  def readDF(spark:SparkSession,inputMap:collection.mutable.Map[String,String]):DataFrame ={[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:3:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.SparkSession[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:19:20: not found: type SparkSession[0m
+[0m[[0m[31merror[0m] [0m[0m  def readDF(spark:SparkSession,inputMap:collection.mutable.Map[String,String]):DataFrame ={[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala:33:29: not found: type DataFrame[0m
+[0m[[0m[31merror[0m] [0m[0m  def dfSchemaChecker(dfSrc:DataFrame,dfDest:DataFrame)=[0m
+[0m[[0m[31merror[0m] [0m[0m                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/AdvancedTopic/schemaCheckingBetweenDataFrames.scala:33:46: not found: type DataFrame[0m
+[0m[[0m[31merror[0m] [0m[0m  def dfSchemaChecker(dfSrc:DataFrame,dfDest:DataFrame)=[0m
+[0m[[0m[31merror[0m] [0m[0m                                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/UDFNewTry.scala:4:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.functions._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:83:51: not found: type DataFrame[0m
+[0m[[0m[31merror[0m] [0m[0m  def execSparkSql(spark:SparkSession,sql:String):DataFrame={[0m
+[0m[[0m[31merror[0m] [0m[0m                                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:83:26: not found: type SparkSession[0m
+[0m[[0m[31merror[0m] [0m[0m  def execSparkSql(spark:SparkSession,sql:String):DataFrame={[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/RankFunctionTest.scala:3:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.expressions.Window[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/RankFunctionTest.scala:5:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.functions._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/RankFunctionTest.scala:14:25: not found: value Window[0m
+[0m[[0m[31merror[0m] [0m[0m    val dept_df_window =Window.orderBy(desc("sum_Reveue"))   //Window.partitionBy("dept_name").orderBy(desc("sum_Reveue"))  -- internally partitions inside the column[0m
+[0m[[0m[31merror[0m] [0m[0m                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/RankFunctionTest.scala:14:40: not found: value desc[0m
+[0m[[0m[31merror[0m] [0m[0m    val dept_df_window =Window.orderBy(desc("sum_Reveue"))   //Window.partitionBy("dept_name").orderBy(desc("sum_Reveue"))  -- internally partitions inside the column[0m
+[0m[[0m[31merror[0m] [0m[0m                                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/RankFunctionTest.scala:15:35: not found: value Window[0m
+[0m[[0m[31merror[0m] [0m[0m    val dept_df_window_partition =Window.partitionBy("dept_name").orderBy(desc("sum_Reveue"))[0m
+[0m[[0m[31merror[0m] [0m[0m                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/RankFunctionTest.scala:15:75: not found: value desc[0m
+[0m[[0m[31merror[0m] [0m[0m    val dept_df_window_partition =Window.partitionBy("dept_name").orderBy(desc("sum_Reveue"))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/RankFunctionTest.scala:16:24: not found: value dense_rank[0m
+[0m[[0m[31merror[0m] [0m[0m    val denseRankFun = dense_rank().over(dept_df_window )[0m
+[0m[[0m[31merror[0m] [0m[0m                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/RankFunctionTest.scala:17:19: not found: value rank[0m
+[0m[[0m[31merror[0m] [0m[0m    val rankFun = rank().over(dept_df_window )[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/RankFunctionTest.scala:18:26: not found: value percent_rank[0m
+[0m[[0m[31merror[0m] [0m[0m    val percentRankFun = percent_rank().over(dept_df_window)[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/RankFunctionTest.scala:26:27: not found: value dense_rank[0m
+[0m[[0m[31merror[0m] [0m[0m    val denseRankFunPar = dense_rank().over(dept_df_window_partition )[0m
+[0m[[0m[31merror[0m] [0m[0m                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/RankFunctionTest.scala:27:22: not found: value rank[0m
+[0m[[0m[31merror[0m] [0m[0m    val rankFunPar = rank().over(dept_df_window_partition )[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/RankFunctionTest.scala:28:29: not found: value percent_rank[0m
+[0m[[0m[31merror[0m] [0m[0m    val percentRankFunPar = percent_rank().over(dept_df_window_partition )[0m
+[0m[[0m[31merror[0m] [0m[0m                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlFullRewrite.scala:7:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.types._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:115:32: not found: type SparkSession[0m
+[0m[[0m[31merror[0m] [0m[0m  def readStreamFunction(spark:SparkSession,inputMap:collection.mutable.Map[String,String])= {[0m
+[0m[[0m[31merror[0m] [0m[0m                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlTempTables.scala:6:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.types._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/SplittingOneColumnToMultiple.scala:3:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.functions._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/SplittingOneColumnToMultiple.scala:24:47: not found: value split[0m
+[0m[[0m[31merror[0m] [0m[0m    val temp_df_no_employees_updated_splitted=split(temp_df("no_employees_updated"),"-")[0m
+[0m[[0m[31merror[0m] [0m[0m                                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/XMLprocessing.scala:5:14: object xml is not a member of package scala[0m
+[0m[[0m[31merror[0m] [0m[0mimport scala.xml.{Elem, Node, XML}[0m
+[0m[[0m[31merror[0m] [0m[0m             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/XMLprocessing.scala:6:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.functions._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/XMLprocessing.scala:7:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.types._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:8:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.execution.datasources.hbase.HBaseTableCatalog[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:7:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.hadoop.fs.{FileSystem, Path}[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:6:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.hadoop.conf.Configuration[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/XMLprocessing.scala:63:20: not found: value XML[0m
+[0m[[0m[31merror[0m] [0m[0m  val tmpXMLParsed=XML.loadString(tmpXML)[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/XMLprocessing.scala:99:33: not found: type Node[0m
+[0m[[0m[31merror[0m] [0m[0m  def driverInfoGenerator(node: Node) ={[0m
+[0m[[0m[31merror[0m] [0m[0m                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala:3:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.DataFrame[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala:6:11: object delta is not a member of package io[0m
+[0m[[0m[31merror[0m] [0m[0mimport io.delta.tables.DeltaTable._[0m
+[0m[[0m[31merror[0m] [0m[0m          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala:14:23: not found: type DataFrame[0m
+[0m[[0m[31merror[0m] [0m[0m    def hasColumn(df: DataFrame, path: String) = Try(df(path)).isSuccess[0m
+[0m[[0m[31merror[0m] [0m[0m                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala:54:12: not found: type DataFrame[0m
+[0m[[0m[31merror[0m] [0m[0m    var df:DataFrame=null[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala:64:9: not found: value convertToDelta[0m
+[0m[[0m[31merror[0m] [0m[0m        convertToDelta(spark,"parquet.`"+outputBasePath+deltaTableBaseName+"_"+deltaTableType+"`","brand String, model String, year int, month int") //Pre defined function[0m
+[0m[[0m[31merror[0m] [0m[0m        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala:2:11: object delta is not a member of package io[0m
+[0m[[0m[31merror[0m] [0m[0mimport io.delta.tables._[0m
+[0m[[0m[31merror[0m] [0m[0m          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala:53:5: not found: value DeltaTable[0m
+[0m[[0m[31merror[0m] [0m[0m    DeltaTable.convertToDelta(spark,"parquet.`"+outputPath+tableBronzeName+"`","year int , month int ,brand string, model string") //converting parq to delta table[0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:87:65: not found: type DataFrame[0m
+[0m[[0m[31merror[0m] [0m[0m  def writeDF(inputMap:collection.mutable.Map[String,String],df:DataFrame)={[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala:61:20: not found: value DeltaTable[0m
+[0m[[0m[31merror[0m] [0m[0m    val deltaTable=DeltaTable.forPath(spark,outputPath+tableBronzeName)[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala:5:11: object delta is not a member of package io[0m
+[0m[[0m[31merror[0m] [0m[0mimport io.delta.tables._[0m
+[0m[[0m[31merror[0m] [0m[0m          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala:6:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.functions._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:76:28: not found: type SparkSession[0m
+[0m[[0m[31merror[0m] [0m[0m  def deltaTableRead(spark:SparkSession,inputMap:collection.mutable.Map[String,String]) =    DeltaTable.forPath(spark,inputMap(projectConstants.filePathArgValue))[0m
+[0m[[0m[31merror[0m] [0m[0m                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:76:94: not found: value DeltaTable[0m
+[0m[[0m[31merror[0m] [0m[0m  def deltaTableRead(spark:SparkSession,inputMap:collection.mutable.Map[String,String]) =    DeltaTable.forPath(spark,inputMap(projectConstants.filePathArgValue))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala:3:11: object delta is not a member of package io[0m
+[0m[[0m[31merror[0m] [0m[0mimport io.delta.tables._[0m
+[0m[[0m[31merror[0m] [0m[0m          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala:5:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.functions._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala:19:26: not found: value DeltaTable[0m
+[0m[[0m[31merror[0m] [0m[0m    val deltaTableBronze=DeltaTable.forPath(spark,outputBasePath+deltaTableBaseName+"_Bronze")[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala:20:26: not found: value DeltaTable[0m
+[0m[[0m[31merror[0m] [0m[0m    val deltaTableSilver=DeltaTable.forPath(spark,outputBasePath+deltaTableBaseName+"_Silver")[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala:6:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.DataFrame[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala:32:12: not found: type DataFrame[0m
+[0m[[0m[31merror[0m] [0m[0m    var df:DataFrame=null[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala:4:11: object delta is not a member of package io[0m
+[0m[[0m[31merror[0m] [0m[0mimport io.delta.tables.DeltaTable[0m
+[0m[[0m[31merror[0m] [0m[0m          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala:31:124: not found: value DeltaTable[0m
+[0m[[0m[31merror[0m] [0m[0m      case _ =>{ dfSource.write.mode("overwrite").partitionBy("date","topic","partition","key").save(basePath+bronzeTable);DeltaTable.convertToDelta(spark,"parquet.`"+basePath+bronzeTable+"`","date string,topic string, partition integer, key string")}[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                                                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromDeltaStreamAndPersistInTable.scala:3:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.SparkConf[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromDeltaStreamAndPersistInTable.scala:4:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.SparkSession[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromDeltaStreamAndPersistInTable.scala:5:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.expressions.Window[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromDeltaStreamAndPersistInTable.scala:6:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.functions.{desc, row_number}[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:133:32: not found: type SparkSession[0m
+[0m[[0m[31merror[0m] [0m[0m  def writeStreamConsole(spark:SparkSession,inputMap:collection.mutable.Map[String,String],DataframeToStream: DataFrame)=DataframeToStream.writeStream.outputMode(inputMap(projectConstants.outputModeArg)).format(inputMap(projectConstants.fileFormatArg)).option(projectConstants.checkPointLocationArg,inputMap(projectConstants.checkPointLocationArg))[0m
+[0m[[0m[31merror[0m] [0m[0m                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:133:111: not found: type DataFrame[0m
+[0m[[0m[31merror[0m] [0m[0m  def writeStreamConsole(spark:SparkSession,inputMap:collection.mutable.Map[String,String],DataframeToStream: DataFrame)=DataframeToStream.writeStream.outputMode(inputMap(projectConstants.outputModeArg)).format(inputMap(projectConstants.fileFormatArg)).option(projectConstants.checkPointLocationArg,inputMap(projectConstants.checkPointLocationArg))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromDeltaStreamAndPersistInTable.scala:93:42: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0m  def getStatusOfRecords(incomingRow:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String],sparkConf:SparkConf)= {[0m
+[0m[[0m[31merror[0m] [0m[0m                                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromDeltaStreamAndPersistInTable.scala:93:120: not found: type SparkConf[0m
+[0m[[0m[31merror[0m] [0m[0m  def getStatusOfRecords(incomingRow:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String],sparkConf:SparkConf)= {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                                                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/SparkOpener.scala:32:80: not found: type SparkSession[0m
+[0m[[0m[31merror[0m] [0m[0m  def SparkSessionLocWithConf(conf:SparkConf,name:String =randomNameGenerator):SparkSession={[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/SparkOpener.scala:4:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.SparkConf[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/SparkOpener.scala:32:36: not found: type SparkConf[0m
+[0m[[0m[31merror[0m] [0m[0m  def SparkSessionLocWithConf(conf:SparkConf,name:String =randomNameGenerator):SparkSession={[0m
+[0m[[0m[31merror[0m] [0m[0m                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromDeltaStreamAndPersistInTable.scala:156:42: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0m  def getStatusOfRecords(incomingRow:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])= {[0m
+[0m[[0m[31merror[0m] [0m[0m                                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromDeltaStreamAndPersistInTableDFVersion.scala:3:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.DataFrame[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromDeltaStreamAndPersistInTableDFVersion.scala:4:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.expressions.Window[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromDeltaStreamAndPersistInTableDFVersion.scala:5:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.functions.{col, desc, row_number}[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromDeltaStreamAndPersistInTableDFVersion.scala:14:61: not found: value col[0m
+[0m[[0m[31merror[0m] [0m[0m  val colSeq="strValue|intValue|dateValue".split("\\|").map(col(_)).toSeq[0m
+[0m[[0m[31merror[0m] [0m[0m                                                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromDeltaStreamAndPersistInTableDFVersion.scala:14:69: value toSeq is not a member of Array[Nothing][0m
+[0m[[0m[31merror[0m] [0m[0m  val colSeq="strValue|intValue|dateValue".split("\\|").map(col(_)).toSeq[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromDeltaStreamAndPersistInTableDFVersion.scala:58:41: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0m  def updateNewIntValues(currentRow:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])={[0m
+[0m[[0m[31merror[0m] [0m[0m                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromKafkaAndWriteToDelta.scala:6:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.functions._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromKafkaAndWriteToDelta.scala:7:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.types._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromKafkaAndWriteToDelta.scala:22:21: not found: value StructType[0m
+[0m[[0m[31merror[0m] [0m[0m   val inputSchema= StructType(Array(StructField("strValue",StringType,true),StructField("intValue",StringType,true),StructField("dateValue",StringType,true)))[0m
+[0m[[0m[31merror[0m] [0m[0m                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromKafkaAndWriteToDelta.scala:22:38: not found: value StructField[0m
+[0m[[0m[31merror[0m] [0m[0m   val inputSchema= StructType(Array(StructField("strValue",StringType,true),StructField("intValue",StringType,true),StructField("dateValue",StringType,true)))[0m
+[0m[[0m[31merror[0m] [0m[0m                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromKafkaAndWriteToDelta.scala:22:61: not found: value StringType[0m
+[0m[[0m[31merror[0m] [0m[0m   val inputSchema= StructType(Array(StructField("strValue",StringType,true),StructField("intValue",StringType,true),StructField("dateValue",StringType,true)))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromKafkaAndWriteToDelta.scala:22:78: not found: value StructField[0m
+[0m[[0m[31merror[0m] [0m[0m   val inputSchema= StructType(Array(StructField("strValue",StringType,true),StructField("intValue",StringType,true),StructField("dateValue",StringType,true)))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromKafkaAndWriteToDelta.scala:22:101: not found: value StringType[0m
+[0m[[0m[31merror[0m] [0m[0m   val inputSchema= StructType(Array(StructField("strValue",StringType,true),StructField("intValue",StringType,true),StructField("dateValue",StringType,true)))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromKafkaAndWriteToDelta.scala:22:118: not found: value StructField[0m
+[0m[[0m[31merror[0m] [0m[0m   val inputSchema= StructType(Array(StructField("strValue",StringType,true),StructField("intValue",StringType,true),StructField("dateValue",StringType,true)))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/readFromKafkaAndWriteToDelta.scala:22:142: not found: value StringType[0m
+[0m[[0m[31merror[0m] [0m[0m   val inputSchema= StructType(Array(StructField("strValue",StringType,true),StructField("intValue",StringType,true),StructField("dateValue",StringType,true)))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                                                                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:131:32: not found: type SparkSession[0m
+[0m[[0m[31merror[0m] [0m[0m  def writeStreamAsDelta(spark:SparkSession,inputMap:collection.mutable.Map[String,String],DataframeToStream: DataFrame)=DataframeToStream.writeStream.outputMode(inputMap(projectConstants.outputModeArg)).format(inputMap(projectConstants.fileFormatArg)).option(projectConstants.checkPointLocationArg,inputMap(projectConstants.checkPointLocationArg)).option(projectConstants.deltaMergeSchemaClause, inputMap(projectConstants.deltaMergeSchemaClause)).option(projectConstants.deltaOverWriteSchemaClause, inputMap(projectConstants.deltaOverWriteSchemaClause)).option(projectConstants.pathArg, inputMap(projectConstants.pathArg))[0m
+[0m[[0m[31merror[0m] [0m[0m                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/util/readWriteUtil.scala:131:111: not found: type DataFrame[0m
+[0m[[0m[31merror[0m] [0m[0m  def writeStreamAsDelta(spark:SparkSession,inputMap:collection.mutable.Map[String,String],DataframeToStream: DataFrame)=DataframeToStream.writeStream.outputMode(inputMap(projectConstants.outputModeArg)).format(inputMap(projectConstants.fileFormatArg)).option(projectConstants.checkPointLocationArg,inputMap(projectConstants.checkPointLocationArg)).option(projectConstants.deltaMergeSchemaClause, inputMap(projectConstants.deltaMergeSchemaClause)).option(projectConstants.deltaOverWriteSchemaClause, inputMap(projectConstants.deltaOverWriteSchemaClause)).option(projectConstants.pathArg, inputMap(projectConstants.pathArg))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala:3:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.functions._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala:33:49: object joda is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0m        case "today" => snapshotDateCurrent=org.joda.time.LocalDate.now.toString[0m
+[0m[[0m[31merror[0m] [0m[0m                                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala:34:50: object joda is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0m        case "before" => snapshotDateCurrent=org.joda.time.LocalDate.now.minusDays(snapshotDate.toInt).toString[0m
+[0m[[0m[31merror[0m] [0m[0m                                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala:35:49: object joda is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0m        case "after" => snapshotDateCurrent=org.joda.time.LocalDate.now.plusDays(snapshotDate.toInt).toString[0m
+[0m[[0m[31merror[0m] [0m[0m                                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala:4:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.expressions.Window[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala:5:12: object joda is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.joda.time.format.DateTimeFormat[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala:6:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.functions._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala:7:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.sql.types._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala:8:12: object apache is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.apache.spark.storage.StorageLevel[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala:22:34: not found: value DateTimeFormat[0m
+[0m[[0m[31merror[0m] [0m[0m    @transient val dateformatter=DateTimeFormat.forPattern(datePattern)[0m
+[0m[[0m[31merror[0m] [0m[0m                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala:45:34: not found: value DateTimeFormat[0m
+[0m[[0m[31merror[0m] [0m[0m    @transient val dateformatter=DateTimeFormat.forPattern(datePattern)[0m
+[0m[[0m[31merror[0m] [0m[0m                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/raptor/IdeaProjects/SparkLearning/src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala:57:59: value contains is not a member of Array[Nothing][0m
+[0m[[0m[31merror[0m] [0m[0m        case value if value <= 5  => holidayExclusionJoda.contains(startDateJodaLatest) match {case value if value == true => numWeekDaysInValid=numWeekDaysInValid+1 case value if value == false => numWeekDaysValid=numWeekDaysValid+1 }[0m
+[0m[[0m[31merror[0m] [0m[0m                                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m100 errors found[0m

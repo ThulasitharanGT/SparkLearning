@@ -295,6 +295,16 @@ products:
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> build/classes/scala/main/org/controller/reRunnableJob/readWriteUtil$.class
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> build/classes/scala/main/org/controller/reRunnableJob/readWriteUtil.class
    src/main/scala/org/controller/reRunnableJob/sparkOpener.scala -> build/classes/scala/main/org/controller/reRunnableJob/sparkOpener.class
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> build/classes/scala/main/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate$$typecreator1$1.class
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> build/classes/scala/main/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate$$typecreator2$1.class
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> build/classes/scala/main/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate$$typecreator6$1.class
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> build/classes/scala/main/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate$$typecreator7$1.class
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> build/classes/scala/main/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate$.class
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> build/classes/scala/main/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate$updateDailyRow$.class
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> build/classes/scala/main/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate$updateDailyRow.class
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> build/classes/scala/main/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate$updateTotalRow$.class
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> build/classes/scala/main/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate$updateTotalRow.class
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> build/classes/scala/main/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.class
    src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> build/classes/scala/main/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable$.class
    src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> build/classes/scala/main/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.class
    src/main/scala/org/controller/samePointsAndDifferentTime/sortingAndDisplayingDataFromBronze.scala -> build/classes/scala/main/org/controller/samePointsAndDifferentTime/sortingAndDisplayingDataFromBronze$.class
@@ -755,6 +765,12 @@ binary dependencies:
    src/main/scala/org/controller/reRunnableJob/sparkOpener.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/reRunnableJob/sparkOpener.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/reRunnableJob/sparkOpener.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.0/9eac59ba21a197b65570727fd5305013661a88d/delta-core_2.11-0.6.0.jar
    src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
@@ -898,6 +914,7 @@ binary dependencies:
    src/main/scala/org/util/kafka/kafkaUtilMethods.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka_2.11/2.3.1/17255386d7e983ae82a0e82a0e5be0058e834842/kafka_2.11-2.3.1.jar
    src/main/scala/org/util/kafka/kafkaUtilMethods.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/util/kafka/kafkaUtilMethods.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/com.hortonworks/shc-core/1.1.1-2.1-s_2.11/9aae185071700b0696d94f671c81b6ce15bd7b95/shc-core-1.1.1-2.1-s_2.11.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.0/9eac59ba21a197b65570727fd5305013661a88d/delta-core_2.11-0.6.0.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-common/2.7.4/9afa8d2004a0bbd930d1ac10d221d927917067be/hadoop-common-2.7.4.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
@@ -905,7 +922,6 @@ binary dependencies:
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
-   src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.m2/repository/com/hortonworks/shc-core/1.1.1-2.1-s_2.11/shc-core-1.1.1-2.1-s_2.11.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
 source dependencies:
    src/main/scala/org/controller/AdvancedTopic/CaseClassTest.scala -> src/main/scala/org/controller/AdvancedTopic/CaseClassCar.scala
@@ -1067,6 +1083,7 @@ source dependencies:
    src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala
    src/main/scala/org/controller/reRunnableJob/reRunnableMain.scala -> src/main/scala/org/controller/reRunnableJob/sparkOpener.scala
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> src/main/scala/org/controller/reRunnableJob/constants.scala
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> src/main/scala/org/util/readWriteUtil.scala
@@ -1419,6 +1436,16 @@ class names:
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> org.controller.reRunnableJob.readWriteUtil
    src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala -> org.controller.reRunnableJob.readWriteUtil$
    src/main/scala/org/controller/reRunnableJob/sparkOpener.scala -> org.controller.reRunnableJob.sparkOpener
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> org.controller.readFromKafkaAndMaintainAggregate.dailyAggregate
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> org.controller.readFromKafkaAndMaintainAggregate.dailyAggregate$
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> org.controller.readFromKafkaAndMaintainAggregate.dailyAggregate$$typecreator1$1
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> org.controller.readFromKafkaAndMaintainAggregate.dailyAggregate$$typecreator2$1
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> org.controller.readFromKafkaAndMaintainAggregate.dailyAggregate$$typecreator6$1
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> org.controller.readFromKafkaAndMaintainAggregate.dailyAggregate$$typecreator7$1
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> org.controller.readFromKafkaAndMaintainAggregate.dailyAggregate$updateDailyRow
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> org.controller.readFromKafkaAndMaintainAggregate.dailyAggregate$updateDailyRow$
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> org.controller.readFromKafkaAndMaintainAggregate.dailyAggregate$updateTotalRow
+   src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/dailyAggregate.scala -> org.controller.readFromKafkaAndMaintainAggregate.dailyAggregate$updateTotalRow$
    src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> org.controller.samePointsAndDifferentTime.deltaStreamToUpdateTheFinalTable
    src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> org.controller.samePointsAndDifferentTime.deltaStreamToUpdateTheFinalTable$
    src/main/scala/org/controller/samePointsAndDifferentTime/sortingAndDisplayingDataFromBronze.scala -> org.controller.samePointsAndDifferentTime.sortingAndDisplayingDataFromBronze

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.hive:hive-shims:2.3.7">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-shims/2.3.7/7cc36d4da6d9c4e1ae8184e31cdfc3537c0b170/hive-shims-2.3.7.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-shims/2.3.7/ead364a0b993ab5d051a83b1632d550da1923554/hive-shims-2.3.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -2,6 +2,7 @@
   <library name="Gradle: com.hortonworks:shc-core:1.1.1-2.1-s_2.11">
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/com/hortonworks/shc-core/1.1.1-2.1-s_2.11/shc-core-1.1.1-2.1-s_2.11.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.hortonworks/shc-core/1.1.1-2.1-s_2.11/9aae185071700b0696d94f671c81b6ce15bd7b95/shc-core-1.1.1-2.1-s_2.11.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
