@@ -41,7 +41,7 @@ object dailyAggregate  extends SparkOpener /*with LazyLogging */{
     inputMap foreach println
     val readStreamDF=spark.readStream.format("kafka").option("kafka.bootstrap.servers",inputMap("bootstrapServer")).option("subscribe",inputMap("topic")).option("offsets",inputMap("offset")).load.selectExpr("cast(value as string) as value").select(from_json(col("value"),structForMessage).as("tmpParsed")).select("tmpParsed.*").selectExpr("cast (microService as string ) microService","cast (page as string ) page","cast (eventDate as date) eventDate","get_timestamp(receivedTimestamp) receivedTimestamp")
 
-    readStreamDF.writeStream.format("console").option("checkpointLocation",inputMap("checkpointLocation")).foreachBatch {(df:DataFrame,batchId:Long) => {batchFunction(df,batchId)}}.start
+    readStreamDF.writeStream.format("console").option("checkpointLocation",inputMap("checkpointLocation")).queryName("countComputation").foreachBatch {(df:DataFrame,batchId:Long) => {batchFunction(df,batchId)}}.start
 
     spark.streams.awaitAnyTermination
 
@@ -62,7 +62,7 @@ object dailyAggregate  extends SparkOpener /*with LazyLogging */{
   *  */
 
   def batchFunction(df:DataFrame,batchId:Long)={
-        df.withColumn("batchID",lit(batchId)).show(false)
+       // df.withColumn("batchID",lit(batchId)).show(false)
 
         val rowPruning=df.select("microService","page","eventDate").collect
         val totalList=rowPruning.map(x => (x.getString(0),x.getString(1)))
@@ -71,8 +71,8 @@ object dailyAggregate  extends SparkOpener /*with LazyLogging */{
         println(s"dailyList collected = ${dailyList.deep}")
         println(s"totalList collected = ${totalList.deep}")
 
-       val selectQueryForTotal=s"select ${inputMap("totalColumns")} from ${inputMap("schemaName")}.${inputMap("totalTableName")} where micro_service in (${whereConditionGeneratorUpdated(totalList.map(_._1))}) and page in (${whereConditionGeneratorUpdated(totalList.map(_._2))}) "
-       val selectQueryForDaily=s"select ${inputMap("dailyColumns")} from ${inputMap("schemaName")}.${inputMap("dailyTableName")} where micro_service in (${whereConditionGeneratorUpdated(dailyList.map(_._1))}) and page in (${whereConditionGeneratorUpdated(dailyList.map(_._2))}) and event_date in (${whereConditionGeneratorDateUpdated(dailyList.map(_._3.toString))}) "
+       val selectQueryForTotal=s"select ${inputMap("totalColumns")} from ${inputMap("schemaName")}.${inputMap("totalTableName")} where micro_service in (${whereConditionGeneratorUpdated(totalList.map(_._1).distinct)}) and page in (${whereConditionGeneratorUpdated(totalList.map(_._2).distinct)}) "
+       val selectQueryForDaily=s"select ${inputMap("dailyColumns")} from ${inputMap("schemaName")}.${inputMap("dailyTableName")} where micro_service in (${whereConditionGeneratorUpdated(dailyList.map(_._1).distinct)}) and page in (${whereConditionGeneratorUpdated(dailyList.map(_._2).distinct)}) and event_date in (${whereConditionGeneratorDateUpdated(dailyList.map(_._3.toString).distinct)}) "
 
         println(s"Total select query on batch ${batchId} ${selectQueryForTotal}")
         println(s"Daily select query on batch ${batchId} ${selectQueryForDaily}")
@@ -85,7 +85,7 @@ object dailyAggregate  extends SparkOpener /*with LazyLogging */{
           .option("dbtable",s"(${selectQueryForTotal})s")
           .load //spark.sql("select")
 
-        totalDF.withColumn("totalFromTablePruned",lit("totalFromTablePruned")).show(false)
+       // totalDF.withColumn("totalFromTablePruned",lit("totalFromTablePruned")).show(false)
 
         val dailyDF=spark.read.format("jdbc")
           .option("url",inputMap("jdbcURL"))
@@ -95,7 +95,7 @@ object dailyAggregate  extends SparkOpener /*with LazyLogging */{
           .option("dbtable",s"(${selectQueryForDaily})s")
           .load
 
-        dailyDF.withColumn("dailyFromTablePruned",lit("dailyFromTablePruned")).show(false)
+       // dailyDF.withColumn("dailyFromTablePruned",lit("dailyFromTablePruned")).show(false)
 
         /*
          create table testPersist.day_wise_count(
@@ -112,6 +112,19 @@ object dailyAggregate  extends SparkOpener /*with LazyLogging */{
          last_updated_timestamp timestamp);
 
          alter table testPersist.total_count add column hit_count long ;
+
+
+         hive
+         CREATE TABLE `temp_db`.`page_click_events_bronze` (
+  `micro_service` STRING,
+  `page` STRING,
+  `received_timestamp` TIMESTAMP,
+  `event_date` DATE,
+  `batch_id` DOUBLE)
+USING parquet
+PARTITIONED BY (event_date, batch_id)
+LOCATION 'hdfs://localhost:8020/user/raptor/tmp/table/page_click_events_bronze'
+
 */
 
         val aggregatedDailyDF= df.groupBy("microService","page","eventDate").agg(count("*").cast(LongType).as("currentBatchCount"))
@@ -132,9 +145,9 @@ object dailyAggregate  extends SparkOpener /*with LazyLogging */{
           .selectExpr("microService as micro_service","page as page","currentBatchCount as hit_count")
           .withColumn("last_updated_timestamp",lit(current_timestamp))
 
-        totalTableJoinedRecords.withColumn("totalTableJoinedRecords",lit("totalTableJoinedRecords")).show(false)
-        totalUpdationRecords.withColumn("totalUpdationRecords",lit("totalUpdationRecords")).show(false)
-        totalInsertionRecords.withColumn("totalInsertionRecords",lit("totalInsertionRecords")).show(false)
+      //  totalTableJoinedRecords.withColumn("totalTableJoinedRecords",lit("totalTableJoinedRecords")).show(false)
+      //  totalUpdationRecords.withColumn("totalUpdationRecords",lit("totalUpdationRecords")).show(false)
+      //  totalInsertionRecords.withColumn("totalInsertionRecords",lit("totalInsertionRecords")).show(false)
 
         val dailyTableJoinedRecords=aggregatedDailyDF.as("batchAggregated").join(dailyDF.as("dailyData"),
           col("batchAggregated.microService")=== col ("dailyData.micro_service") && col("batchAggregated.page")=== col ("dailyData.page") && col("batchAggregated.eventDate")=== col ("dailyData.event_date")
@@ -149,9 +162,9 @@ object dailyAggregate  extends SparkOpener /*with LazyLogging */{
           .selectExpr("microService as micro_service","page as page","eventDate as event_date","currentBatchCount as hit_count")
           .withColumn("last_updated_timestamp",lit(current_timestamp))
 
-        dailyTableJoinedRecords.withColumn("totalTableJoinedRecords",lit("totalTableJoinedRecords")).show(false)
-        dailyUpdationRecords.withColumn("totalUpdationRecords",lit("totalUpdationRecords")).show(false)
-        dailyInsertionRecords.withColumn("totalInsertionRecords",lit("totalInsertionRecords")).show(false)
+      //  dailyTableJoinedRecords.withColumn("totalTableJoinedRecords",lit("totalTableJoinedRecords")).show(false)
+      //  dailyUpdationRecords.withColumn("totalUpdationRecords",lit("totalUpdationRecords")).show(false)
+      //  dailyInsertionRecords.withColumn("totalInsertionRecords",lit("totalInsertionRecords")).show(false)
 /*
 
         totalInsertionRecords
@@ -171,11 +184,11 @@ object dailyAggregate  extends SparkOpener /*with LazyLogging */{
 */
 
         // update queries for existing records with action
-        dailyUpdationRecords.map(updateDailyTable(_,inputMap)).toDF.show(false)
-        totalUpdationRecords.map(updateTotalTable(_,inputMap)).toDF.show(false)
+        dailyUpdationRecords.repartition(col("micro_service"),col("event_date")).map(updateDailyTable(_,inputMap)).toDF.show(false)
+        totalUpdationRecords.repartition(col("micro_service")).map(updateTotalTable(_,inputMap)).toDF.show(false)
     // update before insert because the dag for update will be created lazily, so we need to insert whatever is not present and then do an update on existing records
-        persistDF(dailyInsertionRecords,inputMap,inputMap("dailyTableName"))
-        persistDF(totalInsertionRecords,inputMap,inputMap("totalTableName"))
+        persistDF(dailyInsertionRecords.repartition(col("micro_service"),col("event_date")),inputMap,inputMap("dailyTableName"))
+        persistDF(totalInsertionRecords.repartition(col("micro_service")),inputMap,inputMap("totalTableName"))
         // raw data is persisted to hive
         // spark.sql("show tables in  temp_db").show(false)
         df.selectExpr("microService as micro_service","page","eventDate as event_date","receivedTimestamp as received_timestamp").withColumn("batch_id",lit(batchId)).write.mode("append")/*.partitionBy("event_date","batch_id")*/.insertInto(s"${inputMap("hiveSchema")}.${inputMap("statsTable")}")
@@ -227,7 +240,6 @@ case class updateDailyRow(hitCount:Long,microService:String,page:String,eventDat
     updateTotalRow(newHitCount,microService,page,numRowsAffected)
   }
   case class updateTotalRow(hitCount:Long,microService:String,page:String,numRowsAffected:Int)
-
 
   def whereConditionGenerator (tmpList:Seq[String]) =tmpList.size match {
     case value if value ==0 => "''"
