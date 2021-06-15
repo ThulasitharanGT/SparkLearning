@@ -69,6 +69,7 @@ object aggregationUsingGroupByKey extends SparkOpener{
   }
   /*
 
+what are all the microservice which came in, in that batch will be persisted to batch_micro_service_stats
 
   {"microService":"login","page":"login","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.214"}
 {"microService":"login","page":"login","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}

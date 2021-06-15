@@ -38,7 +38,7 @@ object mapPartitionsTry extends SparkOpener{
   }
 
   def batchFun(df:DataFrame,batchId:Long,inputMap:collection.mutable.Map[String,String])={
-    df.withColumn("batchId",lit(batchId)).show(false)
+  //  df.withColumn("batchId",lit(batchId)).show(false)
     val dataCollected=df.select("microService","page","eventDate").collect
     val dailyMeta=dataCollected.map(x=>(x.getString(0),x.getString(1),x.get(2).toString))
     val totalMeta=dataCollected.map(x=>(x.getString(0),x.getString(1)))
@@ -52,7 +52,7 @@ object mapPartitionsTry extends SparkOpener{
       .option("driver",inputMap("driver"))
       .option("dbtable",s"(${selectQueryForTotal})s")
       .load
-
+   // totalDF.show(false)
 
     val dailyDF=spark.read.format("jdbc").option("url",inputMap("jdbcURL"))
       .option("password",inputMap("password"))
@@ -61,8 +61,12 @@ object mapPartitionsTry extends SparkOpener{
       .option("dbtable",s"(${selectQueryForDaily})s")
       .load
 
+   // dailyDF.show(false)
+
     val dayWiseAgg=df.groupBy("microService","page","eventDate").agg(count("*").as("batchAggregatedCount"))
     val totalAgg=df.groupBy("microService","page").agg(count("*").as("batchAggregatedCount"))
+  //  dayWiseAgg.show(false)
+  //  totalAgg.show(false)
 
     val dayWiseJoinDF=dayWiseAgg.as("batch").join(dailyDF.as("fromDB"),
       col("fromDB.micro_service")===col("batch.microService")
@@ -73,6 +77,8 @@ object mapPartitionsTry extends SparkOpener{
       col("fromDB.micro_service")===col("batch.microService")
         && col("fromDB.page")===col("batch.page"),"left")
 
+   // dayWiseJoinDF.show(false)
+   // totalJoinDF.show(false)
 
     val dayWiseUpdationRecords=dayWiseJoinDF.filter("fromDB.micro_service is not null")
       .withColumn("computedCount",lit(col("fromDB.hit_count") + col("batch.batchAggregatedCount")))
@@ -88,6 +94,11 @@ object mapPartitionsTry extends SparkOpener{
     val totalJoinDFInsertionRecords=totalJoinDF.filter("fromDB.micro_service is null").selectExpr("batch.*").withColumn("receivedTimestamp",lit(current_timestamp))
       .selectExpr("page as page","microService as micro_service","receivedTimestamp as last_updated_timestamp","cast(batchAggregatedCount as long) as hit_count")
 
+ //   dayWiseUpdationRecords.show(false)
+ //   dayWiseInsertionRecords.show(false)
+ //   totalJoinDFUpdationRecords.show(false)
+ //   totalJoinDFInsertionRecords.show(false)
+
   //  totalJoinDFUpdationRecords.map(updateTotalTable(_,inputMap)).show(false)
   //  dayWiseUpdationRecords.map(updateDailyTable(_,inputMap)).show(false)
    // persistDF(totalJoinDFInsertionRecords,inputMap,inputMap("totalTableName"))
@@ -95,10 +106,10 @@ object mapPartitionsTry extends SparkOpener{
 
     // processes the partitions parallely and opens one connection per record in the partition.
 
-    totalJoinDFUpdationRecords.repartition(col("page"),col("micro_service")).mapPartitions(x => x.map(updateTotalTable(_,inputMap))).show(false)
-    dayWiseUpdationRecords.repartition(col("page"),col("micro_service"),col("event_date")).mapPartitions(x => x.map(updateDailyTable(_,inputMap))).show(false)
-    totalJoinDFInsertionRecords.repartition(col("page"),col("micro_service")).mapPartitions(x => x.map(insertTotalTable(_,inputMap))).show(false)
-    dayWiseInsertionRecords.repartition(col("page"),col("micro_service"),col("event_date")).mapPartitions(x => x.map(insertDailyTable(_,inputMap))).show(false)
+    totalJoinDFUpdationRecords.withColumn("totalUpdate",lit("totalUpdate")).repartition(col("page"),col("micro_service")).mapPartitions(x => x.map(updateTotalTable(_,inputMap))).show(false)
+    dayWiseUpdationRecords.withColumn("dayWiseUpdate",lit("dayWiseUpdate")).repartition(col("page"),col("micro_service"),col("event_date")).mapPartitions(x => x.map(updateDailyTable(_,inputMap))).show(false)
+    totalJoinDFInsertionRecords.withColumn("totalInsert",lit("totalInsert")).repartition(col("page"),col("micro_service")).mapPartitions(x => x.map(insertTotalTable(_,inputMap))).show(false)
+    dayWiseInsertionRecords.withColumn("dayWiseInsert",lit("dayWiseInsert")).repartition(col("page"),col("micro_service"),col("event_date")).mapPartitions(x => x.map(insertDailyTable(_,inputMap))).show(false)
 
     df.selectExpr("microService as micro_service","page","eventDate as event_date","receivedTimestamp as received_timestamp").withColumn("batch_id",lit(batchId.toLong)).write.mode("append").insertInto(s"${inputMap("hiveSchema")}.${inputMap("statsTable")}")
 
@@ -136,8 +147,8 @@ object mapPartitionsTry extends SparkOpener{
 
   def updateDailyTable(row:Row,inputMap:collection.mutable.Map[String,String])={
     val newHitCount=row.get(3).toString.toLong
-    val microService=row.get(0).toString
-    val page=row.get(1).toString
+    val microService=row.get(1).toString
+    val page=row.get(0).toString
     val eventDate=row.get(2).toString
     val updateStatement=s"update ${inputMap("schemaName")}.${inputMap("dailyTableName")} set last_updated_timestamp=now(),hit_count='${newHitCount}' where micro_service ='${microService}' and page='${page}' and event_date='${eventDate}'"
     // logger.info(s"update statement daily table ${updateStatement}")
@@ -178,8 +189,8 @@ object mapPartitionsTry extends SparkOpener{
 
   def updateTotalTable(row:Row,inputMap:collection.mutable.Map[String,String])={
     val newHitCount=row.get(2).toString.toLong
-    val microService=row.get(0).toString
-    val page=row.get(1).toString
+    val microService=row.get(1).toString
+    val page=row.get(0).toString
     val updateStatement=s"update ${inputMap("schemaName")}.${inputMap("totalTableName")} set last_updated_timestamp=now(),hit_count='${newHitCount}' where micro_service ='${microService}' and page='${page}'"
     // logger.info(s"update statement total table ${updateStatement}")
     println(s"update statement total table ${updateStatement}")
@@ -234,5 +245,32 @@ object mapPartitionsTry extends SparkOpener{
     tmpString
   }
 
+    /*
 
+    same functionality as daily aggregate but uses map partitions and scala code
+
+  spark-submit --class org.controller.readFromKafkaAndMaintainAggregate.mapPartitionsTry --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,mysql:mysql-connector-java:8.0.25 --conf spark.sql.warehouse.dir=/user/raptor/tmp/hive/warehouse2/ --num-executors 2 --executor-cores 2 --driver-memory 1g --driver-cores 2 --executor-memory 1g --conf spark.sql.shuffle.partitions=4 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  bootstrapServer="localhost:9091,localhost:9092,localhost:9093" topic="tmp.cool.data" offset="latest" checkPoint="hdfs://localhost:8020/user/raptor/checkpointLocation/tmpcheck/" jdbcURL="jdbc:mysql://localhost:3306/testPersist?user=raptor&password=" password= user=raptor driver="com.mysql.jdbc.Driver" schemaName=testPersist totalTableName=total_count dailyTableName=day_wise_count hiveSchema=temp_db hiveBronzeTable=page_click_events_bronze totalColumns="micro_service,page,hit_count" dailyColumns="micro_service,page,event_date,hit_count" hiveStatsTable=batch_micro_service_stats statsTable=page_click_events_bronze
+
+{"microService":"login","page":"login","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.214"}
+{"microService":"login","page":"login","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"login","page":"register","eventDate":"2020-08-02","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"login","page":"forgot password","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"login","page":"login","eventDate":"2020-08-02","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"login","page":"register","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"order","page":"add-to-cart","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"order","page":"remove-from-cart","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"order","page":"quantity-cart","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"order","page":"checkout","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"checkout","page":"pay","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"checkout","page":"quantity","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"pay","page":"option","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}
+
+
+{"microService":"order","page":"quantity-cart","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"order","page":"checkout","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"checkout","page":"pay","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"checkout","page":"quantity","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"pay","page":"option","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.234"}
+{"microService":"pay","page":"debit","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.214"}
+{"microService":"pay","page":"credit","eventDate":"2020-08-01","receivedTimestamp":"2020-08-01 23:45:98.214"}*/
 }
