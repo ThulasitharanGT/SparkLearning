@@ -1,0 +1,48 @@
+val initDF = Seq(("f1", "elmt 1", 1, 20),("f1", "elmt 2", 2, 40),("f1", "elmt 3", 3, 10),
+      ("f1", "elmt 4", 4, 50),
+      ("f1", "elmt 5", 5, 40),
+      ("f1", "elmt 6", 6, 10),
+      ("f1", "elmt 7", 7, 20),
+      ("f1", "elmt 8", 8, 10)
+    ).toDF("family", "element", "priority", "qty")
+
+val limitQtyDF = Seq(("f1", 100)).toDF("family", "limitQty")
+
+sc.broadcast(limitQtyDF)
+
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.expressions.Window
+
+val joinedInitDF=initDF.join(limitQtyDF,Seq("family"),"left")
+
+case class dataResult(family:String,element:String,priority:Int, qty:Int, comutedValue:Int, limitQty:Int,controlOut:String) 
+val familyIDs=initDF.select("family").distinct.collect.map(_(0).toString).toList
+
+def checkingUDF(inputRows:List[Row])={
+var controlVarQty=0
+val outputArrayBuffer=collection.mutable.ArrayBuffer[dataResult]()
+val setLimit=inputRows.head.getInt(4) 
+for(inputRow <- inputRows)
+{
+val currQty=inputRow.getInt(3) 
+//val outpurForRec=
+controlVarQty + currQty match {
+case value if value <= setLimit => 
+controlVarQty+=currQty
+outputArrayBuffer+=dataResult(inputRow.getString(0),inputRow.getString(1),inputRow.getInt(2),inputRow.getInt(3),value,setLimit,"ok")
+case value => 
+outputArrayBuffer+=dataResult(inputRow.getString(0),inputRow.getString(1),inputRow.getInt(2),inputRow.getInt(3),value,setLimit,"ko")
+}
+//outputArrayBuffer+=Row(inputRow.getString(0),inputRow.getString(1),inputRow.getInt(2),inputRow.getInt(3),controlVarQty+currQty,setLimit,outpurForRec)
+}
+outputArrayBuffer.toList
+}
+
+val tmpAB=collection.mutable.ArrayBuffer[List[dataResult]]()
+for (familyID <- familyIDs) // val familyID="f1"
+{
+val currentFamily=joinedInitDF.filter(s"family = '${familyID}'").orderBy("element", "priority").collect.toList
+tmpAB+=checkingUDF(currentFamily)
+}
+
+tmpAB.toSeq.flatMap(x => x).toDF.show(false)
