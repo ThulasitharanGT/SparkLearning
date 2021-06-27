@@ -10,7 +10,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="SparkLearning.main" />
     <orderEntry type="library" name="Gradle: org.apache.kafka:kafka_2.11:2.3.1" level="project" />
-    <orderEntry type="library" name="Gradle: com.typesafe.scala-logging:scala-logging_2.11:3.9.4" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.kafka:kafka-clients:2.3.1" level="project" />
     <orderEntry type="library" name="Gradle: org.scala-lang:scala-compiler:2.11.12" level="project" />
@@ -59,11 +58,12 @@
     <orderEntry type="library" name="Gradle: com.twitter:hbc-core:2.2.0" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-log4j12:1.7.26" level="project" />
     <orderEntry type="library" name="Gradle: junit:junit:4.12" level="project" />
+    <orderEntry type="library" name="Gradle: com.typesafe.scala-logging:scala-logging_2.11:3.9.0" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.module:jackson-module-scala_2.11:2.10.0" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.zookeeper:zookeeper:3.4.14" level="project" />
     <orderEntry type="library" name="Gradle: com.yammer.metrics:metrics-core:2.2.0" level="project" />
     <orderEntry type="library" name="Gradle: com.101tec:zkclient:0.11" level="project" />
-    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.30" level="project" />
+    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.26" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.10.0" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.10.0" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.10.0" level="project" />
@@ -97,9 +97,9 @@
     <orderEntry type="library" name="Gradle: org.apache.phoenix:phoenix-core:4.9.0-HBase-1.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.hbase:hbase-common:tests:1.4.12" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.spark:spark-sketch_2.11:2.4.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.parquet:parquet-hadoop:1.10.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.orc:orc-core:nohive:1.5.5" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.arrow:arrow-vector:0.10.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.parquet:parquet-hadoop:1.10.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.parquet:parquet-column:1.10.1" level="project" />
     <orderEntry type="library" name="Gradle: com.univocity:univocity-parsers:2.7.3" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.orc:orc-mapreduce:nohive:1.5.5" level="project" />
@@ -240,14 +240,14 @@
     <orderEntry type="library" name="Gradle: sqlline:sqlline:1.2.0" level="project" />
     <orderEntry type="library" name="Gradle: com.github.stephenc.jcip:jcip-annotations:1.0-1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-csv:1.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.parquet:parquet-format:2.4.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.parquet:parquet-jackson:1.10.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.orc:orc-shims:1.5.5" level="project" />
     <orderEntry type="library" name="Gradle: io.airlift:aircompressor:0.10" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.arrow:arrow-memory:0.10.0" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.arrow:arrow-format:0.10.0" level="project" />
     <orderEntry type="library" name="Gradle: com.carrotsearch:hppc:0.7.2" level="project" />
     <orderEntry type="library" name="Gradle: com.vlkan:flatbuffers:1.2.0-3f79e055" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.parquet:parquet-format:2.4.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.parquet:parquet-jackson:1.10.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.parquet:parquet-encoding:1.10.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.parquet:parquet-common:1.10.1" level="project" />
     <orderEntry type="library" name="Gradle: org.abego.treelayout:org.abego.treelayout.core:1.0.3" level="project" />

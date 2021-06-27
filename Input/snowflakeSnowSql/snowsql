@@ -1,0 +1,68 @@
+snow flake uid THULASITHARAN96
+
+
+AWS KEY ID:
+
+AKIAUVWFWKATA4AHVFMT
+
+AWS Secret Key: 
+
+R9Rq9kd4lX54+/w4ZzVLoIQVkb5ArFGvMvvvyW93
+
+
+spark.sparkContext.hadoopConfiguration.set("fs.s3a.access.key", "AKIAUVWFWKATA4AHVFMT")
+spark.sparkContext.hadoopConfiguration.set("fs.s3a.secret.key", "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")
+
+
+org.apache.hadoop:hadoop-aws:2.7.4
+
+spark.read.option("header","false").option("inferSchema","true").option("delimiter","^").csv("s3a://on-demand-files/load/DATA_SRC.txt")
+
+
+net.snowflake:spark-snowflake_2.12:2.9.0-spark_3.0
+
+
+
+
+spark.read.format("net.snowflake.spark.snowflake").option("sfURL","jb92808.west-europe.azure.snowflakecomputing.com").option("sfUser", "THULASITHARAN96").option("sfRole", "ACCOUNTADMIN").option("sfPassword", "Thulz@1996").option("sfAccount", "jb92808").option("sfWarehouse", "COMPUTE_INSTANCE_WH").option("sfDatabase", "DEMO_DB").option("sfSchema", "PUBLIC").option("dbtable", "(select * from DEMO_DB.PUBLIC.data_src_stg limit 1)a").load
+
+spark.read.format("net.snowflake.spark.snowflake").option("sfURL","jb92808.west-europe.azure.snowflakecomputing.com").option("sfUser", "THULASITHARAN96").option("sfRole", "ACCOUNTADMIN").option("sfPassword", "Thulz@1996").option("sfAccount", "jb92808").option("sfWarehouse", "COMPUTE_INSTANCE_WH").option("sfDatabase", "DEMO_DB").option("sfSchema", "PUBLIC").option("query", "select * from DEMO_DB.PUBLIC.data_src_stg limit 1").load
+
+curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.15-linux_x86_64.bash
+bash snowsql-1.2.15-linux_x86_64.bash
+
+curl -O https://sfc-repo.azure.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.15-linux_x86_64.bash
+  
+./snowsql -a jb92808.west-europe.azure -u THULASITHARAN96 -d DEMO_DB -s PUBLIC -r ACCOUNTADMIN -w COMPUTE_INSTANCE_WH
+// take out region and it works 
+-region west-europe
+
+
+put file:///home/raptor/Softwares/snowSQL/USDA/N* @temp_file_stage;
+
+-a jb92808.west-europe.azure -u THULASITHARAN96 -d DEMO_DB -s PUBLIC -r ACCOUNTADMIN -w COMPUTE_INSTANCE_WH
+
+
+spark.read.format("net.snowflake.spark.snowflake").option("sfURL","jb92808.west-europe.azure.snowflakecomputing.com").option("sfUser", "THULASITHARAN96").option("sfRole", "ACCOUNTADMIN").option("sfPassword", "Thulz@1996").option("sfAccount", "jb92808").option("sfWarehouse", "COMPUTE_INSTANCE_WH").option("sfDatabase", "DEMO_DB").option("sfSchema", "PUBLIC").option("query", "select * from USDA_NUTRIENT_STDREF.PUBLIC.weight_ingest limit 1").load.columns
+
+
+create stage LIBRARY_CARD_CATALOG.public.author_stage;
+
+put file:///home/raptor/Softwares/snowSQL/Essentials_Lesson_10_Files/a* @LIBRARY_CARD_CATALOG.public.author_stage;
+
+create stage LIBRARY_CARD_CATALOG.public.AUTHOR_nested_stage;
+
+put file:///home/raptor/Softwares/snowSQL/Essentials_Lesson_11_Files/json_book_author_nested.txt    @"LIBRARY_CARD_CATALOG"."PUBLIC".AUTHOR_nested_stage/library_data/;
+put file:///home/raptor/Softwares/snowSQL/Essentials_Lesson_11_Files/Lesson_11_Book_Author_Nested_SQL.txt    @"LIBRARY_CARD_CATALOG"."PUBLIC".AUTHOR_nested_stage/library_data/;
+put file:///home/raptor/Softwares/snowSQL/Essentials_Lesson_11_Files/nutrition_tweets.json    @"LIBRARY_CARD_CATALOG"."PUBLIC".AUTHOR_nested_stage/twitter_data/;
+put file:///home/raptor/Softwares/snowSQL/Essentials_Lesson_11_Files/Lesson_11_Twitter_Nested_SQL.txt  @"LIBRARY_CARD_CATALOG"."PUBLIC".AUTHOR_nested_stage/twitter_data/;
+
+
+
+put file:///home/raptor/Softwares/snowSQL/USDA/D* @temp_file_stage;
+put file:///home/raptor/Softwares/snowSQL/USDA/F* @temp_file_stage;                                                                    
+put file:///home/raptor/Softwares/snowSQL/USDA/L* @temp_file_stage;
+put file:///home/raptor/Softwares/snowSQL/USDA/S* @temp_file_stage;
+put file:///home/raptor/Softwares/snowSQL/USDA/W* @temp_file_stage;
+
+

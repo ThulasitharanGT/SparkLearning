@@ -1,0 +1,409 @@
+create warehouse SMALL_WH WAREHOUSE_SIZE = SMALL
+  MAX_CLUSTER_COUNT = 5
+  MIN_CLUSTER_COUNT = 1
+  SCALING_POLICY = STANDARD 
+  AUTO_SUSPEND = 30
+  AUTO_RESUME = TRUE
+  INITIALLY_SUSPENDED = TRUE;
+  
+create database USDA_NUTRIENT_STDREF;
+  
+create table USDA_NUTRIENT_STDREF.public.FD_GROUP_INGEST (FDGRP_CD VARCHAR(6),
+FDGRP_DESC VARCHAR(62));
+
+
+create file format USDA_NUTRIENT_STDREF.public.USDA_FILE_FORMAT type = CSV
+compression=auto field_delimiter='^' record_delimiter='\n' SKIP_BLANK_LINES=true
+ERROR_ON_COLUMN_COUNT_MISMATCH = TRUE VALIDATE_UTF8 =FALSE;
+
+create stage USDA_NUTRIENT_STDREF.public.temp_file_stage;
+
+--truncate table USDA_NUTRIENT_STDREF.public.FD_GROUP_INGEST;
+
+copy into USDA_NUTRIENT_STDREF.public.FD_GROUP_INGEST from @USDA_NUTRIENT_STDREF.public.temp_file_stage
+pattern='.*FD_GROUP.txt.*' file_format=USDA_NUTRIENT_STDREF.public.USDA_FILE_FORMAT
+on_error=Abort_statement;
+
+select * from USDA_NUTRIENT_STDREF.public.FD_GROUP_INGEST where FDGRP_DESC LIKE '%Food%';
+
+create view USDA_NUTRIENT_STDREF.public.FD_GROUP_INGEST_cleanse as select replace(FDGRP_CD,'~') as FDGRP_CD,
+replace(FDGRP_DESC,'~')FDGRP_DESC  from USDA_NUTRIENT_STDREF.public.FD_GROUP_INGEST ;
+
+select * from USDA_NUTRIENT_STDREF.public.FD_GROUP_INGEST_cleanse where FDGRP_DESC LIKE '%Food%';
+
+--update USDA_NUTRIENT_STDREF.public.FD_GROUP_INGEST set FDGRP_CD=replace(FDGRP_CD,'~'),FDGRP_DESC=replace(FDGRP_DESC,'~');
+
+create table USDA_NUTRIENT_STDREF.public.FD_GROUP (FDGRP_CD VARCHAR(4),
+FDGRP_DESC VARCHAR(60));
+
+insert into USDA_NUTRIENT_STDREF.public.FD_GROUP select * from USDA_NUTRIENT_STDREF.public.FD_GROUP_INGEST_cleanse;
+
+select * from USDA_NUTRIENT_STDREF.public.FD_GROUP;
+
+//2
+
+create stage USDA_NUTRIENT_STDREF.public.my_s3_bucket 
+url='s3://on-demand-files'
+CREDENTIALS = ( AWS_KEY_ID = 'AKIAUVWFWKATA4AHVFMT' AWS_SECRET_KEY = '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' );
+
+list @my_s3_bucket pattern='.*txt';
+
+select * from information_schema.file_formats;
+show tables in schema  information_schema;
+show views in schema  information_schema;
+
+select get_ddl('view','USDA_NUTRIENT_STDREF.information_schema.file_formats');
+
+-- truncate table USDA_NUTRIENT_STDREF.public.WEIGHT;
+-- truncate table USDA_NUTRIENT_STDREF.public.WEIGHT_INGEST;
+
+copy into USDA_NUTRIENT_STDREF.public.WEIGHT_INGEST from @USDA_NUTRIENT_STDREF.public.my_s3_bucket/load/ pattern='.*WEIGHT.t.*'
+file_format =USDA_FILE_FORMAT on_error=abort_statement;
+
+copy into USDA_NUTRIENT_STDREF.public.WEIGHT_INGEST from @USDA_NUTRIENT_STDREF.public.my_s3_bucket/load/ pattern='.*WEIGHT.t.*'
+file_format =USDA_FILE_FORMAT on_error=abort_statement force=true;
+
+create view USDA_NUTRIENT_STDREF.public.WEIGHT_INGEST_cleanse as select 
+replace(NDB_NO,'~') as NDB_NO,replace(SEQ,'~') as SEQ,replace(AMOUNT,'~') as AMOUNT,replace(MSRE_DESC,'~') as MSRE_DESC,replace(GM_WGT,'~') as GM_WGT,
+replace(NUM_DATA_PTS,'~') as NUM_DATA_PTS,replace(STD_DEV,'~') as STD_DEV
+from USDA_NUTRIENT_STDREF.public.WEIGHT_INGEST ;
+
+insert into USDA_NUTRIENT_STDREF.public.WEIGHT select * from USDA_NUTRIENT_STDREF.PUBLIC.weight_ingest_cleanse;
+
+create table USDA_NUTRIENT_STDREF.PUBLIC.langdesc (
+factor_code varchar(5),
+description varchar(140));
+
+// one way
+insert into USDA_NUTRIENT_STDREF.PUBLIC.langdesc
+select replace($1,'~') as factor_code,replace($2,'~') description from @my_s3_bucket/load/LANGD
+(file_format=>USDA_FILE_FORMAT );
+
+//copy into 
+copy into USDA_NUTRIENT_STDREF.PUBLIC.langdesc from
+(select replace($1,'~') as factor_code,replace($2,'~') description from @my_s3_bucket/load/LANGD
+(file_format=>USDA_FILE_FORMAT ))  on_error=abort_statement ;
+
+//copy into -2
+create view USDA_NUTRIENT_STDREF.PUBLIC.langdesc_ingest_cleanse as 
+select replace($1,'~') as factor_code,replace($2,'~') description from @my_s3_bucket/load/LANGD
+(file_format=>USDA_FILE_FORMAT ) ;
+
+
+insert into USDA_NUTRIENT_STDREF.PUBLIC.langdesc
+select * from USDA_NUTRIENT_STDREF.PUBLIC.langdesc_ingest_cleanse;
+
+-- truncate table USDA_NUTRIENT_STDREF.PUBLIC.langdesc;
+
+create sequence LIBRARY_CARD_CATALOG.PUBLIC.SEQ_AUTHOR_UID INCREMENT =1 START=1;
+
+select LIBRARY_CARD_CATALOG.PUBLIC.SEQ_AUTHOR_UID.nextval;
+
+create or replace view LIBRARY_CARD_CATALOG.PUBLIC.BOOK_author_mapped as
+select b.*,a.TITLE,a.YEAR_PUBLISHED,c.FIRST_NAME,c.MIDDLE_NAME,c.LAST_NAME
+from  LIBRARY_CARD_CATALOG.PUBLIC.BOOK a join "LIBRARY_CARD_CATALOG"."PUBLIC"."BOOK_TO_AUTHOR" b
+on a.BOOK_UID=b.BOOK_UID join "LIBRARY_CARD_CATALOG"."PUBLIC"."AUTHOR" c on c.AUTHOR_UID = b.AUTHOR_UID
+
+select * from LIBRARY_CARD_CATALOG.PUBLIC.BOOK_author_mapped;
+
+//3
+
+select * from information_schema.file_formats;
+-- truncate table "LIBRARY_CARD_CATALOG"."PUBLIC"."AUTHOR_INGEST_XML"
+copy into "LIBRARY_CARD_CATALOG"."PUBLIC"."AUTHOR_INGEST_XML" from @LIBRARY_CARD_CATALOG.public.author_stage
+pattern='.*author_with_header.xml.*' file_format="LIBRARY_CARD_CATALOG"."PUBLIC".XML_FILE_FORMAT on_error=abort_statement;
+
+list  @LIBRARY_CARD_CATALOG.public.author_stage;
+
+copy into "LIBRARY_CARD_CATALOG"."PUBLIC"."AUTHOR_INGEST_XML" from @LIBRARY_CARD_CATALOG.public.author_stage
+pattern='.*author_no_header.xml.*' file_format="LIBRARY_CARD_CATALOG"."PUBLIC".XML_FILE_FORMAT on_error=abort_statement
+force = true;
+
+select * from "LIBRARY_CARD_CATALOG"."PUBLIC"."AUTHOR_INGEST_XML";
+
+alter file format "LIBRARY_CARD_CATALOG"."PUBLIC".XML_FILE_FORMAT 
+set  
+COMPRESSION = 'AUTO' 
+PRESERVE_SPACE = FALSE 
+STRIP_OUTER_ELEMENT = FALSE 
+DISABLE_SNOWFLAKE_DATA = FALSE 
+DISABLE_AUTO_CONVERT = FALSE 
+IGNORE_UTF8_ERRORS = FALSE;
+
+---------------------
+
+// XML DML Scripts
+
+USE LIBRARY_CARD_CATALOG;
+
+
+
+//Returns entire record
+
+SELECT raw_author 
+
+FROM author_ingest_xml;
+
+
+
+// Presents a kind of meta-data view of the data
+
+SELECT raw_author:"$" 
+
+FROM author_ingest_xml; 
+
+
+
+//shows the root or top-level object name of each row
+
+SELECT raw_author:"@" 
+
+FROM author_ingest_xml; 
+
+
+
+//returns AUTHOR_UID value from top-level object's attribute
+
+SELECT raw_author:"@AUTHOR_UID"
+
+FROM author_ingest_xml;
+
+
+
+//The first row is weird because it has all the data smushed into it. 
+
+//If you want to delete just that row, run this statement
+
+DELETE FROM author_ingest_xml
+
+WHERE raw_author like '%<dataset>%';
+
+
+
+//returns value of NESTED OBJECT called FIRST_NAME
+
+SELECT XMLGET(raw_author, 'FIRST_NAME'):"$"
+
+FROM author_ingest_xml;
+
+
+
+//returns the data in a way that makes it look like a normalized table
+
+SELECT 
+
+raw_author:"@AUTHOR_UID" as AUTHOR_ID
+
+,XMLGET(raw_author, 'FIRST_NAME'):"$" as FIRST_NAME
+
+,XMLGET(raw_author, 'MIDDLE_NAME'):"$" as MIDDLE_NAME
+
+,XMLGET(raw_author, 'LAST_NAME'):"$" as LAST_NAME
+
+FROM AUTHOR_INGEST_XML;
+
+
+
+//add ::STRING to cast the values into strings and get rid of the quotes
+
+SELECT 
+raw_author:"@AUTHOR_UID" as AUTHOR_ID
+,XMLGET(raw_author, 'FIRST_NAME'):"$"::STRING as FIRST_NAME
+,XMLGET(raw_author, 'MIDDLE_NAME'):"$"::STRING as MIDDLE_NAME
+,XMLGET(raw_author, 'LAST_NAME'):"$"::STRING as LAST_NAME
+FROM AUTHOR_INGEST_XML;
+
+----------------
+
+create or replace file format "LIBRARY_CARD_CATALOG"."PUBLIC".JSON_FILE_FORMAT type =JSON 
+STRIP_OUTER_ARRAY = true 
+IGNORE_UTF8_ERRORS = false ;
+
+create or replace file format "LIBRARY_CARD_CATALOG"."PUBLIC".JSON_FILE_FORMAT_no_strip type =JSON 
+STRIP_OUTER_ARRAY = false 
+IGNORE_UTF8_ERRORS = false ;
+
+select * from information_schema.file_formats;
+
+select * from information_schema.stages;
+
+list @AUTHOR_STAGE;
+
+copy into "LIBRARY_CARD_CATALOG"."PUBLIC".AUTHOR_INGEST_JSON from @"LIBRARY_CARD_CATALOG"."PUBLIC".AUTHOR_STAGE pattern='.*json.*'
+on_error=abort_statement file_format= "LIBRARY_CARD_CATALOG"."PUBLIC".JSON_FILE_FORMAT;
+
+
+select * from "LIBRARY_CARD_CATALOG"."PUBLIC".AUTHOR_INGEST_JSON limit 5;
+
+create view "LIBRARY_CARD_CATALOG"."PUBLIC".AUTHOR_INGEST_JSON_flatten as
+select RAW_AUTHOR:AUTHOR_UID::Number as AUTHOR_UID,RAW_AUTHOR:FIRST_NAME::String as FIRST_NAME
+,RAW_AUTHOR:LAST_NAME::String as LAST_NAME,RAW_AUTHOR:MIDDLE_NAME::String as MIDDLE_NAME 
+from "LIBRARY_CARD_CATALOG"."PUBLIC".AUTHOR_INGEST_JSON ;
+
+select * from  "LIBRARY_CARD_CATALOG"."PUBLIC".AUTHOR_INGEST_JSON_flatten;
+
+
+
+create stage "LIBRARY_CARD_CATALOG"."PUBLIC".AUTHOR_nested_stage;
+
+
+CREATE OR REPLACE TABLE "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" 
+(
+  "RAW_NESTED_BOOK" VARIANT
+);
+
+copy into "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" from @"LIBRARY_CARD_CATALOG"."PUBLIC".AUTHOR_NESTED_STAGE/library_data/ 
+pattern='.*nested.txt.*' file_format="LIBRARY_CARD_CATALOG"."PUBLIC".JSON_FILE_FORMAT on_error=abort_statement;
+
+select * from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON";
+select RAW_NESTED_BOOk:authors[0]:first_name::varchar from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON";
+
+
+-- truncate table "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON";
+
+select *  from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" , lateral flatten( input => RAW_NESTED_BOOk:authors) ;
+
+select value  from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" , lateral flatten( input => RAW_NESTED_BOOk:authors) ;
+select value  from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" , table( flatten( input => RAW_NESTED_BOOk:authors)) ;
+
+select value:first_name::varchar as first_name,
+value:last_name::varchar as last_name,
+value:middle_name::varchar as middle_name,
+RAW_NESTED_BOOK:book_title::varchar as book_title,
+RAW_NESTED_BOOK:year_published::varchar as year_published
+from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" , lateral flatten( input => RAW_NESTED_BOOk:authors) ;
+
+select value:first_name::varchar as first_name,
+value:last_name::varchar as last_name,
+value:middle_name::varchar as middle_name,
+RAW_NESTED_BOOK:book_title::varchar as book_title,
+RAW_NESTED_BOOK:year_published::varchar as year_published
+from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" , table( flatten( input => RAW_NESTED_BOOk:authors)) ;
+
+// every thing works fne, just gave : instead of :: for casting
+/*
+create view "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_flatten_view as
+select value as output_flatten
+from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" , lateral flatten( input => RAW_NESTED_BOOk:authors) ;
+// view not working
+select output_flatten:first_name::varchar as first_name,
+output_flatten:last_name:varchar as last_name from "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_flatten_view;
+
+// table not working
+
+create table "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_flatten_table as
+select value as output_flatten
+from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" , lateral flatten( input => RAW_NESTED_BOOk:authors) ;
+
+select output_flatten:first_name::varchar as first_name,
+output_flatten:last_name:varchar as last_name from "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_flatten_table;
+
+// taking all data using subQueries
+// RAW_NESTED_BOOk is boght out till the end and resolved every key value in one one level
+// we cant use RAW_NESTED_BOOk in final level of kv pair too, we need to selectand drill deep and still it doesnt work. join and take it from source
+
+// this is exploding from array, creating dupes
+select first_name,last_name,middle_name,book_title,year_published from
+(select first_name,last_name,value:middle_name::string as middle_name,RAW_NESTED_BOOK  from
+(select first_name,RAW_NESTED_BOOk,value:last_name::string as last_name  from 
+(select value:first_name::varchar as first_name,RAW_NESTED_BOOk
+from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" , lateral flatten( input => RAW_NESTED_BOOk:authors) ) a 
+,lateral flatten( input => RAW_NESTED_BOOk:authors) ) b  ,lateral flatten( input => RAW_NESTED_BOOk:authors)) c join 
+(select RAW_NESTED_BOOK ,RAW_NESTED_BOOK:book_title::String as book_title,
+RAW_NESTED_BOOK:year_published::number as year_published  from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON") d 
+on d.RAW_NESTED_BOOK=c.RAW_NESTED_BOOK;
+
+// avoiding dupes
+
+create or replace view "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_first_name_view as
+select value:first_name::varchar as first_name,value as flattened_output,RAW_NESTED_BOOk
+from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" , lateral flatten( input => RAW_NESTED_BOOk:authors);
+
+create or replace view "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_last_name_view as
+select value:last_name::varchar as last_name,value as flattened_output,RAW_NESTED_BOOk
+from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" , lateral flatten( input => RAW_NESTED_BOOk:authors);
+
+create or replace view "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_middle_name_view as
+select value:middle_name::varchar as middle_name,value as flattened_output,RAW_NESTED_BOOk
+from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" , lateral flatten( input => RAW_NESTED_BOOk:authors);
+
+create or replace view "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_metdata as
+select RAW_NESTED_BOOK:book_title::varchar as book_title,
+RAW_NESTED_BOOK:year_published::number as year_published,RAW_NESTED_BOOK 
+from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" ;
+
+select RAW_NESTED_BOOK:book_title:string as book_title from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" ;
+
+select * from "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_middle_name_view;
+select * from "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_last_name_view;
+select * from "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_first_name_view;
+select * from "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_metdata;
+
+
+select first_name,middle_name,last_name,a.RAW_NESTED_BOOK:book_title::varchar as book_title,
+b.RAW_NESTED_BOOK:year_published::number as year_published 
+from "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_middle_name_view b join 
+"LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_last_name_view c 
+on c.FLATTENED_OUTPUT=b.FLATTENED_OUTPUT
+join 
+"LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_first_name_view a
+on a.FLATTENED_OUTPUT=b.FLATTENED_OUTPUT
+;
+
+create view "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_flattened_final as 
+select first_name,middle_name,last_name,a.RAW_NESTED_BOOK:book_title::varchar as book_title,
+b.RAW_NESTED_BOOK:year_published::number as year_published 
+from "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_middle_name_view b join 
+"LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_last_name_view c 
+on c.FLATTENED_OUTPUT=b.FLATTENED_OUTPUT
+join 
+"LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_first_name_view a
+on a.FLATTENED_OUTPUT=b.FLATTENED_OUTPUT
+;
+
+
+
+select * from "LIBRARY_CARD_CATALOG"."PUBLIC"."NESTED_INGEST_JSON" ;
+select * from "LIBRARY_CARD_CATALOG"."PUBLIC".NESTED_INGEST_JSON_flattened_final ;
+
+*/
+
+
+copy into "SOCIAL_MEDIA_FLOODGATES"."PUBLIC"."TWEET_INGEST" from @"LIBRARY_CARD_CATALOG"."PUBLIC".AUTHOR_NESTED_STAGE/twitter_data/ 
+pattern='.*.json.gz' on_error=abort_statement file_format="SOCIAL_MEDIA_FLOODGATES".public.JSON_FILE_FORMAT;
+
+show stages;
+
+list @"LIBRARY_CARD_CATALOG"."PUBLIC".AUTHOR_NESTED_STAGE;
+
+select * from "SOCIAL_MEDIA_FLOODGATES".information_schema.file_formats;
+
+select raw_status:entities:hashtags from  "SOCIAL_MEDIA_FLOODGATES"."PUBLIC"."TWEET_INGEST";
+
+select value from  "SOCIAL_MEDIA_FLOODGATES"."PUBLIC"."TWEET_INGEST" , lateral flatten (input => raw_status:entities:hashtags);
+
+select * from  "SOCIAL_MEDIA_FLOODGATES"."PUBLIC"."TWEET_INGEST";
+
+create or replace view "SOCIAL_MEDIA_FLOODGATES"."PUBLIC".hashtags_normalized as select raw_status:user:id::varchar as user_id ,
+raw_status:id as tweet_id,
+value:text::varchar as hashtag_text from
+"SOCIAL_MEDIA_FLOODGATES"."PUBLIC"."TWEET_INGEST" , lateral flatten (input => raw_status:entities:hashtags);
+
+select * from  "SOCIAL_MEDIA_FLOODGATES"."PUBLIC".hashtags_normalized;
+
+
+
+/* // keys are read only keys
+copy into 's3://on-demand-files/tmpUnload/' from "SOCIAL_MEDIA_FLOODGATES"."PUBLIC".hashtags_normalized
+FILE_FORMAT = ( TYPE =   PARQUET )
+CREDENTIALS = ( AWS_KEY_ID = 'AKIAUVWFWKATA4AHVFMT' AWS_SECRET_KEY = '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' );
+*/
+
+create stage "SOCIAL_MEDIA_FLOODGATES"."PUBLIC".unload_stage;
+
+
+copy into @"SOCIAL_MEDIA_FLOODGATES"."PUBLIC".unload_stage/parquet/ from "SOCIAL_MEDIA_FLOODGATES"."PUBLIC".hashtags_normalized
+FILE_FORMAT = ( TYPE =   PARQUET );
+
+
+               

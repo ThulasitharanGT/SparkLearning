@@ -67,7 +67,7 @@ dependencies {
     compile 'org.apache.spark:spark-avro_2.12:3.0.0'
     compile 'org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0'*/
 
-    compile 'com.typesafe.scala-logging:scala-logging_2.11:3.9.4'
+ //   compile 'com.typesafe.scala-logging:scala-logging_2.11:3.9.4'
 
 
     compile 'org.apache.kafka:kafka-clients:2.3.1'
