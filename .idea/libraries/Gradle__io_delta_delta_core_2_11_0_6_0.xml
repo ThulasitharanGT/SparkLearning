@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: io.delta:delta-core_2.11:0.6.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.0/9eac59ba21a197b65570727fd5305013661a88d/delta-core_2.11-0.6.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.0/447532dff44286677f6fd41bec77c81436d0f1d9/delta-core_2.11-0.6.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
