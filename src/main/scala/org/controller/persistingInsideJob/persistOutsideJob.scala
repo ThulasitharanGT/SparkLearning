@@ -6,10 +6,11 @@ import org.util.SparkOpener
 
 import java.sql.{DriverManager,Connection,Timestamp}
 import java.util.Properties
-import com.typesafe.scalalogging.LazyLogging
+// import com.typesafe.scalalogging.LazyLogging
 
-object persistOutsideJob extends SparkOpener with LazyLogging{
+object persistOutsideJob extends SparkOpener/* with LazyLogging*/{
   val spark=SparkSessionLoc()
+  spark.sparkContext.setLogLevel("ERROR")
   import spark.implicits._
   val parentKey="user_record"
   val childKey="bill_record"
@@ -27,7 +28,7 @@ object persistOutsideJob extends SparkOpener with LazyLogging{
 
     val parentTable=dbRead(inputMap,s"${inputMap("mysqlSchema")}.${inputMap("parentTable")}")
 
-    spark.readStream.format("kafka").option("bootstrap.servers",s"${inputMap("bootstrapServers")}")
+    spark.readStream.format("kafka").option("kafka.bootstrap.servers",s"${inputMap("bootstrapServers")}")
       .option("subscribe",s"${inputMap("inputTopic")}")
       .option("offsets",s"${inputMap("startingOffset")}").load.selectExpr("cast (value as string) value")
       .select(from_json($"value",commonSchema).as("dataFlattened")).selectExpr("dataFlattened.*")
@@ -36,27 +37,27 @@ object persistOutsideJob extends SparkOpener with LazyLogging{
         forEachBatchFun(df,batchId,inputMap,parentTable)
     }).start
 
+    spark.streams.awaitAnyTermination
     /*
-    startingOffset
-    bootstrapServers
-    inputTopic
-    checkpointDir
-mysqlJDBCDriver
-mysqlJDBCUrl
-mysqlUser
-mysqlPassword
-mysqlJDBCUrl
-mysqlSchema
-stateTable
-parentTable
-childTable
-   */
-
+    startingOffset=latest
+    bootstrapServers=localhost:9093,localhost:9094,localhost:9092
+    inputTopic=testTopic
+    checkpointDir=hdfs://localhost:8020/user/raptor/checkpointTmp/
+mysqlJDBCDriver="com.mysql.cj.jdbc.Driver"
+mysqlJDBCUrl="jdbc:mysql://localhost:3306/testPersist"
+mysqlUser="raptor"
+mysqlPassword=
+mysqlSchema=kafka_db
+stateTable=bill_state
+parentTable=user_table
+childTable=bill_table
+*/
 
   }
 
   def forEachBatchFun(df:org.apache.spark.sql.DataFrame,batchId:Long,inputMap: collection.mutable.Map[String,String],parentTableDF:org.apache.spark.sql.DataFrame)={
-   logger.info(s"batchID - ${batchId}")
+ //  logger.info(s"batchID - ${batchId}")
+    println(s"batchID - ${batchId}")
     val parentRecord=df.filter(s"mainTable = '${parentKey}'")
     val childRecord=df.filter(s"mainTable = '${childKey}'")
     val childRecordsTransformed=childRecord.select(col("messageTime"),col("dataString"),from_json(col("dataString"),childSchema).as("dataFlattened"))
@@ -68,17 +69,21 @@ childTable
     cleanUpExpiredState(inputMap)
 
     // Take the latest record from sate by message timestamp (query)
-//spark.read.format("jdbc").option("driver","").option("url","").option("user","").option("password","").option("dbtable","")
-    val queryForTakingLatestStateRecords=s"select message_time,resolve_key,message,dense_rank over (partition by resolve_key order by message_time desc) as ageCol from  ${inputMap("mysqlSchema")}.${inputMap("childTable")} where ageCol =1"
-    logger.info(s"queryForTakingLatestStateRecords - ${queryForTakingLatestStateRecords}")
-    val childState=dbRead(inputMap,s"${queryForTakingLatestStateRecords}").select(col("message_time"),col("message"),from_json(col("message"),childSchema).as("messageFlattened")).selectExpr("message_time as messageTime","message  as dataString","messageFlattened.*")
+// spark.read.format("jdbc").option("driver","").option("url","").option("user","").option("password","").option("dbtable","")
+//    val queryForTakingLatestStateRecords=s"select message_time,resolve_key,message,dense_rank over (partition by resolve_key order by message_time desc) as ageCol from  ${inputMap("mysqlSchema")}.${inputMap("childTable")} where ageCol =1"
+   // logger.info(s"queryForTakingLatestStateRecords - ${queryForTakingLatestStateRecords}")
+ //   println(s"queryForTakingLatestStateRecords - ${queryForTakingLatestStateRecords}")
+    //mysql version 5.7 doesn't support window functions
+  //  val childState=dbRead(inputMap,s"${queryForTakingLatestStateRecords}").select(col("message_time"),col("message"),from_json(col("message"),childSchema).as("messageFlattened")).selectExpr("message_time as messageTime","message  as dataString","messageFlattened.*")
+val childState=dbRead(inputMap,s"${inputMap("mysqlSchema")}.${inputMap("stateTable")}")
+  .withColumn("ageCol",row_number.over(org.apache.spark.sql.expressions.Window.partitionBy("resolve_key").orderBy(desc("message_time")))).where(s"ageCol=1").drop("ageCol")
+  .select(col("message_time"),col("message"),from_json(col("message"),childSchema).as("messageFlattened")).selectExpr("message_time as messageTime","message as dataString","messageFlattened.*")
 
 
- /*
-   val stateVsParentJoinDF=childState.as("state").join(parentRecordsTransformed.as("parent"),$"resolve_key"===$"id","left")
-    val releasedChildStateDF=stateVsParentJoinDF.where("parent.id is not null").select("state.*").select(from_json(col("dataString"),childSchema).as("dataFlattened")).selectExpr("dataFlattened.*")
-    val updatedState=stateVsParentJoinDF.where("parent.id is not null").select("state.*")
-*/
+ //  val stateVsParentJoinDF=childState.as("state").join(parentRecordsTransformed.as("parent"),$"resolve_key"===$"id","left")
+  //  val releasedChildStateDF=stateVsParentJoinDF.where("parent.id is not null").select("state.*").select(from_json(col("dataString"),childSchema).as("dataFlattened")).selectExpr("dataFlattened.*")
+ //   val updatedState=stateVsParentJoinDF.where("parent.id is not null").select("state.*")
+
     // going to do both incoming and DB for state and incoming release
     // both sate child and incoming child is looked up against incoming parent and db parent
 
@@ -91,19 +96,22 @@ childTable
     val unReleasedDF=releaseJoinDF.where(s"totalParent.id is null")
 
     val transformedReleasedDF=releasedDF.select("totalChild.*").select("user_id","bill_id") // persist to original table
-    val transformedUnreleasedDF=unReleasedDF.select("totalChild.*").selectExpr("messageTime as message_time","user_id as resolve_key","dataString as message")
+    val transformedUnreleasedDF=unReleasedDF.select("totalChild.*").selectExpr("cast(messageTime as timestamp) as message_time","user_id as resolve_key","dataString as message")
 
   //  transformedUnreleasedDF.write.mode("overwrite").format("jdbc").option("driver","").option("url","").option("user","").option("password","").option("dbtable","").save
 
   //  transformedReleasedDF.write.mode("append").format("jdbc").option("driver","").option("url","").option("user","").option("password","").option("dbtable","").save
 
  //   parentRecordsTransformed.write.mode("append").format("jdbc").option("driver","").option("url","").option("user","").option("password","").option("dbtable","").save
-    logger.info(s"Writing to state")
+ //   logger.info(s"Writing to state")
+    println(s"Writing to state")
     dbSave(transformedUnreleasedDF,inputMap,"overwrite",s"${inputMap("mysqlSchema")}.${inputMap("stateTable")}")
-    logger.info(s"Writing to child")
+  //  logger.info(s"Writing to child")
+    println(s"Writing to child")
     dbSave(transformedReleasedDF,inputMap,"append",s"${inputMap("mysqlSchema")}.${inputMap("childTable")}")
-    logger.info(s"Writing to parent")
-    dbSave(parentRecordsTransformed,inputMap,"append",s"${inputMap("mysqlSchema")}.${inputMap("parentTable")}")
+   // logger.info(s"Writing to parent")
+    println(s"Writing to parent")
+    dbSave(parentRecordsTransformed.drop("messageTime"),inputMap,"append",s"${inputMap("mysqlSchema")}.${inputMap("parentTable")}")
 
   }
 
@@ -122,7 +130,8 @@ childTable
   //  val expiryLimit=inputMap("stateExpiry") // expected to be given in hrs or mins or days
     val targetTime= new Timestamp(System.currentTimeMillis- hrsOrDaysOrMinsToMilliSecondsConverter(inputMap("stateExpiry")))
     val query=s"delete from ${inputMap("mysqlSchema")}.${inputMap("stateTable")} where message_time <= '${targetTime}'"
-    logger.info(s"cleanupQuery ${query}")
+  //  logger.info(s"cleanupQuery ${query}")
+    println(s"cleanupQuery ${query}")
     val connection=getConnection(inputMap)
     val preparedStatement=connection.prepareStatement(query)
     preparedStatement.executeUpdate match {
@@ -146,6 +155,7 @@ childTable
       0
   }
 
-  def dbRead(inputMap:collection.mutable.Map[String,String],tableName:String)=spark.read.format("jdbc").option("driver",inputMap("mysqlJDBCDriver")).option("url",inputMap("mysqlJDBCUrl")).option("user",inputMap("mysqlUser")).option("password",inputMap("mysqlPassword")).option("dbtable",s"${tableName}").load
-  def dbSave(df:org.apache.spark.sql.DataFrame,inputMap:collection.mutable.Map[String,String],outputMode:String,tableName:String)=df.write.format("jdbc").mode(s"${outputMode}").option("driver",inputMap("mysqlJDBCDriver")).option("url",inputMap("mysqlJDBCUrl")).option("user",inputMap("mysqlUser")).option("password",inputMap("mysqlPassword")).option("dbtable",s"${tableName}").save
+  def dbRead(inputMap:collection.mutable.Map[String,String],tableName:String)=spark.read.format("jdbc").option("url",inputMap("mysqlJDBCUrl")).option("user",inputMap("mysqlUser")).option("password",inputMap("mysqlPassword")).option("driver",inputMap("mysqlJDBCDriver")).option("dbtable",s"${tableName}").load
+  def dbSave(df:org.apache.spark.sql.DataFrame,inputMap:collection.mutable.Map[String,String],outputMode:String,tableName:String)=df.write.format("jdbc").mode(s"${outputMode}").option("url",inputMap("mysqlJDBCUrl")).option("user",inputMap("mysqlUser")).option("password",inputMap("mysqlPassword")).option("driver",inputMap("mysqlJDBCDriver")).option("dbtable",s"${tableName}").save
 }
+
