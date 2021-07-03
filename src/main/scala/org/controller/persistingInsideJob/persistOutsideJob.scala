@@ -220,4 +220,7 @@ spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,mysql:m
 
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,org.postgresql:postgresql:42.2.22 --num-executors 2 --executor-cores 2 --driver-memory 1g --executor-memory 512m --driver-cores 2 --class org.controller.persistingInsideJob.persistOutsideJob /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  startingOffset=latest bootstrapServers=localhost:9093,localhost:9094,localhost:9092 inputTopic=testTopic checkpointDir=hdfs://localhost:8020/user/raptor/checkpointTmp/ mysqlJDBCDriver="org.postgresql.Driver" mysqlJDBCUrl="jdbc:postgresql://localhost:5432/postgres" mysqlUser="postgres" mysqlPassword=IAMTHEemperor mysqlSchema=temp_schema stateTable=bill_state parentTable=user_table childTable=bill_table stateExpiry="5 mins"
 
+/usr/lib/postgresql/11/bin/psql  postgres -V postgres
+su - postgres
+/usr/lib/postgresql/11/bin/psql -p 5432
 */
