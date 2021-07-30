@@ -1,0 +1,388 @@
+/*
+Staing table is a variant column table.
+
+From that a stream takes data and expands 2 tables
+*) bronze to keep every record.
+*) An scd type 1 kind of another table.
+
+Batch id is not woking properly because sequence. nextval for every record gives diff value.
+
+After scd1 -> 
+according to BMI value the records are manupulared and ,merged into another table
+
+every one minute a view pointing to the manipulated table overwrites the final silver table. 
+
+No gold is implemented
+
+
+*/
+
+drop database stream_task_json;
+create database stream_task_json;
+use database stream_task_json;
+        
+---------------------TABLES
+create or replace table stream_task_json."PUBLIC".source_table_json (
+data_col variant);
+  
+create or replace table stream_task_json."PUBLIC".target_table_json_flattened (
+id number,
+name varchar(200),
+age number(3),
+bmi number(5,2),
+batch_id number(4),
+snowflake_row_id varchar(16777216),
+snowflake_metadata varchar(16777216));
+
+create or replace table stream_task_json."PUBLIC".bronze_table_json_flattened (id number,
+name varchar(200),
+age number(3),
+bmi number(5,2),
+batch_id number(4),
+snowflake_row_id varchar(16777216),
+snowflake_metadata varchar(16777216));
+
+create or replace table stream_task_json."PUBLIC".target_table_json_manipulated (
+id number,
+name varchar(200),
+age number(3),
+bmi number(5,2),
+result string,
+batch_id number(4),
+snowflake_row_id varchar(16777216),
+snowflake_metadata varchar(16777216) );
+
+create or replace table stream_task_json."PUBLIC".target_silver_aggregate (
+age number(3),
+low_bmi number(4),
+okay_bmi number(4),
+high_bmi number(4) )
+cluster by (age);
+
+---------views
+
+create or replace view stream_task_json."PUBLIC".result_of_bmi as 
+select count(*) as people_count,result from stream_task_json."PUBLIC".target_table_json_manipulated group by result;
+
+create or replace view stream_task_json."PUBLIC".result_of_bmi_with_age as 
+select count(*) as people_count,age,result from stream_task_json."PUBLIC".target_table_json_manipulated group by age,result;
+
+create or replace view stream_task_json."PUBLIC".result_of_bmi_pivot as 
+select age,"'LOW'" as low,"'HIGH'" as high,"'OKAY'" as okay from stream_task_json."PUBLIC".target_table_json_manipulated 
+pivot( count(id) for  result in ('LOW','HIGH','OKAY')) as d;
+
+select * from stream_task_json."PUBLIC".target_table_json_manipulated  pivot( count(id) for  result in ('LOW','HIGH','OKAY'))
+
+
+select * from stream_task_json."PUBLIC".result_of_bmi;
+select * from stream_task_json."PUBLIC".result_of_bmi_with_age;
+select * from stream_task_json."PUBLIC".result_of_bmi_pivot;
+
+
+
+---------------------File format and Seq
+
+create or replace file format stream_task_json."PUBLIC".json_file_format type=json
+COMPRESSION = AUTO
+STRIP_OUTER_ARRAY = TRUE
+IGNORE_UTF8_ERRORS = TRUE ;
+
+create or replace sequence stream_task_json."PUBLIC".source_to_flatten_json WITH 
+START =1
+INCREMENT  BY =1;
+
+create or replace sequence stream_task_json."PUBLIC".source_to_target_json WITH 
+START =1
+INCREMENT  BY =1;
+
+create or replace sequence stream_task_json."PUBLIC".source_to_bronze_json WITH 
+START =1
+INCREMENT  BY =1;
+
+select * from information_schema.tables where TABLE_CATALOG=upper('stream_task_json')  limit 5;
+
+// epoch is unix timestamp wit millisecond level precision
+select  "TABLE_NAME",(current_epoch-created_epoch)/1000 as difference_in_seconds from
+(select "TABLE_NAME",DATE_PART('EPOCH_MILLISECOND',current_timestamp(9)) as current_epoch,DATE_PART('EPOCH_MILLISECOND',created) as created_epoch 
+from information_schema.tables
+where TABLE_CATALOG=upper('stream_task_json')  and created is not null)a;
+
+select current_timestamp();
+
+---------------------stream
+
+
+create or replace stream stream_task_json."PUBLIC".source_to_flatten_json_stream
+on table stream_task_json."PUBLIC".source_table_json
+at  (OFFSET => -1 )
+-- before (TIMESTAMP  => to_timestamp((DATE_PART('EPOCH_MILLISECOND',current_timestamp) - (2 *1000) )/1000))
+APPEND_ONLY = false 
+insert_ONLY = false ;
+-- SHOW_INITIAL_ROWS = TRUE;
+
+create or replace stream stream_task_json."PUBLIC".flatten_to_target_json_stream
+on table stream_task_json."PUBLIC".target_table_json_flattened
+at (OFFSET => -1 )
+APPEND_ONLY = false 
+insert_ONLY = false ;
+-- SHOW_INITIAL_ROWS = TRUE;
+
+create or replace stream stream_task_json."PUBLIC".source_to_bronze_json_stream
+on table stream_task_json."PUBLIC".source_table_json
+at (OFFSET => -1 )
+APPEND_ONLY = false 
+insert_ONLY = false ;
+
+
+---------------------task
+
+create or replace task stream_task_json."PUBLIC".source_to_flatten_json
+WAREHOUSE = compute_warehouse
+SCHEDULE = '1 MINUTE' 
+ALLOW_OVERLAPPING_EXECUTION = FALSE 
+WHEN system$stream_has_data('stream_task_json."PUBLIC".source_to_flatten_json_stream')
+AS
+merge into stream_task_json."PUBLIC".target_table_json_flattened a using 
+(select * from stream_task_json."PUBLIC".source_to_flatten_json_stream c where c.metadata$action='INSERT')b on 
+a.id=b.data_col:id::number
+when not matched then 
+insert(id,name,age,bmi,batch_id,snowflake_row_id,snowflake_metadata) 
+values(b.data_col:id::number,b.data_col:name::varchar,b.data_col:age::number ,b.data_col:bmi::number(5,2),
+source_to_flatten_json.nextval,b.metadata$row_id,b.metadata$action)
+when matched then
+update set a.name=b.data_col:name::varchar,a.age=b.data_col:age::number,a.bmi=b.data_col:bmi::number(5,2);
+
+/*
+AS
+merge into stream_task_json."PUBLIC".target_table_json_flattened a using (select * from stream_task_json."PUBLIC".source_to_flatten_json_stream where b.metadata$action'INSERT') b on 
+a.id=b.data_col:id::number and b.metadata$action in ('DELETE','INSERT')*/
+
+
+select system$stream_has_data('stream_task_json."PUBLIC".source_to_flatten_json_stream');
+
+create or replace task stream_task_json."PUBLIC".flatten_to_manipulated_json 
+WAREHOUSE = compute_warehouse
+--SCHEDULE = '1 MINUTE' 
+--ALLOW_OVERLAPPING_EXECUTION = TRUE 
+AFTER stream_task_json."PUBLIC".source_to_flatten_json
+WHEN system$stream_has_data('stream_task_json."PUBLIC".flatten_to_target_json_stream') as
+merge into stream_task_json."PUBLIC".target_table_json_manipulated a using 
+(select * from stream_task_json."PUBLIC".flatten_to_target_json_stream c where c.metadata$action='INSERT') b
+on /* a.snowflake_row_id=b.snowflake_row_id  and */ a.id=b.id
+when matched and a.bmi != b.bmi /* and b.metadata$action='INSERT' */ then 
+update set name=b.name,age=b.age,bmi=b.bmi,
+result= case when b.bmi < 18 then 'LOW' when b.bmi >= 18 and b.bmi <=25 then 'OKAY' else 'HIGH' end 
+when matched and a.bmi=b.bmi then
+update set age=b.age
+when not matched then insert (id,name,age,bmi,result,batch_id,snowflake_row_id,snowflake_metadata) 
+values(b.id,b.name,b.age,b.bmi,case when b.bmi < 18 then 'LOW' when b.bmi >= 18 and b.bmi <= 25 then 'OKAY' else 'HIGH' end,
+stream_task_json."PUBLIC".source_to_target_json.nextval,b.snowflake_row_id,b.metadata$action);
+
+
+select system$stream_has_data('stream_task_json."PUBLIC".flatten_to_target_json_stream') ;
+
+create or replace task stream_task_json."PUBLIC".source_to_bronze_json
+WAREHOUSE = compute_warehouse
+SCHEDULE = '1 MINUTE' 
+ALLOW_OVERLAPPING_EXECUTION = FALSE 
+WHEN system$stream_has_data('stream_task_json."PUBLIC".source_to_bronze_json_stream')
+AS
+merge into stream_task_json."PUBLIC".bronze_table_json_flattened a using stream_task_json."PUBLIC".source_to_bronze_json_stream b
+on a.id=b.data_col:id::number and a.snowflake_row_id=b.metadata$row_id
+when not matched then insert (id,name,age,bmi,batch_id,snowflake_row_id,snowflake_metadata) values
+(b.data_col:id::number,b.data_col:name::varchar,b.data_col:age::number ,b.data_col:bmi::number(5,2),
+source_to_bronze_json.nextval,b.metadata$row_id,b.metadata$action);
+
+select system$stream_has_data('stream_task_json."PUBLIC".source_to_bronze_json_stream');
+
+
+create or replace task stream_task_json."PUBLIC".bronze_to_silver_task
+WAREHOUSE = compute_warehouse
+SCHEDULE = '1 MINUTE' 
+ALLOW_OVERLAPPING_EXECUTION = FALSE 
+WHEN 1=1
+AS
+insert overwrite into stream_task_json."PUBLIC".target_silver_aggregate 
+select age,sum(low) as low_bmi,sum(high) as high_bmi,sum(okay) as okay_bmi from stream_task_json."PUBLIC".result_of_bmi_pivot group by age;
+
+
+
+
+
+// resume child task first
+alter task stream_task_json."PUBLIC".bronze_to_silver_task resume;
+alter task  stream_task_json."PUBLIC".flatten_to_manipulated_json resume;
+alter task  stream_task_json."PUBLIC".source_to_flatten_json  resume;
+alter task  stream_task_json."PUBLIC".source_to_bronze_json resume;
+
+show tasks;
+select *  from table(information_schema.task_history()) order by scheduled_time desc;
+//select split('QUERY_ID	NAME	DATABASE_NAME	SCHEMA_NAME	QUERY_TEXT	CONDITION_TEXT	STATE	ERROR_CODE	ERROR_MESSAGE	SCHEDULED_TIME	QUERY_START_TIME	NEXT_SCHEDULED_TIME	COMPLETED_TIME	ROOT_TASK_ID	GRAPH_VERSION	RUN_ID	RETURN_VALUE','\t')a 
+
+select "QUERY_ID","NAME","DATABASE_NAME","SCHEMA_NAME","QUERY_TEXT",
+"CONDITION_TEXT","STATE","ERROR_CODE","ERROR_MESSAGE","SCHEDULED_TIME"
+,current_timestamp() as current_time,(DATE_PART('EPOCH_MILLISECOND',current_timestamp) - DATE_PART('EPOCH_MILLISECOND',SCHEDULED_TIME) ) /1000 as remaining_seconds,"QUERY_START_TIME",
+"NEXT_SCHEDULED_TIME","COMPLETED_TIME"  from table(information_schema.task_history()) a where DATABASE_NAME=upper('stream_task_json')  order by scheduled_time desc;
+
+select current_timestamp();
+
+--truncate table stream_task_json."PUBLIC".source_table_json;
+
+copy into stream_task_json."PUBLIC".source_table_json from @~/inputFiles/src1.json
+pattern='.*.json.gz' on_error=abort_statement file_format=stream_task_json."PUBLIC".json_file_format;
+
+-- delete from stream_task_json."PUBLIC".source_table_json;
+-- truncate table stream_task_json."PUBLIC".source_table_json;
+copy into stream_task_json."PUBLIC".source_table_json from @~/inputFiles/src2.json
+pattern='.*.json.gz' on_error=abort_statement file_format=stream_task_json."PUBLIC".json_file_format;
+
+-- truncate table stream_task_json."PUBLIC".source_table_json;
+copy into stream_task_json."PUBLIC".source_table_json from @~/inputFiles/src3.json
+pattern='.*.json.gz' on_error=abort_statement file_format=stream_task_json."PUBLIC".json_file_format;
+
+select case when 10 < 18 then 'LOW' when 10 >= 18 and 10 <= 25 then 'OKAY' else 'HIGH' end;
+
+
+select * from stream_task_json."PUBLIC".source_to_flatten_json_stream;
+select * from stream_task_json."PUBLIC".source_to_bronze_json_stream;
+select * from stream_task_json."PUBLIC".flatten_to_target_json_stream;
+list @~/inputFiles/;
+
+select * from stream_task_json."PUBLIC".source_table_json;
+select * from stream_task_json."PUBLIC".target_table_json_flattened order by id asc;
+select * from stream_task_json."PUBLIC".bronze_table_json_flattened;
+select * from stream_task_json."PUBLIC".target_table_json_manipulated;
+select * from stream_task_json."PUBLIC".target_silver_aggregate;
+
+select * from stream_task_json."PUBLIC".source_table_json at (offset=>-1);
+select * from stream_task_json."PUBLIC".target_table_json_flattened at (offset=>-1);
+select * from stream_task_json."PUBLIC".target_table_json_manipulated at (offset=>-1);
+
+
+select * from stream_task_json."PUBLIC".result_of_bmi;
+
+
+
+
+/*
+truncate table stream_task_json."PUBLIC".target_table_json_flattened;
+truncate table stream_task_json."PUBLIC".target_table_json_manipulated;
+truncate table stream_task_json."PUBLIC".source_table_json;
+
+*/
+
+select current_timestamp,to_timestamp((DATE_PART('EPOCH_MILLISECOND',current_timestamp) - (2 *1000) )/1000); // epoch contains till milli seonds, divide by 1000 so you can get till seconds to pass unix timestamp to timestamp function 
+
+show parameters like '%timezone%';
+alter account set timezone='UTC';
+
+// create another table for stats with number of people in all bmi group
+// create another table for stats with number of people in all age group
+
+select * from stream_task_json."PUBLIC".target_table_json_manipulated 
+pivot( count(id) for  result in ('LOW','HIGH','OKAY')) as d; // dynamic pivotic is not available in snowfake
+
+select * from stream_task_json."PUBLIC".target_table_json_manipulated 
+pivot( count(id) for  result in ('LOW','HIGH','OKAY')) as d; 
+// select distinct result from stream_task_json."PUBLIC".target_table_json_manipulated;
+  
+select count(*) as people_count,result from stream_task_json."PUBLIC".target_table_json_manipulated group by result; 
+
+
+select current_warehouse();
+
+create or replace table  stream_task_json."PUBLIC".monthly_car_sales(company_name string, amount int, month text,week number)
+    as select * from values
+('Lambhorghini', 10000, 'JAN',1),
+('Lambhorghini', 10000, 'JAN',2),
+('Lambhorghini', 10000, 'JAN',3),
+('Lambhorghini', 10000, 'JAN',4),
+('Lambhorghini', 10000, 'JAN',5),
+('Ferrari', 400, 'JAN',1),
+('Ferrari', 400, 'JAN',2),
+('Ferrari', 400, 'JAN',3),
+('Ferrari', 400, 'JAN',4),
+('Ferrari', 400, 'JAN',5),
+('McLaren', 4500, 'JAN',1),
+('McLaren', 4500, 'JAN',2),
+('McLaren', 4500, 'JAN',3),
+('McLaren', 4500, 'JAN',4),
+('McLaren', 4500, 'JAN',5),
+('Bugatti', 35000, 'JAN',1),
+('Bugatti', 35000, 'JAN',2),
+('Bugatti', 35000, 'JAN',3),
+('Bugatti', 35000, 'JAN',4),
+('Bugatti', 35000, 'JAN',5),
+('Konegzegg', 5000, 'FEB',1),
+('Konegzegg', 5000, 'FEB',2),
+('Konegzegg', 5000, 'FEB',3),
+('Konegzegg', 5000, 'FEB',4),
+('Konegzegg', 5000, 'FEB',5),
+('Pagani', 3000, 'FEB',1),
+('Pagani', 3000, 'FEB',2),
+('Pagani', 3000, 'FEB',3),
+('Pagani', 3000, 'FEB',4),
+('Pagani', 3000, 'FEB',5),
+('BAC', 200, 'FEB',1),
+('BAC', 200, 'FEB',2),
+('BAC', 200, 'FEB',3),
+('BAC', 200, 'FEB',4),
+('BAC', 200, 'FEB',5),
+('McLaren', 90500, 'FEB',1),
+('McLaren', 90500, 'FEB',2),
+('McLaren', 90500, 'FEB',3),
+('McLaren', 90500, 'FEB',4),
+('McLaren', 90500, 'FEB',5),
+('Ferrari', 6000, 'MAR',1),
+('Ferrari', 6000, 'MAR',2),
+('Ferrari', 6000, 'MAR',3),
+('Ferrari', 6000, 'MAR',4),
+('Ferrari', 6000, 'MAR',5),
+('BAC', 5000, 'MAR',1),
+('BAC', 5000, 'MAR',2),
+('BAC', 5000, 'MAR',3),
+('BAC', 5000, 'MAR',4),
+('BAC', 5000, 'MAR',5),
+('Porsche', 2500, 'MAR',1),
+('Porsche', 2500, 'MAR',2),
+('Porsche', 2500, 'MAR',3),
+('Porsche', 2500, 'MAR',4),
+('Porsche', 2500, 'MAR',5),
+('Lambhorghini', 9500, 'MAR',1),
+('Lambhorghini', 9500, 'MAR',2),
+('Lambhorghini', 9500, 'MAR',3),
+('Lambhorghini', 9500, 'MAR',4),
+('Lambhorghini', 9500, 'MAR',5),
+('Ferrari', 8000, 'APR',1),
+('Ferrari', 8000, 'APR',2),
+('Ferrari', 8000, 'APR',3),
+('Ferrari', 8000, 'APR',4),
+('Ferrari', 8000, 'APR',5),
+('Konegzegg', 10000, 'APR',1),
+('Konegzegg', 10000, 'APR',2),
+('Konegzegg', 10000, 'APR',3),
+('Konegzegg', 10000, 'APR',4),
+('Konegzegg', 10000, 'APR',5),
+('Lambhorghini', 800, 'APR',1),
+('Lambhorghini', 800, 'APR',2),
+('Lambhorghini', 800, 'APR',3),
+('Lambhorghini', 800, 'APR',4),
+('Lambhorghini', 800, 'APR',5),
+('Bugatti', 45500, 'APR',1),
+('Bugatti', 45500, 'APR',2),
+('Bugatti', 45500, 'APR',3),
+('Bugatti', 45500, 'APR',4),
+('Bugatti', 45500, 'APR',5),
+('BAC', 4500, 'APR',1),
+('BAC', 4500, 'APR',2),
+('BAC', 4500, 'APR',3),
+('BAC', 4500, 'APR',4),
+('BAC', 4500, 'APR',5);
+
+
+insert into stream_task_json."PUBLIC".monthly_car_sales(company_name , amount , month ,week )
+values ('Aston Martin', 35000, 'JUN',5);
+    
+select * from stream_task_json."PUBLIC".monthly_car_sales pivot(sum(amount) for  month in ('JAN','MAR','FEB','APR') );
+
+select distinct company_name,month from stream_task_json."PUBLIC".monthly_car_sales

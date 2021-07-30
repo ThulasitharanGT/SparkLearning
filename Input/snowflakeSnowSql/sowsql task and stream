@@ -1,0 +1,176 @@
+-- drop database stream_task;
+
+create database stream_task;
+use database stream_task;
+/*
+create warehouse warehouse_compute
+with WAREHOUSE_SIZE = XSMALL 
+MAX_CLUSTER_COUNT = 10
+MIN_CLUSTER_COUNT = 1
+SCALING_POLICY = STANDARD 
+AUTO_SUSPEND = 10
+AUTO_RESUME = TRUE  
+INITIALLY_SUSPENDED = TRUE ;
+
+drop warehouse warehouse_compute;
+create warehouse compute_warehouse  
+with WAREHOUSE_SIZE = XSMALL 
+MAX_CLUSTER_COUNT = 10
+MIN_CLUSTER_COUNT = 1
+SCALING_POLICY = STANDARD 
+AUTO_SUSPEND = 10
+AUTO_RESUME = TRUE  
+INITIALLY_SUSPENDED = TRUE ;
+
+*/
+
+use warehouse warehouse_compute;
+use schema public;
+alter warehouse warehouse_compute resume;
+
+create or replace table "STREAM_TASK"."PUBLIC".source_table (
+id number(3),
+name varchar(200),
+age number(3),
+bmi number(5,2));
+
+create or replace table "STREAM_TASK"."PUBLIC".target_table (
+id number(3),
+name varchar(200),
+age number(3),
+bmi number(5,2),
+batch_id number(4),
+snowflake_row_id varchar(16777216) );
+
+create or replace table "STREAM_TASK"."PUBLIC".bronze_table (
+id number(3),
+name varchar(200),
+age number(3),
+bmi number(5,2),
+batch_id number(4),
+snowflake_row_id varchar(16777216));
+
+-- select diff /one_percent from (select (510000-410000)  diff, (410000/100)  as one_percent ) a;
+
+CREATE OR REPLACE STREAM 
+source_to_target_stream
+ON TABLE "STREAM_TASK"."PUBLIC".source_table
+at (offset => -1) // seconds
+append_only =  false 
+INSERT_ONLY =  false ;
+-- SHOW_INITIAL_ROWS = TRUE ;  
+ 
+CREATE OR REPLACE STREAM 
+source_to_bronze_stream
+ON TABLE "STREAM_TASK"."PUBLIC".source_table
+at (offset => -1)
+INSERT_ONLY =  false ;
+
+
+show streams;
+
+// use to check if the stream got new data in source since we last processed it.
+
+select  system$stream_has_data('"STREAM_TASK"."PUBLIC".source_to_target_stream');
+select  system$stream_has_data('"STREAM_TASK"."PUBLIC".source_to_bronze_stream');
+
+create sequence "STREAM_TASK"."PUBLIC".task_bronze_sequence WITH 
+START =1
+INCREMENT  BY =1;
+
+create sequence "STREAM_TASK"."PUBLIC".task_target_sequence WITH 
+START =1
+INCREMENT  BY =1;
+
+// just insert
+CREATE OR REPLACE TASK  source_to_bronze_task
+WAREHOUSE = warehouse_compute
+SCHEDULE = '1 MINUTE' 
+ALLOW_OVERLAPPING_EXECUTION = FALSE 
+WHEN system$stream_has_data('"STREAM_TASK"."PUBLIC".source_to_bronze_stream')
+AS
+merge into "STREAM_TASK"."PUBLIC".bronze_table a using "STREAM_TASK"."PUBLIC".source_to_bronze_stream b on a.id=b.id and a.snowflake_row_id != b.metadata$row_id
+/* 
+when matched and a.snowflake_row_id != b.metadata$row_id then
+insert (id,name,age,bmi,batch_id,snowflake_row_id)
+ values (b.id,b.name,b.age,b.bmi,"STREAM_TASK"."PUBLIC".task_bronze_sequence.nextval,b.metadata$row_id)
+ */ -- matched must be followed by delete or update and not insert
+when not matched then
+insert  (id,name,age,bmi,batch_id,snowflake_row_id)
+values (b.id,b.name,b.age,b.bmi,"STREAM_TASK"."PUBLIC".task_bronze_sequence.nextval,b.metadata$row_id);
+
+
+// merge 
+CREATE OR REPLACE TASK  source_to_target_merge_task
+WAREHOUSE = warehouse_compute
+SCHEDULE = '1 MINUTE' 
+ALLOW_OVERLAPPING_EXECUTION = FALSE 
+WHEN system$stream_has_data('"STREAM_TASK"."PUBLIC".source_to_target_stream')
+AS
+merge into "STREAM_TASK"."PUBLIC".target_table a using "STREAM_TASK"."PUBLIC".source_to_target_stream b on
+a.snowflake_row_id =b.metadata$row_id when matched and a.id=b.id and b.metadata$action='INSERT'  then update set id=b.id,name=b.name,age=b.age,bmi=b.bmi,
+batch_id="STREAM_TASK"."PUBLIC".task_target_sequence.nextval
+when matched and  a.id=b.id and b.metadata$action='DELETE'  then delete
+when not matched and b.name is not null then insert  (id,name,age,bmi,batch_id,snowflake_row_id)
+values (b.id,b.name,b.age,b.bmi,"STREAM_TASK"."PUBLIC".task_target_sequence.nextval,b.metadata$row_id) ;
+
+/*merge into "STREAM_TASK"."PUBLIC".target_table a using "STREAM_TASK"."PUBLIC".source_table b on
+  a.snowflake_row_id =b.metadata$row_id when matched and a.id=b.id and b.metadata$action='INSERT'  then update set id=b.id,name=b.name,age=b.age,bmi=b.bmi,
+  batch_id="STREAM_TASK"."PUBLIC".task_target_sequence.nextval
+  when matched and  a.id=b.id and b.metadata$action='DELETE'  then delete
+  when not matched and b.name is not null then insert  (id,name,age,bmi,batch_id,snowflake_row_id)
+  values (b.id,b.name,b.age,b.bmi,"STREAM_TASK"."PUBLIC".task_target_sequence.nextval,b.metadata$row_id) ;*/
+  
+select * from "STREAM_TASK"."PUBLIC".source_table;
+select * from "STREAM_TASK"."PUBLIC".target_table;
+select * from "STREAM_TASK"."PUBLIC".bronze_table;
+
+--delete from "STREAM_TASK"."PUBLIC".target_table;
+alter task source_to_bronze_task resume;
+alter task source_to_target_merge_task resume;
+
+select * from "STREAM_TASK"."PUBLIC".source_to_target_stream;
+select * from "STREAM_TASK"."PUBLIC".source_to_bronze_stream;
+
+show tasks ;
+show streams ;
+
+select current_warehouse(),current_user(),current_role(),current_region(),current_database(),current_schema();
+
+list @~;
+
+list @"STREAM_TASK"."PUBLIC".%target_table;
+list @"STREAM_TASK"."PUBLIC".%source_table;
+
+create file format "STREAM_TASK"."PUBLIC".txt_gzip type=CSV
+COMPRESSION = AUTO 
+RECORD_DELIMITER = '\n' 
+FIELD_DELIMITER = '|' 
+FILE_EXTENSION = '.txt.gz'
+SKIP_HEADER = 1
+SKIP_BLANK_LINES = TRUE 
+TRIM_SPACE = TRUE
+ERROR_ON_COLUMN_COUNT_MISMATCH = TRUE  
+VALIDATE_UTF8 =  FALSE;
+
+copy into "STREAM_TASK"."PUBLIC".source_table from @"STREAM_TASK"."PUBLIC".%source_table/src1.txt.gz
+pattern='.*.gz' on_error=ABORT_statement file_format="STREAM_TASK"."PUBLIC".txt_gzip;
+
+// stream doesn't work like spark micro batch, It holds the data from batch 0 to n in any point in time greater than or equal to the time in which batch no starts
+truncate table "STREAM_TASK"."PUBLIC".source_table;
+
+delete from "STREAM_TASK"."PUBLIC".source_table;
+copy into "STREAM_TASK"."PUBLIC".source_table from @"STREAM_TASK"."PUBLIC".%source_table/sec2.txt.gz
+pattern='.*.gz' on_error=ABORT_statement file_format="STREAM_TASK"."PUBLIC".txt_gzip;
+
+select * from table(information_schema.copy_history(table_name => '"STREAM_TASK"."PUBLIC".source_table'
+, start_time => dateadd(hour,-1, current_timestamp )));
+                                             
+                                             
+                                             
+select "QUERY_ID","NAME","DATABASE_NAME","SCHEMA_NAME","QUERY_TEXT",
+"CONDITION_TEXT","STATE","ERROR_CODE","ERROR_MESSAGE","SCHEDULED_TIME"
+,current_timestamp() as current_time,(DATE_PART('EPOCH_MILLISECOND',current_timestamp) - DATE_PART('EPOCH_MILLISECOND',SCHEDULED_TIME) ) /1000 as remaining_seconds,"QUERY_START_TIME",
+"NEXT_SCHEDULED_TIME","COMPLETED_TIME"  from table(information_schema.task_history()) a where DATABASE_NAME=upper('stream_task')  order by scheduled_time desc;
+
+
