@@ -1,0 +1,533 @@
+
+
+student_course
+
+name	c_id
+stud_1	1
+stud_2	1
+stud_3	1
+stud_4	1
+stud_1	2
+
+
+val studentRec="""name	c_id
+stud_1	1
+stud_2	1
+stud_3	1
+stud_4	1
+stud_1	2""".split("\n")
+
+val studentDF=(studentRec.tail.map(_.split("\t").map(_.trim).filter(_.size>0)).map(x => (x(0),x(1)))).toSeq.toDF(studentRec.head.split("\t").map(_.trim).filter(_.size>0).toSeq:_*)
+
+course
+c_id	c_name
+1	python
+2	scala
+3	java
+
+
+val courseRec="""c_id	c_name
+1	python
+2	scala
+3	java""".split("\n")
+
+val courseDF=(courseRec.tail.map(_.trim.split("\t").map(_.trim)).map(x => (x(0),x(1)))).toSeq.toDF(courseRec.head.split("\t").map(_.trim).toSeq:_*)
+
+
+// students who have adopted python but not scala.
+
+studentDF.filter("c_id=2").as("b").join(studentDF.filter("c_id=1").as("a"),$"a.name"===$"b.name","right").where("b.name is null").select("a.*")
+
+
+select * from 
+(select * from student_course a join  course b on a.c_id = b.c_id where c_name='python') a left join 
+(select * from student_course a join  course b on a.c_id = b.c_id where c_name='scala' ) b on a.name=b.name where b.name is null;
+
+
+
+-----------
+
+id	name	age
+1	a	3
+2	b	THREE
+3	c	10
+4	d	20
+
+
+df.withColumn("testVal",col("age").cast(IntegerType))
+
+37 -> thirty seven
+
+1|ONE
+2|TWO
+
+---------------
+
+// plan analysis
+
+name|age|dept
+name1|2|a
+name2|3|a
+name1|3|b
+name2|2|b
+name1|2|c
+name2|3|c
+name1|2|d
+name2|2|d
+name1|2|e
+name2|3|e
+name1|3|f
+name2|3|f
+
+
+
+spark.read.load("hdfs://localhost:8020/user/raptor/tmpDataPar/").filter($"dept"==="a" && $"age"==="2").select("dept","age").explain
+
+spark.read.format("csv").option("header","true").option("delimiter","~").load("hdfs://localhost:8020/user/raptor/tmpDataCsv/").filter($"dept"==="a" && $"age"==="2").select("dept","age").explain
+
+spark.read.format("csv").option("header","true").option("delimiter","~").load("hdfs://localhost:8020/user/raptor/tmpDataCsvPartitioned/").filter($"dept"==="a" && $"age"==="2").select("dept","age").explain
+
+spark.read.load("hdfs://localhost:8020/user/raptor/tmpDataParPartitioned/").filter($"dept"==="a" && $"age"==="2").select("dept","age").explain
+
+
+spark.read.load("hdfs://localhost:8020/user/raptor/tmpDataPar/").filter($"dept"==="a" && $"age"==="2").select("name","age").explain
+
+spark.read.format("csv").option("header","true").option("delimiter","~").load("hdfs://localhost:8020/user/raptor/tmpDataCsv/").filter($"dept"==="a" && $"age"==="2").select("name","age").explain
+
+
+spark.read.format("csv").option("header","true").option("delimiter","~").load("hdfs://localhost:8020/user/raptor/tmpDataCsvPartitioned/").filter($"dept"==="a" && $"age"==="2").select("name","age").explain
+
+spark.read.load("hdfs://localhost:8020/user/raptor/tmpDataParPartitioned/").filter($"dept"==="a" && $"age"==="2").select("name","age").explain
+
+
+val partitionedCSV=spark.read.format("csv").option("header","true").option("delimiter","~").load("hdfs://localhost:8020/user/raptor/tmpDataCsvPartitioned/")
+
+val partitionedPar=spark.read.load("hdfs://localhost:8020/user/raptor/tmpDataParPartitioned/")
+
+val normalCSV=spark.read.format("csv").option("header","true").option("delimiter","~").load("hdfs://localhost:8020/user/raptor/tmpDataCsv/")
+
+val normalPar=spark.read.load("hdfs://localhost:8020/user/raptor/tmpDataPar/")
+
+
+partitionedCSV.filter($"dept"==="a" && $"age"==="2").select("dept","age").explain
+partitionedCSV.filter($"dept"==="a" && $"age"==="2").select("name","age").explain
+
+partitionedPar.filter($"dept"==="a" && $"age"==="2").select("dept","age").explain
+partitionedPar.filter($"dept"==="a" && $"age"==="2").select("name","age").explain
+
+normalCSV.filter($"dept"==="a" && $"age"==="2").select("dept","age").explain
+normalCSV.filter($"dept"==="a" && $"age"==="2").select("name","age").explain
+
+normalPar.filter($"dept"==="a" && $"age"==="2").select("dept","age").explain
+normalPar.filter($"dept"==="a" && $"age"==="2").select("name","age").explain
+
+-----------------
+
+
+emp- empno, salary , deptno 
+dept - deptno, dname
+
+// dept name of second highest aggregated salary dept wise
+
+select  (select sum(salary) as total_Salary ,deptno from emp group by deptno) a join dept b on a.deptno=b.deptno
+
+
+// sql 
+select dname from  dept where deptno in (select deptno from (
+( select deptno,rank_col from (select deptno,dense_rank() over(order by total_Salary desc ) as rank_col from 
+(select sum(salary) as total_Salary ,deptno from emp group by deptno )a ) b  where rank_col=2) ) c )
+
+
+val empRows="""empno,salary ,deptno 
+1,300,1
+2,400,2
+3,100,3
+4,100,3""".split("\n")
+
+val empDF=(empRows.tail.map(_.split(",").map(_.trim)).map(x =>(x(0),x(1),x(2)))).toSeq.toDF(empRows.head.split(",").map(_.trim).toSeq:_*)
+
+
+val deptRows="""deptno,dname
+1,finance
+2,catering
+3,technology""".split("\n")
+
+val deptDF=(deptRows.tail.map(_.split(",").map(_.trim)).map(x =>(x(0),x(1)))).toSeq.toDF(deptRows.head.split(",").map(_.trim).toSeq:_*)
+
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.expressions.Window
+
+
+empDF.join(deptDF,Seq("deptno")).groupBy("deptno").agg(sum("salary").as("dept_salary")).withColumn("rankCol",dense_rank.over(Window.orderBy(desc("dept_salary")))).show(false)
+
+------------------------------
+
+
+
+
+t1
+c1
+
+1
+0
+0
+1
+0
+1
+
+t2
+c1
+
+0
+0
+1
+0
+1
+0
+
+
+result:
+
+1,1
+1,1
+1,1
+1,1
+1,1
+1,1
+0,0
+0,0
+0,0
+0,0
+0,0
+0,0
+0,0
+0,0
+0,0
+0,0
+0,0
+0,0
+
+
+------------
+t1: 100 rows
+t2: 80 rows
+---------
+
+
+t1
+c1
+inida
+autralia
+pakis
+westindiies
+
+what is the possible combination of matches among the teams in this table?
+example: india vs australia 
+
+select * from t1 a,t2 b where a.c1 != b.c1;
+
+
+select a_c1,b_c1 from (select a_c1,b_c1,sum_col, dense_rank() over (partition by sum_col  order by a_c1) as rank_col from
+(select a.c1 as a_c1,b.c1 b_c1 ,a.row_num +b.row_num as sum_col from (select c1, row_number() over(order by c1) as row_num from t1) a,
+(select c1, row_number() over(order by c1) as row_num from t1 )b where a.c1 != b.c1 )a ) b where rank_col=1;
+
+-----------------------------confirmed dimention <<<<<<<<<>>>>>>>>>>>>>>>>>>>
+---------------------------
+sales_order
+
+ordr_id
+customer_id
+order_status
+order_date (yyyy-MM-dd)
+required_date
+shipped_date
+order_value
+store_id
+staff_id
+
+find the customers who placed at least two orders per year
+
+--select customer_id,substring(cast(order_date ) as string,0,4) from sales_order
+
+
+
+select customer_id,year_tmp , count(1) from 
+(select customer_id,substring(cast(order_date ) as string,0,4) year_tmp from sales_order) a group by customer_id,year_tmp having count(1) >=2;
+
+------------------------
+
+
+find the total order amount for each store
+
+select store_id, sum(order_value) as order_revenue from sales_order group by store_id order by desc;
+
+
+select * from sales_order join 
+(select store_id, sum(order_value) as order_revenue from sales_order group by store_id ) b
+on a.store_id= b.store_id;
+
+// analytical 
+
+select *, sum(order_value) over (partition by store_id order by order_date)  from sales_order;
+
+val orderData="""ordr_id,customer_id,order_status,order_date,required_date,shipped_date,order_value,store_id,staff_id
+o001,c001,transit,2020-01-02,2020-01-04,2020-01-03,200,s001,st001
+o002,c001,transit,2020-01-02,2020-01-04,2020-01-03,200,s001,st002
+o003,c001,transit,2022-01-02,2020-01-04,2020-01-03,200,s002,st003
+o004,c002,transit,2020-01-02,2020-01-04,2020-01-03,200,s003,st004
+o005,c003,transit,2020-01-02,2020-01-04,2020-01-03,200,s002,st003
+o006,c002,transit,2020-01-02,2020-01-04,2020-01-03,200,s004,st002""".split("\n")
+
+val orderDF=(orderData.tail.map(_.split(",")).map(tupleCreator)).toSeq.toDF(orderData.head.split(",").toSeq:_*)
+
+
+def tupleCreator(inputArray:Array[String])=(inputArray(0),inputArray(1),inputArray(2),inputArray(3),inputArray(4),inputArray(5),inputArray(6),inputArray(7),inputArray(8))
+
+orderDF.createOrReplaceTempView("order")
+
+sql(""" select customer_id,order_year,count(1) num_orders_placed from 
+(select customer_id,substring(order_date,0,4) as order_year from order)a group by customer_id,order_year having count(1) >=2""").show(false)
+
+orderDF.selectExpr("*","substring(order_date,0,4) as order_year").groupBy("customer_id","order_year").agg(count("ordr_id").as("num_orders_placed")).where("num_orders_placed >=2")
+
+sql(""" select store_id,sum(order_value) as total_revenue from 
+order group by store_id""").show(false)
+
+// using analytical function 
+
+sql(""" select distinct store_id,sum(order_value) over (partition by store_id order by 1) as total_revenue from 
+order  """).show(false) // we get dupes here. but the calculation is apt
+
+sql(""" select store_id,total_revenue from(select store_id,total_revenue , row_number() over (partition by store_id  order by total_revenue) as rank_col from (select store_id,sum(order_value) over (partition by store_id order by 1) as total_revenue from 
+order  ) a  ) a where rank_col=1""").show(false)
+
+-------------------------
+
+t1
+c1
+2
+3
+1
+-1
+0
+1
+-4
+-2
+
+
+expected output
+c1 c2
+7  -7 
+
+
+select * from 
+(select sum(c1) c1 from t1 where c1 >0) a
+,(select sum(c1) c2 from t1 where c1 <0)b;
+
+select sum( case when c1 >0 then c1 else 0 end ) as c1,
+sum( case when c1 <0 then c1 else 0 end ) as c2
+from t1; 
+
+
+val numData="""c1
+    2
+    3
+    1
+    -1
+    0
+    1
+    -4
+    -2""".split("\n")
+val numDF=(numData.tail.map(x=>(x.toInt)).toSeq).toDF(Seq(numData.head):_*)
+
+
+numDF.agg(sum(when($"c1">0,lit($"c1".cast(org.apache.spark.sql.types.IntegerType))).otherwise(lit(0))).as("c1"),sum(when(col("c1")<0,lit(col("c1").cast(org.apache.spark.sql.types.IntegerType))).otherwise(lit(0))).as("c2")).show
+
+---------------------
+
+EPL soccer tournament rules:
+ In EPL each team plays with each opposition twice, one at home ground and other at away ground.
+ winning teams gets 3 points  i.e when goals scored is greater thena goal conceeded. 
+ losing team doesnt get any point
+ if the golas are tied we call it a tie and each team gets 1 point.
+ 
+ you work for a team called Arsenal.
+ 
+ Arsenal stores their home matches information in home table.
+ home
+ oppositon, goals_scored,goals_conceeded
+ 
+ similarly they store their away matches information in away table
+ away
+ oppositon, goals_scored,goals_conceeded
+ 
+ write a query to get against which all teams arsenal has won all the available six points.
+ 
+ /*
+ select * from  
+ (select *,'away' as identifier from away) away,
+ (select *,'home' as identifier from home) home;
+ 
+  */
+  
+ select away.oppositon, case when away.result ='WIN' and home.result ='WIN' then 'DOUBLE WIN'
+ else 'NOT DOUBLE' as result_total from 
+ (select *,case when goals_scored > goals_conceeded then 'WIN' when goals_conceeded=goals_scored  then 'TIE'
+ else 'LOST' end as result from away) away join 
+ (select *,case when goals_scored > goals_conceeded then 'WIN' when goals_conceeded=goals_scored  then 'TIE'
+ else 'LOST' end as result from home) home 
+ on away.oppositon= home.oppositon;
+ 
+ --------------------------
+ select * from 
+ ( select away.oppositon, case when away.result ='WIN' and home.result ='WIN' then 'DOUBLE WIN'
+ else 'NOT DOUBLE' as result_total from 
+ (select *,case when goals_scored > goals_conceeded then 'WIN' when goals_conceeded=goals_scored  then 'TIE'
+ else 'LOST' as result from away) away join 
+ (select *,case when goals_scored > goals_conceeded then 'WIN' when goals_conceeded=goals_scored  then 'TIE'
+ else 'LOST' as result from home) home 
+ on away.oppositon= home.oppositon) b where result_total='DOUBLE WIN';
+ 
+------------------
+ select a.oppositon from 
+ away a join 
+ home b on 
+ a.oppositon= b.oppositon
+ where (a.goals_scored  > a.goals_conceeded  and b.goals_scored  > b.goals_conceeded);
+ 
+ 
+---------------------
+// goals scored against team
+ 
+// join 
+
+select a.oppositon, (nvl(a.goals_scored,0) + nvl(b.goals_scored,0)) as total_goals from 
+away a full join 
+home b on 
+a.oppositon= b.oppositon;
+ 
+// union group by
+ 
+select  oppositon,sum(goals_scored) as total_goals from
+( select * from away  union all  
+select * from home ) a group by oppositon;
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+val orderData="""ordr_id,customer_id,order_status,order_date,required_date,shipped_date,order_value,store_id,staff_id
+o001,c001,transit,2020-01-02,2020-01-04,2020-01-03,200,s001,st001
+o002,c001,transit,2020-01-02,2020-01-04,2020-01-03,200,s001,st002
+o003,c001,transit,2022-01-02,2020-01-04,2020-01-03,200,s002,st003
+o004,c002,transit,2020-01-02,2020-01-04,2020-01-03,200,s003,st004
+o005,c003,transit,2020-01-02,2020-01-04,2020-01-03,200,s002,st003
+o006,c002,transit,2020-01-02,2020-01-04,2020-01-03,200,s004,st002""".split("\n")
+
+val orderDF=(orderData.tail.map(_.split(",")).map(tupleCreator)).toSeq.toDF(orderData.head.split(",").toSeq:_*)
+
+
+def tupleCreator(inputArray:Array[String])=(inputArray(0),inputArray(1),inputArray(2),inputArray(3),inputArray(4),inputArray(5),inputArray(6),inputArray(7),inputArray(8))
+
+orderDF.createOrReplaceTempView("order")
+
+sql(""" select customer_id,order_year,count(1) num_orders_placed from 
+(select customer_id,substring(order_date,0,4) as order_year from order)a group by customer_id,order_year having count(1) >=2""").show(false)
+
+orderDF.selectExpr("*","substring(order_date,0,4) as order_year").groupBy("customer_id","order_year").agg(count("ordr_id").as("num_orders_placed")).where("num_orders_placed >=2")
+
+sql(""" select store_id,sum(order_value) as total_revenue from 
+order group by store_id""").show(false)
+
+// using analytical function 
+
+sql(""" select distinct store_id,sum(order_value) over (partition by store_id order by 1) as total_revenue from 
+order  """).show(false) // we get dupes here. but the calculation is apt
+
+sql(""" select store_id,total_revenue from(select store_id,total_revenue , row_number() over (partition by store_id  order by total_revenue) as rank_col from (select store_id,sum(order_value) over (partition by store_id order by 1) as total_revenue from 
+order  ) a  ) a where rank_col=1""").show(false)
+
+
+def footballRowCreater(data:Array[String]) = (data(0),data(1),data(2))
+
+
+val homeData="""oppositon,goals_scored,goals_conceeded
+Manchester united,3,2
+Chealsea,2,2
+Croatia,1,2
+England,3,2""".split("\n")
+
+val homeDF=(homeData.tail.map(_.split(",")).map(footballRowCreater).toSeq).toDF(homeData.head.split(",").toSeq:_*)
+
+
+
+val awayData="""oppositon,goals_scored,goals_conceeded
+Manchester united,3,1
+Chealsea,1,2
+Croatia,2,2
+England,3,2""".split("\n")
+
+
+val awayDF=(awayData.tail.map(_.split(",")).map(footballRowCreater).toSeq).toDF(awayData.head.split(",").toSeq:_*)
+
+awayDF.as("away").join(homeDF.as("home"),col("away.oppositon")===col("home.oppositon")).filter("away.goals_scored>away.goals_conceeded and home.goals_scored>home.goals_conceeded")
+
+
+awayDF.selectExpr("*","case when goals_scored > goals_conceeded then 'WIN' when goals_scored = goals_conceeded then 'TIE' else 'LOST' end as match_result").as("away").join(homeDF.selectExpr("*","case when goals_scored > goals_conceeded then 'WIN' when goals_scored = goals_conceeded then 'TIE' else 'LOST' end as match_result").as("home"),col("away.oppositon")===col("home.oppositon")).selectExpr("*","case when away.match_result= 'WIN' and home.match_result='WIN' then 'DOUBLE WIN' else 'NOT DOUBLE WIN' end final_result ").filter("final_result='DOUBLE WIN'")
+
+// sql 
+
+awayDF.createOrReplaceTempView("away")
+homeDF.createOrReplaceTempView("home")
+
+sql("""
+select * from home h join away a 
+on 
+h.oppositon=a.oppositon
+where h.goals_scored>h.goals_conceeded and a.goals_scored > a.goals_conceeded
+""").show(false)
+
+sql("""
+select *   from 
+(select *, case when goals_scored>goals_conceeded then 'WIN' when 
+goals_scored=goals_conceeded then 'TIE' else 'LOST' end as result
+from
+home) h 
+join 
+(select *, case when goals_scored>goals_conceeded then 'WIN' when 
+goals_scored=goals_conceeded then 'TIE' else 'LOST' end as result
+from
+away) a 
+on 
+h.oppositon=a.oppositon
+where a.result='WIN' and h.result='WIN'
+""").show(false)
+
+sql(""" select * from 
+(select * ,case when h.result='WIN' and a.result='WIN' then 'DOUBLE WIN' else 'NOT DOUBLE WIN' end as final_result
+  from 
+(select *, case when goals_scored>goals_conceeded then 'WIN' when 
+goals_scored=goals_conceeded then 'TIE' else 'LOST' end as result
+from
+home) h 
+join 
+(select *, case when goals_scored>goals_conceeded then 'WIN' when 
+goals_scored=goals_conceeded then 'TIE' else 'LOST' end as result
+from
+away) a 
+on 
+h.oppositon=a.oppositon
+)a where final_result='DOUBLE WIN'
+""").show(false)
+
+// second
+
+homeDF.as("home").join(awayDF.as("away"),col("away.oppositon")===col("home.oppositon"),"full_outer").selectExpr("nvl(away.oppositon,home.oppositon) opposition","nvl(away.goals_scored,0)+nvl(home.goals_scored,0) as total_goals")
+
+
+// homeDF.as("home").intersect(awayDF.as("away")).groupBy("oppositon").agg(sum("goals_scored").as("total_goals")).show(false)
+
+// homeDF.as("home").except(awayDF.as("away")).groupBy("oppositon").agg(sum("goals_scored").as("total_goals")).show(false)
+
+homeDF.as("home").unionAll(awayDF.as("away")).groupBy("oppositon").agg(sum("goals_scored").as("total_goals")).show(false)
+
+
+
