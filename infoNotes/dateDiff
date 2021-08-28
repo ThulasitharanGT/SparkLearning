@@ -1,0 +1,46 @@
+
+// using joda
+val dateFormat="yyyy-MM-dd hh:mm:ss"
+
+def computDiffInMinutes(startTime:String,endTime:String) = // assuming that end time will be greater than start time 
+{
+val startTimeObj=DateTime.parse(startTime,DateTimeFormat.forPattern(dateFormat))
+val endTimeObj=DateTime.parse(endTime,DateTimeFormat.forPattern(dateFormat))
+val startMinute=startTimeObj.getMinuteOfDay
+val endMinute=endTimeObj.getMinuteOfDay
+val startDay=startTimeObj.getDayOfYear
+val endDay=endTimeObj.getDayOfYear
+val startYear=startTimeObj.getYear
+val endYear=endTimeObj.getYear
+var outputInt=0
+startYear==endYear match {
+case true =>
+endDay >startDay match 
+{
+case true =>
+endDay-startDay match 
+{
+case value if value ==1 =>
+outputInt=(1440 -startMinute ) + endMinute
+case value if value >1 =>
+outputInt=(1440 -startMinute  ) +((value -1) * 24 * 60 )+ endMinute
+}
+case false=>
+outputInt = endMinute-startMinute
+}
+case false =>
+outputInt=(1440 -startMinute ) +(startTimeObj.year.isLeap  match {case true => ((366 - (startDay-1) )* 24*60) case false => ((365 - (startDay-1) )* 24*60)}  ) + ((endDay -1) * 24 *60) +endMinute 
+}
+outputInt
+}
+
+// using simple date format 
+
+val dateSimpleFormat=new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss") 
+val startTime="2020-08-09 12:32:56"
+def computDiffInMinutesSimple(startTime:String,endTime:String) = // assuming that end time will be greater than start time 
+{
+val startTimeInUTS=dateSimpleFormat.parse(startTime).getTime
+val endTimeInUTS=dateSimpleFormat.parse(endTime).getTime
+((endTimeInUTS-startTimeInUTS) /1000 )/60 // from milli to seconds and then to minutes
+}

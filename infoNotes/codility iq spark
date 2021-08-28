@@ -1,0 +1,90 @@
+package com.codility
+
+
+import org.apache.spark.sql.{SparkSession, DataFrame,Row}
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types._
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+
+object SparkChargePoints {
+
+  val input = "data/input/electric-chargepoints-2017.csv"
+  val output = "data/output/chargepoints-2017-analysis"
+  val dateFormat="yyyy-MM-dd hh:mm:ss"
+
+  val spark = SparkSession.builder
+    .master("local[*]")
+    .appName("SparkChargePoints")
+    .getOrCreate()
+
+  import spark.implicits._
+
+def  computDiffInMinutes(startTime:String,endTime:String)=    {
+    val startTimeObj=DateTime.parse(startTime,DateTimeFormat.forPattern(dateFormat))
+    val endTimeObj=DateTime.parse(endTime,DateTimeFormat.forPattern(dateFormat))
+    val startMinute=startTimeObj.getMinuteOfDay;
+    val endMinute=endTimeObj.getMinuteOfDay
+    val startDay=startTimeObj.getDayOfYear
+    val endDay=endTimeObj.getDayOfYear
+    var outputInt=0
+    if (endDay >startDay )
+    {
+      outputInt=(1440 -startMinute  ) + endMinute
+    }
+    else 
+    {
+       outputInt = endMinute-startMinute
+    }
+     outputInt
+    }
+
+// spark.udf.register("computDiffInMinutes",computDiffInMinutes(_:String,_:String))
+
+def extract(): DataFrame = spark.read.format("csv").option("header","true").option("inferSchema","true").load(input)
+
+def transform(df: DataFrame): DataFrame = {
+
+/* 
+val transformedDF=df.selectExpr("ChargingEvent","CPID","concat(StartDate,concat(' ',StartTime)) as startDateTime","concat(EndDate,concat(' ',EndTime)) as endDateTime","*").map(roWReturner).toDF
+val longestDF=transformedDF.groupBy("CPID").agg(max("diffInMinutes").as("max_duration"))
+val avgDF=transformedDF.groupBy("CPID").agg(avg("diffInMinutes").as("avg_duration"))
+
+longestDF.join(avgDF,Seq("CPID")).selectExpr("CPID as chargepoint_id","(max_duration/60) max_duration","(avg_duration/60) as avg_duration") 
+
+
+
+
+
+val longestDF=df.groupBy("CPID").agg(max("PluginDuration").as("max_duration"))
+val avgDF=df.groupBy("CPID").agg(avg("PliginDuration").as("avg_duration"))
+longestDF.join(avgDF,Seq("CPID")).selectExpr("CPID as chargepoint_id","(max_duration/60) max_duration","(avg_duration/60) as avg_duration")
+
+
+*/
+// correct
+val transformedDF=df.selectExpr("ChargingEvent","CPID","concat(StartDate,concat(' ',StartTime)) as startDateTime","concat(EndDate,concat(' ',EndTime)) as endDateTime","*").withColumn("startTimeStamp",to_timestamp(col("startDateTime"))).withColumn("endTimeStamp",to_timestamp(col("endDateTime"))).withColumn("minusSeconds",col("endTimeStamp").cast(LongType) - col("startTimeStamp").cast(LongType)).withColumn("diffInHours",(col("minusSeconds")/60)/60)
+
+val longestDF=df.groupBy("CPID").agg(max("diffInHours").as("max_duration"))
+val avgDF=df.groupBy("CPID").agg(avg("diffInHours").as("avg_duration"))
+longestDF.join(avgDF,Seq("CPID")).selectExpr("CPID as chargepoint_id","max_duration","avg_duration")
+
+
+}
+case class outputRow(ChargingEvent:String,CPID:String,startDateTime:String,endDateTime:String,diffInMinutes:Int)
+
+  def rowReturner(row:Row)=outputRow(row.getString(0),row.getString(1),row.getString(2),row.getString(3),computDiffInMinutes(row.getString(2),row.getString(3))) 
+  
+
+  def load(df: DataFrame): DataFrame =     df.write.mode("append").save(output)
+  
+
+  def main(args: Array[String]): Unit = {
+    load(transform(extract()))
+  }
+}
+
+val mainDF=spark.read.format("csv").option("inderSchema","true").option("header","true").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/electric-chargepoints-2017.csv")
+val df=mainDF.drop("PluginDuration")
+
+

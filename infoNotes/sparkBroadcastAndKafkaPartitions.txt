@@ -1,0 +1,39 @@
+// 3 partition topic - tmpTopic
+
+./bin/kafka-topics.sh --zookeeper localhost:3039 --topic tmpTopic --partitions 3 --replication 2
+
+spark.readStream.format("kafka").option("kafka.bootstrap.servers","localhost:9091,localhost:9092,localhost:9093").option("maxOffsetsPerTrigger","1").option("subscribe","tmpTopic").option("startingOffsets","latest").load.writeStream.format("console").outputMode("append").option("checkpointLocation","hdfs:///user/raptor/tmpCheckMaxOffsets/").option("truncate","false").start
+
+./bin/kafka-topics.sh --zookeeper localhost:3039 --topic tmpOne --partitions 1 --replication 1
+
+spark.readStream.format("kafka").option("kafka.bootstrap.servers","localhost:9091,localhost:9092,localhost:9093").option("maxOffsetsPerTrigger","1").option("subscribe","tmpOne").option("startingOffsets","latest").load.writeStream.format("console").outputMode("append").option("checkpointLocation","hdfs:///user/raptor/tmpCheckMaxOffsetsOne/").option("truncate","false").start
+
+If the topic is partitioned and all the partitions has messages, the minimum messages you can take is equal to the number of partitions in the topic. (ie) it takes 1 record per partition if it has data, if only one partition has data then the minimum record you can take is 1. If the topic is not partitioned you can take 1 record minimum and anything as maximum.
+
+-------------
+
+catalog 
+
+create table tempdb.tmp_table( col1 string,col2 varchar(5) ,col3 int) 
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n' 
+stored as TEXTFILE
+location 'hdfs://localhost:8020/user/raptor/hive/tmp_table';
+
+
+create table tempdb.tmp_table_partitioned( col1 string,col2 varchar(5) ) 
+partitioned by 
+(col3 int)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n' 
+stored as TEXTFILE
+location 'hdfs://localhost:8020/user/raptor/hive/tmp_table_partitioned';
+
+
+
+set, spark auto broad cast thresh hold to 20
+
+--> take a 15 mb data set and join.
+--> take a 30 mb data set filter it till 15 and then join -- doesnt brod cast. we need to specify namually

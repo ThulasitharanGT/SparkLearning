@@ -1,0 +1,234 @@
+val string1 = "(())" // -- valid
+val string2 = "())" //-- invalid
+val string3 = "(()))" //-- invalid
+val string4 = ")(()))"//-- invalid
+val string5 = ")(())("//-- invalid
+val string6 = "())(()()"//-- invalid
+val string7 = "()(())()"//-- invalid
+
+import scala.util.control.Breaks._ 
+
+stringValidate(string1)
+stringValidate(string2)
+stringValidate(string3)
+stringValidate(string4)
+stringValidate(string5)
+stringValidate(string6)
+stringValidate(string7)
+
+def stringValidate(tmpString:String)={
+var tmpBuffer=collection.mutable.ArrayBuffer[String]()
+val stringList=tmpString.toList.map(_.toString)
+val stringListSize=stringList.size
+stringListSize match {
+case value if value ==0 => 
+false
+case value if value%2 !=0 => 
+false
+case value if value%2 ==0 => 
+(stringList.head,stringList.last) match {
+case value if value._1 ==")"  || value._2 =="("  => false
+case value  =>
+var result=false
+breakable
+{
+if (stringList.filter(_ =="(" ).size != stringList.filter(_ ==")" ).size) 
+break
+for (i <- 0 to stringListSize -1)
+i match {
+case value if stringList(value) ==")" => 
+tmpBuffer.size match 
+{ 
+case value if value == 0 => break
+case value if value > 0 => tmpBuffer=tmpBuffer.dropRight(1)
+}
+case value if stringList(value) =="(" => tmpBuffer+= "("
+}
+result=if (tmpBuffer.size ==0 ) true else false
+}
+result
+}
+}
+}
+
+---------------
+
+df.show()
++-----+---------+
+|className|malecount|
++-----+---------+
+| A| 2|
+| B| 3|
+| C| 0|
+| D| 2|
++-----+---------+
+
+df_result.show()
++---+---+
+| _1| _2|
++---+---+
+| A| m|
+| A| m|
+| B| m|
+| B| m|
+| B| m|
+| D| m|
+| D| m|
++-----+---------+
+
+val tmp="""|className|malecount|
++-----+---------+
+| A| 2|
+| B| 3|
+| C| 0|
+| D| 2|""".split("\n").filter(! _.contains("+"))
+
+val tmpSeq = tmp.map(_.split("\\|").filter(_.trim.size >0).map(_.trim)).map(x => (x(0),x(1))).toSeq
+
+val df=tmpSeq.tail.toDF(tmpSeq.head:_*)
+
+df.as[rowData].flatMap(intRowExplode).show(false)
+
+case class rowData(className:String,malecount:String)
+case class rowDataFinal(className:String,maleIndicator:String)
+
+/*
+def intRowExplode(row:org.apache.spark.sql.Row)={
+val maleCount=row.getString(1).toInt
+val tmpArrayBuffer=collection.mutable.ArrayBuffer[org.apache.spark.sql.Row]()
+for(i<- 1 to maleCount)
+{
+val tmpRow=org.apache.spark.sql.Row(row.getString(0),"m")
+tmpArrayBuffer+=tmpRow
+}
+tmpArrayBuffer
+}
+*/
+
+def intRowExplode(row:rowData)={
+val maleCount=row.malecount.toInt
+val tmpArrayBuffer=collection.mutable.ArrayBuffer[rowDataFinal]()
+for(i<- 1 to maleCount)
+tmpArrayBuffer+=rowDataFinal(row.className,"m")
+tmpArrayBuffer
+}
+
+
+
+------------------
+
+transaction table
+
+item_code
+transaction_date - yyyy-MM-dd
+transaction_time - hh:mm:ss
+transaction_amount
+
+
+
+required_time => yyyy-MM-dd hh
+
+select item_code, transaction_amount,required_time from 
+(select item_code, transaction_amount,required_time,dense_rank() over ( partition by required_time order by transaction_amount desc) as rank_col from 
+(select item_code,transaction_amount,concat(transaction_date,concat(' ',substring(transaction_time,0,2))) required_time from )a ) b where rank_col=1
+
+// date and time func use 
+select item_code, transaction_amount,required_time from 
+(select item_code, transaction_amount,required_time,dense_rank() over ( partition by required_time order by transaction_amount desc) as rank_col from 
+(select item_code,transaction_amount,concat(transaction_date,concat(' ',substring(transaction_time,0,2))) required_time from )a ) b where rank_col=1
+
+
+
+ rank 
+100 1
+200 2
+300 3
+300 3
+400 5
+
+
+dense rank 
+100 1
+200 2
+300 3
+300 3
+400 4
+
+dense rank 
+100 1
+200 2
+300 3
+300 4
+400 5
+
+
+Data: 
+val tmpTransData="""item_code,transaction_code,transaction_date,transaction_time,transaction_amount
+I001,T001,2020-06-10,17:20:00,100
+I004,T002,2020-06-10,18:20:00,200
+I003,T003,2020-06-10,19:20:00,200
+I005,T004,2020-06-10,19:20:00,200
+I001,T005,2020-06-10,18:20:00,100
+I001,T006,2020-06-10,17:20:00,100
+I002,T007,2020-06-10,17:20:00,110""".split("\n")
+
+val transDF=tmpTransData.tail.map(x => x.split(",") ).map(x => (x(0),x(1),x(2),x(3),x(4).toInt)).toSeq.toDF(tmpTransData.head.split(",").toSeq:_*)
+transDF.createOrReplaceTempView("transaction")
+
+spark.sql("select item_code,transaction_amount ,to_timestamp(concat(transaction_date,concat(' ',transaction_time))) as time_of_transaction,row_number() over( partition by transaction_date,split(transaction_time,':')[0] order by transaction_amount desc) as rankCol from transaction ").filter("rankCol=1").show(false)
+
+spark.sql("select item_code,transaction_amount ,row_number() over( partition by transaction_date,hour(transaction_time) order by transaction_amount desc) as rankCol from transaction").where("rankCol=1").show(false)
+
+
+sql("select hour(transaction_time), transaction_time from transaction").show(false)
+
+============
+
+// get sutomers who dont have an account id
+
+customer 
+cust_id
+
+accnt
+accnt_id
+cust_id
+
+
+val tmpCustData="""cust_id
+c001
+c002
+c003
+c004
+c005""".split("\n")
+
+val tmpCustDF=tmpCustData.tail.map(x => (x)).toSeq.toDF(Seq(tmpCustData.head):_*)
+
+tmpCustDF.createOrReplaceTempView("customer")
+
+val tmpAccntData="""cust_id,accnt_id
+c001,ac001
+c001,ac002
+c002,ac003
+c003,ac004
+c003,ac005""".split("\n")
+
+val tmpAcctDF=tmpAccntData.tail.map(_.split(",")).map(x => (x(0),x(1))).toSeq.toDF(tmpAccntData.head.split(",").toSeq:_*)
+
+tmpAcctDF.createOrReplaceTempView("account")
+
+spark.sql("select a.cust_id from customer a left join account b on a.cust_id=b.cust_id where b.cust_id is null").show(false)
+
+sql("select a.cust_id from customer a where not exists (select 1 from account b where a.cust_id=b.cust_id )").show(false)
+
+sql("select cust_id from customer where cust_id not in (select cust_id from account )").show(false)
+
+
+
+// opp
+sql("select a.cust_id from customer a where exists (select cust_id from account b where a.cust_id=b.cust_id )").show(false)
+
+
+
+
+
+Seq(("2020-09-08 12:44:24","2020-08-08 13:24:55.444")).toDF("inputTime","inputTimeWithMilli").withColumn("inputUTS",unix_timestamp(col("inputTime"),"yyyy-MM-dd hh:mm:ss")).withColumn("unixTimeReconverted",from_unixtime(col("inputUTS"),"yyyy-MM-dd hh:ss:mm")).withColumn("unixTimeStamp",unix_timestamp).withColumn("reDidTimeStamp",from_unixtime(col("unixTimeStamp"))).withColumn("current_time",current_timestamp).withColumn("toUnixTimeMilli",to_timestamp(col("inputTimeWithMilli"))).withColumn("toUnixTimeCurrent",to_timestamp(unix_timestamp)).withColumn("toUnixTimeMilliLong",to_timestamp(col("inputTimeWithMilli")).cast(LongType)).show(false)

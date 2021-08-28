@@ -1,0 +1,26 @@
+textFile 
+
+import java.
+
+val file=new BufferedInputReader("")
+
+val fis= FileInputStream(file)
+
+
+var sum=0
+
+import scala.util.{Try,Success,Failure}
+
+for( i <- fileInputStream.nextLine)
+Tyr{i.toInt} match {
+case Success(s) => sum+=s
+case Failure(f) => println(s"Exception occurred ${f.printStackTrace()}")
+}
+
+sum=sum+(i.toInt)
+
+println(s"sum ${sum}")
+
+
+for( i<- arrayTmp) 
+sum=sum+(currentLineNumber.toInt)
