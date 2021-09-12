@@ -19,6 +19,7 @@ object readFromHeaderTopic extends SparkOpener{
 
 spark-submit --class org.controller.explorations.kafkaHeaderPackage.readFromHeaderTopic --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 --num-executors 2 --executor-memory 1g --executor-cores 2 --driver-cores 4 --driver-memory 1g --conf spark.sql.shuffle.partitions=4 --conf spark.memory.offHeap.enabled=true --conf spark.memory.offHeap.size=1000m /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar bootstrapServer="localhost:8082,localhost:8083,localhost:8084" topic=tmpTopic startingOffsets=latest writeStreamFormat=console outputMode=update checkpointLocation=hdfs://localhost:8020/user/raptor/kafka/tmpStream3
 
+./bin/kafka-console-consumer.sh --bootstrap-server=localhost:8082,localhost:8083,localhost:8084 --topic tmpTopic --property parse.key=true --property key.separator=: --property print.headers=true --property print.timestamp=true --property headers.separator=$
 
 
  */
