@@ -1,0 +1,75 @@
+Scala : 
+
+Array(1,0,1,1,0,0)
+
+output 
+Either (1,1,1,0,0,0)
+or (0,0,0,1,1,1)
+
+/*
+Array.sortWith(_<_)
+
+for(i< 0 to Array.size-2)
+i match {
+case value if value == Array.size-2 =>
+case value => Array(i) match {
+case value if value > Array(i+1) => Array() // swap
+}
+}
+*/
+
+111100000000000001011111
+
+var tmpArray=Array(1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1)
+var latestIndexOfOne= -1
+
+for(i<- 0 to tmpArray.size-1)
+i match {
+case value if value ==0 =>
+tmpArray(value) match {
+case value if value ==1 => 
+latestIndexOfOne=i
+case value if value ==0 =>
+tmpArray(i+1) match {
+case value if value ==1 => 
+tmpArray(i+1)=0
+tmpArray(i)=value
+latestIndexOfOne=i
+case value if value ==0 => 
+println("first and second is 0")
+}
+}
+case value if value ==tmpArray.size-1 =>
+tmpArray(value) match {
+case value if value ==1 => 
+latestIndexOfOne+1 match {
+case value if value == tmpArray.size-1 => 
+println("no change required")
+case value  => 
+tmpArray(latestIndexOfOne+1)=tmpArray(i)
+tmpArray(i)=0
+}
+case value if value ==0 =>
+println("last element is zero")
+}
+case value => tmpArray(value) match {
+case value if value ==1 => 
+println(s"element ${i} is 1")
+println(s"latestIndexOfOne before - ${latestIndexOfOne}")
+println(s"tmpArray before swap ${tmpArray.deep}")
+latestIndexOfOne match {
+case value if tmpArray(i-1)==1 => 
+latestIndexOfOne = i 
+case value if tmpArray(i-1)!=1 => 
+tmpArray(latestIndexOfOne+1)=tmpArray(i)
+tmpArray(i)=0
+latestIndexOfOne+=1
+}
+println(s"latestIndexOfOne after - ${latestIndexOfOne}")
+println(s"tmpArray after swap ${tmpArray.deep}")
+case value if value ==0 => 
+println("zero in, next")
+}
+}
+println(tmpArray.deep)
+// efficiency and time complexity 

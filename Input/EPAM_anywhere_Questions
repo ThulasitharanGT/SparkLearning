@@ -1,0 +1,137 @@
+Sample Twitter Data:
+[{
+"id":"53627",
+"user":"EPAM_BD",
+"text":"epam_rocks epam_internal #EPAM HACKATON ROCKS. #Love #EPAM #Hackathons.",
+"place":"Hyderabad, INDIA"
+},
+{
+"id":"53628",
+"user":"EPAM_BD",
+"text":"epam_rocks.",
+"place":"Hyderabad, INDIA"
+},
+{
+"id":"53629",
+"user":"SAMPATH",
+"text":"#Hyderabad",
+"place":"Hyderabad, INDIA"
+}
+]
+
+val dataDF=Seq("""{"twitterData": [{
+"id":"53627",
+"user":"EPAM_BD",
+"text":"epam_rocks epam_internal #EPAM HACKATON ROCKS. #Love #EPAM #Hackathons.",
+"place":"Hyderabad, INDIA"
+},
+{
+"id":"53628",
+"user":"EPAM_BD",
+"text":"epam_rocks.",
+"place":"Hyderabad, INDIA"
+},
+{
+"id":"53629",
+"user":"SAMPATH",
+"text":"#Hyderabad",
+"place":"Hyderabad, INDIA"
+}
+]}""").toDF("tmpData")
+
+1) Find out all the hashtags mentioned on a tweet per user
+EPAM_BD - EPAM, LOVE, Hackathons......
+SAMPATH - HYDERABAD
+
+2) Count how many times each hashtag is mentioned across all users
+EPAM - 100
+Hackathons - 90
+Love - 80
+HYDERABAD - 1
+
+
+dataDF.withColumn("extractedData",from_json(col("tmpData"),outerSchema)).select("tmpData").show(false)
+
+
+--------------------------------------------------------------------------------------------------------------
+UDF
+
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.expression.Window
+
+// json file has arrat of json's. But no outer tag. Assuming the outer tag is named to twitterData
+
+val outerSchema=new StructType(Array(StructField("twitterData",ArrayType(schemaOfFile),true)))
+
+val schemaOfFile=new StructType(Array(StructField("id",StringType,true),StructField("user",StringType,true),StructField("text",StringType,true),StructField("place",StringType,true)))
+
+
+
+
+def hasTagRetriever(textInput:String):Seq[String]=textInput.split("#").filter(_.trim.size >0).map(_.split(" ").head.trim).toSeq
+
+"#Hyderabad".split("#").filter(_.trim.size >0).map(_.split(" ").head.trim).toSeq 
+
+spark.udf.register("hashTagGetter",hasTagRetriever(_:String))
+
+val hashTagGetterUDF=udf((tweetTxt:String) => tweetTxt.split("#").filter(_.trim.size >0).map(_.split(" ").head).map(x => x match {case value if value.trim.endsWith(".") => value.trim.dropRight(1) case value => value.trim} ) )
+
+
+val cleansedDF=spark.read.format("json").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/tmpJsonEpam/").withColumn("dataExploded",explode(col("twitterData"))).select("dataExploded.*").selectExpr("id","user","hashTagGetter(text) as hashTags","text","place").withColumn("hashtag",explode(col("hashTags")))
+
+// udf in withColumn
+val cleansedDF=spark.read.format("json").load("file:///home/raptor/IdeaProjects/SparkLearning/Input/tmpJsonEpam/").withColumn("dataExploded",explode(col("twitterData"))).select("dataExploded.*").withColumn("hashTags",(hashTagGetterUDF(col("text"))))
+
+
+selectExpr("id","user","hashTagGetter(text) as hashTags","text","place").withColumn("hashtag",explode(col("hashTags")))
+
+// .select(from_json(col("dataExploded"),schemaOfFile).as("dataParsed")).select("dataParsed.*")
+.selectExpr("id","user","hashTagGetter(text) as hashTags","place").withColumn("hashtag",explode("hashTags")).drop("hashTags")
+
+// dupes removed
+
+val cleansedDFWithoutDupes=cleansedDF.withColumn("row_num",row_number.over(Window.partitionBy("id","user","text","hashtag").orderBy("user"))).filter("row_num=1")
+
+
+1) Find out all the hashtags mentioned on a tweet per user
+EPAM_BD - EPAM, LOVE, Hackathons......
+SAMPATH - HYDERABAD
+
+cleansedDFWithoutDupes.groupBy("id","user").agg(collect_list(col("hashtag")).as("hastagsInTheTweet")).show(false)
+
+
+2) Count how many times each hashtag is mentioned across all users
+EPAM - 100
+Hackathons - 90
+Love - 80
+HYDERABAD - 1
+
+cleansedDFWithoutDupes.groupBy("hashtag").agg(count("*").as("tweetCount")).show(false)
+
+
+cleansedDFWithoutDupes.groupBy("hashtag").agg(count("*").as("tweetCount")).show(false)
+------------------------------------------------------
+Better
+
+1) Find out all the hashtags mentioned on a tweet per user
+EPAM_BD - EPAM, LOVE, Hackathons......
+SAMPATH - HYDERABAD
+
+2) Count how many times each hashtag is mentioned across all users
+EPAM - 100
+Hackathons - 90
+Love - 80
+HYDERABAD - 1
+
+
+val properDF=dataDF.withColumn("extractedData",from_json(col("tmpData"),outerSchema)).withColumn("element",explode(col("extractedData.twitterData"))).select("element.*")
+
+val splittedDF=properDF.selectExpr("*","split(text,' ') as textSplitted").withColumn("textEmploded",explode(col("textSplitted"))).filter("textEmploded like '#%'")
+
+val dupesRemoved=splittedDF.withColumn("rankCol",row_number.over(Window.partitionBy("user","textEmploded").orderBy("text"))).where("rankCol=1").drop("rankCol")
+
+1)
+dupesRemoved.selectExpr("*","replace(textEmploded,'#','') textEmplodedTmp").groupBy("user").agg(collect_list("textEmplodedTmp").as("hashTags")).show(false)
+2)
+dupesRemoved.selectExpr("*","replace(textEmploded,'#','') hashTag").groupBy("hashTag").agg(count("*").as("hashTagCount")).show(false)

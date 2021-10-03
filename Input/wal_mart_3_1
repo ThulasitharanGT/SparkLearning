@@ -1,0 +1,93 @@
+Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+You can return the answer in any order.
+
+
+Example 1:
+
+Input: nums = [2,7,11,15], target = 9
+Output: [0,1]
+Output: Because nums[0] + nums[1] == 9, we return [0, 1].
+
+Example 2:
+Input: nums = [3,2,4], target = 6
+Output: [1,2]
+
+val tmpArray=Array(2,7,11,15)
+val target=9
+
+import scala.util.control.Breaks._ 
+
+var resultArray:Array[Int]=null
+breakable {
+for(i <- 0 to tmpArray.size-1)
+for (j <- i+1 to tmpArray.size-1)
+tmpArray(i)+tmpArray(j) match {
+case value if value == target=> 
+resultArray=Array(i,j)
+break
+case value if value != target=> println("trying next")
+}
+}
+
+
+//less cycle 
+
+import scala.util.{Try,Success,Failure}
+
+var resArray:Array[Int]=null 
+for (i <- 0 to tmpArray.size-1) 
+tmpMap.put(i,tmpArray(i))
+
+breakable {
+for(i<- 0 to tmpArray.size -1)
+target-tmpArray(i) match {
+case value => Try{tmpMap(value)} match 
+{
+case Success(s) => 
+resArray=Array(i,value)
+break
+case Failure(f) =>println("No-match")
+}
+}
+}
+
+
+
+=========================================
+
+Address
+Scd type1
+old
+stayeeID|streetName|PlotNo|pincode
+001|KNAgar|89|9000800
+
+New
+stayeeID|streetName|PlotNo|pincode
+001|LNAgar|78|9000803
+
+Scd type2
+old
+Address
+stayeeID|streetName|PlotNo|pincode|startDate|endDate
+001|KNAgar|89|9000800|2020-09-03|null
+
+Address
+stayeeID|streetName|PlotNo|pincode|startDate|endDate
+001|KNAgar|89|9000800|2020-09-03|2021-09-06
+001|LNAgar|78|9000803|2021-09-07|null
+
+
+
+Scd type3
+old
+Address
+stayeeID|streetName|PlotNo|pincode|startDate|endDate
+001|KNAgar|89|9000800|2020-09-03|null
+
+Address
+stayeeID|streetName|streetName1|streetName2|PlotNo|PlotNo1|PlotNo2|pincode|pincode1|pincode2
+001|KNAgar|89|9000800|2020-09-03|2021-09-06
+001|LNAgar|78|9000803|2021-09-07|null
