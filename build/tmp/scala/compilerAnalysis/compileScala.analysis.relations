@@ -309,6 +309,72 @@ products:
    src/main/scala/org/controller/persistingInsideJob/streamingToStaticDFForEach.scala -> build/classes/scala/main/org/controller/persistingInsideJob/streamingToStaticDFForEach.class
    src/main/scala/org/controller/rankEmployeeTest.scala -> build/classes/scala/main/org/controller/rankEmployeeTest$.class
    src/main/scala/org/controller/rankEmployeeTest.scala -> build/classes/scala/main/org/controller/rankEmployeeTest.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$$typecreator16$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$$typecreator17$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$$typecreator21$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$$typecreator25$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$$typecreator33$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$$typecreator37$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$$typecreator4$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$$typecreator41$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$$typecreator45$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$$typecreator49$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$$typecreator5$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$$typecreator53$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$$typecreator57$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$$typecreator9$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$.class
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo.class
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverToTable$$typecreator4$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverToTable$$typecreator5$1.class
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverToTable$.class
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverToTable.class
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> build/classes/scala/main/org/controller/rankingSystemF1/raceInfoToTable$$typecreator13$1.class
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> build/classes/scala/main/org/controller/rankingSystemF1/raceInfoToTable$$typecreator4$1.class
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> build/classes/scala/main/org/controller/rankingSystemF1/raceInfoToTable$$typecreator5$1.class
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> build/classes/scala/main/org/controller/rankingSystemF1/raceInfoToTable$$typecreator9$1.class
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> build/classes/scala/main/org/controller/rankingSystemF1/raceInfoToTable$.class
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> build/classes/scala/main/org/controller/rankingSystemF1/raceInfoToTable.class
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> build/classes/scala/main/org/controller/rankingSystemF1/raceTrackToTable$$typecreator4$1.class
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> build/classes/scala/main/org/controller/rankingSystemF1/raceTrackToTable$$typecreator5$1.class
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> build/classes/scala/main/org/controller/rankingSystemF1/raceTrackToTable$.class
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> build/classes/scala/main/org/controller/rankingSystemF1/raceTrackToTable.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverInfo$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverInfo.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverInfoWithReleaseInd$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverInfoWithReleaseInd.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverInfoWithResult$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverInfoWithResult.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverPointInfo$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverPointInfo.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverPointInfoWithResult$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverPointInfoWithResult.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverPointsInfo$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverPointsInfo.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverRaceInfo$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverRaceInfo.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverRaceInfoWithReleaseInd$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverRaceInfoWithReleaseInd.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverTmpTable$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverTmpTable.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverTmpTableWithResult$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverTmpTableWithResult.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driver_race_info$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driver_race_info.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driver_race_infoWithResult$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driver_race_infoWithResult.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$raceInfo$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$raceInfo.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$raceInfoWithResult$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$raceInfoWithResult.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$raceTrackInfo$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$raceTrackInfo.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$raceTrackInfoWithResult$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$raceTrackInfoWithResult.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$seasonReCalculationInfo$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$seasonReCalculationInfo.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils.class
    src/main/scala/org/controller/rddCheck/rddTmpCheck.scala -> build/classes/scala/main/org/controller/rddCheck/rddTmpCheck$.class
    src/main/scala/org/controller/rddCheck/rddTmpCheck.scala -> build/classes/scala/main/org/controller/rddCheck/rddTmpCheck$undoDeadLock$.class
    src/main/scala/org/controller/rddCheck/rddTmpCheck.scala -> build/classes/scala/main/org/controller/rddCheck/rddTmpCheck$undoDeadLock.class
@@ -814,6 +880,33 @@ binary dependencies:
    src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/2.3.1/21664b0318d201ec412f9b02357b07ba94009c87/kafka-clients-2.3.1.jar
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/rddCheck/rddTmpCheck.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/2.3.1/21664b0318d201ec412f9b02357b07ba94009c87/kafka-clients-2.3.1.jar
    src/main/scala/org/controller/rddCheck/rddTmpCheck.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/rddCheck/rddTmpCheck.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
@@ -1170,6 +1263,14 @@ source dependencies:
    src/main/scala/org/controller/rankEmployeeTest.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/rankEmployeeTest.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/rankEmployeeTest.scala -> src/main/scala/org/util/readWriteUtil.scala
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> src/main/scala/org/controller/rankingSystemF1/utils.scala
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> src/main/scala/org/controller/rankingSystemF1/utils.scala
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> src/main/scala/org/controller/rankingSystemF1/utils.scala
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> src/main/scala/org/controller/rankingSystemF1/utils.scala
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/rddCheck/rddTmpCheck.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/reRunnableJob/jobFunctions.scala -> src/main/scala/org/controller/reRunnableJob/constants.scala
    src/main/scala/org/controller/reRunnableJob/jobFunctions.scala -> src/main/scala/org/controller/reRunnableJob/readWriteUtil.scala
@@ -1547,6 +1648,72 @@ class names:
    src/main/scala/org/controller/persistingInsideJob/streamingToStaticDFForEach.scala -> org.controller.persistingInsideJob.streamingToStaticDFForEach$statsTableWithUpdatedInfo$
    src/main/scala/org/controller/rankEmployeeTest.scala -> org.controller.rankEmployeeTest
    src/main/scala/org/controller/rankEmployeeTest.scala -> org.controller.rankEmployeeTest$
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo$
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo$$typecreator16$1
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo$$typecreator17$1
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo$$typecreator21$1
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo$$typecreator25$1
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo$$typecreator33$1
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo$$typecreator37$1
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo$$typecreator4$1
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo$$typecreator41$1
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo$$typecreator45$1
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo$$typecreator49$1
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo$$typecreator5$1
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo$$typecreator53$1
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo$$typecreator57$1
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo$$typecreator9$1
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> org.controller.rankingSystemF1.driverToTable
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> org.controller.rankingSystemF1.driverToTable$
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> org.controller.rankingSystemF1.driverToTable$$typecreator4$1
+   src/main/scala/org/controller/rankingSystemF1/driverToTable.scala -> org.controller.rankingSystemF1.driverToTable$$typecreator5$1
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> org.controller.rankingSystemF1.raceInfoToTable
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> org.controller.rankingSystemF1.raceInfoToTable$
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> org.controller.rankingSystemF1.raceInfoToTable$$typecreator13$1
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> org.controller.rankingSystemF1.raceInfoToTable$$typecreator4$1
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> org.controller.rankingSystemF1.raceInfoToTable$$typecreator5$1
+   src/main/scala/org/controller/rankingSystemF1/raceInfoToTable.scala -> org.controller.rankingSystemF1.raceInfoToTable$$typecreator9$1
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> org.controller.rankingSystemF1.raceTrackToTable
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> org.controller.rankingSystemF1.raceTrackToTable$
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> org.controller.rankingSystemF1.raceTrackToTable$$typecreator4$1
+   src/main/scala/org/controller/rankingSystemF1/raceTrackToTable.scala -> org.controller.rankingSystemF1.raceTrackToTable$$typecreator5$1
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverInfo
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverInfo$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverInfoWithReleaseInd
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverInfoWithReleaseInd$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverInfoWithResult
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverInfoWithResult$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverPointInfo
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverPointInfo$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverPointInfoWithResult
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverPointInfoWithResult$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverPointsInfo
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverPointsInfo$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverRaceInfo
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverRaceInfo$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverRaceInfoWithReleaseInd
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverRaceInfoWithReleaseInd$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverTmpTable
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverTmpTable$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverTmpTableWithResult
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverTmpTableWithResult$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driver_race_info
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driver_race_info$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driver_race_infoWithResult
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driver_race_infoWithResult$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$raceInfo
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$raceInfo$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$raceInfoWithResult
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$raceInfoWithResult$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$raceTrackInfo
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$raceTrackInfo$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$raceTrackInfoWithResult
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$raceTrackInfoWithResult$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$seasonReCalculationInfo
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$seasonReCalculationInfo$
    src/main/scala/org/controller/rddCheck/rddTmpCheck.scala -> org.controller.rddCheck.rddTmpCheck
    src/main/scala/org/controller/rddCheck/rddTmpCheck.scala -> org.controller.rddCheck.rddTmpCheck$
    src/main/scala/org/controller/rddCheck/rddTmpCheck.scala -> org.controller.rddCheck.rddTmpCheck$undoDeadLock
