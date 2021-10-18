@@ -72,14 +72,14 @@ def main(args:Array[String]):Unit={
         ,col("messageTimestamp").cast(TimestampType).as("incomingTs"))
       .select("valueExtracted.*","incomingTs")
 
-    driverRaceRecords.withColumn("driverRaceRecords",lit("driverRaceRecords")).show(false)
+  //  driverRaceRecords.withColumn("driverRaceRecords",lit("driverRaceRecords")).show(false)
 
     val driverPointRecords=df.filter("messageType ='driverPointsInfo'")
       .select(from_json(col("incomingMessage"),schemaOfDriverPoints).as("valueExtracted")
         ,col("messageTimestamp").cast(TimestampType).as("incomingTs"))
       .select("valueExtracted.*","incomingTs")
 
-    driverPointRecords.withColumn("driverPointRecords",lit("driverPointRecords")).show(false)
+   // driverPointRecords.withColumn("driverPointRecords",lit("driverPointRecords")).show(false)
 
 
     // delete records which got expired
@@ -96,7 +96,7 @@ def main(args:Array[String]):Unit={
       .option("dbtable",s"(select * from ${inputMap("schemaName")}.${inputMap("driverPointsTemp")} where job_name in ('driverRace','driverPoints'))a")
       .load
 
-    recordsFromDriverTemp.withColumn("recordsFromDriverTemp",lit("recordsFromDriverTemp")).show(false)
+//    recordsFromDriverTemp.withColumn("recordsFromDriverTemp",lit("recordsFromDriverTemp")).show(false)
 
     // releasing driver records
 
@@ -115,15 +115,15 @@ def main(args:Array[String]):Unit={
         raceRecords.toList.map(x=> driverRaceInfoWithReleaseInd(x.driverId,x.raceId,x.season,x.incomingTs,releaseInd))
       }).toDF
 
-    totalDriverRaceRecords.withColumn("totalDriverRaceRecords",lit("totalDriverRaceRecords")).show(false)
+//    totalDriverRaceRecords.withColumn("totalDriverRaceRecords",lit("totalDriverRaceRecords")).show(false)
 
     // driver release and hold
 
     val totalDriverRaceReleased=totalDriverRaceRecords.filter("releaseInd='release'").drop("releaseInd") // insert into table then delete these records in tmp
     val totalDriverRaceHold=totalDriverRaceRecords.filter("releaseInd= 'hold'").drop("releaseInd") // insert into temp table if present update incoming ts
 
-    totalDriverRaceReleased.withColumn("totalDriverRaceReleased",lit("totalDriverRaceReleased")).show(false)
-    totalDriverRaceHold.withColumn("totalDriverRaceHold",lit("totalDriverRaceHold")).show(false)
+ //   totalDriverRaceReleased.withColumn("totalDriverRaceReleased",lit("totalDriverRaceReleased")).show(false)
+ //   totalDriverRaceHold.withColumn("totalDriverRaceHold",lit("totalDriverRaceHold")).show(false)
 
     // points check
 
@@ -132,9 +132,9 @@ def main(args:Array[String]):Unit={
       ,col("incoming_timestamp").as("messageTimestamp"))
       .select("valueExtracted.*","messageTimestamp"))
 
-    totalDriverPointsRecords.withColumn("totalDriverPointsRecords",lit("totalDriverPointsRecords")).show(false)
+//    totalDriverPointsRecords.withColumn("totalDriverPointsRecords",lit("totalDriverPointsRecords")).show(false)
 
-    val incomingDriverAndSeason=driverPointRecords.select("driverId","raceId","season").distinct.collect.map(x=> (x(0).toString,x(1).toString,x(2).toString)).toList
+    val incomingDriverAndSeason=totalDriverPointsRecords.select("driverId","raceId","season").distinct.collect.map(x=> (x(0).toString,x(1).toString,x(2).toString)).toList
 
     // reading incoming  driver id's, race id's and season for points
     val driverIdsFromTable=spark.read.format("jdbc")
@@ -151,16 +151,16 @@ def main(args:Array[String]):Unit={
              and race_season in ('${incomingDriverAndSeason.map(_._3).mkString("','")}') ) b on a.race_entry = b.race_id )d""".stripMargin)
       .load.selectExpr("driver_id as driverId","race_entry as raceId","race_season season")
 
-    driverIdsFromTable.withColumn("driverIdsFromTable",lit("driverIdsFromTable")).show(false)
+  //  driverIdsFromTable.withColumn("driverIdsFromTable",lit("driverIdsFromTable")).show(false)
 
     // driver id's released and from table
     val totalDriverIds=totalDriverRaceReleased.select("driverId","raceId","season").union(driverIdsFromTable)
 
-    totalDriverIds.withColumn("totalDriverIds",lit("totalDriverIds")).show(false)
+  //  totalDriverIds.withColumn("totalDriverIds",lit("totalDriverIds")).show(false)
 
     val driverPointsJoinForRelease=totalDriverPointsRecords.as("driverPoints").join(totalDriverIds.as("driverIds"),col("driverPoints.driverId")===col("driverIds.driverId") && col("driverPoints.raceId")===col("driverIds.raceId") && col("driverPoints.season")===col("driverIds.season"),"left")
 
-    driverPointsJoinForRelease.withColumn("driverPointsJoinForRelease",lit("driverPointsJoinForRelease")).show(false)
+//    driverPointsJoinForRelease.withColumn("driverPointsJoinForRelease",lit("driverPointsJoinForRelease")).show(false)
 
     // released points
 
@@ -187,11 +187,10 @@ def main(args:Array[String]):Unit={
       }
     ).show(false)
 
-    // it deletes the parent from the tmp table , so when the below is computed, we don't see the records in tmp table
 
-    driverIdsFromTable.withColumn("driverIdsFromTable2",lit("driverIdsFromTable2")).show(false)
-    driverPointsReleased.withColumn("driverPointsReleased2",lit("driverPointsReleased2")).show(false)
-    driverPointsJoinForRelease.withColumn("driverPointsJoinForRelease2",lit("driverPointsJoinForRelease2")).show(false)
+ //   driverIdsFromTable.withColumn("driverIdsFromTable2",lit("driverIdsFromTable2")).show(false)
+  //  driverPointsReleased.withColumn("driverPointsReleased2",lit("driverPointsReleased2")).show(false)
+  //  driverPointsJoinForRelease.withColumn("driverPointsJoinForRelease2",lit("driverPointsJoinForRelease2")).show(false)
 
     driverPointsReleased.selectExpr("driverId as driver_id","raceId as race_id","position","season","point","incomingTs as messageTimestamp")
       .withColumn("dupeFilter",
@@ -208,7 +207,7 @@ def main(args:Array[String]):Unit={
         conn.close
         driverPointInfoWithResult(x.driver_id,x.race_id,x.position,x.season,x.point,x.messageTimestamp,resultType,rowsAffected)
       }).groupByKey(_.season).flatMapGroups((x,y)=>{
-      sendMessageToKafka(s"""{"messageType":"pointsRecalculation","incomingMessage":"{\\"season\\":\\"${x}\\"}" ,"messageTimestamp":"${new java.sql.Timestamp(System.currentTimeMillis)}""",inputMap)
+      sendMessageToKafka(s"""{"messageType":"pointsRecalculation","incomingMessage":"{\\"season\\":\\"${x}\\"}" ,"messageTimestamp":"${new java.sql.Timestamp(System.currentTimeMillis)}"}""",inputMap)
       y.toList
     }).toDF.repartition(10).show(false)
 
