@@ -352,6 +352,8 @@ products:
    src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverPointInfoWithResult.class
    src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverPointsInfo$.class
    src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverPointsInfo.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverRaceAndSeason$.class
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverRaceAndSeason.class
    src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverRaceInfo$.class
    src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverRaceInfo.class
    src/main/scala/org/controller/rankingSystemF1/utils.scala -> build/classes/scala/main/org/controller/rankingSystemF1/utils$driverRaceInfoWithReleaseInd$.class
@@ -881,6 +883,7 @@ binary dependencies:
    src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
@@ -1692,6 +1695,8 @@ class names:
    src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverPointInfoWithResult$
    src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverPointsInfo
    src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverPointsInfo$
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverRaceAndSeason
+   src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverRaceAndSeason$
    src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverRaceInfo
    src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverRaceInfo$
    src/main/scala/org/controller/rankingSystemF1/utils.scala -> org.controller.rankingSystemF1.utils$driverRaceInfoWithReleaseInd

@@ -18,7 +18,7 @@ object utils {
 
 
   val schemaOfDriverRace=new StructType(Array(StructField("driverId",StringType,true)
-    ,StructField("raceId",StringType,true)))
+    ,StructField("raceId",StringType,true),StructField("season",IntegerType,true)))
 
   val schemaOfDriverPoints=new StructType(Array(StructField("driverId",StringType,true)
     ,StructField("raceId",StringType,true),StructField("position",IntegerType,true),StructField("season",IntegerType,true)
@@ -33,19 +33,22 @@ object utils {
 */
 
 
-  case class driverRaceInfo(driverId:String,raceId:String,incomingTs:java.sql.Timestamp){
-    override def toString =s"""{"driverId":"${this.driverId}","raceId":${this.raceId},"incomingTs":"${this.incomingTs}"}"""
+  case class driverRaceInfo(driverId:String,raceId:String,season:Int,incomingTs:java.sql.Timestamp){
+    override def toString =s"""{"driverId":"${this.driverId}","raceId":"${this.raceId}","season":${this.season},"incomingTs":"${this.incomingTs}"}"""
     def toKafkaPayloadFormat= this.toString.replace("\"","\\\"")
   }
+
+  case class driverRaceAndSeason(driverId:String,season:Int)
   case class driverTmpTable(resolveKey:String, messageJson:String, incomingTs:java.sql.Timestamp)
   case class driverTmpTableWithResult(resolveKey:String, messageJson:String, incomingTs:java.sql.Timestamp, resultType:String, rowsAffected:Int)
 
   case class driver_race_info(driver_id:String,race_id:String,messageTimestamp:java.sql.Timestamp)
+
   case class driver_race_infoWithResult(driver_id:String,race_id:String,messageTimestamp:java.sql.Timestamp,resultType:String,rowsAffected:Int)
 
   case class driverInfoWithReleaseInd(driverId:String,raceId:String,driverName:String,season:Int,incomingTs:java.sql.Timestamp,releaseInd:String)
 
-  case class driverRaceInfoWithReleaseInd(driverId:String,raceId:String,incomingTs:java.sql.Timestamp,releaseInd:String)
+  case class driverRaceInfoWithReleaseInd(driverId:String,raceId:String,season:Int,messageTimestamp:java.sql.Timestamp,releaseInd:String)
 
   case class driverPointInfo(driver_id:String,race_id:String,position:Int,season:String,point:Int,messageTimestamp:java.sql.Timestamp)
 
