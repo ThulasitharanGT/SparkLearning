@@ -14,7 +14,6 @@ object driverRaceAndPointsInfo extends SparkOpener{
   val spark=SparkSessionLoc()
   spark.sparkContext.setLogLevel("ERROR")
 /*
-
   def getNonZeroDriverRecordFromTable(incomingRecord:driverTier1,inputMap:collection.mutable.Map[String,String])={
     val selectQuery=s"select driver_id,race_id,driver_name,point,season,incoming_ts from ${inputMap("schemaName")}.${inputMap("driverPointsTable")} where driver_id='${incomingRecord.driverId}' and season='${incomingRecord.season}' and point!=0 order by incoming_ts desc"
     println(s"getLatestTsForNonZeroRecordFromTable :: selectQuery ${selectQuery}")
@@ -45,10 +44,8 @@ object driverRaceAndPointsInfo extends SparkOpener{
     recordSeq
   }
 */
-
-
 def main(args:Array[String]):Unit={
-  val inputMap=getInputMap(args)
+    val inputMap=getInputMap(args)
 
     spark.readStream.format("kafka").option("kafka.bootstrap.servers",inputMap("bootStrapServer"))
       .option("startingOffsets",inputMap("startingOffsets"))
@@ -60,7 +57,7 @@ def main(args:Array[String]):Unit={
         batchFunction(df,batchId,inputMap)
       }).start
 
-  spark.streams.awaitAnyTermination
+    spark.streams.awaitAnyTermination
 }
   def batchFunction(df:org.apache.spark.sql.DataFrame,batchID:Long,inputMap:collection.mutable.Map[String,String])={
     import spark.implicits._
@@ -152,16 +149,16 @@ def main(args:Array[String]):Unit={
              (select * from ${inputMap("schemaName")}.${inputMap("raceInfoTable")} where race_id
              in ('${incomingDriverAndSeason.map(_._2).mkString("','")}')
              and race_season in ('${incomingDriverAndSeason.map(_._3).mkString("','")}') ) b on a.race_entry = b.race_id )d""".stripMargin)
-      .load.selectExpr("driver_id as driverId","race_season season")
+      .load.selectExpr("driver_id as driverId","race_entry as raceId","race_season season")
 
     driverIdsFromTable.withColumn("driverIdsFromTable",lit("driverIdsFromTable")).show(false)
 
     // driver id's released and from table
-    val totalDriverIds=totalDriverRaceReleased.select("driverId","season").union(driverIdsFromTable)
+    val totalDriverIds=totalDriverRaceReleased.select("driverId","raceId","season").union(driverIdsFromTable)
 
     totalDriverIds.withColumn("totalDriverIds",lit("totalDriverIds")).show(false)
 
-    val driverPointsJoinForRelease=totalDriverPointsRecords.as("driverPoints").join(totalDriverIds.as("driverIds"),col("driverPoints.driverId")===col("driverIds.driverId") && col("driverPoints.season")===col("driverIds.season"),"left")
+    val driverPointsJoinForRelease=totalDriverPointsRecords.as("driverPoints").join(totalDriverIds.as("driverIds"),col("driverPoints.driverId")===col("driverIds.driverId") && col("driverPoints.raceId")===col("driverIds.raceId") && col("driverPoints.season")===col("driverIds.season"),"left")
 
     driverPointsJoinForRelease.withColumn("driverPointsJoinForRelease",lit("driverPointsJoinForRelease")).show(false)
 
@@ -181,7 +178,7 @@ def main(args:Array[String]):Unit={
         deleteDriverTmpRecords(conn,"driverRace",x.race_id,inputMap) // deleting released records
          val (resultType,rowsAffected) =doesDriverRaceRecordExist(conn,x,inputMap)  match {
           case value if value == true =>("update",updateDriverRaceTimeStamp(conn,x,inputMap))
-          case value if value == false =>  ("insert",insertDriverRaceTimeStamp(conn,x,inputMap))
+          case value if value == false =>  ("insert",insertDriverRace(conn,x,inputMap))
         }
         conn.close
         driver_race_infoWithResult(x.driver_id,x.race_id,x.messageTimestamp,resultType,rowsAffected)
@@ -260,8 +257,8 @@ def main(args:Array[String]):Unit={
   def updateDriverRaceTimeStamp(conn:java.sql.Connection,record:driver_race_info,inputMap:collection.mutable.Map[String,String])=
     conn.prepareStatement(s"update ${inputMap("schemaName")}.${inputMap("driverRaceInfoTable")} set incoming_timestamp='${record.messageTimestamp}' where driver_id='${record.driver_id}' and race_entry='${record.race_id}'").executeUpdate
 
-  def insertDriverRaceTimeStamp(conn:java.sql.Connection,record:driver_race_info,inputMap:collection.mutable.Map[String,String])=
-    conn.prepareStatement(s"insert into ${inputMap("schemaName")}.${inputMap("driverRaceInfoTable")}(driver_id,race_entry,incoming_timestamp) values('${record.driver_id}','${record.race_id}','${record.messageTimestamp}'").executeUpdate
+  def insertDriverRace(conn:java.sql.Connection, record:driver_race_info, inputMap:collection.mutable.Map[String,String])=
+    conn.prepareStatement(s"insert into ${inputMap("schemaName")}.${inputMap("driverRaceInfoTable")}(driver_id,race_entry,incoming_timestamp) values('${record.driver_id}','${record.race_id}','${record.messageTimestamp}')").executeUpdate
 
   def doesDriverRaceRecordExist(conn:java.sql.Connection,record:driver_race_info,inputMap:collection.mutable.Map[String,String])=
     conn.prepareStatement(s"select * from ${inputMap("schemaName")}.${inputMap("driverRaceInfoTable")} where driver_id='${record.driver_id}' and race_entry='${record.race_id}' ").executeQuery.next
@@ -274,7 +271,7 @@ def main(args:Array[String]):Unit={
     conn.prepareStatement(s"update ${inputMap("schemaName")}.${inputMap("driverPointsTable")} set incoming_timestamp='${record.messageTimestamp}' where driver_id='${record.driver_id}' and race_id='${record.race_id}' and point='${record.point}'").executeUpdate
 
   def insertDriverPointsTimeStamp(conn:java.sql.Connection,record:driverPointInfo,inputMap:collection.mutable.Map[String,String])=
-    conn.prepareStatement(s"insert into ${inputMap("schemaName")}.${inputMap("driverPointsTable")} values (driver_id,race_id,position,season,point,incoming_timestamp) values('${record.driver_id}','${record.race_id}','${record.position}','${record.season}','${record.point}','${record.messageTimestamp}')").executeUpdate
+    conn.prepareStatement(s"insert into ${inputMap("schemaName")}.${inputMap("driverPointsTable")} (driver_id,race_id,position,season,point,incoming_timestamp) values ('${record.driver_id}','${record.race_id}','${record.position}','${record.season}','${record.point}','${record.messageTimestamp}')").executeUpdate
 
   def raceIDCheckInTable(connection:java.sql.Connection,raceID:String, inputMap:collection.mutable.Map[String,String])=
     connection.prepareStatement(s"select * from ${inputMap("schemaName")}.${inputMap("raceInfoTable")} where race_id='${raceID}'").executeQuery.next

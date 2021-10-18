@@ -61,7 +61,7 @@ object utils {
   case class driverInfoWithResult(driverId:String,driverName:String,season:String,messageTimestamp:java.sql.Timestamp,resultType:String,rowsAffected:Int)
 
   case class driverPointsInfo(driverId:String,raceId:String,position:Int,point:Int,season:Int,messageTimestamp:java.sql.Timestamp){
-    override def toString =s"""{"driverId":"${this.driverId}","raceId":${this.raceId},"position":${this.position},"point":${this.point},"season":${this.season},"messageTimestamp":"${this.messageTimestamp}"}"""
+    override def toString =s"""{"driverId":"${this.driverId}","raceId":"${this.raceId}","position":${this.position},"point":${this.point},"season":${this.season},"messageTimestamp":"${this.messageTimestamp}"}"""
     def toKafkaPayloadFormat= this.toString.replace("\"","\\\"")
   }
 
