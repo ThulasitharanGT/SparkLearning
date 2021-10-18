@@ -136,7 +136,7 @@ def main(args:Array[String]):Unit={
 
     val incomingDriverAndSeason=driverPointRecords.select("driverId","raceId","season").distinct.collect.map(x=> (x(0).toString,x(1).toString,x(2).toString)).toList
 
-    // reading incoming  driver id's and season for points
+    // reading incoming  driver id's, race id's and season for points
     val driverIdsFromTable=spark.read.format("jdbc")
       .option("driver",inputMap("JDBCDriver"))
       .option("user",inputMap("JDBCUser"))
@@ -165,8 +165,10 @@ def main(args:Array[String]):Unit={
     // released points
 
     val driverPointsReleased=driverPointsJoinForRelease.filter("driverIds.driverId is not null").select("driverPoints.*")
+    driverPointsReleased.withColumn("driverPointsReleased",lit("driverPointsReleased")).show(false)
 
     val driverPointsHold=driverPointsJoinForRelease.filter("driverIds.driverId is null").select("driverPoints.*")
+    driverPointsHold.withColumn("driverPointsHold",lit("driverPointsHold")).show(false)
 
     // save to table
     totalDriverRaceReleased.selectExpr("driverId as driver_id","raceId as race_entry","cast(messageTimestamp as timestamp) messageTimestamp")
@@ -185,6 +187,11 @@ def main(args:Array[String]):Unit={
       }
     ).show(false)
 
+    // it deletes the parent from the tmp table , so when the below is computed, we don't see the records in tmp table
+
+    driverIdsFromTable.withColumn("driverIdsFromTable2",lit("driverIdsFromTable2")).show(false)
+    driverPointsReleased.withColumn("driverPointsReleased2",lit("driverPointsReleased2")).show(false)
+    driverPointsJoinForRelease.withColumn("driverPointsJoinForRelease2",lit("driverPointsJoinForRelease2")).show(false)
 
     driverPointsReleased.selectExpr("driverId as driver_id","raceId as race_id","position","season","point","incomingTs as messageTimestamp")
       .withColumn("dupeFilter",
@@ -245,7 +252,7 @@ def main(args:Array[String]):Unit={
     conn.prepareStatement(s"insert into ${inputMap("schemaName")}.${inputMap("driverPointsTemp")}(resolve_key,job_name,incoming_timestamp,message_in_json) values ('${record.resolveKey}','${jobName}','${record.incomingTs}','${record.messageJson}') ").executeUpdate
 
   def insertOrUpdateTempTable(conn:java.sql.Connection, record:driverTmpTable,jobName:String, inputMap:collection.mutable.Map[String,String])=
-    conn.prepareStatement(s"select * from ${inputMap("schemaName")}.${inputMap("driverPointsTemp")} where resolve_key='${record.resolveKey}' and job_name='driverRace' ").executeQuery.next match {
+    conn.prepareStatement(s"select * from ${inputMap("schemaName")}.${inputMap("driverPointsTemp")} where resolve_key='${record.resolveKey}' and job_name='${jobName}' ").executeQuery.next match {
       case value if value == true => ("update",updateDriverTmpRecords(conn,record.resolveKey,jobName,record.incomingTs,inputMap))
       case value if value == false => ("insert",insertDriverTmpRecords(conn,record,jobName,inputMap))
     }
