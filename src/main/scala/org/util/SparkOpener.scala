@@ -27,13 +27,13 @@ trait SparkOpener
     conf.set("spark.sql.parquet.binaryAsString","true").set("spark.sql.avro.binaryAsString","true")
     //conf.set("spark.testing.memory","671859200").set("spark.ui.enabled","true").set("spark.sql.parquet.binaryAsString","true").set("spark.sql.avro.binaryAsString","true")
     //System.setProperty("hadoop.home.dir",PathConstants.WINUTILS_EXE_PATH)
-    SparkSession.builder().config(conf).enableHiveSupport().getOrCreate()
+    SparkSession.builder.config(conf).enableHiveSupport.getOrCreate
     }
   def SparkSessionLocWithConf(conf:SparkConf,name:String =randomNameGenerator):SparkSession={
     val config=conf.setAppName(name +"Local" ).setMaster("local")
     config.set("spark.sql.parquet.binaryAsString","true").set("spark.sql.avro.binaryAsString","true")
     //conf.set("spark.testing.memory","671859200").set("spark.ui.enabled","true").set("spark.sql.parquet.binaryAsString","true").set("spark.sql.avro.binaryAsString","true")
     //System.setProperty("hadoop.home.dir",PathConstants.WINUTILS_EXE_PATH)
-    SparkSession.builder().config(config).getOrCreate()
+    SparkSession.builder.config(config).getOrCreate
   }
 }
