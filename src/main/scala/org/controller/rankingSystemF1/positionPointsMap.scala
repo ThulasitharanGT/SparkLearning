@@ -5,7 +5,6 @@ import org.util.SparkOpener
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.expressions.Window
-import org.controller.rankingSystemF1.positionPointsMap.{setPrepareStatementInsertWithEndDate, setPrepareStatementInsertWithoutEndDate}
 
 object positionPointsMap extends SparkOpener{
 
@@ -28,8 +27,8 @@ object positionPointsMap extends SparkOpener{
     val inputDFSortedAndCalculated= dropDupesAndTakeLatestPointsWithRespectToStartDate(getInputDF(inputPath))
     // incoming schema -- position,points,season,startDate
 
-    val insertStatementWithEndDate=s"insert into ${inputMap("schemaName")}.${inputMap("pointsPositionMapTable")} (position, point, season, start_date, end_date) values (?,?,?,?,?,?)"
-    val insertStatementWithoutEndDate=s"insert into ${inputMap("schemaName")}.${inputMap("pointsPositionMapTable")} (position, point, season, start_date) values (?,?,?,?,?)"
+    val insertStatementWithEndDate=s"insert into ${inputMap("schemaName")}.${inputMap("pointsPositionMapTable")} (position, point, season, start_date, end_date) values (?,?,?,?,?)"
+    val insertStatementWithoutEndDate=s"insert into ${inputMap("schemaName")}.${inputMap("pointsPositionMapTable")} (position, point, season, start_date) values (?,?,?,?)"
 
     /*
 position varchar(10),
@@ -38,15 +37,15 @@ season integer,
 start_date date,
 end_date date default
 */
-
-    inputDFSortedAndCalculated.as[racePointsInfo].groupByKey(x=>(x.season,x.racePosition)).flatMapGroups((key,value) => {
+    inputDFSortedAndCalculated.show(false)
+    inputDFSortedAndCalculated.as[racePointsInfo].groupByKey(x=>(x.season,x.position)).flatMapGroups((key, value) => {
       val eventList = value.toList.sortBy(x => getDateToLong(x.startDate) < getDateToLong(x.startDate))
 
       @transient val conn = getJDBCConnection(inputMap)
       @transient var insertQueryWithEndPreparedStatement = conn.prepareStatement(insertStatementWithEndDate)
       @transient var insertQueryWithoutEndPreparedStatement = conn.prepareStatement(insertStatementWithoutEndDate)
 
-      eventList.map { x => {
+      val result=eventList.map { x => {
         getLatestStartDateForNonNullRecordInDB(conn, key._1, key._2, inputMap) match {
           case Some(value) =>
             if (value._2 == "start" && value._1.compareTo(x.startDate) < 0) {
@@ -55,58 +54,59 @@ end_date date default
                 case Some(endDate) =>
                   insertQueryWithEndPreparedStatement = setPrepareStatementInsertWithEndDate(x, insertQueryWithEndPreparedStatement)
                   insertQueryWithEndPreparedStatement.addBatch
-                  racePointsInfoWithMeta(x.racePosition,x.points,x.season,x.startDate,x.endDate,1,0)
+                  racePointsInfoWithMeta(x.position,x.points,x.season,x.startDate,x.endDate,1,0)
                 case None =>
                   insertQueryWithoutEndPreparedStatement = setPrepareStatementInsertWithoutEndDate(x, insertQueryWithoutEndPreparedStatement)
                   insertQueryWithoutEndPreparedStatement.addBatch
-                  racePointsInfoWithMeta(x.racePosition,x.points,x.season,x.startDate,x.endDate,1,1)
+                  racePointsInfoWithMeta(x.position,x.points,x.season,x.startDate,x.endDate,1,1)
               }
             }
-            if (value._2 == "end" && value._1.compareTo(x.startDate) < 0)
+            else if (value._2 == "end" && value._1.compareTo(x.startDate) < 0)
               x.endDate match {
                 case Some(endDate) =>
                   insertQueryWithEndPreparedStatement = setPrepareStatementInsertWithEndDate(x, insertQueryWithEndPreparedStatement)
                   insertQueryWithEndPreparedStatement.addBatch
-                  racePointsInfoWithMeta(x.racePosition,x.points,x.season,x.startDate,x.endDate,2,0)
+                  racePointsInfoWithMeta(x.position,x.points,x.season,x.startDate,x.endDate,2,0)
                 case None =>
                   insertQueryWithoutEndPreparedStatement = setPrepareStatementInsertWithoutEndDate(x, insertQueryWithoutEndPreparedStatement)
                   insertQueryWithoutEndPreparedStatement.addBatch
-                  racePointsInfoWithMeta(x.racePosition,x.points,x.season,x.startDate,x.endDate,2,1)
+                  racePointsInfoWithMeta(x.position,x.points,x.season,x.startDate,x.endDate,2,1)
               }
 
-            if (value._2 == "end" && value._1.compareTo(x.startDate) == 0)
+            else if (value._2 == "end" && value._1.compareTo(x.startDate) == 0)
             // deduct one from start date and insert
               x.endDate match {
                 case Some(endDate) =>
                   insertQueryWithEndPreparedStatement = setPrepareStatementInsertWithEndDate(x.copy(startDate = new java.sql.Date(datePattern.parse(value._1.toString).getTime + (24L * 69L * 60L * 1000L))), insertQueryWithEndPreparedStatement)
                   insertQueryWithEndPreparedStatement.addBatch
-                  racePointsInfoWithMeta(x.racePosition,x.points,x.season,x.startDate,x.endDate,3,0)
+                  racePointsInfoWithMeta(x.position,x.points,x.season,x.startDate,x.endDate,3,0)
                 case None =>
                   insertQueryWithoutEndPreparedStatement = setPrepareStatementInsertWithoutEndDate(x.copy(startDate = new java.sql.Date(datePattern.parse(x.startDate.toString).getTime + (24L * 69L * 60L * 1000L))), insertQueryWithoutEndPreparedStatement)
                   insertQueryWithoutEndPreparedStatement.addBatch
-                  racePointsInfoWithMeta(x.racePosition,x.points,x.season,x.startDate,x.endDate,3,1)
+                  racePointsInfoWithMeta(x.position,x.points,x.season,x.startDate,x.endDate,3,1)
               }
-
-
-          if (value._2 == "end" && value._1.compareTo(x.startDate) > 0 )
+            else if (value._2 == "end" && value._1.compareTo(x.startDate) > 0 )
             x.endDate match {
               case Some(endDateRecord) =>
                 if (value._1.compareTo(endDateRecord) > 0) // no update req
-                racePointsInfoWithMeta(x.racePosition,x.points,x.season,x.startDate,x.endDate,4,-1)
+                racePointsInfoWithMeta(x.position,x.points,x.season,x.startDate,x.endDate,4,-1)
                 else if (value._1.compareTo(endDateRecord) < 0){
                 // start date of record is end date of table +1
                   insertQueryWithEndPreparedStatement = setPrepareStatementInsertWithEndDate(x.copy(startDate = new java.sql.Date(datePattern.parse(value._1.toString).getTime + (24L * 69L * 60L * 1000L))), insertQueryWithEndPreparedStatement)
                   insertQueryWithEndPreparedStatement.addBatch
-                  racePointsInfoWithMeta(x.racePosition, x.points, x.season, x.startDate, x.endDate, 4, 0)
+                  racePointsInfoWithMeta(x.position, x.points, x.season, x.startDate, x.endDate, 4, 0)
                 }
                 else // equal
-                  racePointsInfoWithMeta(x.racePosition,x.points,x.season,x.startDate,x.endDate,4,-2)
+                  racePointsInfoWithMeta(x.position,x.points,x.season,x.startDate,x.endDate,4,-2)
               case None =>
               //   rec startdate is table end+1
                 insertQueryWithoutEndPreparedStatement = setPrepareStatementInsertWithoutEndDate(x.copy(startDate = new java.sql.Date(datePattern.parse(value._1.toString).getTime + (24L * 69L * 60L * 1000L))), insertQueryWithoutEndPreparedStatement)
                 insertQueryWithoutEndPreparedStatement.addBatch
-                racePointsInfoWithMeta(x.racePosition,x.points,x.season,x.startDate,x.endDate,4,1)
+                racePointsInfoWithMeta(x.position,x.points,x.season,x.startDate,x.endDate,4,1)
             }
+            else
+              racePointsInfoWithMeta(x.position,x.points,x.season,x.startDate,x.endDate,5,-1) // no scn no update
+
           //  check record end date if it exists
           // if no record end date is there just update rec stat dt ts and enddate+1 and new record insert
           // if record end date is eq to db end date then dont update
@@ -118,11 +118,11 @@ end_date date default
               case Some(endDate) =>
                 insertQueryWithEndPreparedStatement = setPrepareStatementInsertWithEndDate(x, insertQueryWithEndPreparedStatement)
                 insertQueryWithEndPreparedStatement.addBatch
-                racePointsInfoWithMeta(x.racePosition,x.points,x.season,x.startDate,x.endDate,5,0)
+                racePointsInfoWithMeta(x.position,x.points,x.season,x.startDate,x.endDate,5,0)
               case None =>
                 insertQueryWithoutEndPreparedStatement = setPrepareStatementInsertWithoutEndDate(x, insertQueryWithoutEndPreparedStatement)
                 insertQueryWithoutEndPreparedStatement.addBatch
-                racePointsInfoWithMeta(x.racePosition,x.points,x.season,x.startDate,x.endDate,5,1)
+                racePointsInfoWithMeta(x.position,x.points,x.season,x.startDate,x.endDate,5,1)
             }
         }
 
@@ -132,7 +132,7 @@ end_date date default
       insertQueryWithEndPreparedStatement.executeBatch
       insertQueryWithoutEndPreparedStatement.executeBatch
       conn.close
-      eventList
+      result
     }).show(false)
 
 
@@ -142,24 +142,24 @@ end_date date default
   }
 
   def updateEndDateOfExistingRecord(record:racePointsInfo,conn:java.sql.Connection,inputMap:collection.mutable.Map[String,String]) =
-    conn.prepareStatement(s"update ${inputMap("schemaName")}.${inputMap("pointsPositionMapTable")} set end_date='${datePattern.format(datePattern.parse(record.startDate.toString).getTime - (24L*60L*60L*1000L))}' where season=${record.season} and position=${record.points} and end_date is null").executeUpdate
+    conn.prepareStatement(s"update ${inputMap("schemaName")}.${inputMap("pointsPositionMapTable")} set end_date='${datePattern.format(datePattern.parse(record.startDate.toString).getTime - (24L*60L*60L*1000L))}' where season=${record.season} and position=${record.position} and end_date is null").executeUpdate
 
 
   val datePattern=new java.text.SimpleDateFormat("yyyy-MM-dd")
   def getDateToLong(date:java.sql.Date)=datePattern.parse(date.toString).getTime
 
 def setPrepareStatementInsertWithoutEndDate (record:racePointsInfo,prepStatement:java.sql.PreparedStatement) ={
-  prepStatement.setInt(0,record.racePosition)
-  prepStatement.setInt(1,record.points)
-  prepStatement.setInt(2,record.season)
-  prepStatement.setDate(3,record.startDate)
+  prepStatement.setInt(1,record.position)
+  prepStatement.setInt(2,record.points)
+  prepStatement.setInt(3,record.season)
+  prepStatement.setDate(4,record.startDate)
   prepStatement
 }
   def setPrepareStatementInsertWithEndDate (record:racePointsInfo,prepStatement:java.sql.PreparedStatement) ={
-    prepStatement.setInt(0,record.racePosition)
-    prepStatement.setInt(1,record.points)
-    prepStatement.setInt(2,record.season)
-    prepStatement.setDate(3,record.startDate)
+    prepStatement.setInt(1,record.position)
+    prepStatement.setInt(2,record.points)
+    prepStatement.setInt(3,record.season)
+    prepStatement.setDate(4,record.startDate)
     prepStatement.setDate(5,record.endDate.get)
     prepStatement
   }
@@ -196,8 +196,8 @@ def setPrepareStatementInsertWithoutEndDate (record:racePointsInfo,prepStatement
       .filter("dupesDropper=1").drop("dupesDropper")
       .withColumn("endDate",lead(col("startDate"),1).over(Window.partitionBy("season","position").orderBy(asc("startDate"))))
       .orderBy(asc("season"), asc("position"), asc("startDate"))
-      .withColumn("endDate",when(col("endDate").isNotNull ,date_add(col("endDate"),-1)).otherwise(col("endDate")))
+      .withColumn("endDate",when(col("endDate").isNotNull ,date_add(col("endDate"),-1)).otherwise(col("endDate"))) // .withColumnRenamed("position","racePosition")
 
   def doesRecordExists(conn:java.sql.Connection,incomingRecord:racePointsInfo,inputMap:collection.mutable.Map[String,String])=
-    conn.prepareStatement(s"select * from  ${inputMap("schemaName")}.${inputMap("pointsPositionMapTable")} where season:${}")
+    conn.prepareStatement(s"select * from  ${inputMap("schemaName")}.${inputMap("pointsPositionMapTable")} where season=${incomingRecord.season}")
 }

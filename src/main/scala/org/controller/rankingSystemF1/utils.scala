@@ -42,9 +42,9 @@ object utils {
     def toKafkaPayloadFormat= this.toString.replace("\"","\\\"")
   }
 
-  case class racePointsInfo(racePosition:Int,points:Int,season:Int,startDate:java.sql.Date,endDate:Option[java.sql.Date])
+  case class racePointsInfo(position:Int, points:Int, season:Int, startDate:java.sql.Date, endDate:Option[java.sql.Date])
 
-  case class racePointsInfoWithMeta(racePosition:Int,points:Int,season:Int,startDate:java.sql.Date,endDate:Option[java.sql.Date],insertRecordCount:Int,updateRecordsCount:Int)
+  case class racePointsInfoWithMeta(position:Int,points:Int,season:Int,startDate:java.sql.Date,endDate:Option[java.sql.Date],insertRecordCount:Int,updateRecordsCount:Int)
 
   case class driverRaceAndSeason(driverId:String,season:Int)
   case class driverTmpTable(resolveKey:String, messageJson:String, incomingTs:java.sql.Timestamp)
