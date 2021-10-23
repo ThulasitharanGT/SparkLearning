@@ -1,0 +1,4 @@
+{"messageType":"raceTrackInfo","messageTimestamp":"2021-05-01 17:19:20","incomingMessage":"{\"raceTrackId\":\"RT001\",\"raceVenue\":\"Monaco\"}"}
+{"messageType":"raceTrackInfo","messageTimestamp":"2021-05-01 17:19:20","incomingMessage":"{\"raceTrackId\":\"RT002\",\"raceVenue\":\"Canada\"}"}
+{"messageType":"raceTrackInfo","messageTimestamp":"2021-05-01 17:19:20","incomingMessage":"{\"raceTrackId\":\"RT003\",\"raceVenue\":\"Azerbaijan\"}"}
+{"messageType":"raceTrackInfo","messageTimestamp":"2021-05-01 17:19:20","incomingMessage":"{\"raceTrackId\":\"RT004\",\"raceVenue\":\"Australia\"}"}

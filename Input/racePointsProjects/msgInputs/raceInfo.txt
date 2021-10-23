@@ -1,0 +1,6 @@
+{"messageType":"raceInfo","messageTimestamp":"2021-11-01 17:19:20","incomingMessage":"{\"raceId\":\"RC001\",\"raceTrackId\":\"RT002\",\"raceDate\":\"2020-04-02\",\"season\":2020}"}
+{"messageType":"raceInfo","messageTimestamp":"2021-11-01 17:19:20","incomingMessage":"{\"raceId\":\"RC002\",\"raceTrackId\":\"RT001\",\"raceDate\":\"2020-05-02\",\"season\":2020}"}
+{"messageType":"raceInfo","messageTimestamp":"2021-11-01 17:19:20","incomingMessage":"{\"raceId\":\"RC003\",\"raceTrackId\":\"RT002\",\"raceDate\":\"2020-05-03\",\"season\":2020}"}
+{"messageType":"raceInfo","messageTimestamp":"2021-11-01 17:19:20","incomingMessage":"{\"raceId\":\"RC004\",\"raceTrackId\":\"RT001\",\"raceDate\":\"2020-05-04\",\"season\":2020}"}
+{"messageType":"raceInfo","messageTimestamp":"2021-11-01 17:19:20","incomingMessage":"{\"raceId\":\"RC005\",\"raceTrackId\":\"RT003\",\"raceDate\":\"2020-05-04\",\"season\":2020}"}
+{"messageType":"raceInfo","messageTimestamp":"2021-11-01 17:19:20","incomingMessage":"{\"raceId\":\"RC006\",\"raceTrackId\":\"RT004\",\"raceDate\":\"2020-05-04\",\"season\":2020}"}
