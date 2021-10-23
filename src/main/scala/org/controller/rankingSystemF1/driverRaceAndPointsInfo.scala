@@ -165,10 +165,10 @@ def main(args:Array[String]):Unit={
     // released points
 
     val driverPointsReleased=driverPointsJoinForRelease.filter("driverIds.driverId is not null").select("driverPoints.*")
-    driverPointsReleased.withColumn("driverPointsReleased",lit("driverPointsReleased")).show(false)
+ //   driverPointsReleased.withColumn("driverPointsReleased",lit("driverPointsReleased")).show(false)
 
     val driverPointsHold=driverPointsJoinForRelease.filter("driverIds.driverId is null").select("driverPoints.*")
-    driverPointsHold.withColumn("driverPointsHold",lit("driverPointsHold")).show(false)
+ //   driverPointsHold.withColumn("driverPointsHold",lit("driverPointsHold")).show(false)
 
     // save to table
     totalDriverRaceReleased.selectExpr("driverId as driver_id","raceId as race_entry","cast(messageTimestamp as timestamp) messageTimestamp")
