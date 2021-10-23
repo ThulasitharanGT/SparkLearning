@@ -4,7 +4,7 @@ package org.controller.rankingSystemF1
 
 // try state on race ID. raceId to be parent
 
-import org.controller.rankingSystemF1.utils.{driverInfoWithReleaseInd, driverPointInfo, driverPointInfoWithResult, driverPointsInfo, driverRaceInfo, driverTmpTable, driverTmpTableWithResult, driverRaceInfoWithReleaseInd, driver_race_info, driver_race_infoWithResult, getInputMap, getJDBCConnection, schemaOfDriverPoints, schemaOfDriverRace, schemaOfOuterLayer, sendMessageToKafka}
+import org.controller.rankingSystemF1.utils.{driverInfoWithReleaseInd, driverPointInfo, driverPointInfoWithResult, driverPointsInfo, driverRaceInfo, driverRaceInfoWithReleaseInd, driverTmpTable, driverTmpTableWithResult, driver_race_info, driver_race_infoWithResult, getInputMap, getJDBCConnection, pointsRecalculationTrigger, schemaOfDriverPoints, schemaOfDriverRace, schemaOfOuterLayer, sendMessageToKafka}
 import org.util.SparkOpener
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
@@ -207,7 +207,8 @@ def main(args:Array[String]):Unit={
         conn.close
         driverPointInfoWithResult(x.driver_id,x.race_id,x.position,x.season,x.point,x.messageTimestamp,resultType,rowsAffected)
       }).groupByKey(_.season).flatMapGroups((x,y)=>{
-      sendMessageToKafka(s"""{"messageType":"pointsRecalculation","incomingMessage":"{\\"season\\":\\"${x}\\"}" ,"messageTimestamp":"${new java.sql.Timestamp(System.currentTimeMillis)}"}""",inputMap)
+  //    sendMessageToKafka(s"""{"messageType":"pointsRecalculation","incomingMessage":"{\\"season\\":${x}}" ,"messageTimestamp":"${new java.sql.Timestamp(System.currentTimeMillis)}"}""",inputMap)
+      sendMessageToKafka(pointsRecalculationTrigger(x.toInt).toRecalculateTriggerWithMeta,inputMap)
       y.toList
     }).toDF.repartition(10).show(false)
 

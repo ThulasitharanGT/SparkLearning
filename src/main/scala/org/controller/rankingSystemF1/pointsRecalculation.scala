@@ -86,6 +86,8 @@ object pointsRecalculation extends SparkOpener{
         ,col("driverStandings")+col("maxRaceNonZeroPosition")).otherwise(col("driverStandings")))
       .drop("maxRaceNonZeroPosition")
 
+ //   finalTotalPoints.show(false)
+
     finalTotalPoints
   }
 

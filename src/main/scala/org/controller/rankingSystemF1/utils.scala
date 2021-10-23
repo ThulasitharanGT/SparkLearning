@@ -26,7 +26,11 @@ object utils {
     ,StructField("raceId",StringType,true),StructField("position",IntegerType,true),StructField("season",IntegerType,true)
     ,StructField("point",IntegerType,true)))
 
-
+  case class pointsRecalculationTrigger(season:Int){
+    override def toString=s"""{"season":${this.season}}"""
+    def toKafkaPayloadFormat=this.toString.replace("\"","\\\"")
+    def toRecalculateTriggerWithMeta=s"""{"messageType":"pointsRecalculation","incomingMessage":"${this.toKafkaPayloadFormat}","messageTimestamp":"${new java.sql.Timestamp(System.currentTimeMillis)}"}"""
+  }
 /*
 
   val schemaOfDriverTier2=new StructType(Array(StructField("driverId",StringType,true)
