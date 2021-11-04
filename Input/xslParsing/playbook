@@ -1,0 +1,372 @@
+
+val inputString1=s"""<updateEvent sessionID="ses1">
+<accountID>acc1</accountID>
+<addressInfo>
+<line1>line 1 of address</line1>
+<line2>line 2 of address</line2>
+<line3>line 3 of address</line3>
+<line4>line 4 of address</line4>
+<pinCode>678901</pinCode>
+</addressInfo>
+<orderId>O001</orderId>
+<incomingTS>${new java.sql.Timestamp(System.currentTimeMillis)}</incomingTS>
+<orderItems>
+<itemsInfo discountApplied="DS001">
+<itemId>I001</itemId>
+<price>20</price>
+<quantity>1</quantity>
+</itemsInfo>
+<itemsInfo>
+<itemId>I002</itemId>
+<price>23</price>
+<quantity>2</quantity>
+</itemsInfo>
+</orderItems>
+<discountEligibility discountId="DS001">
+<discountAmount>20</discountAmount>
+</discountEligibility>
+<discountEligibility discountId="DS002">
+<discountAmount>10</discountAmount>
+</discountEligibility>
+<userId>U001</userId>
+</updateEvent>"""
+
+
+val inputString2=s"""<insertEvent sessionID="ses1">
+<accountID>acc1</accountID>
+<incomingTS>${new java.sql.Timestamp(System.currentTimeMillis)}</incomingTS>
+<addressInfo>
+<line1>line 1 of address</line1>
+<line2>line 2 of address</line2>
+<line3>line 3 of address</line3>
+<line4>line 4 of address</line4>
+<pinCode>678901</pinCode>
+</addressInfo>
+<orderId>O002</orderId>
+<orderItems>
+<itemsInfo discountApplied="DS001">
+<itemId>I001</itemId>
+<price>20</price>
+<quantity>1</quantity>
+</itemsInfo>
+<itemsInfo>
+<itemId>I002</itemId>
+<price>23</price>
+<quantity>2</quantity>
+</itemsInfo>
+<itemsInfo discountApplied="DS002">
+<itemId>I003</itemId>
+<price>33</price>
+<quantity>3</quantity>
+</itemsInfo>
+</orderItems>
+<discountEligibility discountId="DS001">
+<discountAmount>20</discountAmount>
+</discountEligibility>
+<discountEligibility discountId="DS002">
+<discountAmount>10</discountAmount>
+</discountEligibility>
+<userId>U001</userId>
+</insertEvent>"""
+
+
+
+val inputString3=s"""<insertEvent sessionID="ses1">
+<accountID>acc1</accountID>
+<incomingTS>${new java.sql.Timestamp(System.currentTimeMillis + (1000L * 60L))}</incomingTS>
+<addressInfo>
+<line1>line 1 of address</line1>
+<line2>line 2 of address</line2>
+<line3>line 3 of address</line3>
+<line4>line 4 of address</line4>
+<pinCode>678901</pinCode>
+</addressInfo>
+<orderId>O001</orderId>
+<orderItems>
+<itemsInfo discountApplied="DS001">
+<itemId>I001</itemId>
+<price>22</price>
+<quantity>1</quantity>
+</itemsInfo>
+</orderItems>
+<discountEligibility discountId="DS001">
+<discountAmount>10</discountAmount>
+</discountEligibility>
+<discountEligibility discountId="DS002">
+<discountAmount>10</discountAmount>
+</discountEligibility>
+<userId>U001</userId>
+</insertEvent>"""
+
+
+val props=new java.util.Properties
+props.put("bootstrap.servers","localhost:8082,loclahost:8082,localhost:8083")
+props.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer")
+props.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer")
+
+val kafkaProducer=new org.apache.kafka.clients.producer.KafkaProducer[String,String](props)
+
+kafkaProducer.send(new org.apache.kafka.clients.producer.ProducerRecord[String,String]("xml.input",inputString1))
+
+kafkaProducer.send(new org.apache.kafka.clients.producer.ProducerRecord[String,String]("xml.input",inputString2))
+
+kafkaProducer.send(new org.apache.kafka.clients.producer.ProducerRecord[String,String]("xml.input",inputString3))
+
+/////////////////////
+
+val inputString="""<updateEvent sessionID="ses1">
+<accountID>acc1</accountID>
+<addressInfo>
+<line1>line 1 of address</line1>
+<line2>line 2 of address</line2>
+<line3>line 3 of address</line3>
+<line4>line 4 of address</line4>
+<pinCode>678901</pinCode>
+</addressInfo>
+<orderId>O001</orderId>
+<incomingTS>2021-11-04 15:07:30</incomingTS>
+<orderItems>
+<itemsInfo discountApplied="DS001">
+<itemId>I001</itemId>
+<price>20</price>
+<quantity>1</quantity>
+</itemsInfo>
+<itemsInfo>
+<itemId>I002</itemId>
+<price>23</price>
+<quantity>2</quantity>
+</itemsInfo>
+</orderItems>
+<discountEligibility discountId="DS001">
+<discountAmount>20</discountAmount>
+</discountEligibility>
+<discountEligibility discountId="DS002">
+<discountAmount>10</discountAmount>
+</discountEligibility>
+<userId>U001</userId>
+</updateEvent>"""
+
+
+
+
+val inputString="""<insertEvent sessionID="ses1">
+<accountID>acc1</accountID>
+<incomingTS>2021-11-04 15:07:30</incomingTS>
+<addressInfo>
+<line1>line 1 of address</line1>
+<line2>line 2 of address</line2>
+<line3>line 3 of address</line3>
+<line4>line 4 of address</line4>
+<pinCode>678901</pinCode>
+</addressInfo>
+<orderId>O001</orderId>
+<orderItems>
+<itemsInfo discountApplied="DS001">
+<itemId>I001</itemId>
+<price>20</price>
+<quantity>1</quantity>
+</itemsInfo>
+<itemsInfo>
+<itemId>I002</itemId>
+<price>23</price>
+<quantity>2</quantity>
+</itemsInfo>
+<itemsInfo discountApplied="DS002">
+<itemId>I003</itemId>
+<price>33</price>
+<quantity>3</quantity>
+</itemsInfo>
+</orderItems>
+<discountEligibility discountId="DS001">
+<discountAmount>20</discountAmount>
+</discountEligibility>
+<discountEligibility discountId="DS002">
+<discountAmount>10</discountAmount>
+</discountEligibility>
+<userId>U001</userId>
+</insertEvent>"""
+
+
+import java.io.{ByteArrayOutputStream, InputStream, StringReader}
+import javax.xml.transform.{Result, Source, Transformer, TransformerFactory}
+import javax.xml.transform.stream.{StreamResult, StreamSource}
+val newInputSource= new java.io.FileInputStream("/home/raptor/IdeaProjects/SparkLearning/Input/xslParsing/tmpXSL.xsl")
+val outputStream = new ByteArrayOutputStream
+val result = new StreamResult(outputStream)
+val xmlSource = new StreamSource(new StringReader(inputString))
+val xslSource = new StreamSource(newInputSource)
+val transformer = TransformerFactory.newInstance.newTransformer(xslSource)
+transformer.transform(xmlSource, result)
+outputStream.toString
+
+getString(inputString,"/home/raptor/IdeaProjects/SparkLearning/Input/xslParsing/tmpXSL.xsl")
+
+def getString(str:String,xslFilePath:String)={
+val newInputSource= new java.io.FileInputStream(xslFilePath)
+val outputStream = new ByteArrayOutputStream
+val result = new StreamResult(outputStream)
+val xmlSource = new StreamSource(new StringReader(str))
+val xslSource = new StreamSource(newInputSource)
+val transformer = TransformerFactory.newInstance.newTransformer(xslSource)
+transformer.transform(xmlSource, result)
+outputStream.toString
+}
+
+
+case class itemInfo(itemID:String,price:Int,quantity:Int,discountApplied:String,discountAmount:Option[Int])
+
+case class orderInfo(orderID:String,sessionID:String,userId:String,orderItems:Seq[itemInfo],address:String,insOrUpd:String)
+
+case class baseMsg(verbString:String,message:String)
+
+def getMsgInfo(eventString:String)=baseMsg(eventString.split("\\|\\|")(0),eventString.split("\\|\\|")(1))
+
+val tmpMap=collection.mutable.Map[String,String]()
+
+tmpMap.clear
+
+"""sessionID::ses1+accountID::acc1+orderId::O001+orderItems::(I001~0~Y~DS001~20~1),(I002~23~NA~NA~NA~2),(I003~23~Y~DS002~10~3)+Address::line 1 of address,line 2 of address,line 3 of address,line 4 of address,678901,""".split("\\+").map(x => tmpMap.put(x.split("\\:\\:")(0),clearString(x.split("\\:\\:")(1))))
+
+// collection.mutable.Map("""sessionID::ses1+accountID::acc1+orderId::O001+orderItems::(I001~0~Y~DS001~20~1)+(I002~23~NA~NA~NA~2)+(I003~23~Y~DS002~10~3)+Address::line 1 of address,line 2 of address,line 3 of address,line 4 of address,678901,""".split("\\+").flatMap(x => Map(x.split("\\:\\:")(0) -> clearString(x.split("\\:\\:")(1)))).toSeq:_*)
+
+clearString("(tyuop",Seq(("(",")"),("[","]"),(",",",")))
+
+
+def clearString(tmpString:String,tmpSeq:Seq[(String,String)]=Seq(("(",")"),("[","]"),(",",","))):String= tmpSeq match {
+case head :: tail =>
+clearString(clearArround(tmpString,head._1,head._2),tail)
+case Nil =>
+tmpString
+}
+
+def clearArround(tmpString:String,startString:String,endString:String)= tmpString.startsWith(startString) match {
+case value if value ==true =>
+tmpString.drop(1).endsWith(endString) match {
+case value if value == true =>
+tmpString.drop(1).dropRight(1)
+case value if value == false =>
+tmpString.drop(1)
+}
+case value if value ==false =>
+tmpString.endsWith(endString) match {
+case value if value == true =>
+tmpString.dropRight(1)
+case value if value == false =>
+tmpString
+}
+}
+
+constructEvent(getMsgInfo(getString(inputString1,"/home/raptor/IdeaProjects/SparkLearning/Input/xslParsing/tmpXSL.xsl")))
+
+constructEvent(getMsgInfo(getString(inputString1,"/home/raptor/IdeaProjects/SparkLearning/src/main/resources/tmpXSL.xsl")))
+
+constructEvent(getMsgInfo(getString(inputString,"/home/raptor/IdeaProjects/SparkLearning/src/main/resources/tmpXSL.xsl")))
+
+
+
+
+def constructEvent(event:baseMsg)=constructProperEvent(event.verbString,constructMap(event.message))
+
+def constructMap(msgString:String)=collection.mutable.Map(msgString.split("\\+").flatMap(x => Map(x.split("\\:\\:")(0) -> clearString(x.split("\\:\\:")(1),Seq((",",","),("(",")"),("[","]"))))).toSeq:_*)
+
+def constructProperEvent(verb:String,dataMap:collection.mutable.Map[String,String])= verb match {
+case value if value == "INS" =>
+orderInfo(dataMap("orderId"),dataMap("sessionID"),dataMap("userId"),dataMap("accountID"),constructItemEventIns(dataMap("orderItems")),dataMap("Address"),verb)
+case value if value == "UPD" =>
+orderInfo(dataMap("orderId"),dataMap("sessionID"),dataMap("userId"),dataMap("accountID"),constructItemEventUpd(dataMap("orderItems")),dataMap("Address"),verb)
+}
+
+
+def constructItemEventIns(msgString:String)=msgString.split("\\),\\(").map(x=> x.split("~")).map(x => itemInfo(x(0),x(1).toInt,x(5).toInt,x(2),x(2) match {case value if value =="Y" => Some(x(3)) case _ => None},x(2) match {case value if value =="Y" => Some(x(4).toInt) case _ => None} ) ).toSeq
+
+def constructItemEventUpd(msgString:String)=msgString.split("\\),\\(").map(x=> x.split("~")).map(x => itemInfo(x(0),x(1).toInt,x(2).toInt,"N",x(3) match {case value if value =="NA" => None case value =>Some(value) },x(3) match {case value if value =="NA" => None case value =>Some(x(4).toInt) } ) ).toSeq
+
+I001~20~1~DS001~20
+
+
+
+(Array(sessionID, ses1), Array(accountID, acc1), Array(orderId, O001), Array(orderItems, (I001~0~Y~DS001~20~1)), Array((I002~23~NA~NA~NA~2)), Array((I003~23~Y~DS002~10~3)), Array(Address, line 1 of address,line 2 of address,line 3 of address,line 4 of address,678901,))
+
+case class itemInfo(itemID:String,price:Int,quantity:Int,discountApplied:String,discountId:Option[String],discountAmount:Option[Int])
+
+case class orderInfo(orderID:String,sessionID:String,userId:String,accountId:String,orderItems:Seq[itemInfo],address:String,insOrUpd:String)
+
+
+topic="xml.input" startingOffsets="latest" bootstrapServers="localhost:8082,loclahost:8082,localhost:8083" checkpointLocForStream="hdfs://localhost:8020/user/raptor/stream/checkpointPointLoc"
+
+val inputMap=collection.mutable.Map[String,String]()
+
+"""topic="xml.input" startingOffsets="latest" bootstrapServers="localhost:8082,localhost:8083,localhost:8084" checkpointLocForStream="hdfs://localhost:8020/user/raptor/stream/checkpointPointLoc""".replace("\"","").split(" ").map(_.split("=",2)).map(x => inputMap.put(x(0),x(1)))
+
+
+
+spark.readStream.format("kafka").option("subscribe",inputMap("topic")).option("startingOffsets",inputMap("startingOffsets")).option("kafka.bootstrap.servers",inputMap("bootstrapServers")).load.select(col("value").cast(StringType).as("message")).as[layerOneMessage].map(x => constructEvent(getMsgInfo(getString(x.message,"/home/raptor/IdeaProjects/SparkLearning/Input/xslParsing/tmpXSL.xsl")))).withColumn("itemInfoArr",explode(col("orderItems"))).drop("orderItems").select(col("orderID"),col("sessionID"),col("userId"),col("accountId"),col("address"),col("insOrUpd"),col("itemInfoArr.*"))
+.withWatermark("transactionTimestamp", "5 minutes")
+.groupBy(window($"transactionTimestamp", "1 minute", "1 minute"), $"shopId")
+
+.withColumn("totalAmount",sum("price").over(Window.partitionBy("orderID"))).writeStream.format("console").outputMode("update").option("truncate","false").option("checkpointLocation",inputMap("checkpointLocForStream")).start
+
+
+
+
+val aggDF=spark.readStream.format("kafka").option("subscribe",inputMap("topic")).option("startingOffsets",inputMap("startingOffsets")).option("kafka.bootstrap.servers",inputMap("bootstrapServers")).load.select(col("value").cast(StringType).as("message")).as[layerOneMessage].map(x => constructEvent(getMsgInfo(getString(x.message,"/home/raptor/IdeaProjects/SparkLearning/Input/xslParsing/tmpXSL.xsl")))).withColumn("itemInfoArr",explode(col("orderItems"))).drop("orderItems").select(col("orderID"),col("sessionID"),col("userId"),col("accountId"),col("address"),col("insOrUpd"),col("incomingTS"),col("itemInfoArr.*")).withWatermark("incomingTS","1 minutes").groupBy(window($"incomingTS", "1 minutes", "30 seconds"), $"orderID").agg(sum("price").as("totalPrice")).selectExpr("orderID","totalPrice","window.start as window_start","window.end as window_end")
+
+
+val finalDF=spark.readStream.format("kafka").option("subscribe",inputMap("topic")).option("startingOffsets",inputMap("startingOffsets")).option("kafka.bootstrap.servers",inputMap("bootstrapServers")).load.select(col("value").cast(StringType).as("message")).as[layerOneMessage].map(x => constructEvent(getMsgInfo(getString(x.message,"/home/raptor/IdeaProjects/SparkLearning/Input/xslParsing/tmpXSL.xsl")))).withColumn("itemInfoArr",explode(col("orderItems"))).drop("orderItems").select(col("orderID"),col("sessionID"),col("userId"),col("accountId"),col("address"),col("insOrUpd"),col("incomingTS"),col("itemInfoArr.*")).join(aggDF, Seq("orderID"))
+
+spark.conf.set("spark.sql.streaming.statefulOperator.checkCorrectness.enabled","false")
+
+finalDF.writeStream.format("console").outputMode("append").option("truncate","false").option("checkpointLocation",inputMap("checkpointLocForStream")).start
+
+
+
+    //     .map(x => constructEvent(getMsgInfo(getString(x.message))))
+
+
+    .withColumn("totalAmount",sum("price").over(Window.partitionBy("orderID")))
+    .writeStream.format("console").outputMode("update").option("truncate","false")
+    .option("checkpointLocation",inputMap("checkpointLocForStream")).start
+
+org.apache.kafka:kafka-clients:2.8.0
+
+val props=new java.util.Properties
+props.put("bootstrap.servers","localhost:8082,loclahost:8082,localhost:8083")
+props.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer")
+props.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer")
+
+val kafkaProducer=new org.apache.kafka.clients.producer.KafkaProducer[String,String](props)
+
+kafkaProducer.send(new org.apache.kafka.clients.producer.ProducerRecord[String,String]("xml.input",inputString))
+
+
+spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 --class org.controller.XmlXslProcessing.xmlXslParse --num-executors 2 --executor-cores 2 --executor-memory 1g --driver-memory 1g --driver-cores 2 --driver-java-options "-DslideDuration=\"4 minutes\" -DdelayThreshold=\"3 minutes\" -DwindowDuration=\"4 minutes\"" /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar topic="xml.input" startingOffsets="latest" bootstrapServers="localhost:8082,localhost:8083,localhost:8084" checkpointLocForStream="hdfs://localhost:8020/user/raptor/stream/checkpointPointLoc"
+
+
+
+spark-submit --files /home/raptor/IdeaProjects/SparkLearning/src/main/resources/tmpXSL.xsl,/home/raptor/IdeaProjects/SparkLearning/src/main/resources/tmpXSD.xsd --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 --class org.controller.XmlXslProcessing.xmlXslParse --num-executors 2 --executor-cores 2 --executor-memory 1g --driver-memory 1g --driver-cores 4 --driver-java-options "-DslideDuration=\"4 minutes\" -DdelayThreshold=\"3 minutes\" -DwindowDuration=\"4 minutes\"" /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar topic="xml.input" startingOffsets="latest" bootstrapServers="localhost:8082,localhost:8083,localhost:8084" checkpointLocForStream="hdfs://localhost:8020/user/raptor/stream/checkpointPointLoc" xslFilePath="tmpXSL.xsl"
+
+
+
+
+
+
+spark-shell --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 --conf spark.driver.extraJavaOptions=-DslideDuration="\"4 minutes\"" --conf spark.driver.extraJavaOptions=-DdelayThreshold="\"3 minutes\"" --conf spark.driver.extraJavaOptions=-DwindowDuration="\"4 minutes\""
+
+spark-shell --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 --conf spark.driver.extraJavaOptions=-D"slideDuration=4" --conf spark.driver.extraJavaOptions=-D"delayThreshold=3" --conf spark.driver.extraJavaOptions=-D"windowDuration=4" --conf spark.driver.extraJavaOptions=-D"timeUnit=minutes"
+
+
+spark-shell --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 --conf spark.driver.extraJavaOptions=-Dslide.duration=4
+
+spark-shell --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 --conf spark.driver.extraJavaOptions=-DslideDuration="4 minutes"
+
+spark-shell --driver-java-options "-DslideDuration=\"\\\"4 minutes\\\"\" -DdelayThreshold=\"\\\"3 minutes\\\"\" -DwindowDuration=\"\\\"4 minutes\\\"\" "
+
+spark-shell --driver-java-options "-DslideDuration=\"4 minutes\" -DdelayThreshold=\"3 minutes\" -DwindowDuration=\"4 minutes\""
+
+
+
+spark.executor.extraJavaOptions=-DslideDuration="4 minutes"
+spark.executor.extraJavaOptions=-DdelayThreshold="3 minutes"
+spark.executor.extraJavaOptions=-DwindowDuration="4 minutes"
+
+spark.executor.extraJavaOptions

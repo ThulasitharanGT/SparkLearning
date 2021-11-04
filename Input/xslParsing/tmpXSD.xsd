@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="addressInfo">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="line1" type="xs:string" minOccurs=1/>
+                <xs:element name="line2" type="xs:string" minOccurs=1/>
+                <xs:element name="line3" type="xs:string" minOccurs=1/>
+                <xs:element name="line4" type="xs:string" minOccurs=1/>
+                <xs:element name="pinCode" type="xs:positiveInteger" minOccurs=1/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="itemInfo">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="itemId" type="xs:string" minOccurs=1/>
+                <xs:element name="price" type="xs:positiveInteger" minOccurs=1/>
+                <xs:element name="quantity" type="xs:positiveInteger" minOccurs=1/>
+                <xs:attribute name="discountApplied" type="xs:string"> </xs:attribute>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="orderItems">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="itemsInfo" ref="itemInfo" minOccurs=1 maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="orderId" type="xs:string" maxOccurs=1/>
+    <xs:element name="incomingTS" type="xs:string" maxOccurs=1/>
+    <xs:element name="userId" type="xs:string" maxOccurs=1/>
+    <xs:element name="discountEligibility" maxOccurs="unbounded">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:attribute name="discountId" type="xs:string"/>
+                <xs:element name="discountAmount" type="xs:positiveInteger"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="orderAddress" ref="addressInfo"/>
+    <xs:element name="accountID" type="xs:string"> </xs:element>
+    <xs:attribute name="sessionID" type="xs:string" use="required"> </xs:attribute>
+</xs:schema>
