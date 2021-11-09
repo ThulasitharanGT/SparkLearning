@@ -135,7 +135,7 @@ spark.streams.awaitAnyTermination
     transformer.transform(xmlSource, result)
     outputStream.toString
   }
-// spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 --class org.controller.XmlXslProcessing.xmlXslParse --num-executors 2 --executor-cores 2 --executor-memory 1g --driver-memory 1g --driver-cores 2 --driver-java-options "-DslideDuration=\"4 minutes\" -DdelayThreshold=\"3 minutes\" -DwindowDuration=\"4 minutes\"" /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar topic="xml.input" startingOffsets="latest" bootstrapServers="localhost:8082,localhost:8083,localhost:8084" checkpointLocForStream="hdfs://localhost:8020/user/raptor/stream/checkpointPointLoc"
+// spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 --class org.controller.XmlXslProcessing.xmlXslParse --num-executors 2 --executor-cores 2 --executor-memory 1g --driver-memory 1g --driver-cores 2 --driver-java-options "-DslideDuration=\"2 minutes\" -DdelayThreshold=\"5 minutes\" -DwindowDuration=\"4 minutes\"" /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar topic="xml.input" startingOffsets="latest" bootstrapServers="localhost:8082,localhost:8083,localhost:8084" checkpointLocForStream="hdfs://localhost:8020/user/raptor/stream/checkpointPointLoc"
   def getString(str:String)={
     val newInputSource= getClass.getResourceAsStream("./tmpXSL.xsl")
     val outputStream = new ByteArrayOutputStream

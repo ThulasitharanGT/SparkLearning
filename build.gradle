@@ -72,7 +72,8 @@ dependencies {
 
     compile 'org.apache.kafka:kafka-clients:2.3.1'
     compile 'org.apache.kafka:kafka_2.11:2.3.1'
-      compile 'org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.1'
+    compile 'org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.1'
+    compile 'org.apache.spark:spark-streaming-kafka-0-10_2.11:2.4.1'
 
        compile 'org.scala-lang:scala-library:2.11.12'
        compile 'org.scala-lang:scala-reflect:2.11.12'
