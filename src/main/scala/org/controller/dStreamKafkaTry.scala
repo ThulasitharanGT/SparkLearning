@@ -103,6 +103,38 @@ object dStreamKafkaTry extends SparkOpener with Serializable {
     * */
 
   }
+/*
 
+spark-shell --packages org.apache.spark:spark-streaming-kafka-0-10_2.12:3.1.2
+
+import sys.process._
+"hdfs dfs -rm -r hdfs://localhost:8020/user/raptor/streams/checkpointDstream/"!
+
+spark-submit --packages org.apache.spark:spark-streaming-kafka-0-10_2.12:3.1.2 --class org.controller.dStreamKafkaTry --driver-memory 1g --driver-cores 2 --num-executors 1 --executor-cores 4 --executor-memory 1g --driver-java-options "-DStreamingSeconds=10 -DcheckpointForDStream=\"hdfs://localhost:8020/user/raptor/streams/checkpointDstream/\""    /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar
+
+--driver-java-options "-DStreamingSeconds=10 -DcheckpointForDStream=\"hdfs://localhost:8020/user/raptor/streams/checkpointDstream/\""
+
+
+
+val props=new java.util.Properties
+props.put("bootstrap.servers","localhost:8082,localhost:8083")
+props.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer")
+props.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer")
+
+val kafkaProducer= new org.apache.kafka.clients.producer.KafkaProducer[String,String](props)
+
+val newJavaIterator:java.lang.Iterable[org.apache.kafka.common.header.Header]= java.util.Arrays.asList(new org.apache.kafka.common.header.internals.RecordHeader("cool", "buddy".toList.map(_.toByte).toArray),new org.apache.kafka.common.header.internals.RecordHeader("cool1", "buddy2".toList.map(_.toByte).toArray))
+
+val producerRecord=new org.apache.kafka.clients.producer.ProducerRecord[String,String]("topicA",0,"key1","value1")
+// cast it to java.lang.Iterable and then pass it
+// java.util.Arrays.asList(new org.apache.kafka.common.header.internals.RecordHeader("cool", "buddy".toList.map(_.toByte).toArray))
+
+
+val producerRecordA=new org.apache.kafka.clients.producer.ProducerRecord[String,String]("topicA","key1","value1")
+newJavaIterator.forEach(x => producerRecordA.headers.add(x))
+kafkaProducer.send(producerRecordA)
+
+val producerRecordB=new org.apache.kafka.clients.producer.ProducerRecord[String,String]("topicB",0,"key1","value1",newJavaIterator)
+kafkaProducer.send(producerRecordB)*/
 
 }
