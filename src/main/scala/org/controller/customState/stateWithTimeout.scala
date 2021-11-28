@@ -216,7 +216,7 @@ If timed out, message again needs to be sent with same key twice, if state has a
 
     // custom timeout
 
-    val dateFormatter= new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss.sss")
+    val dateFormatter= new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS")
 
     spark.readStream.format("kafka")
       .option("kafka.bootstrap.servers",inputMap("bootStrapServers"))
