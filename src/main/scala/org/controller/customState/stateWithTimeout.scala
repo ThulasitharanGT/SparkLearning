@@ -21,44 +21,63 @@ object stateWithTimeout extends SparkOpener{
 
   case class dataClassWithTimeStamp(key:String,value:String,incomingTimestamp:java.sql.Timestamp=new java.sql.Timestamp(System.currentTimeMillis))
   {
-    def hasTimedOut(timeStampInterval:String) = new java.sql.Timestamp(System.currentTimeMillis).compareTo(new java.sql.Timestamp(this.incomingTimestamp.getTime + getMillis(timeStampInterval)) )
+    def hasTimedOut(timeStampInterval:String) = new java.sql.Timestamp(System.currentTimeMillis).compareTo(new java.sql.Timestamp(this.incomingTimestamp.getTime + getMillis(this.incomingTimestamp,timeStampInterval)) )
       match {
-        case value if List(1).contains(value) => false
-        case value if List(-1,0).contains(value) => true
+        case value if List(1).contains(value) =>
+          println(s"hasTimedOut 1 ${new java.sql.Timestamp(System.currentTimeMillis)} ${new java.sql.Timestamp(this.incomingTimestamp.getTime + getMillis(this.incomingTimestamp,timeStampInterval))}")
+          false
+        case value if List(-1,0).contains(value) =>
+          println(s"hasTimedOut -1,0 ${new java.sql.Timestamp(System.currentTimeMillis)} ${new java.sql.Timestamp(this.incomingTimestamp.getTime + getMillis(this.incomingTimestamp,timeStampInterval))}")
+          true
       }
+
+    def getTs = new java.sql.Timestamp(System.currentTimeMillis)
+    def hasTimedOutInState(timeStampInterval:String) = new java.sql.Timestamp(System.currentTimeMillis - getMillis(getTs,timeStampInterval)).compareTo(this.incomingTimestamp)
+    match {
+      case value if List(1).contains(value) =>
+        println(s"hasTimedOutInState 1 ${new java.sql.Timestamp(System.currentTimeMillis)} ${new java.sql.Timestamp(this.incomingTimestamp.getTime + getMillis(getTs,timeStampInterval))}")
+        true
+      case value if List(-1,0).contains(value) =>
+        println(s"hasTimedOutInState -1,0 ${new java.sql.Timestamp(System.currentTimeMillis)} ${new java.sql.Timestamp(this.incomingTimestamp.getTime + getMillis(getTs,timeStampInterval))}")
+        false
+    }
   }
   case class dataClassWithTimeStampWithTimeout(key:String,value:String,incomingTimestamp:java.sql.Timestamp,timeOut:Boolean)
 
 
-  def getMillis(interval:String)=
+  def getMillis(timeStamp:java.sql.Timestamp,interval:String)=
     interval.split(" ").toSeq.toList match {
       case number :: unitTime =>
         println(s"getMillis number ${number} unitTime ${unitTime}")
-        getProperMillis(number.toString.toInt,unitTime.head.toString.trim)
+        getProperMillis(timeStamp,number.toString.toInt,unitTime.head.toString.trim)
       case Nil =>
         println(s"getMillis Nil ")
-        getProperMillis(365,"days")
+        getProperMillis(new java.sql.Timestamp(System.currentTimeMillis),365,"days")
     }
+  def getDateTime(timeStamp:java.sql.Timestamp)=DateTime.parse(timeStamp.toString,DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss.SSS"))
 
-  def getProperMillis(intValue:Int,timeString:String)= timeString.toList match {
+  def getProperMillis(timeStamp:java.sql.Timestamp,intValue:Int,timeString:String)= timeString.toList match {
     case firstChar :: remainingChars =>
       println(s"getProperMillis Nil firstChar ${firstChar} remainingChars ${remainingChars}")
       firstChar.toString.toLowerCase match {
         case value if value =="d" =>
           println(s"getProperMillis Nil d")
           milliSecondsInASecond * secondsInAMinute * minutesInAHour * hoursInADay * intValue.toLong
-        case value if value =="m" =>
-          println(s"getProperMillis Nil m")
-          milliSecondsInASecond * secondsInAMinute * minutesInAHour * hoursInADay * daysForMonths(intValue)
+        case value if value =="m" && remainingChars.head.toString.toLowerCase=="i" =>
+          println(s"getProperMillis Nil m i")
+          milliSecondsInASecond * secondsInAMinute * intValue.toLong
+        case value if value =="m" && remainingChars.head.toString.toLowerCase=="o" =>
+          println(s"getProperMillis Nil m o")
+          milliSecondsInASecond * secondsInAMinute * minutesInAHour * hoursInADay * daysForMonths(getDateTime(timeStamp),intValue)
         case value if value =="h" =>
           println(s"getProperMillis Nil h")
-          milliSecondsInASecond * secondsInAMinute * minutesInAHour *intValue
+          milliSecondsInASecond * secondsInAMinute * minutesInAHour * intValue.toLong
         case value if value =="s" =>
           println(s"getProperMillis Nil s")
-          milliSecondsInASecond * intValue
+          milliSecondsInASecond * intValue.toLong
         case value if value =="y" =>
           println(s"getProperMillis Nil y")
-          milliSecondsInASecond * secondsInAMinute * minutesInAHour * hoursInADay * numOfDaysInAYear(intValue)
+          milliSecondsInASecond * secondsInAMinute * minutesInAHour * hoursInADay * numOfDaysInAYear(getDateTime(timeStamp),intValue)
       }
   }
 
@@ -79,31 +98,78 @@ object stateWithTimeout extends SparkOpener{
       }
   }
 
+  val numOfDaysInAMonthUpd:((DateTime)=>Int) = (dateObj:DateTime)=>  dateObj match {
+    case value if List(1,3,5,7,8,10,12).contains(value.monthOfYear.get) =>
+      31
+    case value if List(4,6,9,11).contains(value.monthOfYear.get) =>
+      30
+    case value if 2 == value.monthOfYear.get =>
+      value.year.isLeap match {
+        case leapTrue if leapTrue == true => 29
+        case leapTrue if leapTrue == false => 28
+      }
+  }
+
   val numOfDaysYear:((String)=>Int) = (dateString:String)=>  DateTime.parse(dateString,DateTimeFormat.forPattern("yyyy-MM-dd")) match {
     case value if value.year.isLeap == true => 365
     case value if value.year.isLeap == false => 366
   }
 
-  val numOfDaysInAYear:((Int)=>Int) = (numYears:Int)=>  DateTime.parse(new java.sql.Date(System.currentTimeMillis).toString,DateTimeFormat.forPattern("yyyy-MM-dd")) match {
+  val numOfDaysInAYear:((DateTime,Int)=>Long) = (dateTimeObj:DateTime,numYears:Int)=>  dateTimeObj match {
     case value  =>
-      var daysOfYears =0
+      var daysOfYears =0L
+      var dateObj=value
       for(i<- 0 to numYears-1)
-        daysOfYears+=( value match {
+        daysOfYears+=( dateObj match {
           case value if value.year.isLeap == true =>
-            value.plusYears(1)
-            365
+            dateObj=value.plusYears(1)
+            365L
           case value if value.year.isLeap == false =>
-            value.plusYears(1)
-            366
+            dateObj=value.plusYears(1)
+            366L
         })
           daysOfYears
   }
 
 
-  val daysForMonths:((Int)=>Int) = (numMonths:Int) => DateTime.parse(new java.sql.Date(System.currentTimeMillis).toString,DateTimeFormat.forPattern("yyyy-MM-dd")) match {
+  val daysForMonths:((DateTime,Int)=>Long) = (dateObj:DateTime,numMonths:Int) => dateObj match {
     case value =>
-      value.plusMonths(numMonths).getDayOfYear -  value.getDayOfYear
+      println(s"daysForMonths value ")
+      val currentYear=value.getYear
+      val currentMonthsDays=value.getDayOfYear.toLong
+      val finalYear= value.plusMonths(numMonths).getYear.toLong
+      val finalMonthDays=value.plusMonths(numMonths).getDayOfYear.toLong
+      println(s"daysForMonths value currentMonths ${currentYear}")
+      println(s"daysForMonths value currentMonthsDays ${currentMonthsDays}")
+      println(s"daysForMonths value finalYear ${finalYear}")
+      println(s"daysForMonths value finalMonthDays ${finalMonthDays}")
+      finalYear match {
+        case fY if fY == currentYear =>
+          println(s"daysForMonths fY ")
+          finalMonthDays - currentMonthsDays
+        case fY if fY > currentYear =>
+          val daysInCurrentMonth= numOfDaysInAMonthUpd(value).toLong
+          println(s"daysForMonths fY daysInCurrentMonth ${daysInCurrentMonth}")
+          var daysOfDiff= daysInCurrentMonth.toLong - value.dayOfMonth.get.toLong
+          println(s"daysForMonths fY daysOfDiff ${daysOfDiff}")
+          for (i <- 1 to numMonths)
+          i match {
+            case num if num == numMonths =>
+              println(s"daysForMonths num numMonths fY i ${i}")
+        //      val daysInCurrentMonth=numOfDaysInAMonthUpd(value.plusMonths(i)).toLong
+        //      val dayOfMonth=value.plusMonths(i).dayOfMonth
+              daysOfDiff+= value.plusMonths(i).dayOfMonth.get.toLong
+              println(s"daysForMonths num numMonths fY i daysOfDiff ${daysOfDiff}")
+            case _ =>
+              println(s"daysForMonths num fY i ${i}")
+              daysOfDiff+= numOfDaysInAMonthUpd(value.plusMonths(i)).toLong
+              println(s"daysForMonths num fY i daysOfDiff ${daysOfDiff}")
+          }
+          println(s"daysForMonths fY daysOfDiff ${daysOfDiff}")
+          daysOfDiff
+      }
   }
+
 
 
   // apply your logic here , Remove from map if its past a certain time
@@ -226,8 +292,8 @@ If timed out, message again needs to be sent with same key twice, if state has a
          .cast(org.apache.spark.sql.types.StringType)
           .as("valueCasted"),",").as("valueSplitted"))
       .selectExpr("valueSplitted[0] as key","valueSplitted[1] as value" ,"valueSplitted[2] as incomingTimestamp")
-      .map(x => dataClassWithTimeStamp(x.getAs[String]("key"),x.getAs[String]("value"),new java.sql.Timestamp(dateFormatter.parse(x.getAs[String]("incomingTimestamp")).getTime)))
-      .groupByKey(groupByFun).mapGroupsWithState(GroupStateTimeout.ProcessingTimeTimeout)(mapGroupFunctionWithCustomTimeOut)
+      .map(x => {println(s"Data => ${x}");dataClassWithTimeStamp(x.getAs[String]("key"),x.getAs[String]("value"),new java.sql.Timestamp(dateFormatter.parse(x.getAs[String]("incomingTimestamp")).getTime))})
+      .groupByKey(groupByFun).mapGroupsWithState(GroupStateTimeout.NoTimeout)(mapGroupFunctionWithCustomTimeOut)
       .withColumn("cool",org.apache.spark.sql.functions.lit("cool"))
       .writeStream.format("console").outputMode("update")
       .option("checkpointLocation",inputMap("checkpointLocation"))
