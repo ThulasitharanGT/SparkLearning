@@ -1,0 +1,110 @@
+
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.functions._
+
+val structSchema= new StructType(Array(StructField("timeStamp",StringType,true),
+StructField("txtVal",StringType,true),
+StructField("numVal",IntegerType,true)))
+
+org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2
+
+// without handling late events, whatever comes inside, the timestamp will be taken from input message
+
+spark.readStream.format("kafka").option("kafka.bootstrap.servers","localhost:8082,localhost:8083,localhost:8084").option("subscribe","tmpTopic1").option("startingOffsets","latest").load.select(from_json((col("value").cast(org.apache.spark.sql.types.StringType)),structSchema).as("colsExploded")).select("colsExploded.*").withColumn("timeStamp",col("timeStamp").cast(TimestampType)).groupBy(window(col("timeStamp"),"6 minutes","3 minutes"),col("txtVal")).agg(sum("numVal").as("sumVal")).writeStream.format("console").outputMode("update").option("truncate","false").option("checkpointLocation","hdfs://localhost:8020/user/raptor/streams/stream1").start
+
+
+{"timeStamp":"2021-11-21 13:11:23.567","txtVal":"uio","numVal":5}
+{"timeStamp":"2021-11-21 13:11:23.567","txtVal":"tio","numVal":5}
+{"timeStamp":"2021-11-21 13:11:23.567","txtVal":"vio","numVal":5}
+{"timeStamp":"2021-11-21 13:11:23.567","txtVal":"tio","numVal":5}
+{"timeStamp":"2021-11-21 13:11:23.567","txtVal":"tio","numVal":5}
+{"timeStamp":"2021-11-21 13:11:23.567","txtVal":"uio","numVal":5}
+{"timeStamp":"2020-11-21 13:11:23.567","txtVal":"uio","numVal":5}
+{"timeStamp":"2020-11-21 13:11:23.567","txtVal":"tio","numVal":5}
+{"timeStamp":"2020-11-21 13:11:23.567","txtVal":"vio","numVal":5}
+{"timeStamp":"2020-11-21 13:11:23.567","txtVal":"tio","numVal":5}
+{"timeStamp":"2020-11-21 13:11:23.567","txtVal":"tio","numVal":5}
+{"timeStamp":"2020-11-21 13:11:23.567","txtVal":"uio","numVal":5}
+
+// with watermark, handle late events
+
+spark.readStream.format("kafka").option("kafka.bootstrap.servers","localhost:8082,localhost:8083,localhost:8084").option("subscribe","tmpTopic1").option("startingOffsets","latest").load.select(from_json((col("value").cast(org.apache.spark.sql.types.StringType)),structSchema).as("colsExploded")).select("colsExploded.*").withColumn("timeStamp",col("timeStamp").cast(TimestampType)).withWatermark("timeStamp", "10 minutes").groupBy(window(col("timeStamp"),"6 minutes","3 minutes"),col("txtVal")).agg(sum("numVal").as("sumVal")).selectExpr("window.*","*").drop("window").orderBy(asc("start"),asc("end"),col("txtVal")).writeStream.format("console").outputMode("complete").option("truncate","false").option("checkpointLocation","hdfs://localhost:8020/user/raptor/streams/stream2").start
+
+
+{"timeStamp":"2021-11-21 18:38:23.567","txtVal":"uio","numVal":5}
+{"timeStamp":"2021-11-21 18:38:23.567","txtVal":"tio","numVal":5}
+{"timeStamp":"2021-11-21 18:38:23.567","txtVal":"vio","numVal":5}
+{"timeStamp":"2021-11-21 18:38:23.567","txtVal":"tio","numVal":5}
+{"timeStamp":"2021-11-21 18:38:23.567","txtVal":"tio","numVal":5}
+{"timeStamp":"2021-11-21 18:38:23.567","txtVal":"uio","numVal":5}
+
+33-39
+
+uio 2
+tio 3
+vio 1
+
+36-42
+
+uio 2
+tio 3
+vio 1
+
++-------------------+-------------------+------+------+
+|start              |end                |txtVal|sumVal|
++-------------------+-------------------+------+------+
+|2021-11-21 18:33:00|2021-11-21 18:39:00|tio   |15    |
+|2021-11-21 18:33:00|2021-11-21 18:39:00|uio   |5     |
+|2021-11-21 18:33:00|2021-11-21 18:39:00|vio   |5     |
+|2021-11-21 18:36:00|2021-11-21 18:42:00|tio   |15    |
+|2021-11-21 18:36:00|2021-11-21 18:42:00|uio   |5     |
+|2021-11-21 18:36:00|2021-11-21 18:42:00|vio   |5     |
++-------------------+-------------------+------+------+
+
+
+send after 40
+
+{"timeStamp":"2021-11-21 18:38:23.567","txtVal":"uio","numVal":5}
+{"timeStamp":"2021-11-21 18:38:23.567","txtVal":"tio","numVal":5}
+
+33-39
+uio 3
+tio 4 (updated by Watermark)
+vio 1
+
+36-42
+uio 3
+tio 4 (Normal / inside the window)
+vio 1
+
++-------------------+-------------------+------+------+
+|start              |end                |txtVal|sumVal|
++-------------------+-------------------+------+------+
+|2021-11-21 18:33:00|2021-11-21 18:39:00|tio   |20    |
+|2021-11-21 18:33:00|2021-11-21 18:39:00|uio   |15    |
+|2021-11-21 18:33:00|2021-11-21 18:39:00|vio   |5     |
+|2021-11-21 18:36:00|2021-11-21 18:42:00|tio   |20    |
+|2021-11-21 18:36:00|2021-11-21 18:42:00|uio   |15    |
+|2021-11-21 18:36:00|2021-11-21 18:42:00|vio   |5     |
++-------------------+-------------------+------+------+
+
+
+after 10 mins (after 49 , lets say 40)
+
+{"timeStamp":"2021-11-21 18:38:23.567","txtVal":"uio","numVal":5}
+{"timeStamp":"2021-11-21 18:38:23.567","txtVal":"tio","numVal":5}
+{"timeStamp":"2021-11-21 18:38:23.567","txtVal":"vio","numVal":5}
+{"timeStamp":"2021-11-21 18:38:23.567","txtVal":"tio","numVal":5}
+{"timeStamp":"2021-11-21 18:38:23.567","txtVal":"tio","numVal":5}
+{"timeStamp":"2021-11-21 18:38:23.567","txtVal":"uio","numVal":5}
+
+Expected. getting more records
+33-39
+uio 3
+tio 4 (No updates)
+vio 1
+
+36-42
+uio 3
+tio 4 (Normal / inside the window)
+vio 1

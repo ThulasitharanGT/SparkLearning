@@ -1,0 +1,71 @@
+val dfString="""ID1,ID2,PeriodStartDate,PeriodEndDate
+5279406,3,20170101,20171231
+5279406,6,20190101,20201231
+5738803,3,20170101,20171231
+6587403,6,20170101,20171231
+3321802,3,20170101,20171231""".split("\n").map(_.split(",")).map(x=>(x(0).toString,x(1).toString,x(2).toString,x(3).toString)).toSeq
+
+val properDF=dfString.tail.toDF(dfString.head.productIterator.toArray.toSeq.map(_.toString):_*).withColumn("StartDate",substring(col("PeriodStartDate"),0,6)).withColumn("EndDate",substring(col("PeriodEndDate"),0,6))
+
+def convertToFormatJoda = org.joda.time.format.DateTimeFormat.forPattern("yyyyMM")
+
+def getDateObj(dateString:String,formatter:org.joda.time.format.DateTimeFormatter=convertToFormatJoda)=formatter.parseDateTime(dateString)
+
+// getDateObj("200908")
+
+def normalizeDateToStr(num:Int)= num match {case value if value <=9 => s"0${value}" case value if value >9  => s"${value}"}
+
+def dateToPeriodGenerator(startDate:String,endDate:String)={ // val startDate="202006" ; val endDate="202105"
+val dateFormater=convertToFormatJoda
+val startDateObj=getDateObj(startDate.substring(0,6))
+val endDateObj=getDateObj(endDate.substring(0,6))
+val tmpSeq = collection.mutable.ArrayBuffer[String]()
+/*
+if (startDateObj.getYear == endDateObj.getYear )
+for( monthTmp <- startDateObj.getMonthOfYear to endDateObj.getMonthOfYear)
+yield {tmpSeq= tmpSeq:+s"${startDateObj.getYear}${normalizeDateToStr(monthTmp)}"}
+else if (startDateObj.getYear < endDateObj.getYear)
+for ((tmpYear,i) <- (startDateObj.getYear to endDateObj.getYear) zip (1 to endDateObj.getYear-startDateObj.getYear+1) ) // normalize
+if (i==1)
+for( monthTmp <- startDateObj.getMonthOfYear to 12)
+yield {tmpSeq= tmpSeq:+s"${tmpYear}${normalizeDateToStr(monthTmp)}"}
+else if (i== (endDateObj.getYear-startDateObj.getYear+1) )
+for( monthTmp <- 1 to endDateObj.getMonthOfYear)
+yield {tmpSeq= tmpSeq:+s"${tmpYear}${normalizeDateToStr(monthTmp)}"}
+else
+for( monthTmp <- 1 to 12)
+yield {tmpSeq= tmpSeq:+s"${tmpYear}${normalizeDateToStr(monthTmp)}"}
+*/
+
+if (startDateObj.getYear == endDateObj.getYear )
+for( monthTmp <- startDateObj.getMonthOfYear to endDateObj.getMonthOfYear)
+yield {tmpSeq+= s"${startDateObj.getYear}${normalizeDateToStr(monthTmp)}"}
+else if (startDateObj.getYear < endDateObj.getYear)
+for ((tmpYear,i) <- (startDateObj.getYear to endDateObj.getYear) zip (1 to endDateObj.getYear-startDateObj.getYear+1) ) // normalize
+if (i==1)
+for( monthTmp <- startDateObj.getMonthOfYear to 12)
+yield {tmpSeq+= s"${tmpYear}${normalizeDateToStr(monthTmp)}"}
+else if (i== (endDateObj.getYear-startDateObj.getYear+1) )
+for( monthTmp <- 1 to endDateObj.getMonthOfYear)
+yield {tmpSeq+= s"${tmpYear}${normalizeDateToStr(monthTmp)}"}
+else
+for( monthTmp <- 1 to 12)
+yield {tmpSeq+= s"${tmpYear}${normalizeDateToStr(monthTmp)}"}
+
+tmpSeq.toSeq
+}
+/*
+dateToPeriodGenerator("202001","202012")
+dateToPeriodGenerator("202001","202112")
+dateToPeriodGenerator("202003","202109")
+*/
+
+import org.apache.spark.sql.functions.udf
+
+val datesBetweenUDFMine=udf(dateToPeriodGenerator(_:String,_:String):Seq[String])
+
+// spark.udf.register("tmpFun",dateToPeriodGenerator(_:String,_:String):Seq[String)
+
+properDF.withColumn("ListOfPeriod",datesBetweenUDFMine(properDF.col("PeriodStartDate"),properDF.col("PeriodEndDate"))).drop("PeriodStartDate", "PeriodEndDate").withColumn("ListOfPeriodExploded",explode(col("ListOfPeriod"))).drop("ListOfPeriod").show(false)
+
+
