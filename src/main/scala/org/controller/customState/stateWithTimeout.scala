@@ -16,22 +16,22 @@ object stateWithTimeout extends SparkOpener{
   case class dataClass(messageReceived:String)
   case class dataClassWithKey(key:String="",messagesReceived:collection.mutable.Map[String,String]=collection.mutable.Map[String,String]("" -> ""))
   case class wrapperCaseClass(dataMap:collection.mutable.Map[String,String])
-// custom timeOut
+  // custom timeOut
 
   case class wrapperCaseClassTimestampVersion(dataList:List[dataClassWithTimeStampWithTimeout]=List.empty)
 
   case class dataClassWithTimeStamp(key:String,value:String,incomingTimestamp:java.sql.Timestamp=new java.sql.Timestamp(System.currentTimeMillis))
   {
     def hasTimedOut(timeStampInterval:String) = new java.sql.Timestamp(System.currentTimeMillis).compareTo(new java.sql.Timestamp(this.incomingTimestamp.getTime + getMillis(this.incomingTimestamp,timeStampInterval)) )
-      match {
-        case value if List(-1).contains(value) =>
-          println(s"hasTimedOut 1 ${new java.sql.Timestamp(System.currentTimeMillis)} ${new java.sql.Timestamp(this.incomingTimestamp.getTime + getMillis(this.incomingTimestamp,timeStampInterval))}")
-          false
-        case value if List(1,0).contains(value) =>
-          println(s"hasTimedOut -1,0 value ${value}")
-          println(s"hasTimedOut -1,0 ${new java.sql.Timestamp(System.currentTimeMillis)} ${new java.sql.Timestamp(this.incomingTimestamp.getTime + getMillis(this.incomingTimestamp,timeStampInterval))}")
-          true
-      }
+    match {
+      case value if List(-1).contains(value) =>
+        println(s"hasTimedOut 1 ${new java.sql.Timestamp(System.currentTimeMillis)} ${new java.sql.Timestamp(this.incomingTimestamp.getTime + getMillis(this.incomingTimestamp,timeStampInterval))}")
+        false
+      case value if List(1,0).contains(value) =>
+        println(s"hasTimedOut -1,0 value ${value}")
+        println(s"hasTimedOut -1,0 ${new java.sql.Timestamp(System.currentTimeMillis)} ${new java.sql.Timestamp(this.incomingTimestamp.getTime + getMillis(this.incomingTimestamp,timeStampInterval))}")
+        true
+    }
 
     def getTs = new java.sql.Timestamp(System.currentTimeMillis)
     def hasTimedOutInState(timeStampInterval:String) = new java.sql.Timestamp(System.currentTimeMillis - getMillis(getTs,timeStampInterval)).compareTo(this.incomingTimestamp)
@@ -52,8 +52,8 @@ object stateWithTimeout extends SparkOpener{
     interval.split(" ").toSeq.toList match {
       case number :: unitTime =>
         println(s"getMillis number ${number} unitTime ${unitTime}")
-     //  val millis= getProperMillis(timeStamp,number.toString.toInt,unitTime.head.toString.trim)
-     //  println(s"getMillis :: number ${new java.sql.Timestamp(timeStamp.getTime+millis)}")
+        //  val millis= getProperMillis(timeStamp,number.toString.toInt,unitTime.head.toString.trim)
+        //  println(s"getMillis :: number ${new java.sql.Timestamp(timeStamp.getTime+millis)}")
         getProperMillis(timeStamp,number.toString.toInt,unitTime.head.toString.trim)
       case Nil =>
         println(s"getMillis Nil ")
@@ -143,24 +143,36 @@ object stateWithTimeout extends SparkOpener{
             dateObj=value.plusYears(i)
             i match {
               case yearTmp if yearTmp ==0 =>
-                365L - dateObj.getDayOfYear
+                val dayCount=     366L - value.getDayOfYear // match {case value if value <= (31L + 28L) => value case  value => value -1}
+                println(s"daysCount case leap year 0 dayCount ${dayCount}")
+                dayCount
               case yearTmp if yearTmp == numYears-1  =>
-                365L- ( 365L - dateObj.getDayOfYear)
+                val dayCount= 366L  -(366L - value.getDayOfYear) // - ( 366L - dateObj.getDayOfYear match {case value if value <= (31L + 28L) => value  case  value => value-1} )
+                println(s"daysCount case leap numYears-1 dayCount ${dayCount}")
+                dayCount
               case _ =>
-                365L
+                val dayCount= 366L
+                println(s"daysCount case leap numYears dayCount ${dayCount}")
+                dayCount
             }
           case value if value.year.isLeap == false =>
             dateObj=value.plusYears(1)
             i match {
               case yearTmp if yearTmp ==0 =>
-                366L - dateObj.getDayOfYear
+                val dayCount=  365L - value.getDayOfYear // - dateObj.getDayOfYear match {case value if dateObj.minusYears(1).year.isLeap == true && value <= (31L + 28L) => value case  value => value +1}
+                println(s"daysCount case No leap year 0 dayCount ${dayCount}")
+                dayCount
               case yearTmp if yearTmp == numYears-1  =>
-                366L- ( 366L - dateObj.getDayOfYear)
+                val dayCount=  365L - ( 365L - value.getDayOfYear ) // - ( 366L - dateObj.getDayOfYear match {case value if dateObj.minusYears(1).year.isLeap == true && value <= (31L + 28L) => value case  value => value +1} )
+                println(s"daysCount case No leap year numYears-1 dayCount ${dayCount}")
+                dayCount
               case _ =>
-                366L
+                val dayCount=  365L
+                println(s"daysCount case No leap year numYears dayCount ${dayCount}")
+                dayCount
             }
         })
-          daysOfYears
+      daysOfYears
   }
 
   val numOfDaysInAYearDrilled:((DateTime,Int)=>Long) = (dateTimeObj:DateTime,numYears:Int)=>  dateTimeObj match {
@@ -174,59 +186,58 @@ object stateWithTimeout extends SparkOpener{
             for ( m <-   wrapperForSeqGenOfMonths(monthOfCurrentObj))
               m match {
                 case value if value == monthOfCurrentObj =>
-                  println(s"numOfDaysInAYearDrilled :: case 0 :: monthOfCurrentObj ${value}")
-                  println(s"numOfDaysInAYearDrilled :: case 0 :: daysOfYears ${daysOfYears} ")
-                  println(s"numOfDaysInAYearDrilled :: case 0 :: Year ${dateTimeObj.getYear}  ")
-                  println(s"numOfDaysInAYearDrilled :: case 0 :: numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap) ${numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap)} ")
-                  println(s"numOfDaysInAYearDrilled :: case 0 :: dateTimeObj.dayOfMonth.get ${dateTimeObj.dayOfMonth.get} ")
-                  tmpYear=(tmpYear._1,tmpYear._2 + numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap) - dateTimeObj.dayOfMonth.get )
-                  println(s"numOfDaysInAYearDrilled :: case 0 :: tmpYear ${tmpYear} ")
-                 daysOfYears+=(numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap) - dateTimeObj.dayOfMonth.get )
+                  /*            println(s"numOfDaysInAYearDrilled :: case 0 :: monthOfCurrentObj ${value}")
+                              println(s"numOfDaysInAYearDrilled :: case 0 :: daysOfYears ${daysOfYears} ")
+                              println(s"numOfDaysInAYearDrilled :: case 0 :: Year ${dateTimeObj.getYear}  ")
+                              println(s"numOfDaysInAYearDrilled :: case 0 :: numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap) ${numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap)} ")
+                              println(s"numOfDaysInAYearDrilled :: case 0 :: dateTimeObj.dayOfMonth.get ${dateTimeObj.dayOfMonth.get} ")
+                          */  tmpYear=(tmpYear._1,tmpYear._2 + numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap) - dateTimeObj.dayOfMonth.get )
+                  daysOfYears+=(numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap) - dateTimeObj.dayOfMonth.get )
                 case value  =>
-                  println(s"numOfDaysInAYearDrilled :: case 0 ${value} ")
-                  println(s"numOfDaysInAYearDrilled :: case 0 :: value daysOfYears ${daysOfYears} ")
-                  println(s"numOfDaysInAYearDrilled :: case 0 :: value Year ${dateTimeObj.getYear}  ")
-                  println(s"numOfDaysInAYearDrilled :: case 0 :: value numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap) ${numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap)} ")
-                  println(s"numOfDaysInAYearDrilled :: case 0 :: value dateTimeObj.dayOfMonth.get ${dateTimeObj.dayOfMonth.get} ")
-                  tmpYear=(tmpYear._1,tmpYear._2+ numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap))
+                  /*      println(s"numOfDaysInAYearDrilled :: case 0 ${value} ")
+                        println(s"numOfDaysInAYearDrilled :: case 0 :: value daysOfYears ${daysOfYears} ")
+                        println(s"numOfDaysInAYearDrilled :: case 0 :: value Year ${dateTimeObj.getYear}  ")
+                        println(s"numOfDaysInAYearDrilled :: case 0 :: value numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap) ${numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap)} ")
+                        println(s"numOfDaysInAYearDrilled :: case 0 :: value dateTimeObj.dayOfMonth.get ${dateTimeObj.dayOfMonth.get} ")
+        */              tmpYear=(tmpYear._1,tmpYear._2+ numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap))
                   daysOfYears+= numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap)
               }
+            println(s"numOfDaysInAYearDrilled :: case 0 :: tmpYear ${tmpYear} ")
           case tmp if tmp ==  numYears - 1 =>
             var tmpYear=(dateTimeObj.plusYears(y).getYear,0)
             for ( m <-   wrapperForSeqGenOfMonthsLast(monthOfCurrentObj))
               m match {
                 case value if value ==monthOfCurrentObj =>
-                  println(s"numOfDaysInAYearDrilled :: case tmp :: monthOfCurrentObj ${value}")
-                  println(s"numOfDaysInAYearDrilled :: case tmp :: daysOfYears ${daysOfYears} ")
-                  println(s"numOfDaysInAYearDrilled :: case tmp :: Year ${dateTimeObj.plusYears(tmp).getYear} ")
-                  println(s"numOfDaysInAYearDrilled :: case tmp :: dateTimeObj.dayOfMonth.get ${dateTimeObj.dayOfMonth.get} ")
-                  tmpYear=(tmpYear._1,tmpYear._2+ dateTimeObj.getDayOfMonth)
-                  println(s"numOfDaysInAYearDrilled :: case tmp :: tmpYear ${tmpYear} ")
+                  /*     println(s"numOfDaysInAYearDrilled :: case tmp :: monthOfCurrentObj ${value}")
+                       println(s"numOfDaysInAYearDrilled :: case tmp :: daysOfYears ${daysOfYears} ")
+                       println(s"numOfDaysInAYearDrilled :: case tmp :: Year ${dateTimeObj.plusYears(tmp).getYear} ")
+                       println(s"numOfDaysInAYearDrilled :: case tmp :: dateTimeObj.dayOfMonth.get ${dateTimeObj.dayOfMonth.get} ")
+               */      tmpYear=(tmpYear._1,tmpYear._2+ dateTimeObj.getDayOfMonth)
                   daysOfYears+= dateTimeObj.getDayOfMonth
                 case value =>
-                  println(s"numOfDaysInAYearDrilled :: case tmp :: value  ${value}")
-                  println(s"numOfDaysInAYearDrilled :: case tmp :: value daysOfYears ${daysOfYears} ")
-                  println(s"numOfDaysInAYearDrilled :: case tmp :: value Year ${dateTimeObj.plusYears(tmp).getYear} ")
-                  println(s"numOfDaysInAYearDrilled :: case tmp :: value numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap) ${numOfDaysInAMonthUpdInt(value,dateTimeObj.plusYears(y+1).year.isLeap)} ")
-                  println(s"numOfDaysInAYearDrilled :: case tmp :: value dateTimeObj.dayOfMonth.get ${dateTimeObj.dayOfMonth.get} ")
-                  tmpYear=(tmpYear._1,tmpYear._2+ dateTimeObj.getDayOfMonth)
-                  println(s"numOfDaysInAYearDrilled :: case tmp :: tmpYear ${numOfDaysInAMonthUpdInt(value,dateTimeObj.plusYears(y+1).year.isLeap)} ")
+                  /*       println(s"numOfDaysInAYearDrilled :: case tmp :: value  ${value}")
+                         println(s"numOfDaysInAYearDrilled :: case tmp :: value daysOfYears ${daysOfYears} ")
+                         println(s"numOfDaysInAYearDrilled :: case tmp :: value Year ${dateTimeObj.plusYears(tmp).getYear} ")
+                         println(s"numOfDaysInAYearDrilled :: case tmp :: value numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap) ${numOfDaysInAMonthUpdInt(value,dateTimeObj.plusYears(y+1).year.isLeap)} ")
+                         println(s"numOfDaysInAYearDrilled :: case tmp :: value dateTimeObj.dayOfMonth.get ${dateTimeObj.dayOfMonth.get} ")
+                   */    tmpYear=(tmpYear._1,tmpYear._2+ numOfDaysInAMonthUpdInt(value,dateTimeObj.plusYears(y+1).year.isLeap))
                   daysOfYears+= numOfDaysInAMonthUpdInt(value,dateTimeObj.plusYears(y+1).year.isLeap)
               }
+            println(s"numOfDaysInAYearDrilled :: case tmpYear :: numYear -1 ${tmpYear} ")
           case yearValue =>
             var tmpYear=(dateTimeObj.plusYears(y).getYear,0)
             for ( m <-   getSeqGenForMonths(1))
               m match {
                 case value =>
-                  println(s"numOfDaysInAYearDrilled :: case _ :: value monthOfCurrentObj ${value}")
-                  println(s"numOfDaysInAYearDrilled :: case _ :: value daysOfYears ${daysOfYears} ")
-                  println(s"numOfDaysInAYearDrilled :: case _ :: value Year ${dateTimeObj.plusYears(yearValue).getYear} ")
-                  println(s"numOfDaysInAYearDrilled :: case _ :: value numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap) ${numOfDaysInAMonthUpdInt(value,dateTimeObj.plusYears(y+1).year.isLeap)} ")
-                  println(s"numOfDaysInAYearDrilled :: case _ :: value dateTimeObj.dayOfMonth.get ${dateTimeObj.dayOfMonth.get} ")
-                  tmpYear=(tmpYear._1,tmpYear._2+ dateTimeObj.getDayOfMonth)
-                  println(s"numOfDaysInAYearDrilled :: case _ :: value tmpYear ${tmpYear} ")
+                  /*    println(s"numOfDaysInAYearDrilled :: case _ :: value monthOfCurrentObj ${value}")
+                      println(s"numOfDaysInAYearDrilled :: case _ :: value daysOfYears ${daysOfYears} ")
+                      println(s"numOfDaysInAYearDrilled :: case _ :: value Year ${dateTimeObj.plusYears(yearValue).getYear} ")
+                      println(s"numOfDaysInAYearDrilled :: case _ :: value numOfDaysInAMonthUpdInt(value,dateTimeObj.year.isLeap) ${numOfDaysInAMonthUpdInt(value,dateTimeObj.plusYears(y+1).year.isLeap)} ")
+                      println(s"numOfDaysInAYearDrilled :: case _ :: value dateTimeObj.dayOfMonth.get ${dateTimeObj.dayOfMonth.get} ")
+            */        tmpYear=(tmpYear._1,tmpYear._2+  numOfDaysInAMonthUpdInt(value,dateTimeObj.plusYears(y+1).year.isLeap))
                   daysOfYears+= numOfDaysInAMonthUpdInt(value,dateTimeObj.plusYears(y+1).year.isLeap)
               }
+            println(s"numOfDaysInAYearDrilled :: case _ :: value tmpYear ${tmpYear} ")
         }
       }
       daysOfYears
@@ -275,18 +286,18 @@ object stateWithTimeout extends SparkOpener{
           var daysOfDiff= daysInCurrentMonth.toLong - value.dayOfMonth.get.toLong
           println(s"daysForMonths fY daysOfDiff ${daysOfDiff}")
           for (i <- 1 to numMonths)
-          i match {
-            case num if num == numMonths =>
-              println(s"daysForMonths num numMonths fY i ${i}")
-        //      val daysInCurrentMonth=numOfDaysInAMonthUpd(value.plusMonths(i)).toLong
-        //      val dayOfMonth=value.plusMonths(i).dayOfMonth
-              daysOfDiff+= value.plusMonths(i).dayOfMonth.get.toLong
-              println(s"daysForMonths num numMonths fY i daysOfDiff ${daysOfDiff}")
-            case _ =>
-              println(s"daysForMonths num fY i ${i}")
-              daysOfDiff+= numOfDaysInAMonthUpd(value.plusMonths(i)).toLong
-              println(s"daysForMonths num fY i daysOfDiff ${daysOfDiff}")
-          }
+            i match {
+              case num if num == numMonths =>
+                println(s"daysForMonths num numMonths fY i ${i}")
+                //      val daysInCurrentMonth=numOfDaysInAMonthUpd(value.plusMonths(i)).toLong
+                //      val dayOfMonth=value.plusMonths(i).dayOfMonth
+                daysOfDiff+= value.plusMonths(i).dayOfMonth.get.toLong
+                println(s"daysForMonths num numMonths fY i daysOfDiff ${daysOfDiff}")
+              case _ =>
+                println(s"daysForMonths num fY i ${i}")
+                daysOfDiff+= numOfDaysInAMonthUpd(value.plusMonths(i)).toLong
+                println(s"daysForMonths num fY i daysOfDiff ${daysOfDiff}")
+            }
           println(s"daysForMonths fY daysOfDiff ${daysOfDiff}")
           daysOfDiff
       }
@@ -301,8 +312,8 @@ object stateWithTimeout extends SparkOpener{
     stateObj.getOption match {
       case  Some(state)=>
         val eventsFromState=state.dataList.map(x => dataClassWithTimeStampWithTimeout(x.key,x.value,x.incomingTimestamp,dataClassWithTimeStamp(x.key,x.value,x.incomingTimestamp).hasTimedOut(inputMap("ExpiryDuration"))) )
-        val validEventsFromState=eventsFromState.filter(_.timeOut==true).map(x => {println(s"valid events in state ${x}");x})
-        val inValidEventsFromState=eventsFromState.filter(_.timeOut==false) // .map(x => {println(s"in valid events in state ${x}");x})
+        val validEventsFromState=eventsFromState.filter(_.timeOut==false).map(x => {println(s"valid events in state ${x}");x})
+        val inValidEventsFromState=eventsFromState.filter(_.timeOut==true) // .map(x => {println(s"in valid events in state ${x}");x})
         println(s"Some inValidEventsFromState ${inValidEventsFromState}")
         val incomingEventsList=incomingEvents.toList.map(x => dataClassWithTimeStampWithTimeout(x.key,x.value,x.incomingTimestamp,dataClassWithTimeStamp(x.key,x.value,x.incomingTimestamp).hasTimedOut(inputMap("ExpiryDuration"))) )
         val validEventsIncoming= incomingEventsList.filter(_.timeOut == false)
@@ -331,9 +342,9 @@ object stateWithTimeout extends SparkOpener{
           state.dataMap.filter(_._1.startsWith(key)).size >0 match {
             case true =>
               println(s"Data present in state ")
-           //   val tmpDataMap=collection.mutable.Map[String,String]()
-           //   val eventsList=incomingEventsInner.toList
-         //     eventsList.map(x => tmpDataMap.put(s"${key}_${System.currentTimeMillis}",x.value.messageReceived))
+              //   val tmpDataMap=collection.mutable.Map[String,String]()
+              //   val eventsList=incomingEventsInner.toList
+              //     eventsList.map(x => tmpDataMap.put(s"${key}_${System.currentTimeMillis}",x.value.messageReceived))
               stateObj.update(wrapperCaseClass(state.dataMap ++tmpListToMapAppender(key,incomingEventsInner.toList) ))
               stateObj.setTimeoutDuration(inputMap("ExpiryDuration"))
               dataClassWithKey(key,stateObj.get.dataMap)
@@ -346,8 +357,8 @@ object stateWithTimeout extends SparkOpener{
         case None =>
           println(s"None State ")
           //    val tmpDataMap=collection.mutable.Map[String,String]()
-       //   val eventsList=incomingEventsInner.toList
-     //     eventsList.map(x => tmpDataMap.put(s"${key}_${System.currentTimeMillis}",x.value.messageReceived))
+          //   val eventsList=incomingEventsInner.toList
+          //     eventsList.map(x => tmpDataMap.put(s"${key}_${System.currentTimeMillis}",x.value.messageReceived))
           stateObj.update(wrapperCaseClass(tmpListToMapAppender(key,incomingEventsInner.toList)))
           stateObj.setTimeoutDuration(inputMap("ExpiryDuration"))
           dataClassWithKey()
@@ -378,29 +389,38 @@ object stateWithTimeout extends SparkOpener{
     import spark.implicits._
 
     args.map(_.split("=",2)).map(x => inputMap.put(x(0),x(1)))
-/*data will be retained in state for 5 mins, after that cleared,
-Funda is, message needs to be sent more than once with same key in order to be released.
-If timed out, message again needs to be sent with same key twice, if state has a message for that key then everything will be released
+    /*data will be retained in state for 5 mins, after that cleared,
+    Funda is, message needs to be sent more than once with same key in order to be released.
+    If timed out, message again needs to be sent with same key twice, if state has a message for that key then everything will be released
 
-  spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 --class org.controller.customState.stateWithTimeout --num-executors 1 --executor-memory 1g --driver-memory 1g --driver-cores 1 --executor-cores 1 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar bootStrapServers=localhost:8082,localhost:8083,localhost:8084 topic=tmpTopic checkpointLocation="hdfs://localhost:8020/user/raptor/stream/state1/" ExpiryDuration="5 minutes"
-  */
- /*   // spark timeout
-    spark.readStream.format("kafka")
-      .option("kafka.bootstrap.servers",inputMap("bootStrapServers"))
-      .option("subscribe",inputMap("topic")).load.select(
-      org.apache.spark.sql.functions.split(
-        org.apache.spark.sql.functions.col("value")
-          .cast(org.apache.spark.sql.types.StringType)
-          .as("valueCasted"),",").as("valueSplitted"))
-      .selectExpr("valueSplitted[0] as key","valueSplitted[1] as value" ).map(x => tmpStruct(x.getAs[String]("key"),dataClass(x.getAs[String]("value"))))
-      .groupByKey(groupByFun).mapGroupsWithState(GroupStateTimeout.ProcessingTimeTimeout)(mapGroupFunctionWithTimeOut) // check event timeout with watermark
-      // .mapGroupsWithState(GroupStateTimeout.NoTimeout)(mapGroupFunction) // curried function
-      .withColumn("cool",org.apache.spark.sql.functions.lit("cool"))
-      .writeStream.format("console").outputMode("update")
-      .option("checkpointLocation",inputMap("checkpointLocation"))
-      .option("truncate","false")
-      .start
-*/
+      spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 --class org.controller.customState.stateWithTimeout --num-executors 1 --executor-memory 1g --driver-memory 1g --driver-cores 1 --executor-cores 1 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar bootStrapServers=localhost:8082,localhost:8083,localhost:8084 topic=tmpTopic checkpointLocation="hdfs://localhost:8020/user/raptor/stream/state1/" ExpiryDuration="5 minutes"
+
+
+    thi,yu,2021-12-05 14:20:00.908
+    thi,yu0,2021-12-05 14:22:00.908
+
+    // more than 5 mins late
+    thi,yu0,2021-12-05 14:12:00.908
+
+    thi,oocoo,2021-12-04 19:06:00.908 // invalid
+     */
+    /*   // spark timeout
+       spark.readStream.format("kafka")
+         .option("kafka.bootstrap.servers",inputMap("bootStrapServers"))
+         .option("subscribe",inputMap("topic")).load.select(
+         org.apache.spark.sql.functions.split(
+           org.apache.spark.sql.functions.col("value")
+             .cast(org.apache.spark.sql.types.StringType)
+             .as("valueCasted"),",").as("valueSplitted"))
+         .selectExpr("valueSplitted[0] as key","valueSplitted[1] as value" ).map(x => tmpStruct(x.getAs[String]("key"),dataClass(x.getAs[String]("value"))))
+         .groupByKey(groupByFun).mapGroupsWithState(GroupStateTimeout.ProcessingTimeTimeout)(mapGroupFunctionWithTimeOut) // check event timeout with watermark
+         // .mapGroupsWithState(GroupStateTimeout.NoTimeout)(mapGroupFunction) // curried function
+         .withColumn("cool",org.apache.spark.sql.functions.lit("cool"))
+         .writeStream.format("console").outputMode("update")
+         .option("checkpointLocation",inputMap("checkpointLocation"))
+         .option("truncate","false")
+         .start
+   */
 
     // custom timeout
 
@@ -411,7 +431,7 @@ If timed out, message again needs to be sent with same key twice, if state has a
       .option("subscribe",inputMap("topic")).load.select(
       org.apache.spark.sql.functions.split(
         org.apache.spark.sql.functions.col("value")
-         .cast(org.apache.spark.sql.types.StringType)
+          .cast(org.apache.spark.sql.types.StringType)
           .as("valueCasted"),",").as("valueSplitted"))
       .selectExpr("valueSplitted[0] as key","valueSplitted[1] as value" ,"valueSplitted[2] as incomingTimestamp")
       .map(x => {println(s"Data => ${x}");dataClassWithTimeStamp(x.getAs[String]("key"),x.getAs[String]("value"),new java.sql.Timestamp(dateFormatter.parse(x.getAs[String]("incomingTimestamp")).getTime))})
