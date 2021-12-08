@@ -87,6 +87,27 @@ products:
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample.class
    src/main/scala/org/controller/breakExample.scala -> build/classes/scala/main/org/controller/breakExample$.class
    src/main/scala/org/controller/breakExample.scala -> build/classes/scala/main/org/controller/breakExample.class
+   src/main/scala/org/controller/customState/customStateConstants.scala -> build/classes/scala/main/org/controller/customState/customStateConstants$.class
+   src/main/scala/org/controller/customState/customStateConstants.scala -> build/classes/scala/main/org/controller/customState/customStateConstants.class
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> build/classes/scala/main/org/controller/customState/entitiesCustomState$.class
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> build/classes/scala/main/org/controller/customState/entitiesCustomState$outerSchema$.class
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> build/classes/scala/main/org/controller/customState/entitiesCustomState$outerSchema.class
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> build/classes/scala/main/org/controller/customState/entitiesCustomState$raceInfo$.class
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> build/classes/scala/main/org/controller/customState/entitiesCustomState$raceInfo.class
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> build/classes/scala/main/org/controller/customState/entitiesCustomState$raceTrackInfo$.class
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> build/classes/scala/main/org/controller/customState/entitiesCustomState$raceTrackInfo.class
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> build/classes/scala/main/org/controller/customState/entitiesCustomState$stateClass$.class
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> build/classes/scala/main/org/controller/customState/entitiesCustomState$stateClass.class
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> build/classes/scala/main/org/controller/customState/entitiesCustomState$stateOutClass$.class
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> build/classes/scala/main/org/controller/customState/entitiesCustomState$stateOutClass.class
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> build/classes/scala/main/org/controller/customState/entitiesCustomState.class
+   src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> build/classes/scala/main/org/controller/customState/raceInfoStateUtils$.class
+   src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> build/classes/scala/main/org/controller/customState/raceInfoStateUtils.class
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> build/classes/scala/main/org/controller/customState/raceInfoWithState$$typecreator13$1.class
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> build/classes/scala/main/org/controller/customState/raceInfoWithState$$typecreator4$1.class
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> build/classes/scala/main/org/controller/customState/raceInfoWithState$$typecreator9$1.class
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> build/classes/scala/main/org/controller/customState/raceInfoWithState$.class
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> build/classes/scala/main/org/controller/customState/raceInfoWithState.class
    src/main/scala/org/controller/customState/simpleState.scala -> build/classes/scala/main/org/controller/customState/simpleState$$typecreator13$1.class
    src/main/scala/org/controller/customState/simpleState.scala -> build/classes/scala/main/org/controller/customState/simpleState$$typecreator4$1.class
    src/main/scala/org/controller/customState/simpleState.scala -> build/classes/scala/main/org/controller/customState/simpleState$$typecreator9$1.class
@@ -636,7 +657,7 @@ binary dependencies:
    src/main/scala/org/controller/UDFOnSurvey.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/XMLprocessing.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/XMLprocessing.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
-   src/main/scala/org/controller/XMLprocessing.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-xml_2.11/1.0.6/4ebd108453e6455351c0ec50d32509ae1154fdb1/scala-xml_2.11-1.0.6.jar
+   src/main/scala/org/controller/XMLprocessing.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang.modules/scala-xml_2.11/1.3.0/a5177855c109842894a827d18249a8fb6771f8d7/scala-xml_2.11-1.3.0.jar
    src/main/scala/org/controller/XMLprocessing.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/XMLprocessing.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/XMLprocessing.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
@@ -650,6 +671,20 @@ binary dependencies:
    src/main/scala/org/controller/ZipExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/breakExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/breakExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/customState/customStateConstants.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/net.liftweb/lift-json_2.11/3.5.0/63ea01b247216a68baf5f56cd39aa33750346991/lift-json_2.11-3.5.0.jar
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
+   src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/net.liftweb/lift-json_2.11/3.5.0/63ea01b247216a68baf5f56cd39aa33750346991/lift-json_2.11-3.5.0.jar
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/customState/simpleState.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/customState/simpleState.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/customState/simpleState.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
@@ -1251,6 +1286,13 @@ source dependencies:
    src/main/scala/org/controller/XMLprocessing.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/XMLprocessing.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/XmlXslProcessing/xmlXslParse.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> src/main/scala/org/controller/customState/customStateConstants.scala
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> src/main/scala/org/controller/customState/raceInfoStateUtils.scala
+   src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> src/main/scala/org/controller/customState/customStateConstants.scala
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> src/main/scala/org/controller/customState/customStateConstants.scala
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> src/main/scala/org/controller/customState/entitiesCustomState.scala
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> src/main/scala/org/controller/customState/raceInfoStateUtils.scala
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/customState/simpleState.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/customState/stateWithTimeout.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/dStreamKafkaTry.scala -> src/main/scala/org/util/SparkOpener.scala
@@ -1549,6 +1591,27 @@ class names:
    src/main/scala/org/controller/ZipExample.scala -> org.controller.ZipExample$
    src/main/scala/org/controller/breakExample.scala -> org.controller.breakExample
    src/main/scala/org/controller/breakExample.scala -> org.controller.breakExample$
+   src/main/scala/org/controller/customState/customStateConstants.scala -> org.controller.customState.customStateConstants
+   src/main/scala/org/controller/customState/customStateConstants.scala -> org.controller.customState.customStateConstants$
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> org.controller.customState.entitiesCustomState
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> org.controller.customState.entitiesCustomState$
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> org.controller.customState.entitiesCustomState$outerSchema
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> org.controller.customState.entitiesCustomState$outerSchema$
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> org.controller.customState.entitiesCustomState$raceInfo
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> org.controller.customState.entitiesCustomState$raceInfo$
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> org.controller.customState.entitiesCustomState$raceTrackInfo
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> org.controller.customState.entitiesCustomState$raceTrackInfo$
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> org.controller.customState.entitiesCustomState$stateClass
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> org.controller.customState.entitiesCustomState$stateClass$
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> org.controller.customState.entitiesCustomState$stateOutClass
+   src/main/scala/org/controller/customState/entitiesCustomState.scala -> org.controller.customState.entitiesCustomState$stateOutClass$
+   src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> org.controller.customState.raceInfoStateUtils
+   src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> org.controller.customState.raceInfoStateUtils$
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> org.controller.customState.raceInfoWithState
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> org.controller.customState.raceInfoWithState$
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> org.controller.customState.raceInfoWithState$$typecreator13$1
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> org.controller.customState.raceInfoWithState$$typecreator4$1
+   src/main/scala/org/controller/customState/raceInfoWithState.scala -> org.controller.customState.raceInfoWithState$$typecreator9$1
    src/main/scala/org/controller/customState/simpleState.scala -> org.controller.customState.simpleState
    src/main/scala/org/controller/customState/simpleState.scala -> org.controller.customState.simpleState$
    src/main/scala/org/controller/customState/simpleState.scala -> org.controller.customState.simpleState$$typecreator13$1

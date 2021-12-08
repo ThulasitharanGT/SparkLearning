@@ -24,10 +24,14 @@ object entitiesCustomState {
       case value if value == raceInfoEventSource =>
         parse(this.incomingMessage).extract[raceInfo].raceTrackID
     }
+
+    def getRaceTrackRecord= parse(this.incomingMessage).extract[raceTrackInfo]
+    def getRaceInfoRecord= parse(this.incomingMessage).extract[raceInfo]
+
   }
   case class raceInfo(raceID:String,raceTrackID:String,raceEventDate:String,raceSeason:String)
   case class raceTrackInfo(raceTrackID:String,raceTrackVenue:String,raceTrackName:String)
-  case class stateClass(dataMap:collection.mutable.Map[String,List[outerSchema]])
+  case class stateClass(dataMap:collection.mutable.Map[String,List[outerSchema]]=collection.mutable.Map[String,List[outerSchema]](""-> List.empty[outerSchema]))
   case class stateOutClass(dataList:List[outerSchema]=List.empty) {
     def getLatestRecord =
       this.dataList.size match {
