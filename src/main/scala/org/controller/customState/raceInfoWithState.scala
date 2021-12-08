@@ -11,6 +11,7 @@ object raceInfoWithState extends SparkOpener{
 
   val spark=SparkSessionLoc()
   import spark.implicits._
+  spark.sparkContext.setLogLevel("ERROR")
 
   val inputMap=collection.mutable.Map[String,String]()
 
@@ -18,20 +19,34 @@ object raceInfoWithState extends SparkOpener{
     for (arg <- args)
       inputMap.put(arg.split("=",2)(0),arg.split("=",2)(1))
 
-    spark.read.format("kafka")
+    inputMap.foreach(println)
+    println(s"url - ${inputMap("JDBCUrl")}${inputMap("JDBCDatabase")}?user=${inputMap("JDBCUser")}&password=${inputMap("JDBCPassword")}")
+
+    spark.readStream.format("kafka")
       .option("kafka.bootstrap.servers",inputMap("bootStrapServers"))
       .option("subscribe",inputMap("topic"))
       .option("startingOffsets",inputMap("startingOffsets"))
-      .load.select(
-      org.apache.spark.sql.functions.from_json(org.apache.spark.sql.functions.col("value").cast(org.apache.spark.sql.types.StringType)
-      ,outerStruct).as("message")
-    ).select("message.*")
-      .select(org.apache.spark.sql.functions.col("eventInfo").cast(org.apache.spark.sql.types.StringType)
-      ,org.apache.spark.sql.functions.col("incomingMessage").cast(org.apache.spark.sql.types.StringType)
-      ,org.apache.spark.sql.functions.col("incomingTimestamp").cast(org.apache.spark.sql.types.TimestampType))
+      .load.select(org.apache.spark.sql.functions.from_json
+      (org.apache.spark.sql.functions.col("value")
+      .cast(org.apache.spark.sql.types.StringType)
+      ,outerStruct).as("message"))
+      .select("message.*")
+      .select(org.apache.spark.sql.functions.col("eventInfo")
+        .cast(org.apache.spark.sql.types.StringType)
+      ,org.apache.spark.sql.functions.col("incomingMessage")
+          .cast(org.apache.spark.sql.types.StringType)
+      ,org.apache.spark.sql.functions.col("incomingTimestamp")
+          .cast(org.apache.spark.sql.types.TimestampType))
       .as[outerSchema].groupByKey(groupByKeyFun)
-      .mapGroupsWithState( org.apache.spark.sql.streaming.GroupStateTimeout.NoTimeout)(stateFunction)
-      .writeStream.format("console").outputMode("update")
+      .mapGroupsWithState(org.apache.spark.sql.streaming.GroupStateTimeout.NoTimeout)(stateFunction)
+      .writeStream
+      .format("console")
+      .outputMode("update")
+      .option("checkpointLocation",inputMap("checkpointLocation"))
+      .option("truncate","false")
+      .start
+
+    spark.streams.awaitAnyTermination
 
 
   }

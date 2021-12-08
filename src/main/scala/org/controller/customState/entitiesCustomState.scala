@@ -15,8 +15,14 @@ object entitiesCustomState {
     override def toString = s"""{"eventInfo":"${this.eventInfo}","incomingMessage":"${this.incomingMessage}","incomingTimestamp":"${this.incomingTimestamp}"}"""
     def getTs=new java.sql.Timestamp(System.currentTimeMillis)
     def hasTimedOut(durationString:String)= getTs.compareTo(new java.sql.Timestamp(this.incomingTimestamp.getTime + getMillis(this.incomingTimestamp,durationString))) match {
-      case value if List(1).contains(value) => false
-      case value if List(-1,0).contains(value) => true
+      case value if List(1).contains(value) =>
+        println(s"hasTimedOut 1 ${getTs}")
+        println(s"hasTimedOut 1 ${new java.sql.Timestamp(this.incomingTimestamp.getTime + getMillis(this.incomingTimestamp,durationString))}")
+        false
+      case value if List(-1,0).contains(value) =>
+        println(s"hasTimedOut -1,0 ${getTs}")
+        println(s"hasTimedOut -1,0 ${new java.sql.Timestamp(this.incomingTimestamp.getTime + getMillis(this.incomingTimestamp,durationString))}")
+        true
     }
     def getKey=this.eventInfo match {
       case value if value == raceTrackEventSource =>
