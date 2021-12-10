@@ -1,6 +1,7 @@
 package org.controller.customState
 
 import org.controller.customState.customStateConstants.jodaTSPattern
+import org.controller.customState.entitiesCustomState.outerSchema
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 
@@ -23,6 +24,8 @@ object raceInfoStateUtils {
         getProperMillis(new java.sql.Timestamp(System.currentTimeMillis),365,"days")
     }
   def getDateTime(timeStamp:java.sql.Timestamp)=DateTime.parse(timeStamp.toString,DateTimeFormat.forPattern(jodaTSPattern))
+
+  val emptyMap = collection.mutable.Map[String,List[outerSchema]]()
 
   def getProperMillis(timeStamp:java.sql.Timestamp,intValue:Int,timeString:String)= timeString.toList match {
     case firstChar :: remainingChars =>
@@ -47,6 +50,8 @@ object raceInfoStateUtils {
           println(s"getProperMillis Nil y")
           milliSecondsInASecond * secondsInAMinute * minutesInAHour * hoursInADay * numOfDaysInAYear(getDateTime(timeStamp),intValue)
       }
+    case Nil =>
+      0L
   }
 
   val milliSecondsInASecond=1000L

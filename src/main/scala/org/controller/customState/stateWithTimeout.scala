@@ -84,6 +84,8 @@ object stateWithTimeout extends SparkOpener{
           println(s"getProperMillis Nil y")
           milliSecondsInASecond * secondsInAMinute * minutesInAHour * hoursInADay * numOfDaysInAYear(getDateTime(timeStamp),intValue)
       }
+    case Nil =>
+      0L
   }
 
   val milliSecondsInASecond=1000L

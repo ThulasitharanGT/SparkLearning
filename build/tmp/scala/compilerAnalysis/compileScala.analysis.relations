@@ -1290,6 +1290,7 @@ source dependencies:
    src/main/scala/org/controller/customState/entitiesCustomState.scala -> src/main/scala/org/controller/customState/customStateConstants.scala
    src/main/scala/org/controller/customState/entitiesCustomState.scala -> src/main/scala/org/controller/customState/raceInfoStateUtils.scala
    src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> src/main/scala/org/controller/customState/customStateConstants.scala
+   src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> src/main/scala/org/controller/customState/entitiesCustomState.scala
    src/main/scala/org/controller/customState/raceInfoWithState.scala -> src/main/scala/org/controller/customState/customStateConstants.scala
    src/main/scala/org/controller/customState/raceInfoWithState.scala -> src/main/scala/org/controller/customState/entitiesCustomState.scala
    src/main/scala/org/controller/customState/raceInfoWithState.scala -> src/main/scala/org/controller/customState/raceInfoStateUtils.scala
