@@ -51,10 +51,10 @@ object raceInfoWithState extends SparkOpener{
       .groupByKey(_.getKey)
       .flatMapGroups((raceTrackID,raceAndRaceTrackEvents) =>
         stateOutClass(raceAndRaceTrackEvents.toList).getLatestRecord
-      ) .map(x => (x.getRaceInfoRecord,x.incomingTimestamp))
+      ) .map(_.getRaceInfoRecord)
       .writeStream.format("console").outputMode("update")
       .option("truncate","false").option("checkpointLocation","")
-      .foreach(new raceInfoWriter(inputMap)).start
+   //   .foreach(new raceInfoWriter(inputMap)).start
 
 
     val raceTrackInfoDF=readStreamAndStateOutDF.flatMap(_.dataList.filter(_.eventInfo== raceTrackEventSource)

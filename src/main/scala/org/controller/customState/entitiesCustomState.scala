@@ -11,7 +11,7 @@ object entitiesCustomState {
 
 {"raceTrackID":"","raceTrackVenue":"","raceTrackName":""}
  */
-  case class outerSchema(eventInfo:String,incomingMessage:String,incomingTimestamp:java.sql.Timestamp) {
+  case class outerSchema(eventInfo:String,incomingMessage:String,var incomingTimestamp:java.sql.Timestamp) {
     override def toString = s"""{"eventInfo":"${this.eventInfo}","incomingMessage":"${this.incomingMessage}","incomingTimestamp":"${this.incomingTimestamp}"}"""
     def getTs=new java.sql.Timestamp(System.currentTimeMillis)
     def hasTimedOut(durationString:String)= getTs.compareTo(new java.sql.Timestamp(this.incomingTimestamp.getTime + getMillis(this.incomingTimestamp,durationString))) match {
@@ -31,8 +31,12 @@ object entitiesCustomState {
         parse(this.incomingMessage).extract[raceInfo].raceTrackID
     }
 
-    def getRaceTrackRecord= parse(this.incomingMessage).extract[raceTrackInfo].copy(incomingTimestamp=this.incomingTimestamp)
-    def getRaceInfoRecord= parse(this.incomingMessage).extract[raceInfo].copy(incomingTimestamp=this.incomingTimestamp)
+    def getRaceTrackRecordInner= parse(this.incomingMessage).extract[raceTrackInfo]
+    def getRaceInfoRecordInner= parse(this.incomingMessage).extract[raceInfo]
+
+    def getRaceTrackRecord= getRaceTrackRecordInner.copy(incomingTimestamp=this.incomingTimestamp)
+    def getRaceInfoRecord= getRaceInfoRecordInner.copy(incomingTimestamp=this.incomingTimestamp)
+
 
   }
   type url=String
@@ -55,7 +59,14 @@ object entitiesCustomState {
       }
   }
   type dbAction=String
-  case class baseForRaceRecords(raceTrackID:String,incomingTimestamp:java.sql.Timestamp,dbAction:dbAction)
-  case class raceInfo(raceID:String,raceEventDate:String,raceSeason:String) extends baseForRaceRecords
-  case class raceTrackInfo(raceTrackVenue:String,raceTrackName:String) extends baseForRaceRecords
+/*  class baseForRaceRecords(val raceTrackID:String,var incomingTimestamp:java.sql.Timestamp,val dbAction:dbAction)
+  case class raceInfo(raceID:String,raceEventDate:String,raceSeason:String,override val raceTrackID:String,override var incomingTimestamp:java.sql.Timestamp,override val dbAction:dbAction) extends baseForRaceRecords (raceTrackID=raceTrackID,incomingTimestamp=incomingTimestamp,dbAction=dbAction)
+ */
+trait baseForRaceRecords {
+  val raceTrackID:String
+  var incomingTimestamp:java.sql.Timestamp
+  val dbAction:dbAction
+}
+  case class raceInfo(raceID:String,raceEventDate:String,raceSeason:String,override val raceTrackID:String,override var incomingTimestamp:java.sql.Timestamp,override val dbAction:dbAction) extends baseForRaceRecords
+  case class raceTrackInfo(raceTrackVenue:String,raceTrackName:String,override val raceTrackID:String,override var incomingTimestamp:java.sql.Timestamp,override val dbAction:dbAction) extends baseForRaceRecords
 }

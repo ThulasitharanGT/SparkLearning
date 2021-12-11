@@ -1,7 +1,7 @@
 package org.controller.customState
 
 import org.controller.customState.customStateConstants.jodaTSPattern
-import org.controller.customState.entitiesCustomState.outerSchema
+import org.controller.customState.entitiesCustomState.{dbDetails, outerSchema}
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 
@@ -19,7 +19,7 @@ object raceInfoStateUtils {
   }
 
 
-  def getJDBCConnection(inputMap:collection.mutable.Map[String,String])=  java.sql.DriverManager.getConnection(s"${inputMap("JDBCUrl")}${inputMap("JDBCDatabase")}?user=${inputMap("JDBCUser")}&password=${inputMap("JDBCPassword")}",getJDBCProps)
+  def getJDBCConnection(inputMap:collection.mutable.Map[String,String])=  java.sql.DriverManager.getConnection(s"${inputMap("JDBCUrl")}${inputMap("JDBCDatabase")}?user=${inputMap("JDBCUser")}&password=${inputMap("JDBCPassword")}",getJDBCProps(inputMap))
 
   def getJDBCProps(inputMap:collection.mutable.Map[String,String])={
     val props=getProps
@@ -28,6 +28,7 @@ object raceInfoStateUtils {
     props.put("password",inputMap("JDBCPassword"))
     props
   }
+  def getDBDetails(inputMap:collection.mutable.Map[String,String])=dbDetails(s"${inputMap("JDBCUrl")}${inputMap("JDBCDatabase")}?user=${inputMap("JDBCUser")}&password=${inputMap("JDBCPassword")}",inputMap("JDBCUser"),inputMap("JDBCPassword"),inputMap("JDBCDatabase"))
 
   def getProps= new java.util.Properties
 

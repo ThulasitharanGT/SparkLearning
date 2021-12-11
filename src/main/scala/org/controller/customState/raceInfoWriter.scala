@@ -1,14 +1,14 @@
 package org.controller.customState
 
-import org.controller.customState.entitiesCustomState.raceInfo
+import org.controller.customState.entitiesCustomState.{dbDetails, raceInfo}
 import org.controller.customState.raceInfoStateUtils.getJDBCConnectionObj
 
 import java.sql.Timestamp
-import scala.util.{Try,Success,Failure}
-class raceInfoWriter(inputMap:collection.mutable.Map[String,String]) extends raceForEachUtil()[raceInfo]{
+import scala.util.{Failure, Success, Try}
+import org.controller.customState.raceInfoStateUtils.getDBDetails
 
-  @transient var connection: java.sql.Connection = null
-
+class raceInfoWriter(inputMap:collection.mutable.Map[String,String]) extends raceForEachUtil[raceInfo](getDBDetails(inputMap),inputMap("raceInfoTableName"),inputMap("raceIDColumn"))
+{
   override def open(partitionId: Long, epochId: Long): Boolean = {
     Try{getJDBCConnectionObj(inputMap)} match {
       case Success(s) =>
@@ -20,13 +20,24 @@ class raceInfoWriter(inputMap:collection.mutable.Map[String,String]) extends rac
     }
   }
 
-  override def process(incomingInfo: (raceInfo, Timestamp)): Unit =  doesRecordExist
-  insertOrUpdate
-  insertRecord
-  updateRecord
-  deleteRecord
+  override def process(incomingInfo: (raceInfo, Timestamp)): Unit = doesRecordExist(incomingInfo._1,connection,inputMap("raceIDColumn"))
 
-  override def close(errorOrNull: Throwable): Unit = ???
+  override def readExistingRecordFromTable(record:raceInfo,conn:java.sql.Connection) =
+    connection.prepareStatement(s"select * from ${inputMap("JDBCDatabase")}.${inputMap("raceInfoTableName")} where ${inputMap("raceIDColumn")}='${record.raceID}'").executeQuery match {
+      case value =>
+        value.next
+        raceInfo(raceTrackID = )
+
+    }
+
+
+  override def insertRecord(record:raceInfo,conn:java.sql.Connection)= {
+
+  }
+  override def updateRecord(record:raceInfo,conn:java.sql.Connection) ={
+
+  }
+
 
 
 
