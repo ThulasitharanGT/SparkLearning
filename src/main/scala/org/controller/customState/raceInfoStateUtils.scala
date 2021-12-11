@@ -5,12 +5,31 @@ import org.controller.customState.entitiesCustomState.outerSchema
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 
+
 object raceInfoStateUtils {
   val outerStruct=new org.apache.spark.sql.types.StructType(
     Array(org.apache.spark.sql.types.StructField("eventInfo",org.apache.spark.sql.types.StringType,true)
       ,org.apache.spark.sql.types.StructField("incomingMessage",org.apache.spark.sql.types.StringType,true)
       ,org.apache.spark.sql.types.StructField("incomingTimestamp",org.apache.spark.sql.types.StringType,true))
   )
+
+  def getJDBCConnectionObj(inputMap:collection.mutable.Map[String,String])={
+    Class.forName(inputMap("JDBCDriverName"))
+    getJDBCConnection(inputMap)
+  }
+
+
+  def getJDBCConnection(inputMap:collection.mutable.Map[String,String])=  java.sql.DriverManager.getConnection(s"${inputMap("JDBCUrl")}${inputMap("JDBCDatabase")}?user=${inputMap("JDBCUser")}&password=${inputMap("JDBCPassword")}",getJDBCProps)
+
+  def getJDBCProps(inputMap:collection.mutable.Map[String,String])={
+    val props=getProps
+    props.put("url",s"${inputMap("JDBCUrl")}${inputMap("JDBCDatabase")}?user=${inputMap("JDBCUser")}&password=${inputMap("JDBCPassword")}")
+    props.put("user",inputMap("JDBCUser"))
+    props.put("password",inputMap("JDBCPassword"))
+    props
+  }
+
+  def getProps= new java.util.Properties
 
   def getMillis(timeStamp:java.sql.Timestamp,interval:String)=
     interval.split(" ").toSeq.toList match {

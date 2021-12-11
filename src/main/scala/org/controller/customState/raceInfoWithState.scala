@@ -22,7 +22,7 @@ object raceInfoWithState extends SparkOpener{
     inputMap.foreach(println)
     println(s"url - ${inputMap("JDBCUrl")}${inputMap("JDBCDatabase")}?user=${inputMap("JDBCUser")}&password=${inputMap("JDBCPassword")}")
 
-    spark.readStream.format("kafka")
+  val readStreamAndStateOutDF=  spark.readStream.format("kafka")
       .option("kafka.bootstrap.servers",inputMap("bootStrapServers"))
       .option("subscribe",inputMap("topic"))
       .option("startingOffsets",inputMap("startingOffsets"))
@@ -39,12 +39,29 @@ object raceInfoWithState extends SparkOpener{
           .cast(org.apache.spark.sql.types.TimestampType))
       .as[outerSchema].groupByKey(groupByKeyFun)
       .mapGroupsWithState(org.apache.spark.sql.streaming.GroupStateTimeout.NoTimeout)(stateFunction)
-      .writeStream
+    /*  .writeStream
       .format("console")
       .outputMode("update")
       .option("checkpointLocation",inputMap("checkpointLocation"))
       .option("truncate","false")
       .start
+*/
+
+    val raceInfoDF=readStreamAndStateOutDF.flatMap(_.dataList.filter(_.eventInfo== raceInfoEventSource))
+      .groupByKey(_.getKey)
+      .flatMapGroups((raceTrackID,raceAndRaceTrackEvents) =>
+        stateOutClass(raceAndRaceTrackEvents.toList).getLatestRecord
+      ) .map(x => (x.getRaceInfoRecord,x.incomingTimestamp))
+      .writeStream.format("console").outputMode("update")
+      .option("truncate","false").option("checkpointLocation","")
+      .foreach(new raceInfoWriter(inputMap)).start
+
+
+    val raceTrackInfoDF=readStreamAndStateOutDF.flatMap(_.dataList.filter(_.eventInfo== raceTrackEventSource)
+      .map(_.getRaceTrackRecord)).writeStream.format("update")
+
+
+
 
     // embed logic to insert into table
     spark.streams.awaitAnyTermination

@@ -31,23 +31,31 @@ object entitiesCustomState {
         parse(this.incomingMessage).extract[raceInfo].raceTrackID
     }
 
-    def getRaceTrackRecord= parse(this.incomingMessage).extract[raceTrackInfo]
-    def getRaceInfoRecord= parse(this.incomingMessage).extract[raceInfo]
+    def getRaceTrackRecord= parse(this.incomingMessage).extract[raceTrackInfo].copy(incomingTimestamp=this.incomingTimestamp)
+    def getRaceInfoRecord= parse(this.incomingMessage).extract[raceInfo].copy(incomingTimestamp=this.incomingTimestamp)
 
   }
-  case class raceInfo(raceID:String,raceTrackID:String,raceEventDate:String,raceSeason:String)
-  case class raceTrackInfo(raceTrackID:String,raceTrackVenue:String,raceTrackName:String)
+  type url=String
+  type user=String
+  type password=String
+  type schemaName=String
+
+  case class dbDetails(url:url,user:user,password:password,schemaName:schemaName)
+  type tableName=String
+
   case class stateClass(var dataMap:collection.mutable.Map[String,List[outerSchema]]=collection.mutable.Map[String,List[outerSchema]](""-> List.empty[outerSchema]))
   case class stateOutClass(dataList:List[outerSchema]=List.empty) {
     def getLatestRecord =
       this.dataList.size match {
         case value if value ==0 => List.empty[outerSchema]
-        case value if value !=0 =>
+        case value if value ==1 => List(dataList.head)
+        case value if value >=2 =>
         //   this.dataList.foldLeft[outerSchema](tmpClass:outerSchema)( (a,b) => b )
           List(this.dataList.reduce((a,b) => a.incomingTimestamp.compareTo(b.incomingTimestamp) match {case value if value == -1 => b case value if List(1,0).contains(value) =>a}))
-
       }
   }
-
-
+  type dbAction=String
+  case class baseForRaceRecords(raceTrackID:String,incomingTimestamp:java.sql.Timestamp,dbAction:dbAction)
+  case class raceInfo(raceID:String,raceEventDate:String,raceSeason:String) extends baseForRaceRecords
+  case class raceTrackInfo(raceTrackVenue:String,raceTrackName:String) extends baseForRaceRecords
 }
