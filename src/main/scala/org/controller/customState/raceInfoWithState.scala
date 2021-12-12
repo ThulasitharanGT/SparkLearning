@@ -53,15 +53,23 @@ object raceInfoWithState extends SparkOpener{
         stateOutClass(raceAndRaceTrackEvents.toList).getLatestRecord
       ) .map(_.getRaceInfoRecord)
       .writeStream.format("console").outputMode("update")
-      .option("truncate","false").option("checkpointLocation","")
-   //   .foreach(new raceInfoWriter(inputMap)).start
+      .option("truncate","false").option("checkpointLocation",inputMap("checkpointRace"))
+      .foreach(new raceInfoWriter(inputMap)).start
 
 
-    val raceTrackInfoDF=readStreamAndStateOutDF.flatMap(_.dataList.filter(_.eventInfo== raceTrackEventSource)
-      .map(_.getRaceTrackRecord)).writeStream.format("update")
+    val raceTrackInfoDF=readStreamAndStateOutDF.flatMap(_.dataList).filter(_.eventInfo==raceTrackEventSource)
+      .groupByKey(_.getKey)
+      .mapGroups((raceTrackID,raceTrackRecords)=>
+    stateOutClass(raceTrackRecords.toList).getLatestRecord.head.getRaceTrackRecord)
+    .writeStream.format("console").outputMode("update")
+    .option("truncate","false")
+      .option("checkpointLocation",inputMap("checkpointRaceTrack"))
+      .foreach(new raceTrackInfoWriter(inputMap))
+      .start
 
 
 
+// spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2,net.liftweb:lift-json_2.12:3.5.0,mysql:mysql-connector-java:8.0.27 --class org.controller.customState.raceInfoWithState --num-executors 1 --executor-memory 1g --driver-memory 1g --driver-cores 1 --executor-cores 1 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar bootStrapServers=localhost:8082,localhost:8083,localhost:8084 topic=tmpTopic ExpiryDuration="10 minutes" JDBCDriverName="com.mysql.jdbc.Driver" raceTrackIdColumn=race_track_id JDBCDatabase=kafka_db raceTrackTable=race_track_info JDBCUrl="jdbc:mysql://localhost:3306/" JDBCUser=raptor JDBCPassword="" checkpointLocation="hdfs://localhost:8020/user/raptor/stream/stateRaceTrack/" startingOffsets=latest
 
     // embed logic to insert into table
     spark.streams.awaitAnyTermination

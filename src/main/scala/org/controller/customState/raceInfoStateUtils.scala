@@ -18,6 +18,7 @@ object raceInfoStateUtils {
     getJDBCConnection(inputMap)
   }
 
+  def getJDBCConnection(dbDetails:dbDetails)=  java.sql.DriverManager.getConnection(dbDetails.url,getJDBCProps(dbDetails))
 
   def getJDBCConnection(inputMap:collection.mutable.Map[String,String])=  java.sql.DriverManager.getConnection(s"${inputMap("JDBCUrl")}${inputMap("JDBCDatabase")}?user=${inputMap("JDBCUser")}&password=${inputMap("JDBCPassword")}",getJDBCProps(inputMap))
 
@@ -28,7 +29,15 @@ object raceInfoStateUtils {
     props.put("password",inputMap("JDBCPassword"))
     props
   }
-  def getDBDetails(inputMap:collection.mutable.Map[String,String])=dbDetails(s"${inputMap("JDBCUrl")}${inputMap("JDBCDatabase")}?user=${inputMap("JDBCUser")}&password=${inputMap("JDBCPassword")}",inputMap("JDBCUser"),inputMap("JDBCPassword"),inputMap("JDBCDatabase"))
+
+  def getJDBCProps(dbDetails:dbDetails)={
+    val props=getProps
+    props.put("url",dbDetails.url)
+    props.put("user",dbDetails.user)
+    props.put("password",dbDetails.password)
+    props
+  }
+  def getDBDetails(inputMap:collection.mutable.Map[String,String])=dbDetails(s"${inputMap("JDBCUrl")}${inputMap("JDBCDatabase")}?user=${inputMap("JDBCUser")}&password=${inputMap("JDBCPassword")}",inputMap("JDBCUser"),inputMap("JDBCPassword"),inputMap("JDBCDatabase"),inputMap("JDBCDriverName"))
 
   def getProps= new java.util.Properties
 

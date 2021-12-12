@@ -43,8 +43,8 @@ object entitiesCustomState {
   type user=String
   type password=String
   type schemaName=String
-
-  case class dbDetails(url:url,user:user,password:password,schemaName:schemaName)
+  type JDBCDriver=String
+  case class dbDetails(url:url,user:user,password:password,schemaName:schemaName,driver:JDBCDriver)
   type tableName=String
 
   case class stateClass(var dataMap:collection.mutable.Map[String,List[outerSchema]]=collection.mutable.Map[String,List[outerSchema]](""-> List.empty[outerSchema]))
