@@ -340,6 +340,8 @@ object raceInfoWithState extends SparkOpener{
   def groupByKeyFun(incomingRecord:outerSchema) = incomingRecord.getKey
 /*
 
+1.0
+
 {"eventInfo":"","incomingMessage":"","incomingTimestamp":""}
 // race info layout
 {"raceID":"","raceTrackID":"","raceEventDate":"","raceSeason":""}
@@ -436,4 +438,74 @@ object raceInfoWithState extends SparkOpener{
 {"eventInfo":"RaceTrackInfo","incomingMessage":"{\"raceTrackID\":\"RT015\",\"raceTrackVenue\":\"Monaco\",\"raceTrackName\":\"Portimao\"}","incomingTimestamp":"2021-12-10 10:24:46.333"}
 */
 
+
+  /*
+  * 1.1 - new one
+  *
+  spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2,net.liftweb:lift-json_2.12:3.5.0,mysql:mysql-connector-java:8.0.27 --class org.controller.customState.raceInfoWithState --num-executors 1 --executor-memory 1g --driver-memory 1g --driver-cores 1 --executor-cores 1 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar bootStrapServers=localhost:8082,localhost:8083,localhost:8084 topic=tmpTopic ExpiryDuration="10 minutes" JDBCDriverName="com.mysql.jdbc.Driver" raceTrackIdColumn=race_track_id JDBCDatabase=kafka_db raceTrackTable=race_track_info_state JDBCUrl="jdbc:mysql://localhost:3306/" JDBCUser=raptor JDBCPassword="" checkpointRace="hdfs://localhost:8020/user/raptor/stream/checkpointRace/" startingOffsets=latest  raceIDColumn=race_id raceInfoTableName=race_info_state checkpointRaceTrack="hdfs://localhost:8020/user/raptor/stream/checkpointRaceTrack/"
+// 1.1
+{"eventInfo":"","incomingMessage":"","incomingTimestamp":""}
+// race info layout
+{"raceID":"","raceTrackID":"","raceEventDate":"","raceSeason":"","dbAction":""}
+// race track info layout
+{"raceTrackID":"","raceTrackVenue":"","raceTrackName":"","dbAction":""}
+
+
+// parent then child
+{"eventInfo":"RaceTrackInfo","incomingMessage":"{\"raceTrackID\":\"RT001\",\"raceTrackVenue\":\"Monte-carlo\",\"raceTrackName\":\"Circuit de monaco\",\"dbAction\":\"update\"}","incomingTimestamp":"2021-12-13 09:24:09.456"}
+
+{"eventInfo":"RaceInfo","incomingMessage":"{\"raceID\":\"RC001\",\"raceTrackID\":\"RT001\",\"raceEventDate\":\"2020-09-08\",\"raceSeason\":\"2021\",\"dbAction\":\"update\"}","incomingTimestamp":"2021-12-13 09:29:09.456"}
+
+
+// child then parent
+
+
+{"eventInfo":"RaceInfo","incomingMessage":"{\"raceID\":\"RC002\",\"raceTrackID\":\"RT002\",\"raceEventDate\":\"2022-09-08\",\"raceSeason\":\"2021\",\"dbAction\":\"update\"}","incomingTimestamp":"2021-12-13 09:50:09.456"}
+
+{"eventInfo":"RaceTrackInfo","incomingMessage":"{\"raceTrackID\":\"RT002\",\"raceTrackVenue\":\"Abudhabi\",\"raceTrackName\":\"Yas-Marina\",\"dbAction\":\"update\"}","incomingTimestamp":"2021-12-13 09:49:09.456"}
+
+=> update child
+{"eventInfo":"RaceInfo","incomingMessage":"{\"raceID\":\"RC002\",\"raceTrackID\":\"RT002\",\"raceEventDate\":\"2022-09-08\",\"raceSeason\":\"2121\",\"dbAction\":\"update\"}","incomingTimestamp":"2021-12-13 09:52:09.456"}
+
+
+
+// child then parent , reverse incoming ts
+
+{"eventInfo":"RaceInfo","incomingMessage":"{\"raceID\":\"RC003\",\"raceTrackID\":\"RT003\",\"raceEventDate\":\"2022-09-08\",\"raceSeason\":\"2121\",\"dbAction\":\"update\"}","incomingTimestamp":"2021-12-13 09:59:09.456"}
+
+{"eventInfo":"RaceTrackInfo","incomingMessage":"{\"raceTrackID\":\"RT003\",\"raceTrackVenue\":\"Abudhabi\",\"raceTrackName\":\"Yas-Marina\",\"dbAction\":\"update\"}","incomingTimestamp":"2021-12-13 09:58:09.456"}
+
+=> update child
+
+{"eventInfo":"RaceInfo","incomingMessage":"{\"raceID\":\"RC003\",\"raceTrackID\":\"RT003\",\"raceEventDate\":\"2022-09-08\",\"raceSeason\":\"2021\",\"dbAction\":\"update\"}","incomingTimestamp":"2021-12-13 09:57:09.456"}
+
+
+// delete for parent, for parent not in table.(release)
+
+{"eventInfo":"RaceTrackInfo","incomingMessage":"{\"raceTrackID\":\"RT004\",\"raceTrackVenue\":\"Abudhabi\",\"raceTrackName\":\"Yas-Marina\",\"dbAction\":\"delete\"}","incomingTimestamp":"2021-12-13 09:59:09.456"}
+
+
+// delete for child, for parent not in table.  (No release)
+{"eventInfo":"RaceInfo","incomingMessage":"{\"raceID\":\"RC003\",\"raceTrackID\":\"RT00A\",\"raceEventDate\":\"2022-09-08\",\"raceSeason\":\"2121\",\"dbAction\":\"delete\"}","incomingTimestamp":"2021-12-13 09:59:09.456"}
+
+// delete for child (no child in table), for parent in table.  // manual entry of parent
+
+insert into kafka_db.race_track_info_state (race_track_id,race_track_name,incoming_timestamp,race_track_venue) values('RT00A1','Mulsan-Straight','2020-09-08 17:18:19.567','France Le mans');
+
+{"eventInfo":"RaceInfo","incomingMessage":"{\"raceID\":\"RC00A\",\"raceTrackID\":\"RT00A1\",\"raceEventDate\":\"2022-09-08\",\"raceSeason\":\"2121\",\"dbAction\":\"delete\"}","incomingTimestamp":"2021-12-13 09:59:09.456"}
+
+
+// update for parent // manual entry of parent first
+
+{"eventInfo":"RaceTrackInfo","incomingMessage":"{\"raceTrackID\":\"RT00A1\",\"raceTrackVenue\":\"Abudhabi\",\"raceTrackName\":\"Yas-Marina\",\"dbAction\":\"update\"}","incomingTimestamp":"2021-12-13 09:59:09.456"}
+
+
+// update for child, no parent in table // manual entry of child first [No Release]
+
+insert into kafka_db.race_info_state (race_id,race_track_id,race_season,incoming_timestamp,race_event_date) values('RC00A1','RC00A','2030','2021-12-13 09:59:09.456','2020-09-10');
+
+{"eventInfo":"RaceInfo","incomingMessage":"{\"raceID\":\"RC00A1\",\"raceTrackID\":\"RT00A\",\"raceEventDate\":\"2022-09-08\",\"raceSeason\":\"2121\",\"dbAction\":\"delete\"}","incomingTimestamp":"2021-12-13 10:05:09.456"}
+
+
+* */
 }
