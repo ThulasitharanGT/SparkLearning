@@ -20,6 +20,7 @@ class raceInfoWriter(inputMap:collection.mutable.Map[String,String]) extends rac
     }
 
  // override def process(incomingInfo: raceInfo): Unit = doesRecordExist(incomingInfo._1,connection,inputMap("raceIDColumn"))
+  override def doesRecordExist(record:raceInfo)=    connection.prepareStatement(s"select 1 from ${inputMap("JDBCDatabase")}.${inputMap("raceInfoTableName")} where ${inputMap("raceIDColumn")}='${record.raceID}'").executeQuery match {case value if value.next == true => true case _ => false}
 
   override def readExistingRecordFromTable(record:raceInfo) =
     connection.prepareStatement(s"select * from ${inputMap("JDBCDatabase")}.${inputMap("raceInfoTableName")} where ${inputMap("raceIDColumn")}='${record.raceID}'").executeQuery match
@@ -53,7 +54,7 @@ class raceInfoWriter(inputMap:collection.mutable.Map[String,String]) extends rac
   override def insertRecord(record:raceInfo)=
     connection.prepareStatement(s""" insert into ${inputMap("JDBCDatabase")}.${inputMap("raceInfoTableName")}(race_id,race_track_id,race_season,incoming_timestamp,race_event_date) values('${record.raceID}','${record.raceTrackID}','${record.raceSeason}','${record.incomingTimestamp}','${record.raceEventDate}') """.stripMargin).executeUpdate
 
-  override def updateRecord(record:raceInfo) =connection.prepareStatement(s""" update ${inputMap("JDBCDatabase")}.${inputMap("raceInfoTableName")} set race_track_id='${record.raceTrackID}',race_season='${record.raceSeason}',incoming_timestamp='${record.incomingTimestamp}',race_event_date='${record.raceEventDate}' where race_id='${record.raceID}' """).executeUpdate
+  override def updateRecord(record:raceInfo) =connection.prepareStatement(s"""update ${inputMap("JDBCDatabase")}.${inputMap("raceInfoTableName")} set race_track_id='${record.raceTrackID}',race_season='${record.raceSeason}',incoming_timestamp='${record.incomingTimestamp}',race_event_date='${record.raceEventDate}' where race_id='${record.raceID}' """).executeUpdate
 
 
 
