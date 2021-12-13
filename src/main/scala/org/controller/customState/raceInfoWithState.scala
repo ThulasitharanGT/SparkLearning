@@ -327,6 +327,7 @@ object raceInfoWithState extends SparkOpener{
   }
 
   def getProps= new java.util.Properties
+/*
 
   def groupByKeyFun(incomingRecord:outerSchema) = incomingRecord.eventInfo match {
     case value if value == raceTrackEventSource =>
@@ -334,7 +335,9 @@ object raceInfoWithState extends SparkOpener{
     case value if value == raceInfoEventSource =>
       parse(incomingRecord.incomingMessage).extract[raceInfo].raceTrackID
   }
+*/
 
+  def groupByKeyFun(incomingRecord:outerSchema) = incomingRecord.getKey
 /*
 
 {"eventInfo":"","incomingMessage":"","incomingTimestamp":""}

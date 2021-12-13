@@ -26,19 +26,30 @@ object entitiesCustomState {
     }
     def getKey=this.eventInfo match {
       case value if value == raceTrackEventSource =>
-        parse(this.incomingMessage).extract[raceTrackInfo].raceTrackID
+        getRaceTrackRecordInner.raceTrackID
       case value if value == raceInfoEventSource =>
-        parse(this.incomingMessage).extract[raceInfo].raceTrackID
+        getRaceInfoRecordInner.raceTrackID
     }
 
-    def getRaceTrackRecordInner= parse(this.incomingMessage).extract[raceTrackInfo]
-    def getRaceInfoRecordInner= parse(this.incomingMessage).extract[raceInfo]
+    def getRaceTrackRecordInner= parse(this.incomingMessage).extract[raceTrackBase]
+    def getRaceInfoRecordInner= parse(this.incomingMessage).extract[raceBase]
+/*
 
     def getRaceTrackRecord= getRaceTrackRecordInner.copy(incomingTimestamp=this.incomingTimestamp)
     def getRaceInfoRecord= getRaceInfoRecordInner.copy(incomingTimestamp=this.incomingTimestamp)
+*/
 
+    def getRaceTrackRecord= constructRaceTrackRecord(getRaceTrackRecordInner)
+    def getRaceInfoRecord= constructRaceInfoRecord(getRaceInfoRecordInner)
 
+    def constructRaceInfoRecord(record:raceBase)=raceInfo(raceID=record.raceID,raceEventDate=record.raceEventDate,raceSeason=record.raceSeason,raceTrackID=record.raceTrackID,dbAction=record.dbAction,incomingTimestamp=this.incomingTimestamp)
+    def constructRaceTrackRecord(record:raceTrackBase)=raceTrackInfo(raceTrackVenue=record.raceTrackVenue, raceTrackName=record.raceTrackName, raceTrackID=record.raceTrackID, dbAction=record.dbAction, incomingTimestamp=this.incomingTimestamp)
+    //Array("").map(_.split(":")).map(x => x.head.split(" ") match { case firstElem :: nextSet => firstElem.toString.toLowerCase.startsWith("override") || firstElem.toString.toLowerCase.startsWith("val") match { case true => nextSet.last.toString case false => firstElem.toString} case value if value.size ==1 => value.head.toString })
   }
+
+  case class raceBase(raceID:String,raceEventDate:String,raceSeason:String,raceTrackID:String,dbAction:dbAction)
+  case class raceTrackBase(raceTrackVenue:String,raceTrackName:String,raceTrackID:String,dbAction:dbAction)
+
   type url=String
   type user=String
   type password=String
@@ -67,6 +78,6 @@ trait baseForRaceRecords {
   var incomingTimestamp:java.sql.Timestamp
   val dbAction:dbAction
 }
-  case class raceInfo(raceID:String,raceEventDate:String,raceSeason:String,override val raceTrackID:String,override var incomingTimestamp:java.sql.Timestamp,override val dbAction:dbAction) extends baseForRaceRecords
-  case class raceTrackInfo(raceTrackVenue:String,raceTrackName:String,override val raceTrackID:String,override var incomingTimestamp:java.sql.Timestamp,override val dbAction:dbAction) extends baseForRaceRecords
+  case class raceInfo(raceID:String,raceEventDate:String,raceSeason:String,override val raceTrackID:String,override val dbAction:dbAction,override var incomingTimestamp:java.sql.Timestamp) extends baseForRaceRecords
+  case class raceTrackInfo(raceTrackVenue:String,raceTrackName:String,override val raceTrackID:String,override val dbAction:dbAction,override var incomingTimestamp:java.sql.Timestamp) extends baseForRaceRecords
 }
