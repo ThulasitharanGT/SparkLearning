@@ -10,7 +10,7 @@ object timeComplexity {
 
   val inputTSFormat="yyyy-MM-dd'T'HH:mm:ss'Z'"
   val interTSFormat="yyyy-MM-dd HH:mm:ss.S"
-
+// /home/raptor/IdeaProjects/SparkLearning/Input/timeSplit2.txt
 //   @transient val jodaFormat=DateTimeFormat.forPattern(interTSFormat)
    val simpleDateFormat=new java.text.SimpleDateFormat(inputTSFormat)
    val simpleDateFormatOP=new java.text.SimpleDateFormat(interTSFormat)
@@ -27,6 +27,7 @@ object timeComplexity {
     val spark = org.apache.spark.sql.SparkSession.builder.getOrCreate
     import spark.implicits._
     val sampleFile = s"hdfs://localhost:8020/user/raptor/inputTimeSeries.txt"
+    //  val sampleFile = s"hdfs://localhost:8020/user/raptor/timeSplit2.txt"
     val sampleDataDF = spark.read.format("com.databricks.spark.csv")
       .option("header", "true").option("inferSchema", "false")
       .option("delimiter", "|").load(sampleFile)
@@ -34,11 +35,9 @@ object timeComplexity {
     //.withColumn("orderCol",row_number.over(Window.partitionBy("User_id").orderBy(asc("Timestamp"))))
     // .as[inputSessions]
 
-    sampleDataDF.orderBy(col("User_id"), asc("Timestamp")).groupByKey(_.getAs[String]("User_id")).flatMapGroups((x, y) =>flatMapGroupFunction(x,y)).show(false)
+    sampleDataDF.orderBy(col("User_id"), asc("Timestamp")).groupByKey(_.getAs[String]("User_id")).flatMapGroups((x, y) =>flatMapGroupFunction(x,y)).orderBy(asc("_1"), asc("_2")).show(false)
 
-
-
-
+    implicitly[org.apache.spark.sql.Encoder[inputSessionsInter]].schema
   }
 
   def flatMapGroupFunction(x:String,y:Iterator[org.apache.spark.sql.Row])={
@@ -48,35 +47,52 @@ object timeComplexity {
     @transient val getTimeStamp:(org.apache.spark.sql.Row)=>java.sql.Timestamp = (row:org.apache.spark.sql.Row) => row.getAs[java.sql.Timestamp]("Timestamp")
      def getJodaTime(row:org.apache.spark.sql.Row)= DateTime.parse(getTimeStamp(row).toString,jodaFomat) // getJodaFormat)
     @transient val getJavaTS:(org.joda.time.DateTime)=> java.sql.Timestamp=(dateTime:org.joda.time.DateTime) => new java.sql.Timestamp(simpleDateFormatOP.parse(simpleDateFormatOP.format(dateTime.toDate)).getTime)
-   def timeCompare(startTime:org.joda.time.DateTime,endTime:org.joda.time.DateTime,checkMinutes:Int)=
+    def timeCompare(startTime:org.joda.time.DateTime,endTime:org.joda.time.DateTime,checkMinutes:Int)=
        startTime.getYear == endTime.year.get match {
          case value if value == true => // same year
+           println(s"same year startTime ${startTime} endTime ${endTime}")
            startTime.getDayOfYear == endTime.getDayOfYear match {
              case value if value == true => //same day
                value  match {
                  case value if startTime.plusMinutes(checkMinutes).getMinuteOfDay >= endTime.minuteOfDay.get =>
-                 true
+                   println(s"same day valid startTime ${startTime} endTime ${endTime}")
+                   true
                  case value if startTime.plusMinutes(checkMinutes).getMinuteOfDay < endTime.minuteOfDay.get =>
-                 false
+                   println(s"same day broken startTime ${startTime} endTime ${endTime}")
+                   false
                 }
              case value if value == false =>  //diff day
+               println(s"diff day startTime ${startTime} endTime ${endTime}")
                value  match {
+                 case value if startTime.plusMinutes(checkMinutes).getDayOfYear != endTime.dayOfYear.get =>
+                   println(s"diff day broken 1 startTime ${startTime} endTime ${endTime}")
+                   false
+                 case value if startTime.plusMinutes(checkMinutes).getDayOfYear == endTime.dayOfYear.get  && (startTime.plusMinutes(checkMinutes).getMinuteOfDay <= checkMinutes ) =>
+                   println(s"diff day valid 1 startTime ${startTime} endTime ${endTime}")
+                   true
                  case value if endTime.minuteOfDay.get <=checkMinutes && startTime.plusMinutes(checkMinutes).getMinuteOfDay >= endTime.minuteOfDay.get =>
+                  println(s"diff day valid startTime ${startTime} endTime ${endTime}")
                    true
                  case value if (endTime.minuteOfDay.get > checkMinutes || endTime.minuteOfDay.get < checkMinutes) && startTime.plusMinutes(checkMinutes).getMinuteOfDay < endTime.minuteOfDay.get =>
+                   println(s"diff day broken startTime ${startTime} endTime ${endTime}")
                    false
                }
            }
          case value if value == false => // diff year
+           println(s"diff year startTime ${startTime} endTime ${endTime}")
            value  match {
              case value if endTime.dayOfYear.get !=1 =>
+               println(s"not jan 1 startTime ${startTime} endTime ${endTime}")
                false
              case value if endTime.getDayOfYear ==1 && endTime.minuteOfDay.get <=checkMinutes &&  startTime.plusMinutes(checkMinutes).getMinuteOfDay >= endTime.minuteOfDay.get =>
+               println(s"jan 1 and valid startTime ${startTime} endTime ${endTime}")
                true
-             case value if endTime.getDayOfYear ==1 && (endTime.minuteOfDay.get > checkMinutes || endTime.minuteOfDay.get < checkMinutes) &&  startTime.plusMinutes(checkMinutes).getMinuteOfDay < endTime.minuteOfDay.get =>
+             case value if endTime.getDayOfYear ==1 && (endTime.minuteOfDay.get >= checkMinutes || endTime.minuteOfDay.get < checkMinutes) &&  (startTime.plusMinutes(checkMinutes).getMinuteOfDay < endTime.minuteOfDay.get || startTime.plusMinutes(checkMinutes).getMinuteOfDay >= endTime.minuteOfDay.get ) =>
+               println(s"jan 1 and broken startTime ${startTime} endTime ${endTime}")
                false
            }
        }
+    println(s"userID ${x}")
     @transient  val sessionList = y.toList
     @transient  val eventsPerUserId = sessionList.size - 1
     @transient  var controlVar = true
@@ -88,24 +104,61 @@ object timeComplexity {
     @transient  var endTime = startTime
     println(s"endTime ${endTime}")
     @transient val tmpArrayBuffer = collection.mutable.ArrayBuffer[(String,java.sql.Timestamp,Option[java.sql.Timestamp],String)]() // [inputSessionsInter]()
-
     while(controlVar)
       tmpIndex match {
         case value if value > eventsPerUserId =>
-          timeCompare(startTime,getJodaTime(sessionList.head),45) match {
-            case value if value == true =>
-              endTime=getJodaTime(sessionList.head)
-            case value if value == false =>
-
-              tmpArrayBuffer+=((x,startTime,endTime match {case value if value == startTime => None case value => Some(getJavaTS(value)) },endTime match {case value if value == startTime =>"Broken" case value =>"Valid"  }))
-              endTime=getJodaTime(sessionList.head)
-
-          }
+          println(s"more than index value ${value}")
+          controlVar=false
         case value if value < eventsPerUserId =>
+          println(s"less than index value ${value}")
+          timeCompare(endTime,getJodaTime(sessionList(tmpIndex+1)),45) match {
+            case value if value == true =>
+             println(s"endTime less than index 45 mins")
+              timeCompare(startTime,getJodaTime(sessionList(tmpIndex+1)),120) match {
+                case value if value == true =>
+                  println(s"startTime less than index 120 mins")
+                  endTime=getJodaTime(sessionList(tmpIndex+1))
+                case false =>
+                 println(s"startTime greater than index 120 mins")
+                 // split 2hrs in joined events
+                  startTime.plusMinutes(120) // will be endtime for prev
+                  startTime.getYear == getJodaTime(sessionList(tmpIndex+1)).getYear match {  // will be new starttime
+                    case true =>  startTime.getDayOfYear == getJodaTime(sessionList(tmpIndex+1)).getDayOfYear
+                      match {
+                      case value if value==true =>
 
+                      case value if value==false =>
+
+                    }
+                    case false =>
+
+                  }
+
+                  tmpArrayBuffer+=((x,getJavaTS(startTime),endTime match {case value if value == startTime => None case value => Some(getJavaTS(value)) },endTime match {case value if value == startTime =>"Broken" case _ =>"Valid"  }))
+                  startTime=getJodaTime(sessionList(tmpIndex+1))
+                  endTime=startTime
+              }
+            case value if value == false =>
+              println(s"endTime greater than index 45 mins")
+              tmpArrayBuffer+=((x,getJavaTS(startTime),endTime match {case value if value == startTime => None case value => Some(getJavaTS(value)) },endTime match {case value if value == startTime =>"Broken" case _ =>"Valid"  }))
+              startTime=getJodaTime(sessionList(tmpIndex+1))
+              endTime=startTime
+          }
+          tmpIndex+=1
         case value if value == eventsPerUserId =>
-
+          println(s"index is equal to last in list")
+          startTime match {
+            case value if value == endTime =>
+              println(s"last record broken")
+              tmpArrayBuffer+=((x,getJavaTS(startTime),endTime match {case value if value == startTime => None case value => Some(getJavaTS(value)) },"Broken" ))
+            case _ =>
+              println(s"last valid")
+              tmpArrayBuffer+=((x,getJavaTS(startTime),endTime match {case value if value == startTime => None case value => Some(getJavaTS(value)) },"Valid" ))
+          }
+          tmpIndex+=1
       }
+    tmpArrayBuffer
+  }
 
 
    /* // adding day logic too
@@ -174,6 +227,57 @@ object timeComplexity {
       }
     // }
     */
-    tmpArrayBuffer
-  }
+
+  /*
+  Timestamp|User_id
+  2021-05-01T11:00:00Z|u1
+  2021-05-01T13:13:00Z|u1
+  2021-05-01T15:00:00Z|u2
+  2021-05-01T11:25:00Z|u1
+  2021-05-01T15:15:00Z|u2
+  2021-05-01T02:13:00Z|u3
+  2021-05-03T02:15:00Z|u4
+  2021-05-02T11:45:00Z|u1
+  2021-05-02T11:00:00Z|u3
+  2021-05-03T12:15:00Z|u3
+  2021-05-03T11:00:00Z|u4
+  2021-05-03T21:00:00Z|u4
+  2021-05-04T19:00:00Z|u2
+  2021-05-04T09:00:00Z|u3
+  2021-05-04T08:15:00Z|u1
+  */
+
+  // phase 2
+
+
+  /*
+  2021-05-01T11:00:00Z|u1
+  2021-05-01T11:25:00Z|u1
+  2021-05-01T13:13:00Z|u1
+  2021-05-01T13:23:00Z|u1
+  2021-05-01T13:33:00Z|u1
+  2021-05-01T13:53:00Z|u1
+  2021-05-01T14:10:00Z|u1
+  2021-05-01T14:30:00Z|u1
+  2021-05-02T11:45:00Z|u1
+  2021-05-04T08:15:00Z|u1
+  2021-05-01T15:00:00Z|u2
+  2021-05-01T15:15:00Z|u2
+  2021-05-04T19:00:00Z|u2
+  2021-05-01T02:13:00Z|u3
+  2021-05-02T11:00:00Z|u3
+  2021-05-03T12:15:00Z|u3
+  2021-05-04T09:00:00Z|u3
+  2021-05-03T02:15:00Z|u4
+  2021-05-03T11:00:00Z|u4
+  2021-05-03T21:00:00Z|u4
+  2021-12-31T02:15:00Z|u4
+  2021-12-31T02:20:00Z|u4
+  2021-12-31T23:40:00Z|u4
+  2021-12-31T23:55:00Z|u4
+  2022-01-01T00:10:00Z|u4
+
+
+  */
+
 }
