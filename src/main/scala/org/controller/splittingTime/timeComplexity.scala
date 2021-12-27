@@ -11,6 +11,7 @@ object timeComplexity {
   val inputTSFormat="yyyy-MM-dd'T'HH:mm:ss'Z'"
   val interTSFormat="yyyy-MM-dd HH:mm:ss.S"
 // /home/raptor/IdeaProjects/SparkLearning/Input/timeSplit2.txt
+// /home/raptor/IdeaProjects/SparkLearning/Input/timeSplit3.txt
 //   @transient val jodaFormat=DateTimeFormat.forPattern(interTSFormat)
    val simpleDateFormat=new java.text.SimpleDateFormat(inputTSFormat)
    val simpleDateFormatOP=new java.text.SimpleDateFormat(interTSFormat)
@@ -19,9 +20,7 @@ object timeComplexity {
    def getJodaTime(row:org.apache.spark.sql.Row)=DateTime.parse(getTimeStamp(row).toString, getJodaFormat )
    def getJodaTime(timestampStr:String)=  DateTime.parse(timestampStr, getJodaFormat)
    def getJodaTime(row:org.apache.spark.sql.Row,jodaObj:DateTimeFormatter)=  DateTime.parse(getTimeStamp(row).toString, jodaObj )
-   val getJavaTS:(org.joda.time.DateTime)=> java.sql.Timestamp=(dateTime:org.joda.time.DateTime) => new java.sql.Timestamp(simpleDateFormatOP.parse(dateTime.formatted(interTSFormat)).getTime)
-
-
+   val getJavaTS:(org.joda.time.DateTime)=> java.sql.Timestamp=(dateTime:org.joda.time.DateTime) =>   new java.sql.Timestamp(simpleDateFormatOP.parse(simpleDateFormatOP.format(dateTime.toDate)).getTime)
 
   def main (args:Array[String]):Unit = {
     val spark = org.apache.spark.sql.SparkSession.builder.getOrCreate
@@ -35,9 +34,13 @@ object timeComplexity {
     //.withColumn("orderCol",row_number.over(Window.partitionBy("User_id").orderBy(asc("Timestamp"))))
     // .as[inputSessions]
 
+    /*
+    spark.read.format("csv").option("inferSchema","false").option("header","true").option("delimiter","|").load("hdfs://localhost:8020/user/raptor/timeSplit3.txt").withColumn("Timestamp", to_timestamp(col("Timestamp"), inputTSFormat)).orderBy(col("User_id"), asc("Timestamp")).groupByKey(_.getAs[String]("User_id")).flatMapGroups((x, y) =>flatMapGroupFunction(x,y)).orderBy(asc("_1"),asc("_2")).show(false)
+
+* */
     sampleDataDF.orderBy(col("User_id"), asc("Timestamp")).groupByKey(_.getAs[String]("User_id")).flatMapGroups((x, y) =>flatMapGroupFunction(x,y)).orderBy(asc("_1"), asc("_2")).show(false)
 
-    implicitly[org.apache.spark.sql.Encoder[inputSessionsInter]].schema
+//    implicitly[org.apache.spark.sql.Encoder[inputSessionsInter]].schema
   }
 
   def flatMapGroupFunction(x:String,y:Iterator[org.apache.spark.sql.Row])={
@@ -46,7 +49,14 @@ object timeComplexity {
     @transient val jodaFomat=getJodaFormat
     @transient val getTimeStamp:(org.apache.spark.sql.Row)=>java.sql.Timestamp = (row:org.apache.spark.sql.Row) => row.getAs[java.sql.Timestamp]("Timestamp")
      def getJodaTime(row:org.apache.spark.sql.Row)= DateTime.parse(getTimeStamp(row).toString,jodaFomat) // getJodaFormat)
-    @transient val getJavaTS:(org.joda.time.DateTime)=> java.sql.Timestamp=(dateTime:org.joda.time.DateTime) => new java.sql.Timestamp(simpleDateFormatOP.parse(simpleDateFormatOP.format(dateTime.toDate)).getTime)
+    @transient val getJavaTS:(org.joda.time.DateTime)=> java.sql.Timestamp=(dateTime:org.joda.time.DateTime) =>  new java.sql.Timestamp(simpleDateFormatOP.parse(simpleDateFormatOP.format(dateTime.toDate)).getTime)
+    /*{
+      println(s"getJavaTS dateTime ${dateTime}")
+      println(s"getJavaTS simpleDateFormatOP.format(dateTime.toDate) ${simpleDateFormatOP.format(dateTime.toDate)}")
+      println(s"getJavaTS simpleDateFormatOP.parse(dateTime.formatted(interTSFormat)).getTime ${simpleDateFormatOP.parse(simpleDateFormatOP.format(dateTime.toDate)).getTime}")
+      println(s"getJavaTS new java.sql.Timestamp(simpleDateFormatOP.parse(dateTime.formatted(interTSFormat)).getTime) ${new java.sql.Timestamp(simpleDateFormatOP.parse(simpleDateFormatOP.format(dateTime.toDate)).getTime)}")
+      new java.sql.Timestamp(simpleDateFormatOP.parse(simpleDateFormatOP.format(dateTime.toDate)).getTime)
+    }*/
     def timeCompare(startTime:org.joda.time.DateTime,endTime:org.joda.time.DateTime,checkMinutes:Int)=
        startTime.getYear == endTime.year.get match {
          case value if value == true => // same year
@@ -120,23 +130,42 @@ object timeComplexity {
                   endTime=getJodaTime(sessionList(tmpIndex+1))
                 case false =>
                  println(s"startTime greater than index 120 mins")
-                 // split 2hrs in joined events
-                  startTime.plusMinutes(120) // will be endtime for prev
-                  startTime.getYear == getJodaTime(sessionList(tmpIndex+1)).getYear match {  // will be new starttime
+    /*1*/    /*       startTime.getYear == getJodaTime(sessionList(tmpIndex+1)).getYear match {  // will be new starttime
                     case true =>  startTime.getDayOfYear == getJodaTime(sessionList(tmpIndex+1)).getDayOfYear
                       match {
                       case value if value==true =>
-
+                        tmpArrayBuffer+=((x,getJavaTS(startTime),Some(getJavaTS(startTime.plusMinutes(120))) ,"Valid"  ))
+                        startTime=getJodaTime(sessionList(tmpIndex+1)).minusMinutes(getJodaTime(sessionList(tmpIndex+1)).getMinuteOfDay - startTime.getMinuteOfDay - 120 )
+                        endTime=getJodaTime(sessionList(tmpIndex+1))
                       case value if value==false =>
-
+                        tmpArrayBuffer+=((x,getJavaTS(startTime),Some(getJavaTS(startTime.plusMinutes(120))) ,"Valid" ))
+                        startTime=getJodaTime(sessionList(tmpIndex+1)).minusMinutes(getJodaTime(sessionList(tmpIndex+1)).getMinuteOfDay - (120 - ((60*24) - startTime.getMinuteOfDay) ) )
+                        endTime=getJodaTime(sessionList(tmpIndex+1))
                     }
                     case false =>
-
-                  }
-
-                  tmpArrayBuffer+=((x,getJavaTS(startTime),endTime match {case value if value == startTime => None case value => Some(getJavaTS(value)) },endTime match {case value if value == startTime =>"Broken" case _ =>"Valid"  }))
+                      startTime.getDayOfYear == (startTime.year.isLeap match {case true => 366 case false => 365}) &&  getJodaTime(sessionList(tmpIndex+1)).getDayOfYear ==1
+                      match {
+                        case value if value==true =>
+                          tmpArrayBuffer+=((x,getJavaTS(startTime),Some(getJavaTS(startTime.plusMinutes(120))) ,"Valid"  ))
+                          startTime=getJodaTime(sessionList(tmpIndex+1)).minusMinutes(getJodaTime(sessionList(tmpIndex+1)).getMinuteOfDay - startTime.getMinuteOfDay - 120 ).plusMinutes(1) // plus 1 is to avoid overlap
+                          endTime=getJodaTime(sessionList(tmpIndex+1))
+                        case value if value==false =>
+                          tmpArrayBuffer+=((x,getJavaTS(startTime),Some(getJavaTS(startTime.plusMinutes(120))) ,"Valid" ))
+                          startTime=getJodaTime(sessionList(tmpIndex+1)).minusMinutes(getJodaTime(sessionList(tmpIndex+1)).getMinuteOfDay - (120 - ((60*24) - startTime.getMinuteOfDay) ) ).plusMinutes(1) // plus 1 is to avoid overlap
+                          endTime=getJodaTime(sessionList(tmpIndex+1))
+                      }
+                }*/ /*1*/
+                  /*2*/
+                  tmpArrayBuffer+=((x,getJavaTS(startTime),Some(getJavaTS(startTime.plusMinutes(120))) ,"Valid" ))
+                  startTime=startTime.plusMinutes(121)
+                  endTime=getJodaTime(sessionList(tmpIndex+1))
+                /*2*/
+               /*
+                //old code
+                   tmpArrayBuffer+=((x,getJavaTS(startTime),endTime match {case value if value == startTime => None case value => Some(getJavaTS(value)) },endTime match {case value if value == startTime =>"Broken" case _ =>"Valid"  }))
                   startTime=getJodaTime(sessionList(tmpIndex+1))
-                  endTime=startTime
+                 endTime=startTime
+                 */
               }
             case value if value == false =>
               println(s"endTime greater than index 45 mins")
