@@ -4,6 +4,7 @@ import org.apache.spark.sql.functions._
 import scala.util.control.Breaks._
 import org.joda.time.DateTime
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
+import org.apache.spark.sql.expressions.Window
 object timeComplexity {
   case class inputSessions(Timestamp:java.sql.Timestamp,User_id:String)
   case class inputSessionsInter(User_id:String,startTimeTs:java.sql.Timestamp,endTimeTs:Option[java.sql.Timestamp],valid:String)
@@ -26,7 +27,7 @@ object timeComplexity {
     val spark = org.apache.spark.sql.SparkSession.builder.getOrCreate
     import spark.implicits._
     val sampleFile = s"hdfs://localhost:8020/user/raptor/inputTimeSeries.txt"
-    //  val sampleFile = s"hdfs://localhost:8020/user/raptor/timeSplit2.txt"
+    //  val sampleFile = s"hdfs://localhost:8020/user/raptor/timeSplit3.txt"
     val sampleDataDF = spark.read.format("com.databricks.spark.csv")
       .option("header", "true").option("inferSchema", "false")
       .option("delimiter", "|").load(sampleFile)
@@ -37,8 +38,50 @@ object timeComplexity {
     /*
     spark.read.format("csv").option("inferSchema","false").option("header","true").option("delimiter","|").load("hdfs://localhost:8020/user/raptor/timeSplit3.txt").withColumn("Timestamp", to_timestamp(col("Timestamp"), inputTSFormat)).orderBy(col("User_id"), asc("Timestamp")).groupByKey(_.getAs[String]("User_id")).flatMapGroups((x, y) =>flatMapGroupFunction(x,y)).orderBy(asc("_1"),asc("_2")).show(false)
 
+    spark.read.format("csv").option("inferSchema","false").option("header","true").option("delimiter","|").load("hdfs://localhost:8020/user/raptor/timeSplit3.txt").filter("User_id ='u5'").withColumn("Timestamp", to_timestamp(col("Timestamp"), inputTSFormat)).orderBy(col("User_id"), asc("Timestamp")).groupByKey(_.getAs[String]("User_id")).flatMapGroups((x, y) =>flatMapGroupFunction(x,y)).orderBy(asc("_1"),asc("_2")).show(false)
+
 * */
-    sampleDataDF.orderBy(col("User_id"), asc("Timestamp")).groupByKey(_.getAs[String]("User_id")).flatMapGroups((x, y) =>flatMapGroupFunction(x,y)).orderBy(asc("_1"), asc("_2")).show(false)
+    val calcInterDF=sampleDataDF.orderBy(col("User_id"), asc("Timestamp"))
+      .groupByKey(_.getAs[String]("User_id")).flatMapGroups((x, y) =>flatMapGroupFunction(x,y))
+      .orderBy(asc("_1"), asc("_2"))
+      .toDF("userId,startTime,EndTime,indicator".split(",").toSeq:_*)
+
+    // adding session ID
+   val interCalcDF=calcInterDF.filter("indicator='Valid'")
+      .withColumn("rowNum",row_number.over(Window.partitionBy("userId").orderBy(asc("startTime"))))
+      .drop("indicator").withColumn("sessionId",concat(lit("S_"),concat(col("userId"),lit("_"),col("rowNum"))))
+      .drop("rowNum")
+
+/// (col("endTime").cast(LongType)
+   val calculatedInterDF= interCalcDF.withColumn("unixStartTime",unix_timestamp(col("startTime")))
+      .withColumn("unixEndTime",unix_timestamp(col("endTime")))
+      .withColumn("totalTimeInSeconds",col("unixEndTime")-col("unixStartTime"))
+      .withColumn("totalTimeInMinutes",col("totalTimeInSeconds")/60)
+     .withColumn("longStartTime",col("startTime").cast(org.apache.spark.sql.types.LongType))
+     .withColumn("longEndTime",col("endTime").cast(org.apache.spark.sql.types.LongType))
+     .withColumn("totalLongTimeInSeconds",col("longEndTime")-col("longStartTime"))
+     .withColumn("totalLongTimeInMinutes",col("totalLongTimeInSeconds")/60)
+
+    // total time of users spent in website
+    // session id's per day
+    //DF
+    val scn1DF=    calculatedInterDF.groupBy("userId").agg(sum("totalTimeInMinutes").as("totalTimeInMinutes"))
+
+    val scn2DF=    calculatedInterDF/*.groupBy("userId","sessionId")*/.agg(count("*")).count
+//sql
+    calculatedInterDF.createOrReplaceTempView("calculatedInterDF")
+    interCalcDF.createOrReplaceTempView("interCalcDF")
+    spark.sql("""select userId,sum((unix_timestamp(endTime)-unix_timestamp(startTime)) /60 ) as  totalSessionMins  from interCalcDF group by userId""".stripMargin)
+
+    spark.sql("""select count(*) as sessionIdCount from calculatedInterDF""".stripMargin)
+
+    // adding session ID unique // added fix by appending session ID with used ID
+
+    val interCalcDFUnique=calcInterDF.filter("indicator='Valid'")
+      .withColumn("rowNum",row_number.over(Window.orderBy(asc("startTime")))) // creates degradation in perf
+      .drop("indicator").withColumn("sessionId",concat(lit("S"),col("rowNum")))
+      .drop("rowNum")
+
 
 //    implicitly[org.apache.spark.sql.Encoder[inputSessionsInter]].schema
   }
@@ -56,22 +99,67 @@ object timeComplexity {
       println(s"getJavaTS simpleDateFormatOP.parse(dateTime.formatted(interTSFormat)).getTime ${simpleDateFormatOP.parse(simpleDateFormatOP.format(dateTime.toDate)).getTime}")
       println(s"getJavaTS new java.sql.Timestamp(simpleDateFormatOP.parse(dateTime.formatted(interTSFormat)).getTime) ${new java.sql.Timestamp(simpleDateFormatOP.parse(simpleDateFormatOP.format(dateTime.toDate)).getTime)}")
       new java.sql.Timestamp(simpleDateFormatOP.parse(simpleDateFormatOP.format(dateTime.toDate)).getTime)
-    }*/
+    |u5 |2021-12-31 23:15:00|null               |Broken|
+|u5 |2021-12-31 23:20:00|null               |Broken|
+|u5 |2021-12-31 23:40:00|null               |Broken|
+|u5 |2021-12-31 23:55:00|2022-01-01 01:55:00|Valid |
+|u5 |2022-01-01 01:56:00|2022-01-01 02:25:00|Valid |
+|u6 |2023-01-01 23:25:00|null               |Broken|
+|u6 |2023-01-01 23:45:00|2023-01-02 00:25:00|Valid |
+}*/
     def timeCompare(startTime:org.joda.time.DateTime,endTime:org.joda.time.DateTime,checkMinutes:Int)=
        startTime.getYear == endTime.year.get match {
          case value if value == true => // same year
            println(s"same year startTime ${startTime} endTime ${endTime}")
            startTime.getDayOfYear == endTime.getDayOfYear match {
-             case value if value == true => //same day
-               value  match {
+             case value if value == true => // same day before adding
+               startTime.plusMinutes(checkMinutes).getDayOfYear == endTime.getDayOfYear match {
+                 case value if value ==true =>  // same day after adding
+                   value  match {
                  case value if startTime.plusMinutes(checkMinutes).getMinuteOfDay >= endTime.minuteOfDay.get =>
-                   println(s"same day valid startTime ${startTime} endTime ${endTime}")
+                   println(s"same day same plus day valid startTime ${startTime} endTime ${endTime}")
                    true
                  case value if startTime.plusMinutes(checkMinutes).getMinuteOfDay < endTime.minuteOfDay.get =>
-                   println(s"same day broken startTime ${startTime} endTime ${endTime}")
+                   println(s"same day same plus day broken startTime ${startTime} endTime ${endTime}")
                    false
                 }
-             case value if value == false =>  //diff day
+                 case false =>  // diff day after adding
+                   value match {
+                     case value if startTime.plusMinutes(checkMinutes).getYear == endTime.getYear => // same year after adding
+                       startTime.plusMinutes(checkMinutes).getDayOfYear > endTime.dayOfYear.get match  // by default tue if this condition evaluates to true
+                         {
+                         case true => // next day after adding and end time in prev day
+                           value  match {
+                             case value if (((60*24)-startTime.getMinuteOfDay)+startTime.plusMinutes(checkMinutes).getMinuteOfDay) >= (endTime.minuteOfDay.get - startTime.getMinuteOfDay ) => // first exp is check minutes of day by default
+                               println(s"same day diff plus day prev end day valid startTime ${startTime} endTime ${endTime}")
+                               true
+                             case value if (((60*24)-startTime.getMinuteOfDay)+startTime.plusMinutes(checkMinutes).getMinuteOfDay) < (endTime.minuteOfDay.get - startTime.getMinuteOfDay ) =>
+                               println(s"same day diff plus day prev end day  broken startTime ${startTime} endTime ${endTime}")
+                               false
+                           }
+                         case false if startTime.plusMinutes(checkMinutes).getDayOfYear == endTime.dayOfYear.get => // same day after adding and end time in prev day
+                           ( (endTime.minuteOfDay.get - startTime.getMinuteOfDay ) <= checkMinutes) match {
+                             case true =>
+                               println(s"same day diff plus day same end day valid startTime ${startTime} endTime ${endTime}")
+                               true
+                             case false =>
+                               println(s"same day diff plus day same end day broken startTime ${startTime} endTime ${endTime}")
+                               false
+                           }
+                       }
+                     // dec31 x year jan 1 x+1 year scn
+                     case value if startTime.plusMinutes(checkMinutes).getYear > endTime.getYear =>
+                       value  match {
+                         case value if (((60*24)-startTime.getMinuteOfDay)+startTime.plusMinutes(checkMinutes).getMinuteOfDay) >= (endTime.minuteOfDay.get - startTime.getMinuteOfDay ) => // first exp is check minutes of day by default
+                           println(s"same day diff plus day prev year end day valid startTime ${startTime} endTime ${endTime}")
+                           true
+                         case value if (((60*24)-startTime.getMinuteOfDay)+startTime.plusMinutes(checkMinutes).getMinuteOfDay) < (endTime.minuteOfDay.get - startTime.getMinuteOfDay ) =>
+                           println(s"same day diff plus day prev year end day  broken startTime ${startTime} endTime ${endTime}")
+                           false
+                       }
+                   }
+                   }
+             case value if value == false =>  //diff day before adding
                println(s"diff day startTime ${startTime} endTime ${endTime}")
                value  match {
                  case value if startTime.plusMinutes(checkMinutes).getDayOfYear != endTime.dayOfYear.get =>
