@@ -1,0 +1,289 @@
+
+Employee data as text file with PIPE(|) delimited
+schema: empid|empname|deptid|salary
+
+val tmpSeqDep="""empid|empname|deptid|salary
+e001|name001|d001|1000
+e002|name002|d002|1100
+e003|name003|d003|1000
+e004|name004|d001|2000
+e005|name005|d002|1000
+e006|name006|d003|3000
+e007|name007|d003|2000
+e008|name008|d003|2000
+e009|name009|d003|1000""".split("\n").map(_.split("\\|").map(_.trim)).map(x=>(x(0),x(1),x(2),x(3)))
+
+val deptDF=tmpSeqDep.tail.toSeq.toDF(tmpSeqDep.head.productIterator.toSeq.map(_.toString):_*)
+
+Department data as parquet
+schema: deptid|deptname
+
+val tmpSeqDepID="""deptid|deptname
+d001|HR
+d002|FI
+d003|AD""".split("\n").map(_.split("\\|").map(_.trim)).map(x=>(x(0),x(1)))
+
+val deptIDDF=tmpSeqDepID.tail.toSeq.toDF(tmpSeqDepID.head.productIterator.toSeq.map(_.toString):_*)
+
+import org.apache.spark.sql.expressions.Window
+
+deptDF.withColumn("denseRank",dense_rank.over(Window.partitionBy(col("deptid")).orderBy(desc("salary")))).filter("denseRank=2").withColumn("rowNumberOver",row_number.over(Window.partitionBy(col("deptid")).orderBy(desc("salary")))).filter("rowNumberOver=1").drop("rowNumberOver","denseRank").as("b").join(deptDF.as("c"),"deptid".split(",").toSeq  ).select(col("b.deptid"),col("c.empid"),col("c.empname"),col("c.salary"),(col("c.salary")-col("b.salary") ).as("diffToMaxSalary"))
+
+expected output: empid|empname|deptname_abbr|salary|diffToMaxSalary
+
+deptname -> deptname_abbr
+eg: Human Resources --> HR
+Finance Team --> FI
+
+diffToMaxSalary is the column which will hold salary difference between employee salary to second maximum salary
+with in the dept employees
+/*
+val SeqTmp=Seq(("Human Resources","HR")
+( "Finance Team","FI")).toDF("deptname","deptname_abbr")
+
+val Employee=spark.read.format("csv").option("delimiter","|").option("header","true").option("inferSchema","true").load("Employee")
+
+val dept=spark.read.load()
+*/
+
+import org.apache.spark.sql.functions.udf
+
+val tmpMap=Map("HR" ->"Human Resources","FI"->"Finance Team","AD"-> "Administrative Department")
+def getAbb(deptname:String)= tmpMap(deptname)
+
+val getAbvFun=udf(getAbb(_:String))
+
+deptDF.as("a").join(deptIDDF.as("b"),col("a.deptid")===col("b.deptid")).withColumn("abbrevation",getAbvFun(col("deptname"))).show
+
+Employee.join(dept,Seq(deptid)).withColumn
+
+df.withColumn("rank",denseRank.over(Window.partitionBy(deptid).orderBy(desc(salary))) ==2
+
+
+
+--------
+
+[7:20 PM] Pulagam Sudha Sekhar
+id|color
+1|amber
+2|green
+3|red
+4|red
+5|amber
+6|green
+
+output:
+id|color
+3|red
+4|red
+1|amber
+5|amber
+2|green
+6|green
+
+// speculative execution
+
+length(color)
+
+order by length(color),color
+
+val tmpSeq="""id|color
+1|amber
+2|green
+3|red
+4|red
+5|amber
+6|green""".split("\n").map(_.split("\\|")).map(x=>(x(0),x(1)))
+
+val tmpColourDF=tmpSeq.tail.toSeq.toDF(tmpSeq.head.productIterator.map(_.toString).toSeq:_*)
+
+tmpColourDF.withColumn("sizeCol",length(col("color"))).orderBy(asc("sizeCol"),asc("color")).drop("sizeCol").show
+
+
+--------------------------------
+anagram
+
+Red
+amber
+green
+
+
+def anagramFinder(src:String,dest:String)={
+val srcList= src.toList.sortWith(_>_)
+val destList= dest.toList.sortWith(_>_)
+srcList.equals(destList) match {
+case value if value == true => true
+case value if value == false => false
+}
+}
+
+anagramFinder("red","erd")
+
+//
+contiguous
+2,3,4,6,8,9,8,7,5,,11,12,13,15,14
+
+find the largest contiguous
+
+var contiguousCount=0
+var contiguousFinal=0
+var contiguousIndex=(0,0)
+
+// val inputArray=Array(2,3,4,6,8,9,8,7,5,11,12,13,15,14)
+//val inputArray=Array(2,3,4,6,8,9,8)
+//val inputArray=Array(2,3,4,6,8,9,8,9,10,11,12)
+//val inputArray=Array(2,3,4)
+val inputArray=Array(2,3,4,6,8,9,8,9,10,11,12,11,23,34)
+
+breakable {
+for (input <- 0 to (inputArray.size -1 ))
+inputArray.size  match
+{
+case value if value == 0 || value == 1 =>
+break
+case 2 =>
+contiguousCheck(inputArray(input),inputArray(input+1)) match
+{
+case true =>
+contiguousIndex=(input,input+1)
+contiguousFinal=2
+contiguousCount+=1
+case false => {}
+}
+break
+
+case value if value >2 =>
+println(s"value ${value}")
+input match {
+case value if value == (inputArray.size -1) =>
+println(s"last value ${value}")
+println(s"last contiguousCount ${contiguousCount}")
+println(s"last contiguousFinal ${contiguousFinal}")
+println(s"last contiguousIndex ${contiguousIndex}")
+contiguousCheck(inputArray(input-1),inputArray(input)) match {
+case true =>
+println(s"last match  ")
+contiguousCount+=1
+contiguousFinal > contiguousCount match {case true => {println(s"last match contiguousFinal is greater")} case false =>
+println(s"last match contiguousFinal is not greater")
+contiguousFinal=contiguousCount
+/* input match {
+case value if value < 3 =>
+println(s"last match total element is not greater < 3 ")
+contiguousCount match {case 1 => {println(s"last match 1") ;contiguousIndex=(1 ,2)} case 2 => {contiguousIndex=(0 ,2); println(s"last match 2")} case _ => {} }
+case _ =>
+println(s"last match total element is greater than 3 ")
+contiguousIndex=(input -contiguousCount , input -1)
+} */
+contiguousIndex=(input -(contiguousCount -1 ), input ) // -1 in ist is due to the fct the input is index , if it matches in last the index is the end
+}
+case false =>{println(s"last did not match  ")}
+}
+/*
+contiguousCount ==1 match {
+case true => contiguousIndex=(input,input)
+case false => contiguousIndex=(contiguousIndex._1,input)
+}
+*/
+case value =>
+println(s"middle value ${value}")
+println(s"middle contiguousCount ${contiguousCount}")
+println(s"middle contiguousFinal ${contiguousFinal}")
+println(s"middle contiguousIndex ${contiguousIndex}")
+contiguousCheck(inputArray(input),inputArray(input+1)) match {
+case true =>
+println(s"middle value match")
+contiguousCount+=1
+case false =>
+println(s"middle value did not match")
+contiguousFinal < contiguousCount match { case false => {println(s"middle value false contiguousFinal is greater ");contiguousCount=0}
+case true =>
+println(s"middle value false contiguousFinal is lesser ")
+contiguousFinal=contiguousCount
+/* input match {
+case value if value < 3 =>
+println(s"last match contiguousFinal is not greater < 3 ")
+contiguousCount match {case 1 => {println(s"last match contiguousFinal is not greater < 3 1") ;contiguousIndex=(0 ,1)} case 2 => {contiguousIndex=(0 ,2); println(s"last match contiguousFinal is not greater < 3 2")} case _ => {} }
+case _ =>
+println(s"last match contiguousFinal is greater < 3 ")
+contiguousIndex=(input -contiguousCount , input -1)
+} */ //input is checked agains next input(input +1), so -1 is equalizer
+contiguousIndex=(input - contiguousCount  , input) // here we check +1 index and persist, so -1 is not req for index calc
+contiguousCount=0
+}
+}
+}
+}
+}
+
+
+println(s"contiguousCount ${contiguousCount}")
+println(s"contiguousFinal ${contiguousFinal}")
+println(s"contiguousIndex ${contiguousIndex}")
+
+def contiguousCheck(beginNum:Int,endNum:Int) = beginNum+1 == endNum match {
+case false => false
+case true => true
+}
+
+
+
+// auxillary constructors - scala
+
+// name node federation - Hadoop
+
+// group by key and reduce by key
+
+// speculative execution
+
+///*
+change the name of files in a linux folder.
+
+ for file in *
+ do
+ echo "$file"
+ done
+
+ take prime numbers out of a list in
+
+ val tmpArray=Array(2,3,4,5,6,7,1,9,11)
+
+ import scala.util.control.Breaks._
+
+
+
+ def primeNumberCheck(num:Int) = {for (i <- 1 to num) yield num%i match {case value if value >0  => true case value if value ==0 => false}}.filter(_ == false).size match {case value if value==2 || value ==1 => true case _ => false}
+
+ val primeNumCheck:(Int)=>Boolean = (num:Int)=> {for (i <- 1 to num) yield num%i match {case value if value >0  => true case value if value ==0 => false}}.filter(_ == false).size match {case value if value==2 || value ==1 => true case _ => false}
+
+ tmpArray.filter(primeNumberCheck)
+
+ tmpArray.filter(primeNumCheck)
+
+
+ sort things in a Map
+
+ val collectionMap=collection.mutable.Map[String,Int]("Apple"->2,"apple"->3,"banana"->1,"Banana"->6,"citrus"->8,"Citrus"->4)
+
+ collectionMap.toList.sortWith(_._1 > _._1)
+
+ val alphabetsList=(('A' to 'Z').zip('a' to 'z' )  zip(( 1 to 26))).map(x=>(x._1.productIterator.map(_.asInstanceOf[Char]).toList,x._2))
+
+ collection.mutable.LinkedHashMap(collectionMap.toList.map(x=> (x._1,x._2,alphabetsList.filter(_._1.contains(x._1.toList.head)).head._2)).sortWith(_._3 < _._3).map(x=>(x._1,x._2)).toSeq:_*)
+
+
+ val alphabetsListSimple=('A' to 'Z') zip( 1 to 26) .toMap
+
+ collection.mutable.LinkedHashMap(collectionMap.toList.map(x=> (x._1,x._2,alphabetsListSimple(x._1.toUpperCase.toList.head))).sortWith(_._3 < _._3).map(x=>(x._1,x._2)).toSeq:_*)
+
+
+
+ val collectionMap=collection.mutable.LinkedHashMap[String,Int]("Apple"->2,"apple"->3,"banana"->1,"Banana"->6,"citrus"->8,"Citrus"->4)
+
+ collectionMap.scanLeft(0)((x,y)=> y._2 >1 match {case true => x case false => y._2})
+
+
+ collectionMap.scanRight(0)((x,y)=> x._2 >1 match {case true => y case false => x._2})
+
+
+*///
