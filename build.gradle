@@ -31,7 +31,6 @@ dependsOn classesworkingDir =file(buildDir)
         } */
 
 repositories {
-    jcenter()
     mavenLocal()
     mavenCentral()
     maven {
@@ -40,7 +39,10 @@ repositories {
     maven {
         url "http://repo.hortonworks.com/content/repositories/releases/"
     }
-
+    maven {
+        url "http://repo1.maven.org/maven2/"
+    }
+    jcenter()
 }
 
 dependencies {
@@ -90,6 +92,7 @@ dependencies {
        compile group: 'io.delta', name: 'delta-core_2.11', version: '0.6.0'
        compile 'com.databricks:spark-avro_2.11:4.0.0'
        compile 'org.scala-lang.modules:scala-swing_2.11:2.0.3'
+      compile 'com.databricks:dbutils-api_2.11:0.0.5'
 
        compile 'org.apache.spark:spark-mllib_2.11:2.4.5'
        compile 'org.apache.spark:spark-sql_2.11:2.4.5'

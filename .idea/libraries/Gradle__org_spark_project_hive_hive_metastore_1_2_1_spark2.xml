@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: org.spark-project.hive:hive-metastore:1.2.1.spark2">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.spark-project.hive/hive-metastore/1.2.1.spark2/1fde9720e4ead8c07b28c45011e231277c79b7a1/hive-metastore-1.2.1.spark2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/spark-project/hive/hive-metastore/1.2.1.spark2/hive-metastore-1.2.1.spark2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

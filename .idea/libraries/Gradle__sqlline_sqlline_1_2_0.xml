@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: sqlline:sqlline:1.2.0">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/sqlline/sqlline/1.2.0/4f4273e8200a9495a18c319883fbb25864bba240/sqlline-1.2.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/sqlline/sqlline/1.2.0/sqlline-1.2.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

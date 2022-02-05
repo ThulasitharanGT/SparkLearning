@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: org.apache.twill:twill-zookeeper:0.6.0-incubating">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.twill/twill-zookeeper/0.6.0-incubating/58f37b2dc9eeaadcafd63236cce8d61f500ab29c/twill-zookeeper-0.6.0-incubating.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/twill/twill-zookeeper/0.6.0-incubating/twill-zookeeper-0.6.0-incubating.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

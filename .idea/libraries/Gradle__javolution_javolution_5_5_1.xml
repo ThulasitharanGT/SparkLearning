@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: javolution:javolution:5.5.1">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javolution/javolution/5.5.1/3fcba819cdb7861728405963ddc4b2755ab182e5/javolution-5.5.1.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/javolution/javolution/5.5.1/javolution-5.5.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

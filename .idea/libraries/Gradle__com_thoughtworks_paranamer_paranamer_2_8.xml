@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: com.thoughtworks.paranamer:paranamer:2.8">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.thoughtworks.paranamer/paranamer/2.8/619eba74c19ccf1da8ebec97a2d7f8ba05773dd6/paranamer-2.8.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: io.airlift:aircompressor:0.10">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.airlift/aircompressor/0.10/bf8305930ec675964bd68599c702ffb32df4d1e6/aircompressor-0.10.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/airlift/aircompressor/0.10/aircompressor-0.10.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

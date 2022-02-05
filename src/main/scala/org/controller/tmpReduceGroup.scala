@@ -17,6 +17,21 @@ object tmpReduceGroup extends SparkOpener{
 
     collectionMap.sameElements(collection.mutable.Map[String,Int]("s"->9))
     collectionMap.scanLeft(0)((x,y)=> y._2 >1 match {case true => x case false => y._2})
+
+    import com.databricks.dbutils_v1.DBUtilsHolder.dbutils
+
+    dbutils.fs.cp("","",true)
+
+    import org.apache.spark.sql.functions.{col}
+    import org.apache.spark.sql.types.{StringType}
+    import org.apache.spark.sql.streaming.Trigger.Once
+
+    spark.readStream.format("kafka").option("kafka.bootstrap.servers","localhost:8081,localhost:8082,localhost:8083").option("subscribe","temp.topic").option("maxOffsetsPerTrigger","10").load.select(col("value").cast(StringType).as("value"),col("key").cast(StringType).as("key")).writeStream.format("console").option("truncate","false").option("numRows","99999999").trigger(Once).start
+
   }
 
-}
+
+
+
+
+ }

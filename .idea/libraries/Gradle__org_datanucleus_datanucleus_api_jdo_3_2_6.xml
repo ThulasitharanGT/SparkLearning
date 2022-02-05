@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: org.datanucleus:datanucleus-api-jdo:3.2.6">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-api-jdo/3.2.6/cb21100ecc0d2e80dfd62067046c8a2a25a95c50/datanucleus-api-jdo-3.2.6.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/datanucleus/datanucleus-api-jdo/3.2.6/datanucleus-api-jdo-3.2.6.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

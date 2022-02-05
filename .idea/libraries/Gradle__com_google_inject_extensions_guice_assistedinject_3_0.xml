@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.inject.extensions:guice-assistedinject:3.0">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.inject.extensions/guice-assistedinject/3.0/544449ddb19f088dcde44f055d30a08835a954a7/guice-assistedinject-3.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/inject/extensions/guice-assistedinject/3.0/guice-assistedinject-3.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

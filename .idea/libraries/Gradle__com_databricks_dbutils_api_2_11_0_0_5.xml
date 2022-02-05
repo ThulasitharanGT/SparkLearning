@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.databricks:dbutils-api_2.11:0.0.5">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.databricks/dbutils-api_2.11/0.0.5/7dff5983557d499d31cacf02ff6b009f3d31398a/dbutils-api_2.11-0.0.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.databricks/dbutils-api_2.11/0.0.5/796065c2f28705d3cd3dd36a9f157f39c91404c1/dbutils-api_2.11-0.0.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

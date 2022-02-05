@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: com.googlecode.javaewah:JavaEWAH:0.3.2">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.googlecode.javaewah/JavaEWAH/0.3.2/7130b68f1d4d9666f0ced0ba1a1bee37e2e51926/JavaEWAH-0.3.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/googlecode/javaewah/JavaEWAH/0.3.2/JavaEWAH-0.3.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

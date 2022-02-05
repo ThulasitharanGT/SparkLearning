@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: org.mortbay.jetty:jetty-sslengine:6.1.26">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mortbay.jetty/jetty-sslengine/6.1.26/60367999cee49a3b09fa86bdcb52310b6c896014/jetty-sslengine-6.1.26.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/jetty-sslengine/6.1.26/jetty-sslengine-6.1.26.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

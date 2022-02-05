@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: org.apache.arrow:arrow-format:0.10.0">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.arrow/arrow-format/0.10.0/85347ddea82e80b0aa14efd25aefb9a009d8ff0f/arrow-format-0.10.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/arrow/arrow-format/0.10.0/arrow-format-0.10.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

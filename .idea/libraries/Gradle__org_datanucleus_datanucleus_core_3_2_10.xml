@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: org.datanucleus:datanucleus-core:3.2.10">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-core/3.2.10/7ad66634f30d7c6a06373475e94bcfbe65e2648e/datanucleus-core-3.2.10.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/datanucleus/datanucleus-core/3.2.10/datanucleus-core-3.2.10.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
