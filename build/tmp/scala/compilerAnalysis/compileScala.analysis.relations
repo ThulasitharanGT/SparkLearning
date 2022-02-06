@@ -85,6 +85,7 @@ products:
    src/main/scala/org/controller/XmlXslProcessing/xmlXslParse.scala -> build/classes/scala/main/org/controller/XmlXslProcessing/xmlXslParse.class
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample$.class
    src/main/scala/org/controller/ZipExample.scala -> build/classes/scala/main/org/controller/ZipExample.class
+   src/main/scala/org/controller/auxillaryConstructor.scala -> build/classes/scala/main/org/controller/auxillaryConstructor.class
    src/main/scala/org/controller/breakExample.scala -> build/classes/scala/main/org/controller/breakExample$.class
    src/main/scala/org/controller/breakExample.scala -> build/classes/scala/main/org/controller/breakExample.class
    src/main/scala/org/controller/customState/customStateConstants.scala -> build/classes/scala/main/org/controller/customState/customStateConstants$.class
@@ -322,6 +323,20 @@ products:
    src/main/scala/org/controller/mailBeanClass.scala -> build/classes/scala/main/org/controller/mailBeanClass.class
    src/main/scala/org/controller/mailExample.scala -> build/classes/scala/main/org/controller/mailExample$.class
    src/main/scala/org/controller/mailExample.scala -> build/classes/scala/main/org/controller/mailExample.class
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToBronzeLoad$$typecreator1$1.class
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToBronzeLoad$$typecreator2$1.class
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToBronzeLoad$.class
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToBronzeLoad.class
+   src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationConstant$.class
+   src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationConstant.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaWrapper$.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaWrapper.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationUtil$$anon$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationUtil$$typecreator4$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationUtil$.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationUtil.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpD$.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpD.class
    src/main/scala/org/controller/mergingAndSortingArrays.scala -> build/classes/scala/main/org/controller/mergingAndSortingArrays$.class
    src/main/scala/org/controller/mergingAndSortingArrays.scala -> build/classes/scala/main/org/controller/mergingAndSortingArrays.class
    src/main/scala/org/controller/partitionedTableRead.scala -> build/classes/scala/main/org/controller/partitionedTableRead$.class
@@ -578,6 +593,11 @@ products:
    src/main/scala/org/controller/splittingTime/timeComplexity.scala -> build/classes/scala/main/org/controller/splittingTime/timeComplexity$inputSessionsInter$.class
    src/main/scala/org/controller/splittingTime/timeComplexity.scala -> build/classes/scala/main/org/controller/splittingTime/timeComplexity$inputSessionsInter.class
    src/main/scala/org/controller/splittingTime/timeComplexity.scala -> build/classes/scala/main/org/controller/splittingTime/timeComplexity.class
+   src/main/scala/org/controller/tmpReduceGroup.scala -> build/classes/scala/main/org/controller/tmpReduceGroup$$typecreator4$1.class
+   src/main/scala/org/controller/tmpReduceGroup.scala -> build/classes/scala/main/org/controller/tmpReduceGroup$.class
+   src/main/scala/org/controller/tmpReduceGroup.scala -> build/classes/scala/main/org/controller/tmpReduceGroup$tmpClass$.class
+   src/main/scala/org/controller/tmpReduceGroup.scala -> build/classes/scala/main/org/controller/tmpReduceGroup$tmpClass.class
+   src/main/scala/org/controller/tmpReduceGroup.scala -> build/classes/scala/main/org/controller/tmpReduceGroup.class
    src/main/scala/org/controller/twitterPullTry/BasicCallback.scala -> build/classes/scala/main/org/controller/twitterPullTry/BasicCallback.class
    src/main/scala/org/controller/twitterPullTry/Tweet.scala -> build/classes/scala/main/org/controller/twitterPullTry/Tweet$.class
    src/main/scala/org/controller/twitterPullTry/Tweet.scala -> build/classes/scala/main/org/controller/twitterPullTry/Tweet.class
@@ -691,6 +711,8 @@ binary dependencies:
    src/main/scala/org/controller/XmlXslProcessing/xmlXslParse.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/ZipExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/ZipExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/auxillaryConstructor.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/auxillaryConstructor.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/breakExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/breakExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/customState/customStateConstants.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
@@ -700,9 +722,9 @@ binary dependencies:
    src/main/scala/org/controller/customState/raceForEachUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/customState/raceForEachUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/customState/raceForEachUtil.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
    src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> /home/raptor/.m2/repository/joda-time/joda-time/2.9.9/joda-time-2.9.9.jar
    src/main/scala/org/controller/customState/raceInfoStateUtils.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/customState/raceInfoWithState.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/net.liftweb/lift-json_2.11/3.5.0/63ea01b247216a68baf5f56cd39aa33750346991/lift-json_2.11-3.5.0.jar
    src/main/scala/org/controller/customState/raceInfoWithState.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
@@ -721,12 +743,12 @@ binary dependencies:
    src/main/scala/org/controller/customState/simpleState.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/customState/simpleState.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/customState/simpleState.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/customState/stateWithTimeout.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
    src/main/scala/org/controller/customState/stateWithTimeout.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/customState/stateWithTimeout.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/customState/stateWithTimeout.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/customState/stateWithTimeout.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/customState/stateWithTimeout.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/customState/stateWithTimeout.scala -> /home/raptor/.m2/repository/joda-time/joda-time/2.9.9/joda-time-2.9.9.jar
    src/main/scala/org/controller/customState/stateWithTimeout.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/dStreamKafkaTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/2.3.1/21664b0318d201ec412f9b02357b07ba94009c87/kafka-clients-2.3.1.jar
    src/main/scala/org/controller/dStreamKafkaTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
@@ -744,12 +766,12 @@ binary dependencies:
    src/main/scala/org/controller/dStreamTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/dStreamTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/dStreamTry.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.0/9eac59ba21a197b65570727fd5305013661a88d/delta-core_2.11-0.6.0.jar
+   src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.1/532245109acc03258cc352ea5e203fc8c0558a09/delta-core_2.11-0.6.1.jar
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/deltaHadoopJobTest.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.0/9eac59ba21a197b65570727fd5305013661a88d/delta-core_2.11-0.6.0.jar
+   src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.1/532245109acc03258cc352ea5e203fc8c0558a09/delta-core_2.11-0.6.1.jar
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/deltaLakeHadoopEg.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
@@ -758,7 +780,7 @@ binary dependencies:
    src/main/scala/org/controller/deltaLakeEG/deltaLakeNewColumnTableTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/deltaLakeNewColumnTableTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/deltaLakeNewColumnTableTry.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.0/9eac59ba21a197b65570727fd5305013661a88d/delta-core_2.11-0.6.0.jar
+   src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.1/532245109acc03258cc352ea5e203fc8c0558a09/delta-core_2.11-0.6.1.jar
    src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/deltaReadAsDeltaTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
@@ -767,7 +789,7 @@ binary dependencies:
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/deltaTableRead.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.0/9eac59ba21a197b65570727fd5305013661a88d/delta-core_2.11-0.6.0.jar
+   src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.1/532245109acc03258cc352ea5e203fc8c0558a09/delta-core_2.11-0.6.1.jar
    src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/fixBronzeToSilver.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
@@ -776,7 +798,7 @@ binary dependencies:
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/mergingSchemaNewColumnInBronze.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.0/9eac59ba21a197b65570727fd5305013661a88d/delta-core_2.11-0.6.0.jar
+   src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.1/532245109acc03258cc352ea5e203fc8c0558a09/delta-core_2.11-0.6.1.jar
    src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/pushingStreamedDataToDeltaBronze.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
@@ -807,22 +829,22 @@ binary dependencies:
    src/main/scala/org/controller/deltaLakeEG/readingfileAndSavingAsDeltaTable.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/shellScriptSystemCommand.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
    src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> /home/raptor/.m2/repository/joda-time/joda-time/2.9.9/joda-time-2.9.9.jar
    src/main/scala/org/controller/deltaLakeEG/streamUsingRateExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/deltaLakeEG/systemCommandRunningForStreamingPipeline.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/explodeExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/explodeExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/explodeExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
    src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala -> /home/raptor/.m2/repository/joda-time/joda-time/2.9.9/joda-time-2.9.9.jar
    src/main/scala/org/controller/explorations/continuityInDateOverlapping.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/explorations/expenseClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/explorations/expenseClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
@@ -986,6 +1008,24 @@ binary dependencies:
    src/main/scala/org/controller/mailExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/javax.mail/javax.mail-api/1.6.2/17a8151bab44f9c94f34c10db70d95ba3c830eda/javax.mail-api-1.6.2.jar
    src/main/scala/org/controller/mailExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/mailExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.1/532245109acc03258cc352ea5e203fc8c0558a09/delta-core_2.11-0.6.1.jar
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.10.0/1127c9cf62f2bb3121a3a2a0a1351d251a602117/jackson-databind-2.10.0.jar
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.module/jackson-module-scala_2.11/2.10.0/582f2e2fc347b3de8d9a536df02750fc77515e88/jackson-module-scala_2.11-2.10.0.jar
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/mergingAndSortingArrays.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/mergingAndSortingArrays.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/partitionedTableRead.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
@@ -1134,7 +1174,7 @@ binary dependencies:
    src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/mapPartitionsTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/mapPartitionsTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/readFromKafkaAndMaintainAggregate/mapPartitionsTry.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.0/9eac59ba21a197b65570727fd5305013661a88d/delta-core_2.11-0.6.0.jar
+   src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.1/532245109acc03258cc352ea5e203fc8c0558a09/delta-core_2.11-0.6.1.jar
    src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/samePointsAndDifferentTime/deltaStreamToUpdateTheFinalTable.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
@@ -1185,16 +1225,16 @@ binary dependencies:
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/splittingDifferentColumnRecords.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/splittingTime/SplitFunction.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
    src/main/scala/org/controller/splittingTime/SplitFunction.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/SplitFunction.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/splittingTime/SplitFunction.scala -> /home/raptor/.m2/repository/joda-time/joda-time/2.9.9/joda-time-2.9.9.jar
    src/main/scala/org/controller/splittingTime/SplitFunction.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/.m2/repository/joda-time/joda-time/2.9.9/joda-time-2.9.9.jar
    src/main/scala/org/controller/splittingTime/SplittingTimeMain.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/splittingTime/TripRecordCaseClass.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/splittingTime/TripRecordCaseClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
@@ -1202,26 +1242,32 @@ binary dependencies:
    src/main/scala/org/controller/splittingTime/empCaseClass.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/splittingTime/empCaseClassWithWeekend.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/splittingTime/empCaseClassWithWeekend.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/.m2/repository/joda-time/joda-time/2.9.9/joda-time-2.9.9.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployees.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/.m2/repository/joda-time/joda-time/2.9.9/joda-time-2.9.9.jar
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/splittingTime/timeComplexity.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.9.9/f7b520c458572890807d143670c9b24f4de90897/joda-time-2.9.9.jar
    src/main/scala/org/controller/splittingTime/timeComplexity.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/timeComplexity.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/splittingTime/timeComplexity.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/splittingTime/timeComplexity.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/splittingTime/timeComplexity.scala -> /home/raptor/.m2/repository/joda-time/joda-time/2.9.9/joda-time-2.9.9.jar
    src/main/scala/org/controller/splittingTime/timeComplexity.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/tmpReduceGroup.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/com.databricks/dbutils-api_2.11/0.0.5/7dff5983557d499d31cacf02ff6b009f3d31398a/dbutils-api_2.11-0.0.5.jar
+   src/main/scala/org/controller/tmpReduceGroup.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/tmpReduceGroup.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/tmpReduceGroup.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/tmpReduceGroup.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
+   src/main/scala/org/controller/tmpReduceGroup.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/twitterPullTry/BasicCallback.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/2.3.1/21664b0318d201ec412f9b02357b07ba94009c87/kafka-clients-2.3.1.jar
    src/main/scala/org/controller/twitterPullTry/BasicCallback.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/twitterPullTry/BasicCallback.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
@@ -1254,7 +1300,6 @@ binary dependencies:
    src/main/scala/org/temp/stringTestObj.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/temp/twitterResult.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/temp/twitterResult.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/5af35056b4d257e4b64b9e8069c0746e8b08629f/log4j-1.2.17.jar
    src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.bahir/spark-streaming-twitter_2.11/2.4.0/e924820db2f2325153a254436e7349f65ab6c854/spark-streaming-twitter_2.11-2.4.0.jar
    src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
@@ -1262,6 +1307,7 @@ binary dependencies:
    src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-streaming_2.11/2.4.5/8a1cc984df65037ed539615025bd7b05a7c56b5c/spark-streaming_2.11-2.4.5.jar
    src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.twitter4j/twitter4j-core/4.0.6/f3722af4568b96ee66739267e13211b8b66ac7d4/twitter4j-core-4.0.6.jar
+   src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/.m2/repository/log4j/log4j/1.2.17/log4j-1.2.17.jar
    src/main/scala/org/temp/twitterTemp.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/util/SparkOpener.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/util/SparkOpener.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
@@ -1283,7 +1329,7 @@ binary dependencies:
    src/main/scala/org/util/kafka/kafkaUtilMethods.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka_2.11/2.3.1/17255386d7e983ae82a0e82a0e5be0058e834842/kafka_2.11-2.3.1.jar
    src/main/scala/org/util/kafka/kafkaUtilMethods.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/util/kafka/kafkaUtilMethods.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.0/9eac59ba21a197b65570727fd5305013661a88d/delta-core_2.11-0.6.0.jar
+   src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.1/532245109acc03258cc352ea5e203fc8c0558a09/delta-core_2.11-0.6.1.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-common/2.7.4/9afa8d2004a0bbd930d1ac10d221d927917067be/hadoop-common-2.7.4.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/util/readWriteUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
@@ -1441,6 +1487,9 @@ source dependencies:
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/mailExample.scala -> src/main/scala/org/controller/mailBeanClass.scala
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala
    src/main/scala/org/controller/partitionedTableRead.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/partitionedTableRead.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/partitionedTableRead.scala -> src/main/scala/org/util/readWriteUtil.scala
@@ -1530,6 +1579,7 @@ source dependencies:
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> src/main/scala/org/controller/splittingTime/empCaseClassWithWeekend.scala
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/splittingTime/findingContinuousEmployeesWithGap.scala -> src/main/scala/org/util/readWriteUtil.scala
+   src/main/scala/org/controller/tmpReduceGroup.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/twitterPullTry/Tweet.scala -> src/main/scala/org/controller/twitterPullTry/User.scala
    src/main/scala/org/controller/twitterPullTry/twitterDataPullFromKafka.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/twitterPullTry/twitterDataPullFromKafka.scala -> src/main/scala/org/util/SparkOpener.scala
@@ -1636,6 +1686,7 @@ class names:
    src/main/scala/org/controller/XmlXslProcessing/xmlXslParse.scala -> org.controller.XmlXslProcessing.xmlXslParse$orderInfo$
    src/main/scala/org/controller/ZipExample.scala -> org.controller.ZipExample
    src/main/scala/org/controller/ZipExample.scala -> org.controller.ZipExample$
+   src/main/scala/org/controller/auxillaryConstructor.scala -> org.controller.auxillaryConstructor
    src/main/scala/org/controller/breakExample.scala -> org.controller.breakExample
    src/main/scala/org/controller/breakExample.scala -> org.controller.breakExample$
    src/main/scala/org/controller/customState/customStateConstants.scala -> org.controller.customState.customStateConstants
@@ -1873,6 +1924,20 @@ class names:
    src/main/scala/org/controller/mailBeanClass.scala -> org.controller.mailBeanClass
    src/main/scala/org/controller/mailExample.scala -> org.controller.mailExample
    src/main/scala/org/controller/mailExample.scala -> org.controller.mailExample$
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> org.controller.markCalculation.kafkaToBronzeLoad
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> org.controller.markCalculation.kafkaToBronzeLoad$
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> org.controller.markCalculation.kafkaToBronzeLoad$$typecreator1$1
+   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> org.controller.markCalculation.kafkaToBronzeLoad$$typecreator2$1
+   src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala -> org.controller.markCalculation.marksCalculationConstant
+   src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala -> org.controller.markCalculation.marksCalculationConstant$
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.kafkaWrapper
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.kafkaWrapper$
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.marksCalculationUtil
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.marksCalculationUtil$
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.marksCalculationUtil$$anon$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.marksCalculationUtil$$typecreator4$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpD
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpD$
    src/main/scala/org/controller/mergingAndSortingArrays.scala -> org.controller.mergingAndSortingArrays
    src/main/scala/org/controller/mergingAndSortingArrays.scala -> org.controller.mergingAndSortingArrays$
    src/main/scala/org/controller/partitionedTableRead.scala -> org.controller.partitionedTableRead
@@ -2129,6 +2194,11 @@ class names:
    src/main/scala/org/controller/splittingTime/timeComplexity.scala -> org.controller.splittingTime.timeComplexity$inputSessions$
    src/main/scala/org/controller/splittingTime/timeComplexity.scala -> org.controller.splittingTime.timeComplexity$inputSessionsInter
    src/main/scala/org/controller/splittingTime/timeComplexity.scala -> org.controller.splittingTime.timeComplexity$inputSessionsInter$
+   src/main/scala/org/controller/tmpReduceGroup.scala -> org.controller.tmpReduceGroup
+   src/main/scala/org/controller/tmpReduceGroup.scala -> org.controller.tmpReduceGroup$
+   src/main/scala/org/controller/tmpReduceGroup.scala -> org.controller.tmpReduceGroup$$typecreator4$1
+   src/main/scala/org/controller/tmpReduceGroup.scala -> org.controller.tmpReduceGroup$tmpClass
+   src/main/scala/org/controller/tmpReduceGroup.scala -> org.controller.tmpReduceGroup$tmpClass$
    src/main/scala/org/controller/twitterPullTry/BasicCallback.scala -> org.controller.twitterPullTry.BasicCallback
    src/main/scala/org/controller/twitterPullTry/Tweet.scala -> org.controller.twitterPullTry.Tweet
    src/main/scala/org/controller/twitterPullTry/Tweet.scala -> org.controller.twitterPullTry.Tweet$
