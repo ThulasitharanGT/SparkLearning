@@ -10,6 +10,7 @@ object marksCalculationConstant {
   val kafkaStreamFormat="kafka"
   val pathArg="path"
   val kafkaBootstrapServerArg="kafkaBootstrapServer"
+  val kafkaStartingOffsetsArg="kafkaStartingOffsets"
   val kafkaSubscribe="kafkaSubscribe"
   val kafkaAssign="kafkaAssign"
   val kafkaSubscribeAssignDecider="kafkaSubscribeAssignDecider"
