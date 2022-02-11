@@ -9,7 +9,7 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 
 
-object marksCalculationUtil {
+object marksCalculationUtil extends Serializable{
 
   def inputArrayToMap(args:Array[String])={
     val inputMap=collection.mutable.Map[String,String]()
@@ -31,16 +31,16 @@ object marksCalculationUtil {
    case _ =>tmpMap
  }
 
-  val getReadStreamDF:(org.apache.spark.sql.SparkSession,collection.mutable.Map[String,String])=> org.apache.spark.sql.DataFrame = (spark:org.apache.spark.sql.SparkSession,inputMap:collection.mutable.Map[String,String]) =>
+  def getReadStreamDFFun (spark:org.apache.spark.sql.SparkSession,inputMap:collection.mutable.Map[String,String]) =
  Try{inputMap(readStreamFormat)} match {
    case Success(s)=>
-     println(s"getReadStreamDF :: Success")
+     println(s"getReadStreamDFFun :: Success")
      s match {
      case value if value == deltaStreamFormat =>
-       println(s"getReadStreamDF :: Success delta")
+       println(s"getReadStreamDFFun :: Success delta")
        spark.readStream.format("delta").load(inputMap(pathArg))
      case value if value == kafkaStreamFormat =>
-       println(s"getReadStreamDF :: Success kafka")
+       println(s"getReadStreamDFFun :: Success kafka")
       // println(s"getReadStreamDF :: Success kafka :: kafkaStreamFormat ${getSubscribeAssignValue(inputMap)}")
       // println(s"getReadStreamDF :: Success kafka :: kafkaSubscribeAssignDecider ${subscribeAssignDecider(inputMap(kafkaSubscribeAssignDecider))}")
        spark.readStream.format("kafka")
@@ -50,10 +50,32 @@ object marksCalculationUtil {
          .load
    }
    case Failure(f)=> // reads parquet
-     println(s"getReadStreamDF :: Failure")
+     println(s"getReadStreamDFFun :: Failure")
      spark.readStream.load(inputMap(pathArg))
  }
 
+  val getReadStreamDF:(org.apache.spark.sql.SparkSession,collection.mutable.Map[String,String])=> org.apache.spark.sql.DataFrame = (spark:org.apache.spark.sql.SparkSession,inputMap:collection.mutable.Map[String,String]) =>
+    Try{inputMap(readStreamFormat)} match {
+      case Success(s)=>
+        println(s"getReadStreamDF :: Success")
+        s match {
+          case value if value == deltaStreamFormat =>
+            println(s"getReadStreamDF :: Success delta")
+            spark.readStream.format("delta").load(inputMap(pathArg))
+          case value if value == kafkaStreamFormat =>
+            println(s"getReadStreamDF :: Success kafka")
+            // println(s"getReadStreamDF :: Success kafka :: kafkaStreamFormat ${getSubscribeAssignValue(inputMap)}")
+            // println(s"getReadStreamDF :: Success kafka :: kafkaSubscribeAssignDecider ${subscribeAssignDecider(inputMap(kafkaSubscribeAssignDecider))}")
+            spark.readStream.format("kafka")
+              .option("kafka.bootstrap.servers",inputMap(kafkaBootstrapServerArg))
+              .option(subscribeAssignDecider(inputMap(kafkaSubscribeAssignDecider)),getSubscribeAssignValue(inputMap))
+              .option("startingOffsets",inputMap(kafkaStartingOffsetsArg))
+              .load
+        }
+      case Failure(f)=> // reads parquet
+        println(s"getReadStreamDF :: Failure")
+        spark.readStream.load(inputMap(pathArg))
+    }
   val getSubscribeAssignValue:(collection.mutable.Map[String,String])=>String=(map:collection.mutable.Map[String,String])=> Try{map(kafkaSubscribeAssignDecider)} match {
     case Success(s) =>
       s match {case value if value ==kafkaSubscribe => map(kafkaSubscribe) case value if value ==kafkaAssign => map(kafkaAssign)}
@@ -64,7 +86,6 @@ object marksCalculationUtil {
     case value if value == kafkaSubscribe => "subscribe"
     case value if value == kafkaAssign => "assign"
   }
-
 
   val dfWriterStream:(org.apache.spark.sql.SparkSession,org.apache.spark.sql.DataFrame,collection.mutable.Map[String,String])=>Unit=
     (spark:org.apache.spark.sql.SparkSession,df:org.apache.spark.sql.DataFrame,tmpMap:collection.mutable.Map[String,String]) => Try{tmpMap(writeStreamFormat)} match {
@@ -86,13 +107,35 @@ object marksCalculationUtil {
         }
       case value if value == kafkaStreamFormat =>
         println("dfWriterStream Success kafka")
-        import spark.implicits._
-        df.map(x=> kafkaWrapper(x)).map(toJson).writeStream.format("kafka").option("kafka.bootstrap.servers",tmpMap(kafkaBootstrapServerArg)).option("topic",tmpMap(kafkaTopic)).option("checkpointLocation",tmpMap(checkpointLocation)).start
-    }
+       import spark.implicits._
+     //   df.map(x=> kafkaWrapper(x)).map(toJson).writeStream.format("kafka").option("kafka.bootstrap.servers",tmpMap(kafkaBootstrapServerArg)).option("topic",tmpMap(kafkaTopic)).option("checkpointLocation",tmpMap(checkpointLocation)).start
+    /*    import org.apache.spark.sql.catalyst.encoders.RowEncoder
+        implicit val encoder = RowEncoder(df.head.schema) */
+        df.map(x=> toJsonWrapper(x)).write.mode("append").format("kafka").option("kafka.bootstrap.servers",tmpMap(kafkaBootstrapServerArg)).option("topic",tmpMap(kafkaTopic)).save
+      }
     case Failure(f) =>
       println("dfWriterStream Failure")
       df.write.mode("append").save(tmpMap("path"))
     }
+
+
+  def toJsonWrapper(row:org.apache.spark.sql.Row)={
+    val rowSchema=row.schema
+    var stringTmp=""
+    for (rowInfo<- rowSchema)
+        stringTmp= stringTmp.trim.size match {case value if value >0 => stringTmp+s""","${rowInfo.name}":${valueCalculator(rowInfo.dataType) match {case true => s""""${row.getAs[String](rowInfo.name)}"""" case false => s"""${row.getAs[String](rowInfo.name)}""" }}""" case value if value == 0 =>s""""${rowInfo.name}":${valueCalculator(rowInfo.dataType) match {case true => s""""${row.getAs[String](rowInfo.name)}"""" case false => s"""${row.getAs[String](rowInfo.name)}""" }}"""}
+    s"{${stringTmp}}"
+   }
+
+
+  def valueCalculator(typeField:org.apache.spark.sql.types.DataType)= typeField match {
+    case org.apache.spark.sql.types.StringType => true
+    case org.apache.spark.sql.types.IntegerType => false
+    case org.apache.spark.sql.types.FloatType => false
+    case org.apache.spark.sql.types.DecimalType() => false
+    case org.apache.spark.sql.types.TimestampType => true
+    case org.apache.spark.sql.types.DateType => true
+  }
 
   def deltaMergeOverwriteHelper(map:collection.mutable.Map[String,String],getStr:String) =  Try{map(getStr)} match { case Success(s) => s case Failure(f) => "false"}
 
@@ -107,12 +150,13 @@ object marksCalculationUtil {
   mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false)
 
   def toJson(value:Any)= mapper.writeValueAsString(value)
+
   def fromJson[T](json:String)(implicit m:Manifest[T])=mapper.readValue[T](json)
 
 
 }
 
-case class kafkaWrapper(value:Any)
+case class kafkaWrapper(value:org.apache.spark.sql.Row)
 
 
 case class tmpD(cool:String,cool2:String)
