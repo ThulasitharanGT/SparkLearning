@@ -25,6 +25,7 @@ object marksCalculationConstant {
   val checkpointLocation="checkpointLocation"
   val summativeAssessment="SA"
   val cumulativeAssessment="CA"
+  val assessmentType="assessmentType"
   val wrapperSchema=new StructType(Array(StructField("messageType",StringType,true),StructField("actualMessage",StringType,true),StructField("receivingTimeStamp",StringType,true)))
   val innerMarksSchema=new StructType(Array(StructField("examId",StringType,true),
     StructField("studentID",StringType,true)

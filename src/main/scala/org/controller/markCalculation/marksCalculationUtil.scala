@@ -2,11 +2,12 @@ package org.controller.markCalculation
 
 import org.apache.spark.sql.streaming.DataStreamWriter
 import org.controller.markCalculation.marksCalculationConstant._
-import scala.util.{Failure, Success, Try}
 
-import com.fasterxml.jackson.databind.{DeserializationFeature,ObjectMapper}
+import scala.util.{Failure, Success, Try}
+import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
+import org.apache.spark.sql.functions.{col, from_json, udf}
 
 
 object marksCalculationUtil extends Serializable{
@@ -53,6 +54,20 @@ object marksCalculationUtil extends Serializable{
      println(s"getReadStreamDFFun :: Failure")
      spark.readStream.load(inputMap(pathArg))
  }
+
+  def getWhereCondition(valueArray:Array[String])={
+    var resultStr=""
+    valueArray.size match {
+      case 0 => resultStr="''"
+      case value if value >0 =>
+        for (valueInArray <- valueArray)
+        resultStr.trim.size match {
+          case value if value ==0 => resultStr=s"'${valueInArray}'"
+          case value if value >0 => resultStr=s",'${valueInArray}'"
+        }
+    }
+    s"(${resultStr})"
+  }
 
   val getReadStreamDF:(org.apache.spark.sql.SparkSession,collection.mutable.Map[String,String])=> org.apache.spark.sql.DataFrame = (spark:org.apache.spark.sql.SparkSession,inputMap:collection.mutable.Map[String,String]) =>
     Try{inputMap(readStreamFormat)} match {
@@ -153,6 +168,12 @@ object marksCalculationUtil extends Serializable{
 
   def fromJson[T](json:String)(implicit m:Manifest[T])=mapper.readValue[T](json)
 
+
+  val simpleDateFormat= new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+  def getTSFromString(tsStr:String)=new java.sql.Timestamp(simpleDateFormat.parse(tsStr).getTime)
+
+  val udfTSFromString= udf(getTSFromString(_:String))
+  def innerMsgParser(df:org.apache.spark.sql.DataFrame)=df.select(from_json(col("actualMessage"),innerMarksSchema).as("structExtracted"),udfTSFromString(col("receivingTimeStamp")).as("incomingTS")).select(col("structExtracted.*"),col("incomingTS"))
 
 }
 

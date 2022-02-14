@@ -21,10 +21,10 @@ def main(args:Array[String]):Unit={
 
   def getSchema(schemaStr:String)={
     val schemaSplitArray=schemaStr.split(";").map(_.split(" ") match {case value if value.size ==2 => (value(0),value(1))})
-    var fieldsArray:Seq[org.apache.spark.sql.types.StructField]=Seq.empty
+    var fieldsSeq:Seq[org.apache.spark.sql.types.StructField]=Seq.empty
     for( schemaInfo <- schemaSplitArray)
-      fieldsArray = fieldsArray :+ org.apache.spark.sql.types.StructField(schemaInfo._1,getDataType(schemaInfo._2),true)
-   new org.apache.spark.sql.types.StructType(fieldsArray.toArray)
+      fieldsSeq = fieldsSeq :+ org.apache.spark.sql.types.StructField(schemaInfo._1,getDataType(schemaInfo._2),true)
+   new org.apache.spark.sql.types.StructType(fieldsSeq.toArray)
   }
 
   def getDataType(dType:String):org.apache.spark.sql.types.DataType=dType.toLowerCase match {

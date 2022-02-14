@@ -323,15 +323,25 @@ products:
    src/main/scala/org/controller/mailBeanClass.scala -> build/classes/scala/main/org/controller/mailBeanClass.class
    src/main/scala/org/controller/mailExample.scala -> build/classes/scala/main/org/controller/mailExample$.class
    src/main/scala/org/controller/mailExample.scala -> build/classes/scala/main/org/controller/mailExample.class
-   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToBronzeLoad$$typecreator1$1.class
-   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToBronzeLoad$$typecreator2$1.class
+   src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> build/classes/scala/main/org/controller/markCalculation/bronzeToSilverTrigger$.class
+   src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> build/classes/scala/main/org/controller/markCalculation/bronzeToSilverTrigger$bronzeMarksData$.class
+   src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> build/classes/scala/main/org/controller/markCalculation/bronzeToSilverTrigger$bronzeMarksData.class
+   src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> build/classes/scala/main/org/controller/markCalculation/bronzeToSilverTrigger.class
+   src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToAssessmentLoad$.class
+   src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToAssessmentLoad.class
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToBronzeLoad$.class
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToBronzeLoad.class
+   src/main/scala/org/controller/markCalculation/kafkaToCALoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToCALoad$.class
+   src/main/scala/org/controller/markCalculation/kafkaToCALoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToCALoad.class
+   src/main/scala/org/controller/markCalculation/kafkaToSALoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToSALoad$.class
+   src/main/scala/org/controller/markCalculation/kafkaToSALoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToSALoad.class
    src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationConstant$.class
    src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationConstant.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaWrapper$.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaWrapper.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationUtil$$anon$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationUtil$$typecreator1$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationUtil$$typecreator2$1.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationUtil$.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationUtil.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpD$.class
@@ -1009,13 +1019,35 @@ binary dependencies:
    src/main/scala/org/controller/mailExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/javax.mail/javax.mail-api/1.6.2/17a8151bab44f9c94f34c10db70d95ba3c830eda/javax.mail-api-1.6.2.jar
    src/main/scala/org/controller/mailExample.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/mailExample.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
-   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.1/532245109acc03258cc352ea5e203fc8c0558a09/delta-core_2.11-0.6.1.jar
+   src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.1/532245109acc03258cc352ea5e203fc8c0558a09/delta-core_2.11-0.6.1.jar
+   src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/markCalculation/kafkaToCALoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.1/532245109acc03258cc352ea5e203fc8c0558a09/delta-core_2.11-0.6.1.jar
+   src/main/scala/org/controller/markCalculation/kafkaToCALoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/kafkaToCALoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/kafkaToCALoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/kafkaToCALoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/markCalculation/kafkaToCALoad.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/markCalculation/kafkaToSALoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.1/532245109acc03258cc352ea5e203fc8c0558a09/delta-core_2.11-0.6.1.jar
+   src/main/scala/org/controller/markCalculation/kafkaToSALoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/kafkaToSALoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/kafkaToSALoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/kafkaToSALoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/markCalculation/kafkaToSALoad.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
@@ -1025,6 +1057,7 @@ binary dependencies:
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/markCalculation/tmpObj.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/markCalculation/tmpObj.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
@@ -1491,8 +1524,16 @@ source dependencies:
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/kafkaStreamExample/streamAggregationStats.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/mailExample.scala -> src/main/scala/org/controller/mailBeanClass.scala
+   src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala
+   src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala
+   src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala
+   src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala
+   src/main/scala/org/controller/markCalculation/kafkaToCALoad.scala -> src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala
+   src/main/scala/org/controller/markCalculation/kafkaToCALoad.scala -> src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala
+   src/main/scala/org/controller/markCalculation/kafkaToSALoad.scala -> src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala
+   src/main/scala/org/controller/markCalculation/kafkaToSALoad.scala -> src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala
    src/main/scala/org/controller/markCalculation/tmpObj.scala -> src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala
    src/main/scala/org/controller/markCalculation/tmpObj.scala -> src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala
@@ -1930,10 +1971,18 @@ class names:
    src/main/scala/org/controller/mailBeanClass.scala -> org.controller.mailBeanClass
    src/main/scala/org/controller/mailExample.scala -> org.controller.mailExample
    src/main/scala/org/controller/mailExample.scala -> org.controller.mailExample$
+   src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> org.controller.markCalculation.bronzeToSilverTrigger
+   src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> org.controller.markCalculation.bronzeToSilverTrigger$
+   src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> org.controller.markCalculation.bronzeToSilverTrigger$bronzeMarksData
+   src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> org.controller.markCalculation.bronzeToSilverTrigger$bronzeMarksData$
+   src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> org.controller.markCalculation.kafkaToAssessmentLoad
+   src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> org.controller.markCalculation.kafkaToAssessmentLoad$
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> org.controller.markCalculation.kafkaToBronzeLoad
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> org.controller.markCalculation.kafkaToBronzeLoad$
-   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> org.controller.markCalculation.kafkaToBronzeLoad$$typecreator1$1
-   src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> org.controller.markCalculation.kafkaToBronzeLoad$$typecreator2$1
+   src/main/scala/org/controller/markCalculation/kafkaToCALoad.scala -> org.controller.markCalculation.kafkaToCALoad
+   src/main/scala/org/controller/markCalculation/kafkaToCALoad.scala -> org.controller.markCalculation.kafkaToCALoad$
+   src/main/scala/org/controller/markCalculation/kafkaToSALoad.scala -> org.controller.markCalculation.kafkaToSALoad
+   src/main/scala/org/controller/markCalculation/kafkaToSALoad.scala -> org.controller.markCalculation.kafkaToSALoad$
    src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala -> org.controller.markCalculation.marksCalculationConstant
    src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala -> org.controller.markCalculation.marksCalculationConstant$
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.kafkaWrapper
@@ -1941,6 +1990,8 @@ class names:
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.marksCalculationUtil
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.marksCalculationUtil$
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.marksCalculationUtil$$anon$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.marksCalculationUtil$$typecreator1$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.marksCalculationUtil$$typecreator2$1
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpD
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpD$
    src/main/scala/org/controller/markCalculation/tmpObj.scala -> org.controller.markCalculation.tmpObj
