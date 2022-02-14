@@ -5,7 +5,6 @@ import org.controller.markCalculation.marksCalculationUtil._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 import org.controller.markCalculation.marksCalculationConstant._
-
 import scala.util.{Failure, Success, Try}
 object kafkaToAssessmentLoad {
 
@@ -42,8 +41,14 @@ SA
     case Success(s) => s.as("alfa").merge(df.as("delta"),col("alfa.studentID")===col("delta.StudentID")
       && col("alfa.examId")===col("delta.examId")
       && col("alfa.subjectCode")===col("delta.subjectCode")
-      && col("alfa.revisionNumber")===col("delta.revisionNumber")).whenNotMatched.insertAll
-      .whenMatched.updateExpr(Map("alfa.marks"->"delta.marks","alfa.incomingTs"->"delta.incomingTs")).execute
+     /* && col("alfa.revisionNumber")===col("delta.revisionNumber")*/)
+      .whenNotMatched.insertAll
+      .whenMatched(col("alfa.revisionNumber") === col("alfa.revisionNumber") )
+      .updateExpr(Map("delta.marks"->"alfa.marks","delta.incomingTs"->"alfa.incomingTs"))
+      .whenMatched
+      .updateExpr(Map("alfa.incomingTs"->"alfa.incomingTs"))
+      .execute
+
     case Failure(f) =>
       //  DeltaTable.create // cant create delta table through api, scala 2.12 is required
       df.write.mode("append").format("delta").save(map("assessmentPath"))

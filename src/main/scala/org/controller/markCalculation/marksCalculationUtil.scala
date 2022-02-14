@@ -69,6 +69,10 @@ object marksCalculationUtil extends Serializable{
     s"(${resultStr})"
   }
 
+  val getDeltaTable:(org.apache.spark.sql.SparkSession,String)=>io.delta.tables.DeltaTable=
+    (spark:org.apache.spark.sql.SparkSession,deltaTablePath:String) =>
+  io.delta.tables.DeltaTable.forPath(spark,deltaTablePath)
+
   val getReadStreamDF:(org.apache.spark.sql.SparkSession,collection.mutable.Map[String,String])=> org.apache.spark.sql.DataFrame = (spark:org.apache.spark.sql.SparkSession,inputMap:collection.mutable.Map[String,String]) =>
     Try{inputMap(readStreamFormat)} match {
       case Success(s)=>
