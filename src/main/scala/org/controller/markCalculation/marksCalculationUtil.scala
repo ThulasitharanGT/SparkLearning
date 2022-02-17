@@ -73,6 +73,12 @@ object marksCalculationUtil extends Serializable{
     (spark:org.apache.spark.sql.SparkSession,deltaTablePath:String) =>
   io.delta.tables.DeltaTable.forPath(spark,deltaTablePath)
 
+
+  def getPassMarkPercentage(inputMap:collection.mutable.Map[String,String])= inputMap("examType") match {
+    case value if value == summativeAssessment => 50
+    case value if value == cumulativeAssessment => 45
+  }
+
   val getReadStreamDF:(org.apache.spark.sql.SparkSession,collection.mutable.Map[String,String])=> org.apache.spark.sql.DataFrame = (spark:org.apache.spark.sql.SparkSession,inputMap:collection.mutable.Map[String,String]) =>
     Try{inputMap(readStreamFormat)} match {
       case Success(s)=>
