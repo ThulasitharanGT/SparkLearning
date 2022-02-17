@@ -7,6 +7,7 @@ import scala.util.{Failure, Success, Try}
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
+import org.apache.spark.TaskContext
 import org.apache.spark.sql.functions.{col, from_json, udf}
 
 
@@ -169,6 +170,12 @@ object marksCalculationUtil extends Serializable{
   val valGetter:(Array[String])=> String = (argSplit:Array[String]) =>  Try{argSplit(1)} match {case Success(s) => s case Failure(f) => ""}
   val splitArg:(String)=>Array[String] = (arg:String)=> Try{arg.split("=",2)} match {case Success(s) => s case Failure(f) => Array.empty}
 
+  val batchIdUDF = udf { () =>
+    TaskContext.get.getLocalProperty("streaming.sql.batchId").toInt
+  }
+  val persistDF:(org.apache.spark.sql.DataFrame,collection.mutable.Map[String,String])=> Unit = (df:org.apache.spark.sql.DataFrame,mapTmp:collection.mutable.Map[String,String]) => saveDF(df.write.mode(mapTmp("writeMode")).format(mapTmp("writeFormat")),mapTmp("writePath"))
+
+  def saveDF(dfWriter:org.apache.spark.sql.DataFrameWriter[org.apache.spark.sql.Row],path:String)= dfWriter.save(path)
 
   val mapper=new ObjectMapper() with ScalaObjectMapper
   mapper.registerModule(DefaultScalaModule)

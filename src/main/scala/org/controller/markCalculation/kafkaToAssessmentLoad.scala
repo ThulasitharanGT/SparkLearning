@@ -43,15 +43,20 @@ SA
       && col("alfa.subjectCode")===col("delta.subjectCode")
      /* && col("alfa.revisionNumber")===col("delta.revisionNumber")*/)
       .whenNotMatched.insertAll
-      .whenMatched(col("alfa.revisionNumber") === col("alfa.revisionNumber") )
-      .updateExpr(Map("delta.marks"->"alfa.marks","delta.incomingTs"->"alfa.incomingTs"))
-      .whenMatched
-      .updateExpr(Map("alfa.incomingTs"->"alfa.incomingTs"))
+      .whenMatched(col("alfa.revisionNumber") === col("delta.revisionNumber")
+        && col("delta.incomingTs" ) > col("alfa.incomingTs"))
+      .updateExpr(Map("marks"->"delta.marks","incomingTs"->"delta.incomingTs"))
+      .whenMatched(col("alfa.revisionNumber") =!= col("delta.revisionNumber") )
+      .updateExpr(Map("incomingTs"->"alfa.incomingTs"))
       .execute
 
     case Failure(f) =>
       //  DeltaTable.create // cant create delta table through api, scala 2.12 is required
-      df.write.mode("append").format("delta").save(map("assessmentPath"))
+      map.put("writePath",map("assessmentPath"))
+      map.put("writeFormat","delta")
+      map.put("writeMode","append")
+      persistDF(df,map)
+   //   df.write.mode("append").format("delta").save(map("assessmentPath"))
   }
 
 }

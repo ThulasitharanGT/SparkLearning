@@ -27,9 +27,9 @@ object silverToGoldCalculation {
         case Failure(f) => {}
       }
 
-    readStreamFormat
-    deltaStreamFormat
-    pathArg
+//    readStreamFormat
+ //   deltaStreamFormat
+  //  pathArg
 
     getReadStreamDF(spark,inputMap).writeStream
       .format("console")
@@ -110,7 +110,7 @@ object silverToGoldCalculation {
     })(RowEncoder(calcDF.schema.add(StructField("finalResult",StringType,true))))
 
 
-
+///////////////////////////////// do scd 1 and write it to final     table.
 
 
   }

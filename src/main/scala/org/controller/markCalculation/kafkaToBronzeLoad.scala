@@ -5,16 +5,10 @@ import org.apache.spark.sql.functions._
 import org.apache.spark.sql.streaming.{DataStreamWriter, Trigger}
 import org.apache.spark.sql.types._
 import org.controller.markCalculation.marksCalculationConstant._
-import io.delta.tables._
-import org.apache.spark.TaskContext
 
-import scala.util.{Failure, Success, Try}
 
 object kafkaToBronzeLoad {
 
-  val batchUDF = udf { () =>
-    TaskContext.get.getLocalProperty("streaming.sql.batchId").toInt
-  }
   def main(args:Array[String]):Unit = {
     val spark=getSparkSession()
     val sc=spark.sparkContext
