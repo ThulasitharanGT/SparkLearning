@@ -56,19 +56,25 @@ object marksCalculationUtil extends Serializable{
      spark.readStream.load(inputMap(pathArg))
  }
 
-  def getWhereCondition(valueArray:Array[String])={
-    var resultStr=""
+  def getWhereCondition(valueArray:Array[String])=
+    /*    var resultStr=""
     valueArray.size match {
-      case 0 => resultStr="''"
+        case 0 => resultStr="''"
+        case value if value >0 =>
+          for (valueInArray <- valueArray)
+          resultStr.trim.size match {
+            case value if value ==0 => resultStr+=s"'${valueInArray}'"
+            case value if value > 0 => resultStr+=s",'${valueInArray}'"
+          }
+      }*/
+    (valueArray.size match {
+      case 0 => Array("''")
       case value if value >0 =>
-        for (valueInArray <- valueArray)
-        resultStr.trim.size match {
-          case value if value ==0 => resultStr=s"'${valueInArray}'"
-          case value if value >0 => resultStr=s",'${valueInArray}'"
-        }
-    }
-    s"(${resultStr})"
-  }
+        for(value <- valueArray)
+          yield {s"'${value}'"}
+    } ).mkString("(",",",")")
+
+
 
   val getDeltaTable:(org.apache.spark.sql.SparkSession,String)=>io.delta.tables.DeltaTable=
     (spark:org.apache.spark.sql.SparkSession,deltaTablePath:String) =>
@@ -87,7 +93,14 @@ object marksCalculationUtil extends Serializable{
         s match {
           case value if value == deltaStreamFormat =>
             println(s"getReadStreamDF :: Success delta")
-            spark.readStream.format("delta").load(inputMap(pathArg))
+            Try{inputMap(deltaIgnoreChanges)} match {
+              case Success(s) =>
+                println(s"getReadStreamDF :: Success delta ignore changes")
+                spark.readStream.format("delta").option("ignoreChanges","true").load(inputMap(pathArg))
+              case Failure(f) =>
+                println(s"getReadStreamDF :: Failure delta ignore changes")
+                spark.readStream.format("delta").load(inputMap(pathArg))
+            }
           case value if value == kafkaStreamFormat =>
             println(s"getReadStreamDF :: Success kafka")
             // println(s"getReadStreamDF :: Success kafka :: kafkaStreamFormat ${getSubscribeAssignValue(inputMap)}")

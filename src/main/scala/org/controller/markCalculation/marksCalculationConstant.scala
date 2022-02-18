@@ -20,7 +20,7 @@ object marksCalculationConstant {
   val deltaMerge="deltaMerge"
   val deltaOverwrite="deltaOverwrite"
   val deltaMergeAndOverwrite="deltaMergeAndOverwrite"
-
+  val deltaIgnoreChanges="deltaIgnoreChanges"
 
   val checkpointLocation="checkpointLocation"
   val summativeAssessment="SA"

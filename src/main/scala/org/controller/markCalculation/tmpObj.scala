@@ -18,7 +18,7 @@ def main(args:Array[String]):Unit={
   val timestampType ="timestamp"
   val dateType ="date"
   val strType="str"
-
+// dynamic schema parsing
   def getSchema(schemaStr:String)={
     val schemaSplitArray=schemaStr.split(";").map(_.split(" ") match {case value if value.size ==2 => (value(0),value(1))})
     var fieldsSeq:Seq[org.apache.spark.sql.types.StructField]=Seq.empty
@@ -94,5 +94,32 @@ def main(args:Array[String]):Unit={
 }
 
   def forEachBatchFun(df:org.apache.spark.sql.DataFrame,batchId:Long)=df.withColumn("batchID",org.apache.spark.sql.functions.lit(batchId)).show(false)
+
+
+  def getRandomMarks(minMarks:Int=1,maxMarks:Int=100)=java.util.concurrent.ThreadLocalRandom.current.nextInt(minMarks,maxMarks)
+
+  // studentID , examID's [] ,subjectCodes [], revisionNumber, incomingTs
+
+  val getActualMessage:(Seq[(String,Seq[(String,String)],Seq[String],String,String,Int,Int)]) => Seq[(String,String)] = (dataTuple:Seq[(String,Seq[(String,String)],Seq[String],String,String,Int,Int)]) => (for(data <- dataTuple) yield {
+    for (examID <- data._2) yield {
+      for (subjectCode <- data._3) yield {
+        (s"""{"examId":"${examID._1}","studentID":"${data._1}","subjectCode":"${subjectCode}","revisionNumber":${data._4},"incomingTs":"${data._5}","marks":${getRandomMarks( data._6,data._7)}}""",examID._2)}}}).flatMap(x=>x).flatMap(x=>x)
+
+  val getTS:()=>String= () => new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(java.util.Calendar.getInstance().getTime())
+
+  def getTs=new java.sql.Timestamp(System.currentTimeMillis).toString
+
+  def getKafkaMessage(actualMessages:Seq[( String,Seq[(String,String)],Seq[String],String,String,Int,Int)],receivingTimeStamp:String=getTS())=
+    for(actualMessage <- getActualMessage(actualMessages))
+      yield {
+        s"""{"messageType":"${actualMessage._2}","actualMessage":"${actualMessage._1.replace("\"","\\\"")}","receivingTimeStamp":"${receivingTimeStamp}"}"""}
+
+
+//  getKafkaMessage(getActualMessage(Seq(("s001",Seq("e001","e002","ex001"),Seq("sub001","sub002","sub003","sub004","sub005"),"1",getTs,45,100))))
+
+  getKafkaMessage(Seq(("s001",Seq(("e001","CA"),("e002","CA"),("ex001","SA")),Seq("sub001","sub002","sub003","sub004","sub005"),"1",getTs,45,100)))
+
+  getActualMessage(Seq(("s001",Seq(("e001","CA"),("e002","CA"),("ex001","SA")),Seq("sub001","sub002","sub003","sub004","sub005"),"1",getTs,45,100)))
+
 
 }

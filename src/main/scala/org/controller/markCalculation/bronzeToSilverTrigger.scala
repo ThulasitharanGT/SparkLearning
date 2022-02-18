@@ -6,6 +6,9 @@ import io.delta.tables._
 import org.apache.spark.sql.catalyst.encoders.RowEncoder
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.expressions.Window
+import scala.util.{Try,Success,Failure}
+
+// import scala.util.control.Breaks
 
 // reads the latest record for studId, examId and subCode for that student and writes it into inter path,
 // old records may come late to SA and CA. So we need to take only the latest and project it.
@@ -25,13 +28,15 @@ object bronzeToSilverTrigger {
     bronzeColsForSelect="examId,studentID,subjectCode,marks,revisionNumber,incomingTS"
     checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/CAInter"
 
+ bronzeColsForSelect="examId,studentID,subjectCode,marks,revisionNumber,incomingTS"
+ bronzeColsForSelect="examId,studentID,subjectCode,marks,revisionNumber,incomingTS"
 
 CA
-spark-submit --master local --class org.controller.markCalculation.bronzeToSilverTrigger --num-executors 2 --executor-memory 512m --executor-cores 2 --driver-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/CA/" bronzeColsForSelect="examId,studentID,subjectCode,marks,revisionNumber,incomingTS" checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/CAInter" interPath="hdfs://localhost:8020/user/raptor/persist/marks/CATrigger/"
+spark-submit --master local --class org.controller.markCalculation.bronzeToSilverTrigger --num-executors 2 --executor-memory 512m --executor-cores 2 --driver-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/CA_BronzeToTriggerInput/"  readPath="hdfs://localhost:8020/user/raptor/persist/marks/CA/" checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/CAInter" interPath="hdfs://localhost:8020/user/raptor/persist/marks/CATrigger/" deltaIgnoreChanges=true
 
 SA
 
-spark-submit --master local --class org.controller.markCalculation.bronzeToSilverTrigger --num-executors 2 --executor-memory 512m --executor-cores 2 --driver-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/SA/" bronzeColsForSelect="examId,studentID,subjectCode,marks,revisionNumber,incomingTS" checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAInter" interPath="hdfs://localhost:8020/user/raptor/persist/marks/SATrigger/"
+spark-submit --master local --class org.controller.markCalculation.bronzeToSilverTrigger --num-executors 2 --executor-memory 512m --executor-cores 2 --driver-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/SA_BronzeToTriggerInput/" readPath="hdfs://localhost:8020/user/raptor/persist/marks/SA/" checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAInter" interPath="hdfs://localhost:8020/user/raptor/persist/marks/SATrigger/" deltaIgnoreChanges=true
 
 
     */
@@ -39,7 +44,8 @@ spark-submit --master local --class org.controller.markCalculation.bronzeToSilve
 
     val writeStreamDF=readStreamDF.writeStream.format("console").outputMode("append")
       .option("checkpointLocation",inputMap("checkpointLocation"))
-      .foreachBatch((df:org.apache.spark.sql.DataFrame,batchID:Long) => foreachBatchFun(df,batchID,inputMap) )
+      .foreachBatch((df:org.apache.spark.sql.DataFrame,batchID:Long) =>
+        foreachBatchFun(df,batchID,inputMap) )
 
     writeStreamDF.start
 
@@ -90,7 +96,25 @@ ALTER TABLE marks_db.CA_Table SET  tblproperties('parquet.compression' = 'SNAPPY
       .withColumn("rankCol",row_number.over(Window.partitionBy("examId","studentID","subjectCode").orderBy(desc("revisionNumber"))))
       .filter("rankCol =1").drop("rankCol")
 
-       reqDF.write.format("delta").mode("append").save(inputMap("interPath"))
+    Try{io.delta.tables.DeltaTable.forPath(spark,inputMap("path"))}  match {
+      case Success(deltaTable) =>
+        deltaTable.as("alfa").merge(reqDF.as("delta"),
+          col("alfa.examId")=== $"delta.examId"
+          && $"alfa.studentID" === col("delta.studentID")
+          && $"alfa.subjectCode" === col("delta.subjectCode"))
+          .whenMatched.updateExpr(Map("marks"->"delta.marks",
+          "revisionNumber"->"delta.revisionNumber",
+          "incomingTs" -> "delta.incomingTs"))
+          .whenNotMatched.insertExpr(Map("examId" -> "delta.examId" , "studentID" -> "delta.studentID" ,
+          "subjectCode" -> "delta.subjectCode" , "marks" -> "delta.marks" , "revisionNumber" -> "delta.revisionNumber" ,
+          "incomingTs" -> "delta.incomingTs"))
+          .execute
+
+      case Failure(exception) =>
+        reqDF.write.format("delta").mode("append").save(inputMap("interPath"))
+
+    }
+
 
 
     // if you have tables in db , you can use this

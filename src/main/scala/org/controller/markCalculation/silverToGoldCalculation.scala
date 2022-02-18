@@ -54,7 +54,7 @@ object silverToGoldCalculation {
 
     val examIdAndStudentId=df.collect.map(x=>(x.getAs[String]("examId"),x.getAs[String]("studentId")))
 
-    val dfWithExamIdAndSubjectIds=spark.read.format("delta").load(inputMap("path")).filter(s"examId in (${getWhereCondition(examIdAndStudentId.map(_._1))}) and studentId in(${getWhereCondition(examIdAndStudentId.map(_._2))})")
+    val dfWithExamIdAndSubjectIds=spark.read.format("delta").load(inputMap("path")).filter(s"examId in ${getWhereCondition(examIdAndStudentId.map(_._1))} and studentId in ${getWhereCondition(examIdAndStudentId.map(_._2))} ")
 
    val tmpJoinDF=examAndAssessmentDetailsDF.as("assessmentData")
      .join(dfWithExamIdAndSubjectIds.as("AllSubData"),Seq("examId"))

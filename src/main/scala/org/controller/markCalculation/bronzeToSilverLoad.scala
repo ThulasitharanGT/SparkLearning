@@ -8,6 +8,8 @@ import org.apache.spark.sql.types._
 import org.controller.markCalculation.marksCalculationConstant._
 import scala.util.{Failure, Success, Try}
 
+
+// use this as trigger "hdfs://localhost:8020/user/raptor/persist/marks/SA_BronzeToTriggerInput/" and read from "hdfs://localhost:8020/user/raptor/persist/marks/SA/" to take the latest record and update in silver.
 /*
 
  silverPath=""
@@ -38,7 +40,8 @@ object bronzeToSilverLoad {
       .updateExpr(Map("delta.incomingTs"->"incomingTs","delta.marks"->"alfa.marks"))
       .whenNotMatched
       .insertAll
-      .execute*/
+      .execute
+      */
   }
 
   val forEachBatchFun:(org.apache.spark.sql.DataFrame
