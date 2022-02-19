@@ -1,5 +1,5 @@
 package org.controller.markCalculation
-
+// depreciated , using trigger point to read the the bronze in bronzeToSilverLoad
 import org.controller.markCalculation.marksCalculationConstant._
 import org.controller.markCalculation.marksCalculationUtil._
 import io.delta.tables._
