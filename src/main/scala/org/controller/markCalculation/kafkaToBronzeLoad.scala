@@ -59,8 +59,8 @@ spark-submit --master local --class org.controller.markCalculation.kafkaToBronze
       })
       .option("checkpointLocation",inputMap("bronzeCheckpoint"))
       .start
-
-    /*/*val summativeAssessmentStream=readStreamDF.filter(s"messageType='${summativeAssessment}'")
+/*
+    /*val summativeAssessmentStream=readStreamDF.filter(s"messageType='${summativeAssessment}'")
 
     val cumulativeAssessmentStream=readStreamDF.filter(s"messageType='${cumulativeAssessment}'")*/
 

@@ -27,15 +27,27 @@ object silverToGoldCalculation {
         case Failure(f) => {}
       }
 
-//    readStreamFormat
+//   readStreamFormat
  //   deltaStreamFormat
   //  pathArg
+    // c
+ //  read from gold trigger
+/*
+
+SA:
+ spark-submit --class org.controller.markCalculation.silverToGoldCalculation --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=SA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=deltaStreamFormat pathArg="hdfs://localhost:8020/user/raptor/persist/marks/SA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Silver/"
+
+CA:
+ spark-submit --class org.controller.markCalculation.silverToGoldCalculation --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=SA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/CAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=deltaStreamFormat pathArg="hdfs://localhost:8020/user/raptor/persist/marks/CA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Silver/"
+
+ */
+
 
     getReadStreamDF(spark,inputMap).writeStream
       .format("console")
       .outputMode("update")
       .option("checkpointLocation",inputMap("checkpointLocation"))
-      .foreachBatch((df:org.apache.spark.sql.DataFrame,batchId:Long)=>{})
+      .foreachBatch((df:org.apache.spark.sql.DataFrame,batchId:Long)=>{forEachBatchFun(df,batchId,inputMap)})
       .start
 
 
@@ -49,12 +61,15 @@ object silverToGoldCalculation {
     Seq(("2019-2020","e001",new java.sql.Date(simpleDateFormat.parse("2020-01-02").getTime),"FN")).toDF("assessmentYear,examId,examDate,examTime".split(",").toSeq:_*).write.format("delta").mode("append").save("hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/")
 
      assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/"
+
+     Seq(("e001","CA"),("e002","CA"),("ex001","SA")).toDF("examId,examType".split(",").toSeq:_*).write.format("delta").mode("append").save("hdfs://localhost:8020/user/raptor/persist/marks/examIdAndTypeInfo/")
+
       */
    val examAndAssessmentDetailsDF= spark.read.format("delta").load(inputMap("assessmentPath"))
 
     val examIdAndStudentId=df.collect.map(x=>(x.getAs[String]("examId"),x.getAs[String]("studentId")))
 
-    val dfWithExamIdAndSubjectIds=spark.read.format("delta").load(inputMap("path")).filter(s"examId in ${getWhereCondition(examIdAndStudentId.map(_._1))} and studentId in ${getWhereCondition(examIdAndStudentId.map(_._2))} ")
+    val dfWithExamIdAndSubjectIds=spark.read.format("delta").load(inputMap("silverPath")).filter(s"examId in ${getWhereCondition(examIdAndStudentId.map(_._1))} and studentId in ${getWhereCondition(examIdAndStudentId.map(_._2))} ")
 
    val tmpJoinDF=examAndAssessmentDetailsDF.as("assessmentData")
      .join(dfWithExamIdAndSubjectIds.as("AllSubData"),Seq("examId"))
@@ -63,10 +78,10 @@ object silverToGoldCalculation {
     import spark.implicits._
     val passMarkPercentage=getPassMarkPercentage(inputMap)
     val maxMarks=inputMap("maxMarks").toInt
-    val passMarkCalculated= (maxMarks/100.0) * passMarkPercentage
+    val passMarkCalculated= Math.round((maxMarks/100.0) * passMarkPercentage)
 
     val calcDF=tmpJoinDF.withColumn("result",
-      when(col("marks")>= lit(passMarkCalculated),lit("pass")).otherwise("fail"))
+      when(col("marks") >= lit(passMarkCalculated),lit("pass")).otherwise("fail"))
       .withColumn("totalMarks",sum(col("marks")).over(
         org.apache.spark.sql.expressions.Window.partitionBy(col("studentId")
         , $"assessmentYear",col("examId"))))
@@ -96,8 +111,8 @@ object silverToGoldCalculation {
           ,x.getInt(4),
           x.getString(5),
           finalistWithoutFinalResult.map(_.getString(5)).filter(_.contains("fail")).size match {case value if value >= 1 => "FAIL" case 0 => "PASS"}))
-
-    })(RowEncoder(tmpJoinDF.schema match {case value => value.add(StructField("total",IntegerType,true)).add(StructField("result",IntegerType,true)).add(StructField("finalResult",StringType,true))})) // add 2 columns
+    })(RowEncoder(tmpJoinDF.schema match {case value => value.add(StructField("total",IntegerType,true)).add(StructField("result",StringType,true)).add(StructField("finalResult",StringType,true))}))
+/*
 
 // totally pass or not
     calcDF.groupByKey(x=>(x.getAs[String]("studentId"),x.getAs[String]("examId"),
@@ -108,10 +123,12 @@ object silverToGoldCalculation {
         x.getAs[String]("assessmentYear"),x.getAs[String]("result")
         ,x.getAs[String]("totalMarks"),totalResult))
     })(RowEncoder(calcDF.schema.add(StructField("finalResult",StringType,true))))
+*/
 
 
-///////////////////////////////// do scd 1 and write it to final     table.
+///////////////////////////////// do scd 1 and write it to final  table.
 
+    calcMapGroupsDF.show(false)
 
   }
 

@@ -55,17 +55,15 @@ SA
   def foreachBatchFunAssessment(spark:org.apache.spark.sql.SparkSession,df:org.apache.spark.sql.DataFrame,map:collection.mutable.Map[String,String])=  Try{DeltaTable.forPath(spark,map("assessmentPath"))} match {
     case Success(s) =>
 
-      s.as("alfa").merge(df.as("delta"),col("alfa.studentID")===col("delta.StudentID")
+      s.as("alfa").merge(df.as("delta"),col("alfa.studentID")===col("delta.studentID")
       && col("alfa.examId")===col("delta.examId")
       && col("alfa.subjectCode")===col("delta.subjectCode")
-     /* && col("alfa.revisionNumber")===col("delta.revisionNumber")*/)
+        && col("alfa.revisionNumber") === col("delta.revisionNumber")
+      )
       .whenNotMatched.insertAll
-      .whenMatched(col("alfa.revisionNumber") === col("delta.revisionNumber")
-        && col("delta.incomingTs" ) > col("alfa.incomingTs"))
-      .updateExpr(Map("marks"->"delta.marks","incomingTs"->"delta.incomingTs"))
-      .whenMatched(col("alfa.revisionNumber") =!= col("delta.revisionNumber") )
-      .updateExpr(Map("incomingTs"->"alfa.incomingTs"))
-      .execute
+      .whenMatched(col("delta.incomingTs" ) > col("alfa.incomingTs"))
+        .updateExpr(Map("marks"->"delta.marks","incomingTs"->"delta.incomingTs"))
+        .execute
 
       // input for trigger
       saveDF(df.write.mode("append").format("delta"),map("triggerPath"))
