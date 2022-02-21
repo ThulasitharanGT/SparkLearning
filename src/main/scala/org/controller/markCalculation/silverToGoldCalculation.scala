@@ -34,6 +34,11 @@ object silverToGoldCalculation {
  //  read from gold trigger
 /*
 
+// hdfs://localhost:8020/user/raptor/stream/checkpoint/SAInterSilver
+
+// hdfs://localhost:8020/user/raptor/stream/checkpoint/CAInterSilver
+
+
 SA:
  spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=SA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/SA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Silver/"
 
@@ -47,13 +52,26 @@ CA:
       .format("console")
       .outputMode("update")
       .option("checkpointLocation",inputMap("checkpointLocation"))
-      .foreachBatch((df:org.apache.spark.sql.DataFrame,batchId:Long)=>{forEachBatchFun(df,batchId,inputMap)})
+      .foreachBatch((df:org.apache.spark.sql.DataFrame,batchId:Long)=>
+      forEachBatchFun(getLatestRecordsForKeys(df,inputMap),batchId,inputMap))
       .start
 
 
     spark.streams.awaitAnyTermination
 
   }
+
+  val getLatestRecordsForKeys:(org.apache.spark.sql.DataFrame,scala.collection.mutable.Map[String,String])=>
+    org.apache.spark.sql.DataFrame =  (df:org.apache.spark.sql.DataFrame,inputMap:scala.collection.mutable.Map[String,String]) => {
+    val inputKeysForCalculation=getWhereConditionArrayTuple(df)
+      // df.collect.map(x=>(x.getAs[String]("examId"),x.getAs[String]("studentID")))
+
+    spark.read.format("delta").load(inputMap("silverPath"))
+      .filter(s"examId in ${getWhereCondition(inputKeysForCalculation.map(_._1))} and studentID in ${getWhereCondition(inputKeysForCalculation.map(_._2))}")
+      .select( col("examId"),col("studentID"),col("subjectCode"),col("marks"))
+  }
+
+  def getWhereConditionArrayTuple(df:org.apache.spark.sql.DataFrame)=df.collect.map(x=>(x.getAs[String]("examId"),x.getAs[String]("studentID")))
 
   def forEachBatchFun(df:org.apache.spark.sql.DataFrame,batchID:Long,inputMap:collection.mutable.Map[String,String])={
     /*
@@ -67,12 +85,12 @@ CA:
       */
    val examAndAssessmentDetailsDF= spark.read.format("delta").load(inputMap("assessmentPath"))
 
-    val examIdAndStudentId=df.collect.map(x=>(x.getAs[String]("examId"),x.getAs[String]("studentId")))
+ //   val examIdAndStudentId=df.collect.map(x=>(x.getAs[String]("examId"),x.getAs[String]("studentId")))
 
-    val dfWithExamIdAndSubjectIds=spark.read.format("delta").load(inputMap("silverPath")).filter(s"examId in ${getWhereCondition(examIdAndStudentId.map(_._1))} and studentId in ${getWhereCondition(examIdAndStudentId.map(_._2))} ")
+ //   val dfWithExamIdAndSubjectIds=spark.read.format("delta").load(inputMap("silverPath")).filter(s"examId in ${getWhereCondition(examIdAndStudentId.map(_._1))} and studentId in ${getWhereCondition(examIdAndStudentId.map(_._2))} ")
 
    val tmpJoinDF=examAndAssessmentDetailsDF.as("assessmentData")
-     .join(dfWithExamIdAndSubjectIds.as("AllSubData"),Seq("examId"))
+     .join(df.as("AllSubData"),Seq("examId"))
      .select("examId","AllSubData.studentId","AllSubData.subjectCode","assessmentData.assessmentYear","AllSubData.marks")
 
     import spark.implicits._
@@ -86,6 +104,7 @@ CA:
         org.apache.spark.sql.expressions.Window.partitionBy(col("studentId")
         , $"assessmentYear",col("examId"))))
 
+    calcDF.withColumn("calcDF",lit("calcDF")).show(false)
 
     // calculating sum by map groups
     val calcMapGroupsDF=tmpJoinDF.groupByKey(x=>(x.getAs[String]("studentId"),x.getAs[String]("examId"),
@@ -112,7 +131,11 @@ CA:
           x.getString(5),
           finalistWithoutFinalResult.map(_.getString(5)).filter(_.contains("fail")).size match {case value if value >= 1 => "FAIL" case 0 => "PASS"}))
     })(RowEncoder(tmpJoinDF.schema match {case value => value.add(StructField("total",IntegerType,true)).add(StructField("result",StringType,true)).add(StructField("finalResult",StringType,true))}))
-/*
+
+
+    calcMapGroupsDF.withColumn("calcMapGroupsDF",lit("calcMapGroupsDF")).show(false)
+
+    /*
 
 // totally pass or not
     calcDF.groupByKey(x=>(x.getAs[String]("studentId"),x.getAs[String]("examId"),
