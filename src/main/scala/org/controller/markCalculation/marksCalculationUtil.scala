@@ -84,7 +84,36 @@ object marksCalculationUtil extends Serializable{
   def getBigDecimalFromRow(row:org.apache.spark.sql.Row,fieldName:String)=convertToScalaBigDecimal(row.getAs[java.math.BigDecimal](fieldName))
   val convertToScalaBigDecimal:(java.math.BigDecimal)=> scala.math.BigDecimal= (javaBigD:java.math.BigDecimal) => scala.math.BigDecimal(javaBigD)
 
+def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,examType:String="CA")= (marksObtained / (100/ maxMarks)) match {
+  case value => examType match {
+    case assessmentType if assessmentType == cumulativeAssessment =>
+      value match {
+        case value if value < scala.math.BigDecimal(45.0) => "F"
+        case value if value > scala.math.BigDecimal(50.0) => "E"
+        case value if value > scala.math.BigDecimal(60.0) => "D+"
+        case value if value > scala.math.BigDecimal(65.0) => "D"
+        case value if value > scala.math.BigDecimal(70.0) => "C+"
+        case value if value > scala.math.BigDecimal(75.0) => "C"
+        case value if value > scala.math.BigDecimal(80.0) => "B+"
+        case value if value > scala.math.BigDecimal(85.0) => "B"
+        case value if value > scala.math.BigDecimal(90.0) => "A"
+        case value if value > scala.math.BigDecimal(95.0) => "A+"
+      }
+    case assessmentType if assessmentType == summativeAssessment =>
+      value match {
+        case value if value > scala.math.BigDecimal(50.0) => "F"
+        case value if value > scala.math.BigDecimal(60.0) => "E"
+        case value if value > scala.math.BigDecimal(65.0) => "D"
+        case value if value > scala.math.BigDecimal(70.0) => "C+"
+        case value if value > scala.math.BigDecimal(75.0) => "C"
+        case value if value > scala.math.BigDecimal(80.0) => "B+"
+        case value if value > scala.math.BigDecimal(85.0) => "B"
+        case value if value > scala.math.BigDecimal(90.0) => "A"
+        case value if value > scala.math.BigDecimal(95.0) => "A+"
+      }
+  }
 
+}
 
   def getPassMarkPercentage(inputMap:collection.mutable.Map[String,String])= inputMap("examType") match {
     case value if value == summativeAssessment => 50

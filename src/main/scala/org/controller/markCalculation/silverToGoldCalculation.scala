@@ -43,7 +43,7 @@ SA:
  spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=SA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/SA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Silver/"
 
 CA:
- spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=SA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/CAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/CA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Silver/"
+ spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=CA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/CAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/CA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Silver/"
 
  */
 
@@ -139,6 +139,7 @@ CA:
       ,total,
       /* x.getAs[scala.math.BigDecimal]("marks") */
         getBigDecimalFromRow(x,"marks") match {case value if value.toLong >= passMarkCalculated => "pass" case value if value.toLong < passMarkCalculated => "fail" }))
+/*
 
       finalistWithoutFinalResult.map(x=>
         Row(x.getString(4)
@@ -149,7 +150,33 @@ CA:
           ,x.getAs[scala.math.BigDecimal](5),  //  x.getDecimal(5) ,
           x.getString(6),
             finalistWithoutFinalResult.map(_.getString(6)).filter(_.contains("fail")).size match {case value if value >= 1 => "FAIL" case 0 => "PASS"}))
-    })(RowEncoder(tmpJoinDF.schema match {case value => value.add(StructField("total",DecimalType(6,3),true)).add(StructField("result",StringType,true)).add(StructField("finalResult",StringType,true))}))
+*/
+      finalistWithoutFinalResult.map(x=>
+        Row(x.getString(4)
+          ,x.getString(1)
+          ,x.getString(2)
+          ,x.getString(3)
+          ,x.getAs[scala.math.BigDecimal](0)   // ,x.getDecimal(0),
+        ,  x.getString(6)
+      , getGrade(x.getAs[scala.math.BigDecimal](0),scala.math.BigDecimal(inputMap("maxMarks").toInt),inputMap("examType"))
+      , "" )):+ Row(
+        x._2,x._1,"","subTotal",x._3,total,
+        finalistWithoutFinalResult.map(_.getAs[String](6)).contains("fail")
+        match {case value if value ==true => "FAIL" case false =>"PASS"},
+      getGrade( total, scala.math.BigDecimal(finalistWithoutFinalResult.size * inputMap("maxMarks").toInt),inputMap("examType"))
+        ,finalistWithoutFinalResult.map(x => (x.getAs[String](2) //("subjectCode")
+          , x.getAs[String](6))) match {case value if value.size > 0  => s"Failed in ${value.map(_._1).mkString(",")}" case _ => "" })
+
+    })(RowEncoder(tmpJoinDF.schema match
+    {case value =>
+        value // .add(StructField("total",DecimalType(6,3),true))
+        .add(StructField("result",StringType,true))
+        .add(StructField("grade",StringType,true))
+       .add(StructField("comment",StringType,true))
+
+      /*.add(StructField("finalResult",StringType,true))*/}
+    )
+      )
 
 // examId",
     // "AllSubData.studentId"
