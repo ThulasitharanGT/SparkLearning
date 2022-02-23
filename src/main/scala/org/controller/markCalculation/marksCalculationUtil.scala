@@ -81,6 +81,11 @@ object marksCalculationUtil extends Serializable{
   io.delta.tables.DeltaTable.forPath(spark,deltaTablePath)
 
 
+  def getBigDecimalFromRow(row:org.apache.spark.sql.Row,fieldName:String)=convertToScalaBigDecimal(row.getAs[java.math.BigDecimal](fieldName))
+  val convertToScalaBigDecimal:(java.math.BigDecimal)=> scala.math.BigDecimal= (javaBigD:java.math.BigDecimal) => scala.math.BigDecimal(javaBigD)
+
+
+
   def getPassMarkPercentage(inputMap:collection.mutable.Map[String,String])= inputMap("examType") match {
     case value if value == summativeAssessment => 50
     case value if value == cumulativeAssessment => 45

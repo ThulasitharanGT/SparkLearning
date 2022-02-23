@@ -63,12 +63,22 @@ CA:
 
   val getLatestRecordsForKeys:(org.apache.spark.sql.DataFrame,scala.collection.mutable.Map[String,String])=>
     org.apache.spark.sql.DataFrame =  (df:org.apache.spark.sql.DataFrame,inputMap:scala.collection.mutable.Map[String,String]) => {
+
+    df.withColumn("df1",lit("df1")).show(false)
+
     val inputKeysForCalculation=getWhereConditionArrayTuple(df)
       // df.collect.map(x=>(x.getAs[String]("examId"),x.getAs[String]("studentID")))
 
-    spark.read.format("delta").load(inputMap("silverPath"))
+    println(s"inputKeysForCalculation ${inputKeysForCalculation.deep}")
+
+    val dfTmp=spark.read.format("delta").load(inputMap("silverPath"))
       .filter(s"examId in ${getWhereCondition(inputKeysForCalculation.map(_._1))} and studentID in ${getWhereCondition(inputKeysForCalculation.map(_._2))}")
       .select( col("examId"),col("studentID"),col("subjectCode"),col("marks"))
+
+    dfTmp.withColumn("dfTmp",lit("dfTmp")).show(false)
+
+    dfTmp
+
   }
 
   def getWhereConditionArrayTuple(df:org.apache.spark.sql.DataFrame)=df.collect.map(x=>(x.getAs[String]("examId"),x.getAs[String]("studentID")))
@@ -76,7 +86,13 @@ CA:
   def forEachBatchFun(df:org.apache.spark.sql.DataFrame,batchID:Long,inputMap:collection.mutable.Map[String,String])={
     /*
     val simpleDateFormat=new java.text.SimpleDateFormat("yyyy-MM-dd")
-    Seq(("2019-2020","e001",new java.sql.Date(simpleDateFormat.parse("2020-01-02").getTime),"FN")).toDF("assessmentYear,examId,examDate,examTime".split(",").toSeq:_*).write.format("delta").mode("append").save("hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/")
+
+    Seq(("2019-2020","e001","FN")).toDF("assessmentYear,examId,examTime".split(",").toSeq:_*).write.format("delta").mode("append").save("hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/")
+    Seq(("2019-2020","e002","FN")).toDF("assessmentYear,examId,examTime".split(",").toSeq:_*).write.format("delta").mode("append").save("hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/")
+    Seq(("2019-2020","ex001","FN")).toDF("assessmentYear,examId,examTime".split(",").toSeq:_*).write.format("delta").mode("append").save("hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/")
+
+
+// examId,subId,date  ==> mapping, Ref column
 
      assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/"
 
@@ -109,28 +125,37 @@ CA:
     // calculating sum by map groups
     val calcMapGroupsDF=tmpJoinDF.groupByKey(x=>(x.getAs[String]("studentId"),x.getAs[String]("examId"),
       x.getAs[String]("assessmentYear"))).flatMapGroups((x,y)=>{
-      var total=0
-      val listY=y.toList.map(z=> {total+= z.getAs[Int]("marks");z})
+      var total=scala.math.BigDecimal(0.0)
+      val listY=y.toList.map(z=> {total+= getBigDecimalFromRow(z,"marks") /*z.getAs[scala.math.BigDecimal]("marks")*/;z})
      // val totalMarks=listY.map(z=> {total+= z.getAs[Int]("marks");z})
       val totalResult= ""
       // if this is not successful, try accumulator
       // marks, studentId,assessment year, examId
-      val finalistWithoutFinalResult=listY.map(x=> Row(x.getAs[Int]("marks")
+      val finalistWithoutFinalResult=listY.map(x=> Row( getBigDecimalFromRow(x,"marks")//x.getAs[scala.math.BigDecimal]("marks")
       ,x.getAs[String]("studentId")
+      ,x.getAs[String]("subjectCode")
       ,x.getAs[String]("assessmentYear")
       ,x.getAs[String]("examId")
       ,total,
-      x.getAs[Int]("marks") match {case value if value >= passMarkCalculated => "pass" case value if value < passMarkCalculated => "fail" }))
+      /* x.getAs[scala.math.BigDecimal]("marks") */
+        getBigDecimalFromRow(x,"marks") match {case value if value.toLong >= passMarkCalculated => "pass" case value if value.toLong < passMarkCalculated => "fail" }))
 
       finalistWithoutFinalResult.map(x=>
-        Row(x.getString(0)
+        Row(x.getString(4)
           ,x.getString(1)
           ,x.getString(2)
           ,x.getString(3)
-          ,x.getInt(4),
-          x.getString(5),
-          finalistWithoutFinalResult.map(_.getString(5)).filter(_.contains("fail")).size match {case value if value >= 1 => "FAIL" case 0 => "PASS"}))
-    })(RowEncoder(tmpJoinDF.schema match {case value => value.add(StructField("total",IntegerType,true)).add(StructField("result",StringType,true)).add(StructField("finalResult",StringType,true))}))
+          ,x.getAs[scala.math.BigDecimal](0)   // ,x.getDecimal(0),
+          ,x.getAs[scala.math.BigDecimal](5),  //  x.getDecimal(5) ,
+          x.getString(6),
+            finalistWithoutFinalResult.map(_.getString(6)).filter(_.contains("fail")).size match {case value if value >= 1 => "FAIL" case 0 => "PASS"}))
+    })(RowEncoder(tmpJoinDF.schema match {case value => value.add(StructField("total",DecimalType(6,3),true)).add(StructField("result",StringType,true)).add(StructField("finalResult",StringType,true))}))
+
+// examId",
+    // "AllSubData.studentId"
+    // ,"AllSubData.subjectCode",
+    // "assessmentData.assessmentYear",
+    // "AllSubData.marks
 
 
     calcMapGroupsDF.withColumn("calcMapGroupsDF",lit("calcMapGroupsDF")).show(false)
