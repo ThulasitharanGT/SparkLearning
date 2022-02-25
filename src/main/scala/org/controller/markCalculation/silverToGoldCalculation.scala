@@ -56,7 +56,6 @@ CA:
       forEachBatchFun(getLatestRecordsForKeys(df,inputMap),batchId,inputMap))
       .start
 
-
     spark.streams.awaitAnyTermination
 
   }
@@ -66,7 +65,7 @@ CA:
 
     df.withColumn("df1",lit("df1")).show(false)
 
-    val inputKeysForCalculation=getWhereConditionArrayTuple(df)
+    val inputKeysForCalculation=getWhereConditionArrayTuple(df).distinct
       // df.collect.map(x=>(x.getAs[String]("examId"),x.getAs[String]("studentID")))
 
     println(s"inputKeysForCalculation ${inputKeysForCalculation.deep}")
@@ -82,6 +81,7 @@ CA:
   }
 
   def getWhereConditionArrayTuple(df:org.apache.spark.sql.DataFrame)=df.collect.map(x=>(x.getAs[String]("examId"),x.getAs[String]("studentID")))
+  val getGradeUdf=udf(getGradeJava(_:scala.math.BigDecimal,_:java.math.BigDecimal,_:String):String)
 
   def forEachBatchFun(df:org.apache.spark.sql.DataFrame,batchID:Long,inputMap:collection.mutable.Map[String,String])={
     /*
@@ -116,31 +116,58 @@ CA:
 
     val calcDF=tmpJoinDF.withColumn("result",
       when(col("marks") >= lit(passMarkCalculated),lit("pass")).otherwise("fail"))
-      .withColumn("totalMarks",sum(col("marks")).over(
+      /*.withColumn("totalMarks",sum(col("marks")).over(
         org.apache.spark.sql.expressions.Window.partitionBy(col("studentId")
-        , $"assessmentYear",col("examId"))))
+        , $"assessmentYear",col("examId"))))*/.union(tmpJoinDF.groupBy(col("examId")
+      ,col("studentId"),$"assessmentYear").agg(sum("marks").as("marks"))
+    .withColumn("subjectCode",lit("subTotal"))
+      .withColumn("marks",
+        lit(getGradeUdf(lit(scala.math.BigDecimal(inputMap("maxMarks").toInt))
+          ,col("marks")
+          ,lit(inputMap("examType")))))
+      .withColumn("result",when(col("marks")>= lit(scala.math.BigDecimal(passMarkCalculated))
+        ,lit("PASS")).otherwise(lit("FAIL")))
+    )
 
     calcDF.withColumn("calcDF",lit("calcDF")).show(false)
+
+    /*
++------+---------+-----------+--------------+------+------+----------+------+
+|examId|studentId|subjectCode|assessmentYear|marks |result|totalMarks|calcDF|
++------+---------+-----------+--------------+------+------+----------+------+
+|ex001 |s001     |sub003     |2019-2020     |71.000|pass  |378.000   |calcDF|
+|ex001 |s001     |sub002     |2019-2020     |60.000|pass  |378.000   |calcDF|
+|ex001 |s001     |sub004     |2019-2020     |70.000|pass  |378.000   |calcDF|
+|ex001 |s001     |sub001     |2019-2020     |96.000|pass  |378.000   |calcDF|
+|ex001 |s001     |sub005     |2019-2020     |81.000|pass  |378.000   |calcDF|
++------+---------+-----------+--------------+------+------+----------+------+
+ */
+
+   // println(s"schema did ${tmpJoinDF.schema.add(StructField("result",StringType,true)).add(StructField("grade",StringType,true)).add(StructField("comment",StringType,true))}")
 
     // calculating sum by map groups
     val calcMapGroupsDF=tmpJoinDF.groupByKey(x=>(x.getAs[String]("studentId"),x.getAs[String]("examId"),
       x.getAs[String]("assessmentYear"))).flatMapGroups((x,y)=>{
       var total=scala.math.BigDecimal(0.0)
       val listY=y.toList.map(z=> {total+= getBigDecimalFromRow(z,"marks") /*z.getAs[scala.math.BigDecimal]("marks")*/;z})
-     // val totalMarks=listY.map(z=> {total+= z.getAs[Int]("marks");z})
-      val totalResult= ""
+      println(s"total ${total}")
+      println(s"listY ${listY}")
+
+      // val totalMarks=listY.map(z=> {total+= z.getAs[Int]("marks");z})
       // if this is not successful, try accumulator
       // marks, studentId,assessment year, examId
+
       val finalistWithoutFinalResult=listY.map(x=> Row( getBigDecimalFromRow(x,"marks")//x.getAs[scala.math.BigDecimal]("marks")
       ,x.getAs[String]("studentId")
       ,x.getAs[String]("subjectCode")
       ,x.getAs[String]("assessmentYear")
       ,x.getAs[String]("examId")
-      ,total,
-      /* x.getAs[scala.math.BigDecimal]("marks") */
-        getBigDecimalFromRow(x,"marks") match {case value if value.toLong >= passMarkCalculated => "pass" case value if value.toLong < passMarkCalculated => "fail" }))
-/*
-
+,      /* x.getAs[scala.math.BigDecimal]("marks") */
+        getBigDecimalFromRow(x,"marks") match
+        { case value if value.toLong >= passMarkCalculated => "pass"
+        case value if value.toLong < passMarkCalculated => "fail" }))
+      println(s"finalistWithoutFinalResult ${finalistWithoutFinalResult}")
+      /*
       finalistWithoutFinalResult.map(x=>
         Row(x.getString(4)
           ,x.getString(1)
@@ -157,17 +184,26 @@ CA:
           ,x.getString(2)
           ,x.getString(3)
           ,x.getAs[scala.math.BigDecimal](0)   // ,x.getDecimal(0),
-        ,  x.getString(6)
+        ,  x.getString(5)
       , getGrade(x.getAs[scala.math.BigDecimal](0),scala.math.BigDecimal(inputMap("maxMarks").toInt),inputMap("examType"))
       , "" )):+ Row(
-        x._2,x._1,"","subTotal",x._3,total,
-        finalistWithoutFinalResult.map(_.getAs[String](6)).contains("fail")
+        x._2,x._1,"subTotal",x._3,total,
+        finalistWithoutFinalResult.map(_.getAs[String](5)).contains("fail")
         match {case value if value ==true => "FAIL" case false =>"PASS"},
       getGrade( total, scala.math.BigDecimal(finalistWithoutFinalResult.size * inputMap("maxMarks").toInt),inputMap("examType"))
         ,finalistWithoutFinalResult.map(x => (x.getAs[String](2) //("subjectCode")
-          , x.getAs[String](6))) match {case value if value.size > 0  => s"Failed in ${value.map(_._1).mkString(",")}" case _ => "" })
+          , x.getAs[String](5))).filter(_._2 == "fail") match
+        {case value if value.size > 0  => s"Failed in ${value.map(_._1).mkString(",")}" case _ => "" })
+    })(RowEncoder(new StructType(Array(StructField("examId",StringType,true)
+    ,StructField("studentID",StringType,true)
+    ,StructField("subjectId",StringType,true)
+    ,StructField("assessmentYear",StringType,true)
+    ,StructField("marks",DecimalType(6,3),true)
+    ,StructField("result",StringType,true)
+    ,StructField("grade",StringType,true)
+      ,StructField("comment",StringType,true)))))
 
-    })(RowEncoder(tmpJoinDF.schema match
+      /*(RowEncoder(tmpJoinDF.schema match
     {case value =>
         value // .add(StructField("total",DecimalType(6,3),true))
         .add(StructField("result",StringType,true))
@@ -175,8 +211,8 @@ CA:
        .add(StructField("comment",StringType,true))
 
       /*.add(StructField("finalResult",StringType,true))*/}
-    )
-      )
+    )*/
+
 
 // examId",
     // "AllSubData.studentId"
@@ -203,7 +239,6 @@ CA:
 
 ///////////////////////////////// do scd 1 and write it to final  table.
 
-    calcMapGroupsDF.show(false)
 
   }
 
