@@ -81,7 +81,13 @@ CA:
   }
 
   def getWhereConditionArrayTuple(df:org.apache.spark.sql.DataFrame)=df.collect.map(x=>(x.getAs[String]("examId"),x.getAs[String]("studentID")))
-  val getGradeUdf=udf(getGradeJavaNew(_:String,_:Float,_:String):String)
+ //  val getGradeUdf=udf(getGradeJavaNew(_:String,_:Float,_:String):String)
+
+ // val getGradeUdf=udf(getGradeJava(_:scala.math.BigDecimal,_:java.math.BigDecimal,_:String):String)
+
+  val getGradeUdf=udf(getGradeJavaUpdated(_:java.math.BigDecimal,_:java.math.BigDecimal,_:String):String)
+
+
 
   def forEachBatchFun(df:org.apache.spark.sql.DataFrame,batchID:Long,inputMap:collection.mutable.Map[String,String])={
     /*
@@ -115,35 +121,20 @@ CA:
     val passMarkCalculated= Math.round((maxMarks/100.0) * passMarkPercentage)
 
 
-    tmpJoinDF.withColumn("result",
-      when(col("marks") >= lit(passMarkCalculated),lit("pass")).otherwise("fail"))
-      .withColumn("grade",getGradeUdf(lit(inputMap("maxMarks")),col("marks"),lit(inputMap("examType")))).
-      withColumn("tmp1",lit("tmp1")).show(false)
-
-
-
-    tmpJoinDF
-      .withColumn("countCol",sum(lit(1))
-        .over(org.apache.spark.sql.expressions.Window.partitionBy(col("examId"),
-          $"studentId",$"assessmentYear")))
-      .groupBy(col("examId")
-        ,col("studentId"),$"assessmentYear",col("countCol"))
-      .agg(sum("marks").as("marks"))
-      .withColumn("subjectCode",lit("subTotal"))
-      .withColumn("grade",
-        lit(getGradeUdf(lit(inputMap("maxMarks").toFloat) * col("countCol")
-          ,col("marks")
-          ,lit(inputMap("examType")))))
-      .withColumn("result",when(col("marks")>= lit(scala.math.BigDecimal(passMarkCalculated))
-        ,lit("PASS")).otherwise(lit("FAIL"))).
-      withColumn("tmp2",lit("tmp2")).show(false)
-
       // .drop("countCol")
+
+    // """|examId|studentId|subjectCode|assessmentYear|marks |result|grade""".split('|').map(_.trim).filter(_.size >0).map (x=> s"""col("${x}")""")
+
+    // .withColumn("grade",getGradeUdf(lit(scala.math.BigDecimal(inputMap("maxMarks").toInt)),col("marks"),lit(inputMap("examType"))))
+
+    // .withColumn("grade",getGradeUdf(lit(new java.math.BigDecimal(inputMap("maxMarks").toInt)),col("marks"),lit(inputMap("examType"))))
 
 
     val calcDF=tmpJoinDF.withColumn("result",
       when(col("marks") >= lit(passMarkCalculated),lit("pass")).otherwise("fail"))
-      .withColumn("grade",getGradeUdf(lit(inputMap("maxMarks")),col("marks"),lit(inputMap("examType"))))
+      .withColumn("grade",getGradeUdf(lit(new java.math.BigDecimal(inputMap("maxMarks").toInt)),col("marks"),lit(inputMap("examType"))))
+      //   .withColumn("grade",getGradeUdf(lit(scala.math.BigDecimal(inputMap("maxMarks").toInt)),col("marks"),lit(inputMap("examType"))))
+   //   .withColumn("grade",getGradeUdf(lit(inputMap("maxMarks")),col("marks"),lit(inputMap("examType"))))
       /*.withColumn("totalMarks",sum(col("marks")).over(
         org.apache.spark.sql.expressions.Window.partitionBy(col("studentId")
         , $"assessmentYear",col("examId"))))*/.union(tmpJoinDF
@@ -154,13 +145,35 @@ CA:
       ,col("studentId"),$"assessmentYear",col("countCol"))
       .agg(sum("marks").as("marks"))
     .withColumn("subjectCode",lit("subTotal"))
-      .withColumn("grade",
+   /*   .withColumn("grade",
         lit(getGradeUdf(lit(inputMap("maxMarks").toFloat) * col("countCol")
           ,col("marks")
           ,lit(inputMap("examType")))))
+          */
+    //  .withColumn("grade",getGradeUdf(lit(scala.math.BigDecimal(inputMap("maxMarks").toInt))/* col("countCol")*/ ,col("marks"),lit(inputMap("examType"))))
+      .withColumn("grade",getGradeUdf(lit(new java.math.BigDecimal(inputMap("maxMarks").toInt))/* col("countCol")*/ ,col("marks"),lit(inputMap("examType"))))
       .withColumn("result",when(col("marks")>= lit(scala.math.BigDecimal(passMarkCalculated))
         ,lit("PASS")).otherwise(lit("FAIL"))).drop("countCol")
+        .select("""|examId|studentId|subjectCode|assessmentYear|marks |result|grade""".split('|')
+          .map(_.trim).filter(_.size >0).map(col).toSeq:_* ) ///.map (x=> s"""col("${x}")"""))
     )
+    /*
+     getGradeJava(scala.math.BigDecimal("100".toFloat),
+     new java.math.BigDecimal(67.809),
+     "SA")
+
+
+getGradeJava(scala.math.BigDecimal("100".toFloat),
+     new java.math.BigDecimal(67.809),
+     "CA")
+
+
+     scala.math.BigDecimal("50".toInt)
+          ,col("marks")
+          ,lit(inputMap("examType")))
+
+          */
+
 
     calcDF.withColumn("calcDF",lit("calcDF")).show(false)
 

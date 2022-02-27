@@ -90,61 +90,110 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
   case value => examType match {
     case assessmentType if assessmentType == cumulativeAssessment =>
       value match {
-        case value if value < scala.math.BigDecimal(45.0) => "F"
-        case value if value > scala.math.BigDecimal(50.0) => "E"
-        case value if value > scala.math.BigDecimal(60.0) => "D+"
-        case value if value > scala.math.BigDecimal(65.0) => "D"
-        case value if value > scala.math.BigDecimal(70.0) => "C+"
-        case value if value > scala.math.BigDecimal(75.0) => "C"
-        case value if value > scala.math.BigDecimal(80.0) => "B+"
-        case value if value > scala.math.BigDecimal(85.0) => "B"
-        case value if value > scala.math.BigDecimal(90.0) => "A"
         case value if value > scala.math.BigDecimal(95.0) => "A+"
+        case value if value > scala.math.BigDecimal(90.0) => "A"
+        case value if value > scala.math.BigDecimal(85.0) => "B"
+        case value if value > scala.math.BigDecimal(80.0) => "B+"
+        case value if value > scala.math.BigDecimal(75.0) => "C"
+        case value if value > scala.math.BigDecimal(70.0) => "C+"
+        case value if value > scala.math.BigDecimal(65.0) => "D"
+        case value if value > scala.math.BigDecimal(60.0) => "D+"
+        case value if value > scala.math.BigDecimal(50.0) => "E"
+        case value if value <= scala.math.BigDecimal(50.0) => "E+"
+        case value if value < scala.math.BigDecimal(45.0) => "F"
       }
     case assessmentType if assessmentType == summativeAssessment =>
       value match {
-        case value if value < scala.math.BigDecimal(50.0) => "F"
-        case value if value > scala.math.BigDecimal(60.0) => "E"
-        case value if value > scala.math.BigDecimal(65.0) => "D"
-        case value if value > scala.math.BigDecimal(70.0) => "C+"
-        case value if value > scala.math.BigDecimal(75.0) => "C"
-        case value if value > scala.math.BigDecimal(80.0) => "B+"
-        case value if value > scala.math.BigDecimal(85.0) => "B"
-        case value if value > scala.math.BigDecimal(90.0) => "A"
         case value if value > scala.math.BigDecimal(95.0) => "A+"
+        case value if value > scala.math.BigDecimal(90.0) => "A"
+        case value if value > scala.math.BigDecimal(85.0) => "B"
+        case value if value > scala.math.BigDecimal(80.0) => "B+"
+        case value if value > scala.math.BigDecimal(75.0) => "C"
+        case value if value > scala.math.BigDecimal(70.0) => "C+"
+        case value if value > scala.math.BigDecimal(65.0) => "D"
+        case value if value > scala.math.BigDecimal(60.0) => "E"
+        case value if value <= scala.math.BigDecimal(60.0) => "E+"
+        case value if value < scala.math.BigDecimal(50.0) => "F"
       }
   }
 }
 
-  def getGradeJava(maxMarks:scala.math.BigDecimal,marksObtained:java.math.BigDecimal,examType:String="CA")= marksObtained.divide(new java.math.BigDecimal((100/ maxMarks).toInt)) match {
+  def getGradeJava(maxMarks:scala.math.BigDecimal,marksObtained:java.math.BigDecimal,examType:String="CA")=
+    marksObtained.divide(new java.math.BigDecimal((100/ maxMarks).toInt)) match {
+ //  scala.math.BigDecimal(marksObtained.toString.toDouble) / (100/ maxMarks) match {
     case value => examType match {
       case assessmentType if assessmentType == cumulativeAssessment =>
         scala.math.BigDecimal(value) match {
-          case value if value < scala.math.BigDecimal(45.0) => "F"
-          case value if value > scala.math.BigDecimal(50.0) => "E"
-          case value if value > scala.math.BigDecimal(60.0) => "D+"
-          case value if value > scala.math.BigDecimal(65.0) => "D"
-          case value if value > scala.math.BigDecimal(70.0) => "C+"
-          case value if value > scala.math.BigDecimal(75.0) => "C"
-          case value if value > scala.math.BigDecimal(80.0) => "B+"
-          case value if value > scala.math.BigDecimal(85.0) => "B"
-          case value if value > scala.math.BigDecimal(90.0) => "A"
           case value if value > scala.math.BigDecimal(95.0) => "A+"
+          case value if value > scala.math.BigDecimal(90.0) => "A"
+          case value if value > scala.math.BigDecimal(85.0) => "B"
+          case value if value > scala.math.BigDecimal(80.0) => "B+"
+          case value if value > scala.math.BigDecimal(75.0) => "C"
+          case value if value > scala.math.BigDecimal(70.0) => "C+"
+          case value if value > scala.math.BigDecimal(65.0) => "D"
+          case value if value > scala.math.BigDecimal(60.0) => "D+"
+          case value if value > scala.math.BigDecimal(50.0) => "E"
+          case value if value < scala.math.BigDecimal(45.0) => "F"
         }
       case assessmentType if assessmentType == summativeAssessment =>
         value match {
-          case value if value.compareTo(scala.math.BigDecimal(50.0)) == -1 => "F"
-          case value if value.compareTo(scala.math.BigDecimal(60.0)) == 1 => "E"
-          case value if value.compareTo(scala.math.BigDecimal(65.0)) == 1 => "D"
-          case value if value.compareTo(scala.math.BigDecimal(70.0)) == 1 => "C+"
-          case value if value.compareTo(scala.math.BigDecimal(75.0)) == 1 => "C"
-          case value if value.compareTo(scala.math.BigDecimal(80.0)) == 1 => "B+"
-          case value if value.compareTo(scala.math.BigDecimal(85.0)) == 1 => "B"
-          case value if value.compareTo(scala.math.BigDecimal(90.0)) == 1 => "A"
-          case value if value.compareTo(scala.math.BigDecimal(95.0)) == 1 => "A+"
+          case value if value.compareTo(new java.math.BigDecimal(95.0)) == 1 => "A+"
+          case value if value.compareTo(new java.math.BigDecimal(90.0)) == 1 => "A"
+          case value if value.compareTo(new java.math.BigDecimal(85.0)) == 1 => "B"
+          case value if value.compareTo(new java.math.BigDecimal(80.0)) == 1 => "B+"
+          case value if value.compareTo(new java.math.BigDecimal(75.0)) == 1 => "C"
+          case value if value.compareTo(new java.math.BigDecimal(70.0)) == 1 => "C+"
+          case value if value.compareTo(new java.math.BigDecimal(65.0)) == 1 => "D"
+          case value if value.compareTo(new java.math.BigDecimal(60.0)) == 1 => "E"
+          case value if value.compareTo(new java.math.BigDecimal(50.0)) == -1 => "F"
+        /*  case value if value > scala.math.BigDecimal(95.0)=> "A+"
+          case value if value > scala.math.BigDecimal(90.0)=> "A"
+          case value if value > scala.math.BigDecimal(85.0)=> "B"
+          case value if value > scala.math.BigDecimal(80.0)=> "B+"
+          case value if value > scala.math.BigDecimal(75.0)=> "C"
+          case value if value > scala.math.BigDecimal(70.0)=> "C+"
+          case value if value > scala.math.BigDecimal(65.0)=> "D"
+          case value if value > scala.math.BigDecimal(60.0)=> "E"
+          case value if value < scala.math.BigDecimal(50.0) => "F" */
         }
     }
   }
+
+
+
+  def getGradeJavaUpdated(maxMarks:java.math.BigDecimal,marksObtained:java.math.BigDecimal,examType:String="CA")=
+    marksObtained.divide(new java.math.BigDecimal(100).divide(maxMarks)) match {
+      case value => examType match {
+        case assessmentType if assessmentType == cumulativeAssessment =>
+          value match {
+            case value if value.compareTo(new java.math.BigDecimal(95.0)) == 1 => "A+"
+            case value if value.compareTo(new java.math.BigDecimal(90.0)) == 1 => "A"
+            case value if value.compareTo(new java.math.BigDecimal(85.0)) == 1 => "B"
+            case value if value.compareTo(new java.math.BigDecimal(80.0)) == 1 => "B+"
+            case value if value.compareTo(new java.math.BigDecimal(75.0)) == 1 => "C"
+            case value if value.compareTo(new java.math.BigDecimal(70.0)) == 1 => "C+"
+            case value if value.compareTo(new java.math.BigDecimal(65.0)) == 1 => "D"
+            case value if value.compareTo(new java.math.BigDecimal(60.0)) == 1 => "D+"
+            case value if value.compareTo(new java.math.BigDecimal(50.0)) == 1 => "E"
+            case value if List(0,1).contains(value.compareTo(new java.math.BigDecimal(45.0))) => "E+"
+            case value if value.compareTo(new java.math.BigDecimal(45.0)) == -1 => "F"
+          }
+        case assessmentType if assessmentType == summativeAssessment =>
+          value match {
+            case value if value.compareTo(new java.math.BigDecimal(95.0)) == 1 => "A+"
+            case value if value.compareTo(new java.math.BigDecimal(90.0)) == 1 => "A"
+            case value if value.compareTo(new java.math.BigDecimal(85.0)) == 1 => "B"
+            case value if value.compareTo(new java.math.BigDecimal(80.0)) == 1 => "B+"
+            case value if value.compareTo(new java.math.BigDecimal(75.0)) == 1 => "C"
+            case value if value.compareTo(new java.math.BigDecimal(70.0)) == 1 => "C+"
+            case value if value.compareTo(new java.math.BigDecimal(65.0)) == 1 => "D"
+            case value if value.compareTo(new java.math.BigDecimal(60.0)) == 1 => "E"
+            case value if Array(0,1).contains(value.compareTo(new java.math.BigDecimal(50.0))) => "E+"
+            case value if value.compareTo(new java.math.BigDecimal(50.0)) == -1 => "F"
+
+          }
+      }
+    }
 
   def getGradeJavaNew(maxMarks:String,marksObtained:Float,examType:String)= marksObtained / (100/ maxMarks.toFloat) match {
     case value => examType match {
