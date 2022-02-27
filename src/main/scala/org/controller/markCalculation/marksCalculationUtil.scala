@@ -146,6 +146,38 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
     }
   }
 
+  def getGradeJavaNew(maxMarks:String,marksObtained:Float,examType:String)= marksObtained / (100/ maxMarks.toFloat) match {
+    case value => examType match {
+      case assessmentType if assessmentType == cumulativeAssessment =>
+        value match {
+          case value if value > 95.0F => "A+"
+          case value if value > 90.0F => "A"
+          case value if value > 85.0F => "B"
+          case value if value > 80.0F => "B+"
+          case value if value > 75.0F => "C"
+          case value if value > 70.0F => "C+"
+          case value if value > 65.0F => "D"
+          case value if value > 60.0F => "D+"
+          case value if value > 50.0F => "E"
+          case value if value >= 45.0F => "E+"
+          case value if value < 45.0F => "F"
+        }
+      case assessmentType if assessmentType == summativeAssessment =>
+        value match {
+          case value if value > 95.0 => "A+"
+          case value if value > 90.0 => "A"
+          case value if value > 85.0 => "B"
+          case value if value > 80.0 => "B+"
+          case value if value > 75.0 => "C"
+          case value if value > 70.0 => "C+"
+          case value if value > 65.0 => "D"
+          case value if value > 60.0 => "E"
+          case value if value > 50.0F => "E+"
+          case value if value <= 50.0=> "F"
+        }
+    }
+  }
+
   def getPassMarkPercentage(inputMap:collection.mutable.Map[String,String])= inputMap("examType") match {
     case value if value == summativeAssessment => 50
     case value if value == cumulativeAssessment => 45
