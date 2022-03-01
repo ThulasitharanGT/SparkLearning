@@ -86,7 +86,7 @@ object marksCalculationUtil extends Serializable{
 
 //  val getTotalGrade(totalMarks:)
 
-def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,examType:String="CA")= (marksObtained / (100/ maxMarks)) match {
+def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,examType:String="CA")= (marksObtained * (100/ maxMarks)) match {
   case value => examType match {
     case assessmentType if assessmentType == cumulativeAssessment =>
       value match {
@@ -119,7 +119,7 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
 }
 
   def getGradeJava(maxMarks:scala.math.BigDecimal,marksObtained:java.math.BigDecimal,examType:String="CA")=
-    marksObtained.divide(new java.math.BigDecimal((100/ maxMarks).toInt)) match {
+    marksObtained.multiply(new java.math.BigDecimal((100/ maxMarks).toInt)) match {
  //  scala.math.BigDecimal(marksObtained.toString.toDouble) / (100/ maxMarks) match {
     case value => examType match {
       case assessmentType if assessmentType == cumulativeAssessment =>
@@ -162,7 +162,7 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
 
 
   def getGradeJavaUpdated(maxMarks:java.math.BigDecimal,marksObtained:java.math.BigDecimal,examType:String="CA")=
-    marksObtained.divide(new java.math.BigDecimal(100).divide(maxMarks)) match {
+    marksObtained.multiply(new java.math.BigDecimal(100).divide(maxMarks)) match {
       case value => examType match {
         case assessmentType if assessmentType == cumulativeAssessment =>
           value match {
@@ -231,6 +231,12 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
     case value if value == summativeAssessment => 50
     case value if value == cumulativeAssessment => 45
   }
+
+  def getPassMarkPercentage(examType:String)= examType match {
+    case value if value == summativeAssessment => 50
+    case value if value == cumulativeAssessment => 45
+  }
+
 
   val getReadStreamDF:(org.apache.spark.sql.SparkSession,collection.mutable.Map[String,String])=> org.apache.spark.sql.DataFrame = (spark:org.apache.spark.sql.SparkSession,inputMap:collection.mutable.Map[String,String]) =>
     Try{inputMap(readStreamFormat)} match {

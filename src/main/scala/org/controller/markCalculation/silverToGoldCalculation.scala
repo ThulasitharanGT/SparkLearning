@@ -40,10 +40,10 @@ object silverToGoldCalculation {
 
 
 SA:
- spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=SA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/SA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Silver/"
+ spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=SA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/SA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Silver/" examTypePath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndTypeInfo/"
 
 CA:
- spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=CA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/CAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/CA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Silver/"
+ spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=CA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/CAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/CA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Silver/" examTypePath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndTypeInfo/"
 
  */
 
@@ -66,7 +66,6 @@ CA:
     df.withColumn("df1",lit("df1")).show(false)
 
     val inputKeysForCalculation=getWhereConditionArrayTuple(df).distinct
-      // df.collect.map(x=>(x.getAs[String]("examId"),x.getAs[String]("studentID")))
 
     println(s"inputKeysForCalculation ${inputKeysForCalculation.deep}")
 
@@ -86,7 +85,7 @@ CA:
  // val getGradeUdf=udf(getGradeJava(_:scala.math.BigDecimal,_:java.math.BigDecimal,_:String):String)
 
   val getGradeUdf=udf(getGradeJavaUpdated(_:java.math.BigDecimal,_:java.math.BigDecimal,_:String):String)
-
+  val getPassMarksUDF=udf(getPassMarkPercentage(_:String):Int)
 
 
   def forEachBatchFun(df:org.apache.spark.sql.DataFrame,batchID:Long,inputMap:collection.mutable.Map[String,String])={
@@ -106,38 +105,39 @@ CA:
 
       */
    val examAndAssessmentDetailsDF= spark.read.format("delta").load(inputMap("assessmentPath"))
+   val assessmentAndAssessmentTypeDF= spark.read.format("delta").load(inputMap("examTypePath"))
 
- //   val examIdAndStudentId=df.collect.map(x=>(x.getAs[String]("examId"),x.getAs[String]("studentId")))
 
- //   val dfWithExamIdAndSubjectIds=spark.read.format("delta").load(inputMap("silverPath")).filter(s"examId in ${getWhereCondition(examIdAndStudentId.map(_._1))} and studentId in ${getWhereCondition(examIdAndStudentId.map(_._2))} ")
+
+    // total exams taken must come , max marks must come ,
+    // then check CA and SA stats, semester result
 
    val tmpJoinDF=examAndAssessmentDetailsDF.as("assessmentData")
      .join(df.as("AllSubData"),Seq("examId"))
-     .select("examId","AllSubData.studentId","AllSubData.subjectCode","assessmentData.assessmentYear","AllSubData.marks")
+     .join(assessmentAndAssessmentTypeDF.as("allExam"),Seq("examId"))
+     .select("examId","AllSubData.studentId","AllSubData.subjectCode","assessmentData.assessmentYear","AllSubData.marks","allExam.examType")
+
 
     import spark.implicits._
     val passMarkPercentage=getPassMarkPercentage(inputMap)
     val maxMarks=inputMap("maxMarks").toInt
     val passMarkCalculated= Math.round((maxMarks/100.0) * passMarkPercentage)
 
-
-      // .drop("countCol")
-
     // """|examId|studentId|subjectCode|assessmentYear|marks |result|grade""".split('|').map(_.trim).filter(_.size >0).map (x=> s"""col("${x}")""")
 
-    // .withColumn("grade",getGradeUdf(lit(scala.math.BigDecimal(inputMap("maxMarks").toInt)),col("marks"),lit(inputMap("examType"))))
 
-    // .withColumn("grade",getGradeUdf(lit(new java.math.BigDecimal(inputMap("maxMarks").toInt)),col("marks"),lit(inputMap("examType"))))
+    tmpJoinDF.withColumn("passPercentage",getPassMarksUDF(col("examType")))
+      .withColumn("maxMarks", when(col("examType") === lit(summativeAssessment), lit(100.0) ).otherwise(lit(60.0)))
+      .withColumn("passMark",(col("maxMarks") / lit(100.0)) * col("passPercentage"))
+      .withColumn("result",
+        when(col("marks") >= col("passMark"),lit("pass")).otherwise("fail"))
+      .withColumn("grade",getGradeUdf($"maxMarks",col("marks"),col("examType")))
+      .show(false)
 
-
-    val calcDF=tmpJoinDF.withColumn("result",
+    /*val calcDF=tmpJoinDF.withColumn("result",
       when(col("marks") >= lit(passMarkCalculated),lit("pass")).otherwise("fail"))
       .withColumn("grade",getGradeUdf(lit(new java.math.BigDecimal(inputMap("maxMarks").toInt)),col("marks"),lit(inputMap("examType"))))
-      //   .withColumn("grade",getGradeUdf(lit(scala.math.BigDecimal(inputMap("maxMarks").toInt)),col("marks"),lit(inputMap("examType"))))
-   //   .withColumn("grade",getGradeUdf(lit(inputMap("maxMarks")),col("marks"),lit(inputMap("examType"))))
-      /*.withColumn("totalMarks",sum(col("marks")).over(
-        org.apache.spark.sql.expressions.Window.partitionBy(col("studentId")
-        , $"assessmentYear",col("examId"))))*/.union(tmpJoinDF
+      .union(tmpJoinDF
       .withColumn("countCol",sum(lit(1))
       .over(org.apache.spark.sql.expressions.Window.partitionBy(col("examId"),
         $"studentId",$"assessmentYear")))
@@ -145,51 +145,25 @@ CA:
       ,col("studentId"),$"assessmentYear",col("countCol"))
       .agg(sum("marks").as("marks"))
     .withColumn("subjectCode",lit("subTotal"))
-   /*   .withColumn("grade",
-        lit(getGradeUdf(lit(inputMap("maxMarks").toFloat) * col("countCol")
-          ,col("marks")
-          ,lit(inputMap("examType")))))
-          */
-    //  .withColumn("grade",getGradeUdf(lit(scala.math.BigDecimal(inputMap("maxMarks").toInt))/* col("countCol")*/ ,col("marks"),lit(inputMap("examType"))))
-      .withColumn("grade",getGradeUdf(lit(new java.math.BigDecimal(inputMap("maxMarks").toInt))/* col("countCol")*/ ,col("marks"),lit(inputMap("examType"))))
+        .withColumn("grade",getGradeUdf(lit(new java.math.BigDecimal(inputMap("maxMarks").toInt))/* col("countCol")*/ ,col("marks"),lit(inputMap("examType"))))
       .withColumn("result",when(col("marks")>= lit(scala.math.BigDecimal(passMarkCalculated))
         ,lit("PASS")).otherwise(lit("FAIL"))).drop("countCol")
         .select("""|examId|studentId|subjectCode|assessmentYear|marks |result|grade""".split('|')
           .map(_.trim).filter(_.size >0).map(col).toSeq:_* ) ///.map (x=> s"""col("${x}")"""))
+    )*/
+    val calcDF=tmpJoinDF.withColumn("passPercentage",getPassMarksUDF(col("examType")))
+      .withColumn("maxMarks", when(col("examType") === lit(summativeAssessment), lit(100.0) ).otherwise(lit(60.0)))
+      .withColumn("passMark",(col("maxMarks") / lit(100.0)) * col("passPercentage"))
+      .withColumn("result",
+        when(col("marks") >= col("passMark"),lit("pass")).otherwise("fail"))
+      .withColumn("grade",getGradeUdf($"maxMarks",col("marks"),col("examType"))).union(
+      tmpJoinDF.groupBy("examId|studentId|assessmentYear |examType".split("\\|").map(_.trim).map(col).toSeq:_*)
+        .agg(count("*").as("totalSub"),sum("marks").as("marks"))
+        .withColumn("maxMarks", case * totalSub)
     )
-    /*
-     getGradeJava(scala.math.BigDecimal("100".toFloat),
-     new java.math.BigDecimal(67.809),
-     "SA")
-
-
-getGradeJava(scala.math.BigDecimal("100".toFloat),
-     new java.math.BigDecimal(67.809),
-     "CA")
-
-
-     scala.math.BigDecimal("50".toInt)
-          ,col("marks")
-          ,lit(inputMap("examType")))
-
-          */
-
+    // |examId|studentId|subjectCode|assessmentYear|marks |examType|passPercentage|maxMarks|passMark|result|grade|
 
     calcDF.withColumn("calcDF",lit("calcDF")).show(false)
-
-    /*
-+------+---------+-----------+--------------+------+------+----------+------+
-|examId|studentId|subjectCode|assessmentYear|marks |result|totalMarks|calcDF|
-+------+---------+-----------+--------------+------+------+----------+------+
-|ex001 |s001     |sub003     |2019-2020     |71.000|pass  |378.000   |calcDF|
-|ex001 |s001     |sub002     |2019-2020     |60.000|pass  |378.000   |calcDF|
-|ex001 |s001     |sub004     |2019-2020     |70.000|pass  |378.000   |calcDF|
-|ex001 |s001     |sub001     |2019-2020     |96.000|pass  |378.000   |calcDF|
-|ex001 |s001     |sub005     |2019-2020     |81.000|pass  |378.000   |calcDF|
-+------+---------+-----------+--------------+------+------+----------+------+
- */
-
-   // println(s"schema did ${tmpJoinDF.schema.add(StructField("result",StringType,true)).add(StructField("grade",StringType,true)).add(StructField("comment",StringType,true))}")
 
     // calculating sum by map groups
     val calcMapGroupsDF=tmpJoinDF.groupByKey(x=>(x.getAs[String]("studentId"),x.getAs[String]("examId"),

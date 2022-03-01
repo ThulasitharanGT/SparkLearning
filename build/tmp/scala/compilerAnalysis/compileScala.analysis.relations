@@ -352,7 +352,8 @@ products:
    src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/silverToGoldCalculation$$typecreator2$1.class
    src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/silverToGoldCalculation$$typecreator3$1.class
    src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/silverToGoldCalculation$$typecreator4$1.class
-   src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/silverToGoldCalculation$$typecreator8$1.class
+   src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/silverToGoldCalculation$$typecreator5$1.class
+   src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/silverToGoldCalculation$$typecreator9$1.class
    src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/silverToGoldCalculation$.class
    src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/silverToGoldCalculation.class
    src/main/scala/org/controller/markCalculation/tmpObj.scala -> build/classes/scala/main/org/controller/markCalculation/tmpObj$.class
@@ -2029,7 +2030,8 @@ class names:
    src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> org.controller.markCalculation.silverToGoldCalculation$$typecreator2$1
    src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> org.controller.markCalculation.silverToGoldCalculation$$typecreator3$1
    src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> org.controller.markCalculation.silverToGoldCalculation$$typecreator4$1
-   src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> org.controller.markCalculation.silverToGoldCalculation$$typecreator8$1
+   src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> org.controller.markCalculation.silverToGoldCalculation$$typecreator5$1
+   src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> org.controller.markCalculation.silverToGoldCalculation$$typecreator9$1
    src/main/scala/org/controller/markCalculation/tmpObj.scala -> org.controller.markCalculation.tmpObj
    src/main/scala/org/controller/markCalculation/tmpObj.scala -> org.controller.markCalculation.tmpObj$
    src/main/scala/org/controller/mergingAndSortingArrays.scala -> org.controller.mergingAndSortingArrays
