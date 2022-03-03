@@ -159,10 +159,17 @@ CA:
       .withColumn("grade",getGradeUdf($"maxMarks",col("marks"),col("examType"))).union(
       tmpJoinDF.groupBy("examId|studentId|assessmentYear |examType".split("\\|").map(_.trim).map(col).toSeq:_*)
         .agg(count("*").as("totalSub"),sum("marks").as("marks"))
-        .withColumn("maxMarks", case * totalSub)
+        .withColumn("subjectCode",lit("subTotal"))
+        .withColumn("maxMarks", when($"examType"===lit(summativeAssessment), lit(100.0))
+          .otherwise(lit(60.0)) * col("totalSub")).drop("totalSub")
+        .withColumn("passPercentage",getPassMarksUDF(col("examType")))
+        .withColumn("passMark", ($"maxMarks" / lit(100.0)) * col("passPercentage" ))
+        .withColumn("result",lit("YetTo"))
+        .withColumn("grade",getGradeUdf($"maxMarks",col("marks"),col("examType")))
+        .select("examId|studentId|subjectCode|assessmentYear|marks  |examType|passPercentage|maxMarks|passMark|result|grade".split('|').map(_.trim).toSeq.map(col):_*)
     )
-    // |examId|studentId|subjectCode|assessmentYear|marks |examType|passPercentage|maxMarks|passMark|result|grade|
-
+    //  [examId#1550, studentId#1049, subjectCode#1050, assessmentYear#1549, marks#1051, examType#1943, passPercentage#2258, maxMarks#2266, passMark#2275, result#2285, UDF(cast(maxMarks#2266 as decimal(38,18)), marks#1051, examType#1943) AS grade#2296]
+// examID to semID mapping
     calcDF.withColumn("calcDF",lit("calcDF")).show(false)
 
     // calculating sum by map groups
