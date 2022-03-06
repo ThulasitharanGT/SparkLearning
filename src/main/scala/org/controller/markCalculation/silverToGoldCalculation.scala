@@ -86,7 +86,7 @@ CA:
 
   val getGradeUdf=udf(getGradeJavaUpdated(_:java.math.BigDecimal,_:java.math.BigDecimal,_:String):String)
   val getPassMarksUDF=udf(getPassMarkPercentage(_:String):Int)
-
+  val array_filter_containsUDF = udf(array_filter_contains[String](_:Seq[String],_:String):Seq[String])
 
   def forEachBatchFun(df:org.apache.spark.sql.DataFrame,batchID:Long,inputMap:collection.mutable.Map[String,String])={
     /*
@@ -124,7 +124,6 @@ CA:
     val passMarkCalculated= Math.round((maxMarks/100.0) * passMarkPercentage)
 
     // """|examId|studentId|subjectCode|assessmentYear|marks |result|grade""".split('|').map(_.trim).filter(_.size >0).map (x=> s"""col("${x}")""")
-
 
     tmpJoinDF.withColumn("passPercentage",getPassMarksUDF(col("examType")))
       .withColumn("maxMarks", when(col("examType") === lit(summativeAssessment), lit(100.0) ).otherwise(lit(60.0)))
@@ -166,20 +165,35 @@ CA:
         .withColumn("passMark", ($"maxMarks" / lit(100.0)) * col("passPercentage" ))
         .withColumn("result",lit("YetTo"))
         .withColumn("grade",getGradeUdf($"maxMarks",col("marks"),col("examType")))
-        .select("examId|studentId|subjectCode|assessmentYear|marks  |examType|passPercentage|maxMarks|passMark|result|grade".split('|').map(_.trim).toSeq.map(col):_*)
+        .select("examId|studentId|subjectCode|assessmentYear|marks  |examType|passPercentage|maxMarks|passMark|result|grade".split('|').map(_.trim)
+          .toSeq.map(col):_*)
     )
 
-    val calcDF=calcDFTemp.join(
-      calcDFTemp.withColumn("keyColumn",concat(lit("~"),col("subjectCode"),col("result")))
-        .groupBy("examId|studentId|subjectCode|assessmentYear|marks  |examType".split('|')
+    calcDFTemp.withColumn("keyColumn",concat(lower(col("result")),lit("~"),col("subjectCode")))
+      .groupBy("examId|studentId|assessmentYear  |examType".split('|')
+        .map(_.trim).map(col):_*)
+      .agg(collect_list(col("keyColumn")).as("keyColList"))
+      .withColumn("result",
+        when(array_contains(col("keyColList"),lit("fail"))
+          ,lit("FAIL")).otherwise(lit("PASS")))
+      .withColumn("commentTmp",
+        array_filter_containsUDF(col("keyColList"),lit("fail"))
+      ).withColumn("comment",regexp_replace(concat_ws(", ",col("commentTmp"))
+      ,lit("~"),lit("iled in "))).show(false)
+
+
+    val calcDF=calcDFTemp.as("proper").join(
+      calcDFTemp.withColumn("keyColumn",concat(lit("~"),col("result"),col("subjectCode")))
+        .groupBy("examId|studentId|subjectCode|assessmentYear  |examType".split('|')
       .map(_.trim).map(col):_*)
-        .agg(collect_list(col("keyColumn"))).withColumn("result",
+        .agg(collect_list(col("keyColumn")).as("keyColList"))
+        .withColumn("result",
         when(array_contains(lower(col("keyColumn")),lit("fail"))
           ,lit("FAIL")).otherwise(lit("PASS")))
-        .withColumn("comment",
-          size(array_filter())
-      ,
-    Seq("examId|studentId|subjectCode|assessmentYear|marks  |examType".split("\\|").map(_.trim)))
+        .withColumn("commentTmp",
+          array_filter_containsUDF(col("keyColumn"),lit("fail"))
+        ).withColumn("comment",regexp_replace(concat_ws(", ",col("commentTmp")),lit("~"),lit("iled in "))).as("agg"),
+    "examId|studentId|subjectCode|assessmentYear|examType".split("\\|").map(_.trim).toSeq)
 
 
     //  [examId#1550, studentId#1049, subjectCode#1050, assessmentYear#1549, marks#1051, examType#1943, passPercentage#2258, maxMarks#2266, passMark#2275, result#2285, UDF(cast(maxMarks#2266 as decimal(38,18)), marks#1051, examType#1943) AS grade#2296]
