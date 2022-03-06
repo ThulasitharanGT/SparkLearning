@@ -159,6 +159,13 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
     }
   }
 
+  def array_filter_contains[T](arrayCol:Array[T],filterObj:T):Array[T]={
+    arrayCol.filter(_.toString.contains(filterObj.toString))
+  }
+
+  def array_filter_equals[T](arrayCol:Array[T],filterObj:T):Array[T]={
+    arrayCol.filter(_.equals(filterObj))
+  }
 
 
   def getGradeJavaUpdated(maxMarks:java.math.BigDecimal,marksObtained:java.math.BigDecimal,examType:String="CA")=

@@ -134,7 +134,7 @@ CA:
       .withColumn("grade",getGradeUdf($"maxMarks",col("marks"),col("examType")))
       .show(false)
 
-    /*val calcDF=tmpJoinDF.withColumn("result",
+    /* val calcDF=tmpJoinDF.withColumn("result",
       when(col("marks") >= lit(passMarkCalculated),lit("pass")).otherwise("fail"))
       .withColumn("grade",getGradeUdf(lit(new java.math.BigDecimal(inputMap("maxMarks").toInt)),col("marks"),lit(inputMap("examType"))))
       .union(tmpJoinDF
@@ -150,8 +150,8 @@ CA:
         ,lit("PASS")).otherwise(lit("FAIL"))).drop("countCol")
         .select("""|examId|studentId|subjectCode|assessmentYear|marks |result|grade""".split('|')
           .map(_.trim).filter(_.size >0).map(col).toSeq:_* ) ///.map (x=> s"""col("${x}")"""))
-    )*/
-    val calcDF=tmpJoinDF.withColumn("passPercentage",getPassMarksUDF(col("examType")))
+    ) */
+    val calcDFTemp=tmpJoinDF.withColumn("passPercentage",getPassMarksUDF(col("examType")))
       .withColumn("maxMarks", when(col("examType") === lit(summativeAssessment), lit(100.0) ).otherwise(lit(60.0)))
       .withColumn("passMark",(col("maxMarks") / lit(100.0)) * col("passPercentage"))
       .withColumn("result",
@@ -168,6 +168,20 @@ CA:
         .withColumn("grade",getGradeUdf($"maxMarks",col("marks"),col("examType")))
         .select("examId|studentId|subjectCode|assessmentYear|marks  |examType|passPercentage|maxMarks|passMark|result|grade".split('|').map(_.trim).toSeq.map(col):_*)
     )
+
+    val calcDF=calcDFTemp.join(
+      calcDFTemp.withColumn("keyColumn",concat(lit("~"),col("subjectCode"),col("result")))
+        .groupBy("examId|studentId|subjectCode|assessmentYear|marks  |examType".split('|')
+      .map(_.trim).map(col):_*)
+        .agg(collect_list(col("keyColumn"))).withColumn("result",
+        when(array_contains(lower(col("keyColumn")),lit("fail"))
+          ,lit("FAIL")).otherwise(lit("PASS")))
+        .withColumn("comment",
+          size(array_filter())
+      ,
+    Seq("examId|studentId|subjectCode|assessmentYear|marks  |examType".split("\\|").map(_.trim)))
+
+
     //  [examId#1550, studentId#1049, subjectCode#1050, assessmentYear#1549, marks#1051, examType#1943, passPercentage#2258, maxMarks#2266, passMark#2275, result#2285, UDF(cast(maxMarks#2266 as decimal(38,18)), marks#1051, examType#1943) AS grade#2296]
 // examID to semID mapping
     calcDF.withColumn("calcDF",lit("calcDF")).show(false)
