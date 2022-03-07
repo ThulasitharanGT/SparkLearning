@@ -169,7 +169,7 @@ CA:
           .toSeq.map(col):_*)
     )
 
-    calcDFTemp.withColumn("keyColumn",concat(lower(col("result")),lit("~"),col("subjectCode")))
+  /*  calcDFTemp.withColumn("keyColumn",concat(lower(col("result")),lit("~"),col("subjectCode")))
       .groupBy("examId|studentId|assessmentYear  |examType".split('|')
         .map(_.trim).map(col):_*)
       .agg(collect_list(col("keyColumn")).as("keyColList"))
@@ -181,19 +181,45 @@ CA:
       ).withColumn("comment",regexp_replace(concat_ws(", ",col("commentTmp"))
       ,lit("~"),lit("iled in "))).show(false)
 
-
+*/
     val calcDF=calcDFTemp.as("proper").join(
-      calcDFTemp.withColumn("keyColumn",concat(lit("~"),col("result"),col("subjectCode")))
-        .groupBy("examId|studentId|subjectCode|assessmentYear  |examType".split('|')
-      .map(_.trim).map(col):_*)
+      calcDFTemp.withColumn("keyColumn",concat(lower(col("result")),lit("~"),col("subjectCode")))
+        .groupBy("examId|studentId|assessmentYear  |examType".split('|')
+          .map(_.trim).map(col):_*)
         .agg(collect_list(col("keyColumn")).as("keyColList"))
         .withColumn("result",
-        when(array_contains(lower(col("keyColumn")),lit("fail"))
-          ,lit("FAIL")).otherwise(lit("PASS")))
+          when(array_contains(col("keyColList"),lit("fail"))
+            ,lit("FAIL")).otherwise(lit("PASS")))
         .withColumn("commentTmp",
-          array_filter_containsUDF(col("keyColumn"),lit("fail"))
-        ).withColumn("comment",regexp_replace(concat_ws(", ",col("commentTmp")),lit("~"),lit("iled in "))).as("agg"),
-    "examId|studentId|subjectCode|assessmentYear|examType".split("\\|").map(_.trim).toSeq)
+          array_filter_containsUDF(col("keyColList"),lit("fail"))
+        ).withColumn("comment",regexp_replace(concat_ws(", ",col("commentTmp"))
+        ,lit("~"),lit("iled in "))).as("agg"),
+    "examId|studentId|assessmentYear|examType".split("\\|").map(_.trim).toSeq)
+      .select(col("examId"),col("studentId"),col("assessmentYear")
+        ,col("examType"),col("proper.subjectCode"),col("proper.marks")
+        ,col("proper.passPercentage")
+        ,col("proper.maxMarks")
+        ,col("proper.passMark")
+      , when(col("subjectCode") === lit("subTotal"),col("agg.result"))
+          .otherwise(col("proper.result"))
+        ,col("proper.grade") )
+
+   /* "|examId|studentId|assessmentYear|examType|subjectCode|marks  |passPercentage|maxMarks|passMark|result|grade|keyColList  ".split("\\|")
+      .filter(_.trim.size >0).map(_.trim).map((_,1)).ensuring(_.size >4)
+*/
+    "|examId|studentId|assessmentYear|examType|subjectCode|marks  |passPercentage|maxMarks|passMark|result|grade|keyColList  ".split("\\|")
+      .filter(_.trim.size >0).map(_.trim).map((_,1)).foldLeft[scala.collection.mutable.Map[String,Int]](scala.collection.mutable.Map[String,Int]())(
+      (tempResult,incoming)=> tempResult.get(incoming._1) match {
+      case Some(x) =>
+        tempResult.put(incoming._1,x+incoming._2)
+        tempResult
+      case None =>
+        tempResult.put(incoming._1,incoming._2)
+        tempResult
+      }
+    )
+
+
 
 
     //  [examId#1550, studentId#1049, subjectCode#1050, assessmentYear#1549, marks#1051, examType#1943, passPercentage#2258, maxMarks#2266, passMark#2275, result#2285, UDF(cast(maxMarks#2266 as decimal(38,18)), marks#1051, examType#1943) AS grade#2296]
