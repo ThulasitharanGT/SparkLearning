@@ -12,6 +12,8 @@ import scala.util.{Failure, Success, Try}
 // use this as trigger "hdfs://localhost:8020/user/raptor/persist/marks/SA_BronzeToTriggerInput/" and read from "hdfs://localhost:8020/user/raptor/persist/marks/SA/" to take the latest record and update in silver.
 /*
 
+// takes latest revision and latest timestamp record, record for studentID,examId,subjectCode combination and
+
 SA
 spark-submit --class org.controller.markCalculation.bronzeToSilverLoad --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --driver-cores 2 --driver-memory 512m --executor-cores 2 --num-executors 2 --executor-memory 512m --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar bronzePath="hdfs://localhost:8020/user/raptor/persist/marks/SA/" silverPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Silver/" checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAInter" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/SA_BronzeToTriggerInput/"  triggerPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_SilverToTriggerInput/"
 

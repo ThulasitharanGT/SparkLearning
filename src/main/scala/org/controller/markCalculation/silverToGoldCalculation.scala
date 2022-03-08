@@ -27,10 +27,7 @@ object silverToGoldCalculation {
         case Failure(f) => {}
       }
 
-//   readStreamFormat
- //   deltaStreamFormat
-  //  pathArg
-    // c
+
  //  read from gold trigger
 /*
 
@@ -38,6 +35,7 @@ object silverToGoldCalculation {
 
 // hdfs://localhost:8020/user/raptor/stream/checkpoint/CAInterSilver
 
+// reads calculates total for examId and stud id level and calculates pass fail percentage for subject level and total level
 
 SA:
  spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=SA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/SA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Silver/" examTypePath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndTypeInfo/" goldPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Gold/" goldToDiamondTrigger="hdfs://localhost:8020/user/raptor/persist/marks/SA_GoldToTriggerInput/"
@@ -233,7 +231,7 @@ CA:
           ,elem.getInt(7) // passMarkPercentage
           ,elem.getInt(8) // maxMarks
           ,elem.getLong(9) // passMarkCalculated
-          , "" // comment
+          , "" //
           )):+ Row(  //studentId|examId|assessmentYear|examType
         x._2,x._1,"subTotal",x._3,total,x._4,
         getGrade( scala.math.BigDecimal(Math.ceil(finalistWithoutFinalResult.size * getMaxMarks(x._4))),total ,x._4)
@@ -284,10 +282,24 @@ CA:
     Try{getDeltaTable(spark,inputMap("goldPath"))} match {
       case Success(s)=>
         s.as("alpha").merge(calcMapGroupsDF.as("delta"),
-          col("")===col("")
-        )
+          col("alpha.examId")===col("delta.examId")
+            && col("alpha.studentId")===col("delta.studentId")
+            && col("alpha.subjectCode")===col("delta.subjectCode")
+            && col("alpha.assessmentYear")===col("delta.assessmentYear")
+            && col("alpha.examType")===col("delta.examType")  ).
+        whenMatched.updateExpr(Map("grade"-> "delta.grade" ,"result"-> "delta.result"
+          ,"passMarkPercentage"-> "delta.passMarkPercentage" ,"maxMarks"-> "delta.maxMarks"
+          ,"passMarkCalculated"-> "delta.passMarkCalculated" ,"comment"-> "delta.comment" ) )
+          .whenNotMatched.insertAll.execute
 
+        saveDF(calcMapGroupsDF.write.mode("append").format("delta"),inputMap("goldToDiamondTrigger"))
 
+      /*
+
+      |grade|result|passMarkPercentage|maxMarks|passMarkCalculated|comment
+
+       examId|studentId|subjectCode|assessmentYear|marks  |examType|grade|result|passMarkPercentage|maxMarks|passMarkCalculated|commentexamId|studentId|subjectCode|assessmentYear|marks  |examType|grade|result|passMarkPercentage|maxMarks|passMarkCalculated|commentexamId|studentId|subjectCode|assessmentYear|marks  |examType|grade|result|passMarkPercentage|maxMarks|passMarkCalculated|commentexamId|studentId|subjectCode|assessmentYear|marks  |examType|grade|result|passMarkPercentage|maxMarks|passMarkCalculated|comment
+       */
 
       case Failure(f)=>
         println(s"No delta table present")
@@ -295,10 +307,9 @@ CA:
         inputMap.put("writeFormat","delta")
         inputMap.put("writePath",inputMap("goldPath"))
         persistDF(calcMapGroupsDF,inputMap)
-        saveDF(calcMapGroupsDF.write.mode("append").format("delta"),inputMap(""))
-    }
-///////////////////////////////// do scd 1 and write it to final  table.
 
+        saveDF(calcMapGroupsDF.write.mode("append").format("delta"),inputMap("goldToDiamondTrigger"))
+    }
 
   }
 

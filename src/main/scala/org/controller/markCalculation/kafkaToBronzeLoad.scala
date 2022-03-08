@@ -43,6 +43,7 @@ use spark 3.0.0 , 3..1.x has issues with delta lake
 latest
 spark-submit --master local --class org.controller.markCalculation.kafkaToBronzeLoad --num-executors 2 --executor-memory 512m --executor-cores 2 --driver-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar kafkaSubscribeAssignDecider=kafkaSubscribe kafkaSubscribe=topicTmp kafkaBootstrapServer=localhost:8081,localhost:8082,localhost:8083 bronzePath="hdfs://localhost:8020/user/raptor/persist/marks/bronze/" bronzeCheckpoint="hdfs://localhost:8020/user/raptor/stream/checkpoint/bronze/" readStreamFormat=kafka kafkaStartingOffsets=latest consoleCheckpoint="hdfs://localhost:8020/user/raptor/stream/checkpoint/consoleCheckpoint1/"
 
+// this just persists whatever data which comes in
      */
 
 
