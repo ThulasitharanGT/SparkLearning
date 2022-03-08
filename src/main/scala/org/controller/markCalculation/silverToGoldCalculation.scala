@@ -40,10 +40,10 @@ object silverToGoldCalculation {
 
 
 SA:
- spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=SA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/SA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Silver/" examTypePath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndTypeInfo/"
+ spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=SA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/SA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Silver/" examTypePath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndTypeInfo/" goldPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Gold/" goldToDiamondTrigger="hdfs://localhost:8020/user/raptor/persist/marks/SA_GoldToTriggerInput/"
 
 CA:
- spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=CA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/CAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/CA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Silver/" examTypePath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndTypeInfo/"
+ spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=CA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/CAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/CA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Silver/" examTypePath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndTypeInfo/" goldPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Gold/" goldToDiamondTrigger="hdfs://localhost:8020/user/raptor/persist/marks/CA_GoldToTriggerInput/"
 
  */
 
@@ -115,12 +115,16 @@ CA:
    val tmpJoinDF=examAndAssessmentDetailsDF.as("assessmentData")
      .join(df.as("AllSubData"),Seq("examId"))
      .join(assessmentAndAssessmentTypeDF.as("allExam"),Seq("examId"))
-     .select("examId","AllSubData.studentId","AllSubData.subjectCode","assessmentData.assessmentYear","AllSubData.marks","allExam.examType")
+     .select("examId",
+       "AllSubData.studentId","AllSubData.subjectCode"
+       ,"assessmentData.assessmentYear","AllSubData.marks"
+       ,"allExam.examType")
 
 
     import spark.implicits._
+/*  Following map groups because it reduces cpu over head
 
-
+// calculating using joins agg  and union
     val calcDFTemp=tmpJoinDF.withColumn("passPercentage",getPassMarksUDF(col("examType")))
       .withColumn("maxMarks", when(col("examType") === lit(summativeAssessment), lit(100.0) ).otherwise(lit(60.0)))
       .withColumn("passMark",(col("maxMarks") / lit(100.0)) * col("passPercentage"))
@@ -136,9 +140,10 @@ CA:
         .withColumn("passMark", ($"maxMarks" / lit(100.0)) * col("passPercentage" ))
         .withColumn("result",lit("YetTo"))
         .withColumn("grade",getGradeUdf($"maxMarks",col("marks"),col("examType")))
-        .select("examId|studentId|subjectCode|assessmentYear|marks  |examType|passPercentage|maxMarks|passMark|result|grade".split('|').map(_.trim)
-          .toSeq.map(col):_*)
-    )
+        .select(
+          "examId|studentId|subjectCode|assessmentYear|marks  |examType|passPercentage|maxMarks|passMark|result|grade"
+            .split('|').map(_.trim)
+          .toSeq.map(col):_*)  )
 
 
     val calcDF=calcDFTemp.as("proper").join(
@@ -161,8 +166,11 @@ CA:
         ,col("proper.passMark")
       , when(col("subjectCode") === lit("subTotal"),col("agg.result"))
           .otherwise(col("proper.result")).as("result")
-        ,col("proper.grade") )
+        ,col("proper.grade"),when(col("subjectCode")===lit("subTotal"),lit(""))
+          .otherwise(col("agg.comment")).as("comment") )
 
+    calcDF.withColumn("calcDF",lit("calcDF")).show(false)
+*/
    /* "|examId|studentId|assessmentYear|examType|subjectCode|marks  |passPercentage|maxMarks|passMark|result|grade|keyColList  ".split("\\|")
       .filter(_.trim.size >0).map(_.trim).map((_,1)).ensuring(_.size >4)
 
@@ -182,17 +190,12 @@ CA:
 
 
 // examID to semID mapping
-    calcDF.withColumn("calcDF",lit("calcDF")).show(false)
 
-    // calculating sum by map groups
+    // calculating using sum by map groups
     val calcMapGroupsDF=tmpJoinDF.groupByKey(x=>(x.getAs[String]("studentId"),x.getAs[String]("examId"),
       x.getAs[String]("assessmentYear"),
       x.getAs[String]("examType"))).flatMapGroups((x,y)=>{
 
-     /*
-     * |examId|studentId|assessmentYear|examType|subjectCode|marks  |passPercentage|maxMarks|passMark|CASE WHEN (subjectCode = subTotal) THEN agg.result ELSE proper.result END|grade|calcDF|
-
-* */
       var total=scala.math.BigDecimal(0.0)
       val listY=y.toList.map(z=> {total+= getBigDecimalFromRow(z,"marks") /*z.getAs[scala.math.BigDecimal]("marks")*/;z})
       println(s"total ${total}")
@@ -225,7 +228,7 @@ CA:
           ,elem.getString(3) // assessmentYear
           ,elem.getAs[scala.math.BigDecimal](0)   //  marks
         ,  elem.getString(5) // examType
-      , getGrade(elem.getAs[scala.math.BigDecimal](0),scala.math.BigDecimal(getMaxMarks(x._4)),x._4)
+      , getGrade(scala.math.BigDecimal(getMaxMarks(x._4)),elem.getAs[scala.math.BigDecimal](0),x._4)
           ,  elem.getString(6) // result
           ,elem.getInt(7) // passMarkPercentage
           ,elem.getInt(8) // maxMarks
@@ -233,16 +236,24 @@ CA:
           , "" // comment
           )):+ Row(  //studentId|examId|assessmentYear|examType
         x._2,x._1,"subTotal",x._3,total,x._4,
-        getGrade( total, scala.math.BigDecimal(finalistWithoutFinalResult.size * getMaxMarks(x._4)),x._4)
+        getGrade( scala.math.BigDecimal(Math.ceil(finalistWithoutFinalResult.size * getMaxMarks(x._4))),total ,x._4)
        , finalistWithoutFinalResult.map(_.getAs[String](5)).contains("fail")
         match {case value if value ==true => "FAIL" case false =>"PASS"},
         getPassMarkPercentage(x._4),
-        getMaxMarks(x._4),
-        (100.0/ getMaxMarks(x._4)) * finalistWithoutFinalResult.size,
+        getMaxMarks(x._4) * finalistWithoutFinalResult.size,
+        Math.ceil((100.0/ (getMaxMarks(x._4)* finalistWithoutFinalResult.size))* getPassMarkPercentage(x._4) ).toLong,
         finalistWithoutFinalResult.map(x => (x.getAs[String](2) //("subjectCode")
           , x.getAs[String](6))).filter(_._2 == "fail") match
         {case value if value.size > 0  => s"Failed in ${value.map(_._1).mkString(",")}" case _ => "" })
-    })(RowEncoder(new StructType(Array(StructField("examId",StringType,true)
+    })  (RowEncoder(tmpJoinDF.schema.add(StructField("grade",StringType,true))
+      .add(StructField("result",StringType,true))
+      .add(StructField("passMarkPercentage",IntegerType,true))
+      .add(StructField("maxMarks",IntegerType,true))
+      .add(StructField("passMarkCalculated",LongType,true))
+      .add(StructField("comment",StringType,true))))
+
+    /*
+    (RowEncoder(new StructType(Array(StructField("examId",StringType,true)
     ,StructField("studentID",StringType,true)
     ,StructField("subjectId",StringType,true)
     ,StructField("assessmentYear",StringType,true)
@@ -254,6 +265,8 @@ CA:
       ,StructField("maxMarks",IntegerType,true)
       ,StructField("passMarkCalculated",LongType,true)
       ,StructField("comment",StringType,true)))))
+*/
+
 
       /*(RowEncoder(tmpJoinDF.schema match
     {case value =>
@@ -266,16 +279,24 @@ CA:
     )*/
 
 
-// examId",
-    // "AllSubData.studentId"
-    // ,"AllSubData.subjectCode",
-    // "assessmentData.assessmentYear",
-    // "AllSubData.marks
+   // calcMapGroupsDF.withColumn("calcMapGroupsDF",lit("calcMapGroupsDF")).show(false)
+
+    Try{getDeltaTable(spark,inputMap("goldPath"))} match {
+      case Success(s)=>
+        s.as("alpha").merge(calcMapGroupsDF.as("delta"),
+          col("")===col("")
+        )
 
 
-    calcMapGroupsDF.withColumn("calcMapGroupsDF",lit("calcMapGroupsDF")).show(false)
 
-
+      case Failure(f)=>
+        println(s"No delta table present")
+        inputMap.put("writeMode","append")
+        inputMap.put("writeFormat","delta")
+        inputMap.put("writePath",inputMap("goldPath"))
+        persistDF(calcMapGroupsDF,inputMap)
+        saveDF(calcMapGroupsDF.write.mode("append").format("delta"),inputMap(""))
+    }
 ///////////////////////////////// do scd 1 and write it to final  table.
 
 
