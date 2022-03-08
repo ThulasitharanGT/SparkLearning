@@ -160,7 +160,7 @@ CA:
         ,col("proper.maxMarks")
         ,col("proper.passMark")
       , when(col("subjectCode") === lit("subTotal"),col("agg.result"))
-          .otherwise(col("proper.result").as("result"))
+          .otherwise(col("proper.result")).as("result")
         ,col("proper.grade") )
 
    /* "|examId|studentId|assessmentYear|examType|subjectCode|marks  |passPercentage|maxMarks|passMark|result|grade|keyColList  ".split("\\|")
@@ -183,8 +183,6 @@ CA:
 
 // examID to semID mapping
     calcDF.withColumn("calcDF",lit("calcDF")).show(false)
-
-
 
     // calculating sum by map groups
     val calcMapGroupsDF=tmpJoinDF.groupByKey(x=>(x.getAs[String]("studentId"),x.getAs[String]("examId"),
@@ -254,7 +252,7 @@ CA:
       ,StructField("result",StringType,true)
       ,StructField("passMarkPercentage",IntegerType,true)
       ,StructField("maxMarks",IntegerType,true)
-      ,StructField("passMarkCalculated",IntegerType,true)
+      ,StructField("passMarkCalculated",LongType,true)
       ,StructField("comment",StringType,true)))))
 
       /*(RowEncoder(tmpJoinDF.schema match
