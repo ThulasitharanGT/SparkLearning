@@ -119,37 +119,8 @@ CA:
 
 
     import spark.implicits._
-    val passMarkPercentage=getPassMarkPercentage(inputMap)
-    val maxMarks=inputMap("maxMarks").toInt
-    val passMarkCalculated= Math.round((maxMarks/100.0) * passMarkPercentage)
 
-    // """|examId|studentId|subjectCode|assessmentYear|marks |result|grade""".split('|').map(_.trim).filter(_.size >0).map (x=> s"""col("${x}")""")
 
-    tmpJoinDF.withColumn("passPercentage",getPassMarksUDF(col("examType")))
-      .withColumn("maxMarks", when(col("examType") === lit(summativeAssessment), lit(100.0) ).otherwise(lit(60.0)))
-      .withColumn("passMark",(col("maxMarks") / lit(100.0)) * col("passPercentage"))
-      .withColumn("result",
-        when(col("marks") >= col("passMark"),lit("pass")).otherwise("fail"))
-      .withColumn("grade",getGradeUdf($"maxMarks",col("marks"),col("examType")))
-      .show(false)
-
-    /* val calcDF=tmpJoinDF.withColumn("result",
-      when(col("marks") >= lit(passMarkCalculated),lit("pass")).otherwise("fail"))
-      .withColumn("grade",getGradeUdf(lit(new java.math.BigDecimal(inputMap("maxMarks").toInt)),col("marks"),lit(inputMap("examType"))))
-      .union(tmpJoinDF
-      .withColumn("countCol",sum(lit(1))
-      .over(org.apache.spark.sql.expressions.Window.partitionBy(col("examId"),
-        $"studentId",$"assessmentYear")))
-      .groupBy(col("examId")
-      ,col("studentId"),$"assessmentYear",col("countCol"))
-      .agg(sum("marks").as("marks"))
-    .withColumn("subjectCode",lit("subTotal"))
-        .withColumn("grade",getGradeUdf(lit(new java.math.BigDecimal(inputMap("maxMarks").toInt))/* col("countCol")*/ ,col("marks"),lit(inputMap("examType"))))
-      .withColumn("result",when(col("marks")>= lit(scala.math.BigDecimal(passMarkCalculated))
-        ,lit("PASS")).otherwise(lit("FAIL"))).drop("countCol")
-        .select("""|examId|studentId|subjectCode|assessmentYear|marks |result|grade""".split('|')
-          .map(_.trim).filter(_.size >0).map(col).toSeq:_* ) ///.map (x=> s"""col("${x}")"""))
-    ) */
     val calcDFTemp=tmpJoinDF.withColumn("passPercentage",getPassMarksUDF(col("examType")))
       .withColumn("maxMarks", when(col("examType") === lit(summativeAssessment), lit(100.0) ).otherwise(lit(60.0)))
       .withColumn("passMark",(col("maxMarks") / lit(100.0)) * col("passPercentage"))
@@ -169,19 +140,7 @@ CA:
           .toSeq.map(col):_*)
     )
 
-  /*  calcDFTemp.withColumn("keyColumn",concat(lower(col("result")),lit("~"),col("subjectCode")))
-      .groupBy("examId|studentId|assessmentYear  |examType".split('|')
-        .map(_.trim).map(col):_*)
-      .agg(collect_list(col("keyColumn")).as("keyColList"))
-      .withColumn("result",
-        when(array_contains(col("keyColList"),lit("fail"))
-          ,lit("FAIL")).otherwise(lit("PASS")))
-      .withColumn("commentTmp",
-        array_filter_containsUDF(col("keyColList"),lit("fail"))
-      ).withColumn("comment",regexp_replace(concat_ws(", ",col("commentTmp"))
-      ,lit("~"),lit("iled in "))).show(false)
 
-*/
     val calcDF=calcDFTemp.as("proper").join(
       calcDFTemp.withColumn("keyColumn",concat(lower(col("result")),lit("~"),col("subjectCode")))
         .groupBy("examId|studentId|assessmentYear  |examType".split('|')
@@ -201,13 +160,13 @@ CA:
         ,col("proper.maxMarks")
         ,col("proper.passMark")
       , when(col("subjectCode") === lit("subTotal"),col("agg.result"))
-          .otherwise(col("proper.result"))
+          .otherwise(col("proper.result").as("result"))
         ,col("proper.grade") )
 
    /* "|examId|studentId|assessmentYear|examType|subjectCode|marks  |passPercentage|maxMarks|passMark|result|grade|keyColList  ".split("\\|")
       .filter(_.trim.size >0).map(_.trim).map((_,1)).ensuring(_.size >4)
-*/
-    "|examId|studentId|assessmentYear|examType|subjectCode|marks  |passPercentage|maxMarks|passMark|result|grade|keyColList  ".split("\\|")
+
+    "|examId|studentId|assessmentYear|examType|subjectCode|marks | result||passPercentage|maxMarks|passMark|result|grade|keyColList  ".split("\\|")
       .filter(_.trim.size >0).map(_.trim).map((_,1)).foldLeft[scala.collection.mutable.Map[String,Int]](scala.collection.mutable.Map[String,Int]())(
       (tempResult,incoming)=> tempResult.get(incoming._1) match {
       case Some(x) =>
@@ -219,69 +178,83 @@ CA:
       }
     )
 
+*/
 
 
-
-    //  [examId#1550, studentId#1049, subjectCode#1050, assessmentYear#1549, marks#1051, examType#1943, passPercentage#2258, maxMarks#2266, passMark#2275, result#2285, UDF(cast(maxMarks#2266 as decimal(38,18)), marks#1051, examType#1943) AS grade#2296]
 // examID to semID mapping
     calcDF.withColumn("calcDF",lit("calcDF")).show(false)
 
+
+
     // calculating sum by map groups
     val calcMapGroupsDF=tmpJoinDF.groupByKey(x=>(x.getAs[String]("studentId"),x.getAs[String]("examId"),
-      x.getAs[String]("assessmentYear"))).flatMapGroups((x,y)=>{
+      x.getAs[String]("assessmentYear"),
+      x.getAs[String]("examType"))).flatMapGroups((x,y)=>{
+
+     /*
+     * |examId|studentId|assessmentYear|examType|subjectCode|marks  |passPercentage|maxMarks|passMark|CASE WHEN (subjectCode = subTotal) THEN agg.result ELSE proper.result END|grade|calcDF|
+
+* */
       var total=scala.math.BigDecimal(0.0)
       val listY=y.toList.map(z=> {total+= getBigDecimalFromRow(z,"marks") /*z.getAs[scala.math.BigDecimal]("marks")*/;z})
       println(s"total ${total}")
       println(s"listY ${listY}")
 
-      // val totalMarks=listY.map(z=> {total+= z.getAs[Int]("marks");z})
-      // if this is not successful, try accumulator
-      // marks, studentId,assessment year, examId
+      val passMarkPercentage=getPassMarkPercentage(x._4)
+      val maxMarks=getMaxMarks(x._4)
+      val passMarkCalculated= Math.round((maxMarks/100.0) * passMarkPercentage)
 
-      val finalistWithoutFinalResult=listY.map(x=> Row( getBigDecimalFromRow(x,"marks")//x.getAs[scala.math.BigDecimal]("marks")
+      val finalistWithoutFinalResult=listY.map(x=> Row( getBigDecimalFromRow(x,"marks")
       ,x.getAs[String]("studentId")
       ,x.getAs[String]("subjectCode")
       ,x.getAs[String]("assessmentYear")
-      ,x.getAs[String]("examId")
-,      /* x.getAs[scala.math.BigDecimal]("marks") */
+      ,x.getAs[String]("examId"),
+        x.getAs[String]("examType"),
         getBigDecimalFromRow(x,"marks") match
         { case value if value.toLong >= passMarkCalculated => "pass"
-        case value if value.toLong < passMarkCalculated => "fail" }))
+        case value if value.toLong < passMarkCalculated => "fail" }
+      ,passMarkPercentage
+        ,maxMarks
+      ,passMarkCalculated
+      ) )
+
       println(s"finalistWithoutFinalResult ${finalistWithoutFinalResult}")
-      /*
-      finalistWithoutFinalResult.map(x=>
-        Row(x.getString(4)
-          ,x.getString(1)
-          ,x.getString(2)
-          ,x.getString(3)
-          ,x.getAs[scala.math.BigDecimal](0)   // ,x.getDecimal(0),
-          ,x.getAs[scala.math.BigDecimal](5),  //  x.getDecimal(5) ,
-          x.getString(6),
-            finalistWithoutFinalResult.map(_.getString(6)).filter(_.contains("fail")).size match {case value if value >= 1 => "FAIL" case 0 => "PASS"}))
-*/
-      finalistWithoutFinalResult.map(x=>
-        Row(x.getString(4)
-          ,x.getString(1)
-          ,x.getString(2)
-          ,x.getString(3)
-          ,x.getAs[scala.math.BigDecimal](0)   // ,x.getDecimal(0),
-        ,  x.getString(5)
-      , getGrade(x.getAs[scala.math.BigDecimal](0),scala.math.BigDecimal(inputMap("maxMarks").toInt),inputMap("examType"))
-      , "" )):+ Row(
-        x._2,x._1,"subTotal",x._3,total,
-        finalistWithoutFinalResult.map(_.getAs[String](5)).contains("fail")
+
+      finalistWithoutFinalResult.map(elem=>
+        Row(elem.getString(4) // examId
+          ,elem.getString(1) // studentId
+          ,elem.getString(2) // subjectCode
+          ,elem.getString(3) // assessmentYear
+          ,elem.getAs[scala.math.BigDecimal](0)   //  marks
+        ,  elem.getString(5) // examType
+      , getGrade(elem.getAs[scala.math.BigDecimal](0),scala.math.BigDecimal(getMaxMarks(x._4)),x._4)
+          ,  elem.getString(6) // result
+          ,elem.getInt(7) // passMarkPercentage
+          ,elem.getInt(8) // maxMarks
+          ,elem.getLong(9) // passMarkCalculated
+          , "" // comment
+          )):+ Row(  //studentId|examId|assessmentYear|examType
+        x._2,x._1,"subTotal",x._3,total,x._4,
+        getGrade( total, scala.math.BigDecimal(finalistWithoutFinalResult.size * getMaxMarks(x._4)),x._4)
+       , finalistWithoutFinalResult.map(_.getAs[String](5)).contains("fail")
         match {case value if value ==true => "FAIL" case false =>"PASS"},
-      getGrade( total, scala.math.BigDecimal(finalistWithoutFinalResult.size * inputMap("maxMarks").toInt),inputMap("examType"))
-        ,finalistWithoutFinalResult.map(x => (x.getAs[String](2) //("subjectCode")
-          , x.getAs[String](5))).filter(_._2 == "fail") match
+        getPassMarkPercentage(x._4),
+        getMaxMarks(x._4),
+        (100.0/ getMaxMarks(x._4)) * finalistWithoutFinalResult.size,
+        finalistWithoutFinalResult.map(x => (x.getAs[String](2) //("subjectCode")
+          , x.getAs[String](6))).filter(_._2 == "fail") match
         {case value if value.size > 0  => s"Failed in ${value.map(_._1).mkString(",")}" case _ => "" })
     })(RowEncoder(new StructType(Array(StructField("examId",StringType,true)
     ,StructField("studentID",StringType,true)
     ,StructField("subjectId",StringType,true)
     ,StructField("assessmentYear",StringType,true)
     ,StructField("marks",DecimalType(6,3),true)
-    ,StructField("result",StringType,true)
-    ,StructField("grade",StringType,true)
+      ,StructField("examType",StringType,true)
+      ,StructField("grade",StringType,true)
+      ,StructField("result",StringType,true)
+      ,StructField("passMarkPercentage",IntegerType,true)
+      ,StructField("maxMarks",IntegerType,true)
+      ,StructField("passMarkCalculated",IntegerType,true)
       ,StructField("comment",StringType,true)))))
 
       /*(RowEncoder(tmpJoinDF.schema match
@@ -303,19 +276,6 @@ CA:
 
 
     calcMapGroupsDF.withColumn("calcMapGroupsDF",lit("calcMapGroupsDF")).show(false)
-
-    /*
-
-// totally pass or not
-    calcDF.groupByKey(x=>(x.getAs[String]("studentId"),x.getAs[String]("examId"),
-      x.getAs[String]("assessmentYear"))).flatMapGroups((x,y)=>{
-      val listRows=y.toList
-      val totalResult= listRows.map(_.getAs[String]("result")).filter(_.contains("fail")).size match {case value if value >= 1 => "FAIL" case 0 => "PASS"}
-      listRows.map(x => Row(x.getAs[String]("studentId"),x.getAs[String]("examId"),
-        x.getAs[String]("assessmentYear"),x.getAs[String]("result")
-        ,x.getAs[String]("totalMarks"),totalResult))
-    })(RowEncoder(calcDF.schema.add(StructField("finalResult",StringType,true))))
-*/
 
 
 ///////////////////////////////// do scd 1 and write it to final  table.

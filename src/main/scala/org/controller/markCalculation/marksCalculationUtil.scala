@@ -86,7 +86,8 @@ object marksCalculationUtil extends Serializable{
 
 //  val getTotalGrade(totalMarks:)
 
-def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,examType:String="CA")= (marksObtained * (100/ maxMarks)) match {
+def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,examType:String="CA")=
+  (marksObtained / (maxMarks/100 )) match { // (marksObtained * (100/maxMarks ))
   case value => examType match {
     case assessmentType if assessmentType == cumulativeAssessment =>
       value match {
@@ -239,6 +240,11 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
   def getPassMarkPercentage(examType:String)= examType match {
     case value if value == summativeAssessment => 50
     case value if value == cumulativeAssessment => 45
+  }
+
+  def getMaxMarks(examType:String)= examType match {
+    case value if value == summativeAssessment => 100
+    case value if value == cumulativeAssessment => 60
   }
 
 
