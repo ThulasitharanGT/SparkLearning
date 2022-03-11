@@ -8,8 +8,8 @@ import org.controller.markCalculation.marksCalculationConstant._
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.catalyst.encoders.RowEncoder
 /*
-SA
- spark-submit --num-executors 2 --executor-cores 2 --driver-memory 512m --executor-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --class org.controller.markCalculation.diamondCalculation /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/SA_GoldToTriggerInput/" goldPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Gold/" semIdExamIDMapping="hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDMapping/" checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAGoldToDiamondCalc"
+
+ spark-submit --num-executors 2 --executor-cores 2 --driver-memory 512m --executor-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --class org.controller.markCalculation.diamondCalculation /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/SA_GoldToTriggerInput/" goldCAPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Gold/" goldSAPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Gold/" semIdExamIDMapping="hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDMapping/" checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAGoldToDiamondCalc" examIdToExamType="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndTypeInfo/"
 
 * */
 
@@ -81,16 +81,46 @@ def main(args:Array[String]):Unit ={
       .join(semIdDF.as("semSource"),Seq("semId"))
       .select("semTarget.examId","semId","studentId")
     //  .withColumn("rankCol",row_number.over(
-      .withColumn("rankCol",row_number.over(  org.apache.spark.sql.expressions.Window
+      .withColumn("rankCol",
+        row_number.over(  org.apache.spark.sql.expressions.Window
           .partitionBy("semId","examId","studentId")
         //.orderBy(lit(1))
         .orderBy(col("semId"))
       ))
-      .where($"rankCol"===lit(1))
+     .where($"rankCol"===lit(1))
       .drop("rankCol")
 
     examIDsOfSemIdDF.show(false)
-    // read semID for all examid.
+
+    val examIdToExamTypeDF=spark.read.format("delta").load(inputMap("examIdToExamType"))
+
+    val examTypeAndExamIdMapped=examIDsOfSemIdDF.join(examIdToExamTypeDF,
+      Seq("examId"))
+
+    val saExamDetails=examTypeAndExamIdMapped.filter(col("examType")=== lit(summativeAssessment))
+
+    val caExamDetails=examTypeAndExamIdMapped.filter(col("examType")=== lit(cumulativeAssessment))
+
+
+    val caExamIdAndStudentIdInfo=saExamDetails
+      .map(x=> Row(x.getAs[String]("examId"),
+        x.getAs[String]("studentId"),
+        x.getAs[String]("examType")))(RowEncoder(new StructType(Array()
+    )))
+
+
+    val caGoldInfo=spark.read.format("delta").load("")
+
+    val saGoldInfo=spark.read.format("delta").load("")
+
+
+///// else just read gold SA and CA and join with incoming studId
+    // and ExamId and filter subTotal and calc. But this gives inconsistent results.
+
+
+
+
+    // read semID for all examId.
 
     // for those examID and studentID read total and then calculate
 
