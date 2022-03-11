@@ -256,7 +256,7 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
           case value if value == deltaStreamFormat =>
             println(s"getReadStreamDF :: Success delta")
             Try{inputMap(deltaIgnoreChanges)} match {
-              case Success(s) =>
+              case Success(s) if s.toBoolean == true =>
                 println(s"getReadStreamDF :: Success delta ignore changes")
                 spark.readStream.format("delta").option("ignoreChanges","true").load(inputMap(pathArg))
               case Failure(f) =>

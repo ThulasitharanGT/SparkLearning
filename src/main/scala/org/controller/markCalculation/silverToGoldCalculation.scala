@@ -61,8 +61,6 @@ CA:
   val getLatestRecordsForKeys:(org.apache.spark.sql.DataFrame,scala.collection.mutable.Map[String,String])=>
     org.apache.spark.sql.DataFrame =  (df:org.apache.spark.sql.DataFrame,inputMap:scala.collection.mutable.Map[String,String]) => {
 
-    df.withColumn("df1",lit("df1")).show(false)
-
     val inputKeysForCalculation=getWhereConditionArrayTuple(df).distinct
 
     println(s"inputKeysForCalculation ${inputKeysForCalculation.deep}")
@@ -71,7 +69,6 @@ CA:
       .filter(s"examId in ${getWhereCondition(inputKeysForCalculation.map(_._1))} and studentID in ${getWhereCondition(inputKeysForCalculation.map(_._2))}")
       .select( col("examId"),col("studentID"),col("subjectCode"),col("marks"))
 
-    dfTmp.withColumn("dfTmp",lit("dfTmp")).show(false)
 
     dfTmp
 
