@@ -66,7 +66,8 @@ object marksCalculationUtil extends Serializable{
             case value if value ==0 => resultStr+=s"'${valueInArray}'"
             case value if value > 0 => resultStr+=s",'${valueInArray}'"
           }
-      }*/
+      }
+      */
     (valueArray.size match {
       case 0 => Array("''")
       case value if value >0 =>

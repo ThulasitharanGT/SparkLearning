@@ -102,16 +102,26 @@ def main(args:Array[String]):Unit ={
     val caExamDetails=examTypeAndExamIdMapped.filter(col("examType")=== lit(cumulativeAssessment))
 
 
-    val caExamIdAndStudentIdInfo=saExamDetails
+    val saExamIdAndStudentIdInfo=saExamDetails
       .map(x=> Row(x.getAs[String]("examId"),
         x.getAs[String]("studentId"),
-        x.getAs[String]("examType")))(RowEncoder(new StructType(Array()
-    )))
+        x.getAs[String]("examType")))(RowEncoder(new StructType(Array(
+        StructField("examId",StringType,true)
+        ,StructField("studentId",StringType,true)
+        ,StructField("examType",StringType,true)
+      )
+    ))).collect.toSeq.map(x=> (x.getAs[String]("examId"),
+      x.getAs[String]("studentId"),
+      x.getAs[String]("examType")))
 
 
     val caGoldInfo=spark.read.format("delta").load("")
 
     val saGoldInfo=spark.read.format("delta").load("")
+
+    val saRecordsForIncomingKeys=saGoldInfo
+      .where(s"examId in (${getWhereCondition(
+        saExamIdAndStudentIdInfo.map(_._1).toArray)})")
 
 
 ///// else just read gold SA and CA and join with incoming studId
