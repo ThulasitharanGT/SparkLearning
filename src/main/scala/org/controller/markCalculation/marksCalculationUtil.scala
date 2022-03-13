@@ -238,6 +238,15 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
     case value if value == cumulativeAssessment => 45
   }
 
+
+
+  def nvl(ColIn: org.apache.spark.sql.Column, ReplaceVal: Any) =
+    org.apache.spark.sql.functions.when(ColIn.isNull, org.apache.spark.sql.functions.lit(ReplaceVal)).otherwise(ColIn)
+
+  def nvl(ColIn: org.apache.spark.sql.Column, replaceCol: org.apache.spark.sql.Column) =
+    org.apache.spark.sql.functions.when(ColIn.isNotNull,ColIn).otherwise(replaceCol)
+
+
   def getPassMarkPercentage(examType:String)= examType match {
     case value if value == summativeAssessment => 50
     case value if value == cumulativeAssessment => 45
