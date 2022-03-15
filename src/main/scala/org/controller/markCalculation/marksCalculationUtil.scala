@@ -1,6 +1,5 @@
 package org.controller.markCalculation
 
-import org.apache.spark.sql.streaming.DataStreamWriter
 import org.controller.markCalculation.marksCalculationConstant._
 
 import scala.util.{Failure, Success, Try}
@@ -12,131 +11,6 @@ import org.apache.spark.sql.functions.{col, from_json, udf}
 
 
 object marksCalculationUtil extends Serializable{
-
-  def getRandomMarks(minMarks:Int=1,maxMarks:Int=100)=java.util.concurrent.ThreadLocalRandom.current.nextInt(minMarks,maxMarks)
-
-  val getActualMessage:(Seq[(String,Seq[(String,String)],Seq[String],String,String,Int,Int)]) => Seq[(String,String)] = (dataTuple:Seq[(String,Seq[(String,String)],Seq[String],String,String,Int,Int)]) => (for(data <- dataTuple) yield {
-    for (examID <- data._2) yield {
-      for (subjectCode <- data._3) yield {
-        (s"""{"examId":"${examID._1}","studentID":"${data._1}","subjectCode":"${subjectCode}","revisionNumber":${data._4},"incomingTs":"${data._5}","marks":${getRandomMarks( data._6,data._7)}}""",examID._2)}}}).flatMap(x=>x).flatMap(x=>x)
-
-  val getTS:()=>String= () => new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(java.util.Calendar.getInstance().getTime())
-
-  def getTs=new java.sql.Timestamp(System.currentTimeMillis).toString
-
-  def getKafkaMessage(actualMessages:Seq[( String,Seq[(String,String)],Seq[String],String,String,Int,Int)],receivingTimeStamp:String=getTS())=
-    for(actualMessage <- getActualMessage(actualMessages))
-      yield {s"""{"messageType":"${actualMessage._2}","actualMessage":"${actualMessage._1.replace("\"","\\\"")}","receivingTimeStamp":"${receivingTimeStamp}"}"""}
-
-
-  def getActualKafkaMessage(studInfos:Seq[(String,Int,Seq[String],String,String)])= for( studInfo <- studInfos) yield
-    for(kafkaMessage <- getPayload(studInfo).map(_.replace("\"","\\\""))) yield {
-      s"""{"messageType":"${studInfo._4}","actualMessage":"${kafkaMessage}","receivingTimeStamp":"${getTsCurrentMill()}"}"""
-    }
-
-  // examId,revNumber,Seq(subCode),examType,studentId
-
-  def getPayload(studInfo:(String,Int,Seq[String],String,String))= for(subCode <- studInfo._3) yield{
-    s"""{"examId":"${studInfo._1}","studentID":"${studInfo._5}","subjectCode":"${subCode}","marks":"${studInfo._4 match { case value if value == "SA" =>getRandomMarks() case "CA" =>getRandomMarks(1,60) } }","revisionNumber":${studInfo._2}}"""
-  }
-
-  sendMessages(getActualKafkaMessage(Seq(("e001",1,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq,"CA","s001")
-    ,("e002",1,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq,"CA","s001")
-    ,("ex001",1,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq,"SA","s001"))).flatMap(x=>x),"topicTmp")
-
-  def getTsCurrent = new java.sql.Timestamp(System.currentTimeMillis)
-  val getTsCurrentMill :() => java.sql.Timestamp = () => new java.sql.Timestamp(System.currentTimeMillis)
-
-
-  val getProps:()=> java.util.Properties = () => new java.util.Properties
-
-  def getKafkaProps=getProps() match {case value =>
-    value.put("bootstrap.servers","localhost:8081,localhost:8082,localhost:8083")
-    value.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer")
-    value.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer")
-    value
-  }
-
-  val getKafkaProducer:() => org.apache.kafka.clients.producer.KafkaProducer[Any,Any] = () => new org.apache.kafka.clients.producer.KafkaProducer(getKafkaProps)
-
-
-  def getKafkaPropsGeneric[K,V] = getProps() match {
-    case value =>
-       value.put("bootstrap.servers","localhost:8081,localhost:8082,localhost:8083")
-       value.put("key.serializer", getSerializer[K])
-       value.put("value.serializer",getSerializer[V])
-       value
-  }
-
-  def getSerializer[T] =  if (Try{0L.asInstanceOf[T]}.isSuccess)
-      "org.apache.kafka.common.serialization.LongSerializer"
-    else if (Try{0.0D.asInstanceOf[T]}.isSuccess)
-      "org.apache.kafka.common.serialization.DoubleSerializer"
-    else if (Try{0.0.asInstanceOf[T]}.isSuccess)
-      "org.apache.kafka.common.serialization.FloatSerializer"
-    else if (Try{0.asInstanceOf[T]}.isSuccess)
-      "org.apache.kafka.common.serialization.IntegerSerializer"
-    else
-      "org.apache.kafka.common.serialization.StringSerializer"
-
-  import reflect.runtime.universe._
-/*
-  def getSerializer[T:TypeTag] = {
-    println(s"0L ${0L.asInstanceOf[T].getClass }")
-    println(s"typeOf ${ typeOf[T]}")
-    println(s"0L ${0L.asInstanceOf[T].getClass.toString}")
-    println(s"typeOf ${ typeOf[T].toString}")
-    0L.asInstanceOf[T].getClass.toString.split('.').last ==  typeOf[T].toString.split(" ").last
-  }
-*/
-
-  def getSerializer[T:TypeTag] =  if (getLastElem(0L.getClass.toString,'.').toLowerCase ==  typeOf[T].toString.split(" ").last.toLowerCase)
-    "org.apache.kafka.common.serialization.LongSerializer"
-  else if (Try{0.0D.asInstanceOf[T]}.isSuccess)
-    "org.apache.kafka.common.serialization.DoubleSerializer"
-  else if (Try{0.0.asInstanceOf[T]}.isSuccess)
-    "org.apache.kafka.common.serialization.FloatSerializer"
-  else if (Try{0.asInstanceOf[T]}.isSuccess)
-    "org.apache.kafka.common.serialization.IntegerSerializer"
-  else
-    "org.apache.kafka.common.serialization.StringSerializer"
-
-
-  def getLastElemStr(stringToSplit:String,delimiter:String=",")=stringToSplit.split(delimiter).last
-  def getLastElemChar(stringToSplit:String,delimiter:Char='.')=stringToSplit.split(delimiter).last
-
-
-
-
-
-  def getKafkaProducerGeneric[K,V] = new org.apache.kafka.clients.producer.KafkaProducer[K,V](getKafkaPropsGeneric[K,V])
-
-  def sendMessage(message:String,topic:String,kafkaProducer:org.apache.kafka.clients.producer.KafkaProducer[Any,Any]=getKafkaProducer())=kafkaProducer.send(new org.apache.kafka.clients.producer.ProducerRecord(topic,getRandomStr(),message))
-
-  def sendMessageGeneric[K,V](key:K,message:V,topic:String,kafkaProducer:org.apache.kafka.clients.producer.KafkaProducer[K,V]=getKafkaProducerGeneric[K,V] )=kafkaProducer.send(new org.apache.kafka.clients.producer.ProducerRecord(topic,key,message))
-
-  val sendMessages:(Seq[String],String)=> List[java.util.concurrent.Future[org.apache.kafka.clients.producer.RecordMetadata]] = (messages:Seq[String],topic:String) => getKafkaProducerGeneric[String,String] match {case value =>
-    val tmp= new collection.mutable.ArrayBuffer[java.util.concurrent.Future[org.apache.kafka.clients.producer.RecordMetadata]]()
-    for (message <- messages)
-      tmp += sendMessageGeneric[String,String](getRandomStr(),message,topic,value)
-    value.close
-    tmp.toList
-  }
-
-  val chars = (('a' to 'z') ++ ('A' to 'Z')).toSeq
-
-  val charsSize=chars.size
-
-  def arraySizeNormalizer(arrSize:Int)= arrSize-1
-
-  val charsSizeNormalized=arraySizeNormalizer(charsSize)
-
-  val getRandomChar:()=> Char= () =>chars( java.util.concurrent.ThreadLocalRandom.current.nextInt(0,51))
-
-  def getRandomStr(lengthOfString:Int=5,tmpString:String="") :String= lengthOfString match {
-    case value if value ==1 => s"${tmpString}${getRandomChar()}"
-    case value if value >1 => getRandomStr(value-1,s"${tmpString}${getRandomChar()}")
-  }
 
 
   def inputArrayToMap(args:Array[String])={
@@ -159,8 +33,7 @@ object marksCalculationUtil extends Serializable{
    case _ =>tmpMap
  }
 
-  def getReadStreamDFFun (spark:org.apache.spark.sql.SparkSession,inputMap:collection.mutable.Map[String,String]) =
- Try{inputMap(readStreamFormat)} match {
+  def getReadStreamDFFun (spark:org.apache.spark.sql.SparkSession,inputMap:collection.mutable.Map[String,String]) = Try{inputMap(readStreamFormat)} match {
    case Success(s)=>
      println(s"getReadStreamDFFun :: Success")
      s match {
@@ -505,11 +378,144 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
 
 }
 
+
+
+
 case class kafkaWrapper(value:org.apache.spark.sql.Row)
-
-
 case class tmpD(cool:String,cool2:String)
-
 object tmpD {
 def apply(cool:String,cool2:String):tmpD = tmpD(cool,cool2)
+}
+
+
+object tmpCode{
+
+  def getRandomMarks(minMarks:Int=1,maxMarks:Int=100)=java.util.concurrent.ThreadLocalRandom.current.nextInt(minMarks,maxMarks)
+/*
+
+  val getActualMessage:(Seq[(String,Seq[(String,String)],Seq[String],String,String,Int,Int)]) => Seq[(String,String)] = (dataTuple:Seq[(String,Seq[(String,String)],Seq[String],String,String,Int,Int)]) => (for(data <- dataTuple) yield {
+    for (examID <- data._2) yield {
+      for (subjectCode <- data._3) yield {
+        (s"""{"examId":"${examID._1}","studentID":"${data._1}","subjectCode":"${subjectCode}","revisionNumber":${data._4},"incomingTs":"${data._5}","marks":${getRandomMarks( data._6,data._7)}}""",examID._2)}}}).flatMap(x=>x).flatMap(x=>x)
+
+  val getTS:()=>String= () => new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(java.util.Calendar.getInstance().getTime())
+
+  def getTs=new java.sql.Timestamp(System.currentTimeMillis).toString
+
+  def getKafkaMessage(actualMessages:Seq[( String,Seq[(String,String)],Seq[String],String,String,Int,Int)],receivingTimeStamp:String=getTS())=
+    for(actualMessage <- getActualMessage(actualMessages))
+      yield {s"""{"messageType":"${actualMessage._2}","actualMessage":"${actualMessage._1.replace("\"","\\\"")}","receivingTimeStamp":"${receivingTimeStamp}"}"""}
+*/
+
+
+  def getActualKafkaMessage(studInfos:Seq[(String,Int,Seq[String],String,String)])= for( studInfo <- studInfos) yield
+    for(kafkaMessage <- getPayload(studInfo).map(_.replace("\"","\\\""))) yield {
+      s"""{"messageType":"${studInfo._4}","actualMessage":"${kafkaMessage}","receivingTimeStamp":"${getTsCurrentMill()}"}"""
+    }
+
+  // examId,revNumber,Seq(subCode),examType,studentId
+
+  def getPayload(studInfo:(String,Int,Seq[String],String,String))= for(subCode <- studInfo._3) yield{
+    s"""{"examId":"${studInfo._1}","studentID":"${studInfo._5}","subjectCode":"${subCode}","marks":"${studInfo._4 match { case value if value == "SA" =>getRandomMarks() case "CA" =>getRandomMarks(1,60) } }","revisionNumber":${studInfo._2}}"""
+  }
+
+  sendMessages(getActualKafkaMessage(Seq(("e001",1,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq,"CA","s001")
+    ,("e002",1,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq,"CA","s001")
+    ,("ex001",1,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq,"SA","s001"))).flatMap(x=>x),"topicTmp")
+
+  def getTsCurrent = new java.sql.Timestamp(System.currentTimeMillis)
+  val getTsCurrentMill :() => java.sql.Timestamp = () => new java.sql.Timestamp(System.currentTimeMillis)
+
+  val getProps:()=> java.util.Properties = () => new java.util.Properties
+
+/*
+  def getKafkaProps=getProps() match {case value =>
+    value.put("bootstrap.servers","localhost:8081,localhost:8082,localhost:8083")
+    value.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer")
+    value.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer")
+    value
+  }
+
+  val getKafkaProducer:() => org.apache.kafka.clients.producer.KafkaProducer[Any,Any] = () => new org.apache.kafka.clients.producer.KafkaProducer(getKafkaProps)
+
+*/
+
+  def getKafkaPropsGeneric[K,V] = getProps() match {
+    case value =>
+      value.put("bootstrap.servers","localhost:8081,localhost:8082,localhost:8083")
+      value.put("key.serializer", getSerializer[K])
+      value.put("value.serializer",getSerializer[V])
+      value
+  }
+
+  /*
+    def getSerializer[T] =  if (Try{0L.asInstanceOf[T]}.isSuccess)
+        "org.apache.kafka.common.serialization.LongSerializer"
+      else if (Try{0.0D.asInstanceOf[T]}.isSuccess)
+        "org.apache.kafka.common.serialization.DoubleSerializer"
+      else if (Try{0.0.asInstanceOf[T]}.isSuccess)
+        "org.apache.kafka.common.serialization.FloatSerializer"
+      else if (Try{0.asInstanceOf[T]}.isSuccess)
+        "org.apache.kafka.common.serialization.IntegerSerializer"
+      else
+        "org.apache.kafka.common.serialization.StringSerializer"
+  */
+
+  import reflect.runtime.universe._
+
+  def getSerializer[T:TypeTag] =
+    if(typeOf[Long] == typeOf[T])
+      "org.apache.kafka.common.serialization.LongSerializer"
+    else if (typeOf[Double] == typeOf[T])
+      "org.apache.kafka.common.serialization.DoubleSerializer"
+    else if (typeOf[Float] == typeOf[T])
+      "org.apache.kafka.common.serialization.FloatSerializer"
+    else if (typeOf[Int] == typeOf[T])
+      "org.apache.kafka.common.serialization.IntegerSerializer"
+    else if (typeOf[Short] == typeOf[T])
+      "org.apache.kafka.common.serialization.ShortSerializer"
+    else
+      "org.apache.kafka.common.serialization.StringSerializer"
+
+/*
+
+
+  def getLastElemStr(stringToSplit:String,delimiter:String=",")=stringToSplit.split(delimiter).last
+  def getLastElemChar(stringToSplit:String,delimiter:Char='.')=stringToSplit.split(delimiter).last
+
+  def getLastElemCharNormalized(stringToSplit:String,delimiter:Char='.')=getLastElemChar(stringToSplit,delimiter).toLowerCase
+  def getLastElemStrNormalized(stringToSplit:String,delimiter:String=",")=getLastElemStr(stringToSplit,delimiter).toLowerCase
+
+
+*/
+
+  def getKafkaProducerGeneric[K,V] = new org.apache.kafka.clients.producer.KafkaProducer[K,V](getKafkaPropsGeneric[K,V])
+
+ // def sendMessage(message:String,topic:String,kafkaProducer:org.apache.kafka.clients.producer.KafkaProducer[Any,Any]=getKafkaProducer())=kafkaProducer.send(new org.apache.kafka.clients.producer.ProducerRecord(topic,getRandomStr(),message))
+
+  def sendMessageGeneric[K,V](key:K,message:V,topic:String,kafkaProducer:org.apache.kafka.clients.producer.KafkaProducer[K,V]=getKafkaProducerGeneric[K,V] )=kafkaProducer.send(new org.apache.kafka.clients.producer.ProducerRecord(topic,key,message))
+
+  val sendMessages:(Seq[String],String)=>
+    List[java.util.concurrent.Future[org.apache.kafka.clients.producer.RecordMetadata]]
+  = (messages:Seq[String],topic:String) => getKafkaProducerGeneric[String,String] match {case value =>
+    val tmp= new collection.mutable.ArrayBuffer[java.util.concurrent.Future[org.apache.kafka.clients.producer.RecordMetadata]]()
+    for (message <- messages)
+      tmp += sendMessageGeneric[String,String](getRandomStr(),message,topic,value)
+    value.close
+    tmp.toList
+  }
+
+  val chars = (('a' to 'z') ++ ('A' to 'Z')).toSeq
+  val charsSize=chars.size
+
+  def arraySizeNormalizer(arrSize:Int)= arrSize-1
+
+  val charsSizeNormalized=arraySizeNormalizer(charsSize)
+  val getRandomChar:()=> Char= () =>chars( java.util.concurrent.ThreadLocalRandom.current.nextInt(0,51))
+
+  def getRandomStr(lengthOfString:Int=5,tmpString:String="") :String= lengthOfString match {
+    case value if value ==1 => s"${tmpString}${getRandomChar()}"
+    case value if value >1 => getRandomStr(value-1,s"${tmpString}${getRandomChar()}")
+  }
+
 }
