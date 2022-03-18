@@ -99,8 +99,8 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
         case value if value > scala.math.BigDecimal(70.0) => "C+"
         case value if value > scala.math.BigDecimal(65.0) => "D"
         case value if value > scala.math.BigDecimal(60.0) => "D+"
-        case value if value > scala.math.BigDecimal(50.0) => "E"
-        case value if value <= scala.math.BigDecimal(50.0) => "E+"
+        case value if value > scala.math.BigDecimal(55.0) => "E"
+        case value if value >= scala.math.BigDecimal(45.0) => "E+"
         case value if value < scala.math.BigDecimal(45.0) => "F"
       }
     case assessmentType if assessmentType == summativeAssessment =>
@@ -113,7 +113,7 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
         case value if value > scala.math.BigDecimal(70.0) => "C+"
         case value if value > scala.math.BigDecimal(65.0) => "D"
         case value if value > scala.math.BigDecimal(60.0) => "E"
-        case value if value <= scala.math.BigDecimal(60.0) => "E+"
+        case value if value >= scala.math.BigDecimal(50.0) => "E+"
         case value if value < scala.math.BigDecimal(50.0) => "F"
       }
   }
@@ -387,6 +387,7 @@ object tmpD {
 def apply(cool:String,cool2:String):tmpD = tmpD(cool,cool2)
 }
 
+import reflect.runtime.universe._
 
 object tmpCode{
 
@@ -408,23 +409,22 @@ object tmpCode{
 */
 
 
-  def getActualKafkaMessage(studInfos:Seq[(String,Int,Seq[String],String,String)])= for( studInfo <- studInfos) yield
-    for(kafkaMessage <- getPayload(studInfo).map(_.replace("\"","\\\""))) yield {
+  def getActualKafkaMessage(studInfos:Seq[(String,Int,Seq[(String,String)],String,String)])= for( studInfo <- studInfos) yield
+    for(kafkaMessage <- getPayload(studInfo).map(_.replace("\"","\\\""))) yield
       s"""{"messageType":"${studInfo._4}","actualMessage":"${kafkaMessage}","receivingTimeStamp":"${getTsCurrentMill()}"}"""
-    }
+
 
   // examId,revNumber,Seq(subCode),examType,studentId
 
-  def getPayload(studInfo:(String,Int,Seq[String],String,String))= for(subCode <- studInfo._3) yield{
-    s"""{"examId":"${studInfo._1}","studentID":"${studInfo._5}","subjectCode":"${subCode}","marks":"${studInfo._4 match { case value if value == "SA" =>getRandomMarks() case "CA" =>getRandomMarks(1,60) } }","revisionNumber":${studInfo._2}}"""
-  }
+  def getPayload(studInfo:(String,Int,Seq[(String,String)],String,String))= for(subCodeAndInfo <- studInfo._3) yield
+    s"""{"examId":"${studInfo._1}","studentID":"${studInfo._5}","subjectCode":"${subCodeAndInfo._1}","marks":"${studInfo._4 match { case value if value == "SA" =>  subCodeAndInfo._2.toLowerCase match { case "pass" => getRandomMarks(50,100) case "fail"=> getRandomMarks(0,49) case _ =>getRandomMarks()} case "CA" => subCodeAndInfo._2.toLowerCase match { case "pass" => getRandomMarks(Math.ceil((60.0/100)*40.0).toInt,60) case "fail"=> getRandomMarks(0,Math.floor((60.0/100)*40.0).toInt -1) case _ =>getRandomMarks(1,60)}  } }","revisionNumber":${studInfo._2}}"""
 
-  sendMessages(getActualKafkaMessage(Seq(("e001",1,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq,"CA","s001")
-    ,("e002",1,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq,"CA","s001")
-    ,("ex001",1,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq,"SA","s001"))).flatMap(x=>x),"topicTmp")
+
+
 
   def getTsCurrent = new java.sql.Timestamp(System.currentTimeMillis)
   val getTsCurrentMill :() => java.sql.Timestamp = () => new java.sql.Timestamp(System.currentTimeMillis)
+
 
   val getProps:()=> java.util.Properties = () => new java.util.Properties
 
@@ -440,7 +440,7 @@ object tmpCode{
 
 */
 
-  def getKafkaPropsGeneric[K,V] = getProps() match {
+  def getKafkaPropsGeneric[K:TypeTag,V:TypeTag]  = getProps() match {
     case value =>
       value.put("bootstrap.servers","localhost:8081,localhost:8082,localhost:8083")
       value.put("key.serializer", getSerializer[K])
@@ -461,7 +461,7 @@ object tmpCode{
         "org.apache.kafka.common.serialization.StringSerializer"
   */
 
-  import reflect.runtime.universe._
+
 
   def getSerializer[T:TypeTag] =
     if(typeOf[Long] == typeOf[T])
@@ -489,21 +489,31 @@ object tmpCode{
 
 */
 
-  def getKafkaProducerGeneric[K,V] = new org.apache.kafka.clients.producer.KafkaProducer[K,V](getKafkaPropsGeneric[K,V])
+  def getKafkaProducerGeneric[K:TypeTag,V:TypeTag] = new org.apache.kafka.clients.producer.KafkaProducer[K,V](getKafkaPropsGeneric[K,V])
 
  // def sendMessage(message:String,topic:String,kafkaProducer:org.apache.kafka.clients.producer.KafkaProducer[Any,Any]=getKafkaProducer())=kafkaProducer.send(new org.apache.kafka.clients.producer.ProducerRecord(topic,getRandomStr(),message))
 
-  def sendMessageGeneric[K,V](key:K,message:V,topic:String,kafkaProducer:org.apache.kafka.clients.producer.KafkaProducer[K,V]=getKafkaProducerGeneric[K,V] )=kafkaProducer.send(new org.apache.kafka.clients.producer.ProducerRecord(topic,key,message))
+  def sendMessageGeneric[K:TypeTag,V:TypeTag](key:K,message:V,topic:String,
+                                               )= getKafkaProducerGeneric[K,V] match {
+    case kafkaProducer =>
+   val recordMeta=kafkaProducer.send(new org.apache.kafka.clients.producer.ProducerRecord(topic,key,message))
+      kafkaProducer.close
+      recordMeta
+  }
 
   val sendMessages:(Seq[String],String)=>
-    List[java.util.concurrent.Future[org.apache.kafka.clients.producer.RecordMetadata]]
-  = (messages:Seq[String],topic:String) => getKafkaProducerGeneric[String,String] match {case value =>
-    val tmp= new collection.mutable.ArrayBuffer[java.util.concurrent.Future[org.apache.kafka.clients.producer.RecordMetadata]]()
-    for (message <- messages)
-      tmp += sendMessageGeneric[String,String](getRandomStr(),message,topic,value)
-    value.close
-    tmp.toList
-  }
+    Seq[java.util.concurrent.Future[org.apache.kafka.clients.producer.RecordMetadata]]
+  = (messages:Seq[String],topic:String) =>for (message <- messages) yield
+      sendMessageGeneric[String,String](getRandomStr(),message,topic)
+
+
+
+  sendMessages(getActualKafkaMessage(Seq(("e001",3,
+    "sub001,sub002,sub003,sub004,sub005".split(",").toSeq.zip(Seq.fill(5)("pass")),"CA","s001")
+    ,("e002",2,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq.zip(Seq.tabulate(5)(_ => "pass")),"CA","s001")
+    ,("ex001",3,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq.zip((1 to 5).map(_ => "pass")),"SA","s001")))
+    .flatMap(x=>x),"topicTmp")
+
 
   val chars = (('a' to 'z') ++ ('A' to 'Z')).toSeq
   val charsSize=chars.size

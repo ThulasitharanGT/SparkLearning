@@ -200,7 +200,7 @@ CA:
 
       val passMarkPercentage=getPassMarkPercentage(x._4)
       val maxMarks=getMaxMarks(x._4)
-      val passMarkCalculated= Math.round((maxMarks/100.0) * passMarkPercentage)
+      val passMarkCalculated= Math.round((maxMarks/100.0) * passMarkPercentage).toInt
 
       val finalistWithoutFinalResult=listY.map(x=> Row( getBigDecimalFromRow(x,"marks")
       ,x.getAs[String]("studentId")
@@ -217,6 +217,7 @@ CA:
       ) )
 
       println(s"finalistWithoutFinalResult ${finalistWithoutFinalResult}")
+      val totalSubjects=finalistWithoutFinalResult.size
 
       finalistWithoutFinalResult.map(elem=>
         Row(elem.getString(4) // examId
@@ -225,28 +226,28 @@ CA:
           ,elem.getString(3) // assessmentYear
           ,elem.getAs[scala.math.BigDecimal](0)   //  marks
         ,  elem.getString(5) // examType
-      , getGrade(scala.math.BigDecimal(getMaxMarks(x._4)),elem.getAs[scala.math.BigDecimal](0),x._4)
+      , getGrade(scala.math.BigDecimal(maxMarks),elem.getAs[scala.math.BigDecimal](0),x._4)
           ,  elem.getString(6) // result
           ,elem.getInt(7) // passMarkPercentage
           ,elem.getInt(8) // maxMarks
-          ,elem.getLong(9) // passMarkCalculated
+          ,elem.getInt(9) // passMarkCalculated
           , "" //
           )):+ Row(  //studentId|examId|assessmentYear|examType
         x._2,x._1,"subTotal",x._3,total,x._4,
-        getGrade( scala.math.BigDecimal(Math.ceil(finalistWithoutFinalResult.size * getMaxMarks(x._4))),total ,x._4)
-       , finalistWithoutFinalResult.map(_.getAs[String](5)).contains("fail")
-        match {case value if value ==true => "FAIL" case false =>"PASS"},
-        getPassMarkPercentage(x._4),
-        getMaxMarks(x._4) * finalistWithoutFinalResult.size,
-        Math.ceil((100.0/ (getMaxMarks(x._4)* finalistWithoutFinalResult.size))* getPassMarkPercentage(x._4) ).toLong,
-        finalistWithoutFinalResult.map(x => (x.getAs[String](2) //("subjectCode")
+        getGrade( scala.math.BigDecimal(Math.ceil(totalSubjects * maxMarks)),total ,x._4)
+       , finalistWithoutFinalResult.map(_.getAs[String](6)).contains("fail")
+        match {case true => "FAIL" case false =>"PASS"},
+        passMarkPercentage,
+        maxMarks* totalSubjects,
+        Math.ceil(( (maxMarks* totalSubjects)/100.0)* passMarkPercentage).toInt,
+        finalistWithoutFinalResult.map(x => (x.getAs[String](2) // ("subjectCode")
           , x.getAs[String](6))).filter(_._2 == "fail") match
         {case value if value.size > 0  => s"Failed in ${value.map(_._1).mkString(",")}" case _ => "" })
     })  (RowEncoder(tmpJoinDF.schema.add(StructField("grade",StringType,true))
       .add(StructField("result",StringType,true))
       .add(StructField("passMarkPercentage",IntegerType,true))
       .add(StructField("maxMarks",IntegerType,true))
-      .add(StructField("passMarkCalculated",LongType,true))
+      .add(StructField("passMarkCalculated",IntegerType,true))
       .add(StructField("comment",StringType,true))))
 
     /*
@@ -291,7 +292,9 @@ CA:
           ,"passMarkCalculated"-> "delta.passMarkCalculated" ,"comment"-> "delta.comment" ) )
           .whenNotMatched.insertAll.execute
 
-        saveDF(calcMapGroupsDF.write.mode("append").format("delta"),inputMap("goldToDiamondTrigger"))
+
+        persistTriggerDF(calcMapGroupsDF,inputMap)
+   //     saveDF(calcMapGroupsDF.write.mode("append").format("delta"),inputMap("goldToDiamondTrigger"))
 
       /*
 
@@ -307,9 +310,22 @@ CA:
         inputMap.put("writePath",inputMap("goldPath"))
         persistDF(calcMapGroupsDF,inputMap)
 
-        saveDF(calcMapGroupsDF.write.mode("append").format("delta"),inputMap("goldToDiamondTrigger"))
+    //    saveDF(calcMapGroupsDF.write.mode("append").format("delta"),inputMap("goldToDiamondTrigger"))
     }
 
   }
+
+  val persistTriggerDF:(org.apache.spark.sql.DataFrame,collection.mutable.Map[String,String]) => Unit =
+    (dfToWrite:org.apache.spark.sql.DataFrame,inputMap:collection.mutable.Map[String,String])  =>
+      saveDF(dfToWrite.write.mode("append").format("delta").partitionBy("examType"), inputMap("goldToDiamondTrigger"))
+  /*    try
+        saveDF(dfToWrite.write.mode("append").format("delta"), inputMap("goldToDiamondTrigger"))
+      catch {
+          case ex:org.apache.spark.sql.delta.ProtocolChangedException =>
+            println("Triggered to trigger diamond failed, trying again")
+            Thread.sleep(1000*90) // 90 seconds wait
+            saveDF(dfToWrite.write.mode("append").format("delta"),inputMap("goldToDiamondTrigger"))
+        }
+*/
 
 }

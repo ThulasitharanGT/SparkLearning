@@ -348,6 +348,10 @@ products:
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationUtil$$typecreator2$1.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationUtil$.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationUtil.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$$typecreator4$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$$typecreator5$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpD$.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpD.class
    src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/silverToGoldCalculation$$typecreator10$1.class
@@ -1080,6 +1084,7 @@ binary dependencies:
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.10.0/1127c9cf62f2bb3121a3a2a0a1351d251a602117/jackson-databind-2.10.0.jar
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.module/jackson-module-scala_2.11/2.10.0/582f2e2fc347b3de8d9a536df02750fc77515e88/jackson-module-scala_2.11-2.10.0.jar
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.1/532245109acc03258cc352ea5e203fc8c0558a09/delta-core_2.11-0.6.1.jar
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.kafka/kafka-clients/2.3.1/21664b0318d201ec412f9b02357b07ba94009c87/kafka-clients-2.3.1.jar
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
@@ -2036,6 +2041,10 @@ class names:
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.marksCalculationUtil$$anon$1
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.marksCalculationUtil$$typecreator1$1
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.marksCalculationUtil$$typecreator2$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$$typecreator4$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$$typecreator5$1
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpD
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpD$
    src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> org.controller.markCalculation.silverToGoldCalculation
