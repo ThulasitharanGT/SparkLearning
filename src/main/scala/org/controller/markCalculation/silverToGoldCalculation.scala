@@ -308,24 +308,67 @@ CA:
         inputMap.put("writeMode","append")
         inputMap.put("writeFormat","delta")
         inputMap.put("writePath",inputMap("goldPath"))
+
         persistDF(calcMapGroupsDF,inputMap)
 
+        // both SA and CA writes to same place to trigger gold. So concurrency issue occurs. Have given a 90 second wait and retry mechanism
+        persistTriggerDF(calcMapGroupsDF,inputMap)
+// tryToWriteTriggerDF(calcMapGroupsDF,inputMap("goldToDiamondTrigger"))
     //    saveDF(calcMapGroupsDF.write.mode("append").format("delta"),inputMap("goldToDiamondTrigger"))
     }
 
   }
 
-  val persistTriggerDF:(org.apache.spark.sql.DataFrame,collection.mutable.Map[String,String]) => Unit =
-    (dfToWrite:org.apache.spark.sql.DataFrame,inputMap:collection.mutable.Map[String,String])  =>
+  val persistTriggerDF:(org.apache.spark.sql.DataFrame,collection.mutable.Map[String,String]) => Unit = {
+    (dfToWrite:org.apache.spark.sql.DataFrame,inputMap:collection.mutable.Map[String,String])  => try
       saveDF(dfToWrite.write.mode("append").format("delta").partitionBy("examType"), inputMap("goldToDiamondTrigger"))
+    catch {
+      case e:org.apache.spark.sql.delta.ProtocolChangedException =>
+        println(s"Failed first time, trying second time after 90 seconds wait")
+        Thread.sleep(1000 * 90)
+        println(s"90 seconds wait complete")
+        saveDF(dfToWrite.write.mode("append").format("delta").partitionBy("examType"), inputMap("goldToDiamondTrigger"))
+    }
+      finally
+        println(s"written trigger df")
+  }
   /*    try
-        saveDF(dfToWrite.write.mode("append").format("delta"), inputMap("goldToDiamondTrigger"))
-      catch {
-          case ex:org.apache.spark.sql.delta.ProtocolChangedException =>
-            println("Triggered to trigger diamond failed, trying again")
-            Thread.sleep(1000*90) // 90 seconds wait
-            saveDF(dfToWrite.write.mode("append").format("delta"),inputMap("goldToDiamondTrigger"))
-        }
+  saveDF(dfToWrite.write.mode("append").format("delta"), inputMap("goldToDiamondTrigger"))
+catch {
+    case ex:org.apache.spark.sql.delta.ProtocolChangedException =>
+      println("Triggered to trigger diamond failed, trying again")
+      Thread.sleep(1000*90) // 90 seconds wait
+      saveDF(dfToWrite.write.mode("append").format("delta"),inputMap("goldToDiamondTrigger"))
+  }
 */
+
+  def persistTriggerDFUpdated(df:org.apache.spark.sql.DataFrame,path:String)= try{
+    saveDF(df.write.mode("append").format("delta"),path)
+    0
+  }
+  catch {
+    case e:org.apache.spark.sql.delta.ProtocolChangedException =>
+      println(s"Failed to write trigger DF due to version change")
+      1
+    case e:Exception =>
+      println(s"Failed to write trigger DF due to  ${e.getMessage} ")
+      println(s"stack trace  ${e.printStackTrace} ")
+      -1
+  }
+
+  import scala.util.control.Breaks._
+
+  def tryToWriteTriggerDF(df:org.apache.spark.sql.DataFrame,path:String,numberOfTimes:Int=Int.MaxValue): Unit =
+    breakable{
+      for(i <- 1 to numberOfTimes)
+        persistTriggerDFUpdated(df,path) match {
+          case 0 => break
+          case 1 => println(s"Failed due to concurrency issue in attempt ${i} of ${numberOfTimes}")
+          case -1 =>
+            println(s"Failed due to some issue in attempt ${i} of ${numberOfTimes}")
+            System.exit(-1)
+        }
+    }
+
 
 }

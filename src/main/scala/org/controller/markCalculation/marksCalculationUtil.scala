@@ -86,7 +86,7 @@ object marksCalculationUtil extends Serializable{
 
 //  val getTotalGrade(totalMarks:)
 
-def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,examType:String="CA")=
+def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,examType:String="CA")= {
   (marksObtained / (maxMarks/100 )) match { // (marksObtained * (100/maxMarks ))
   case value => examType match {
     case assessmentType if assessmentType == cumulativeAssessment =>
@@ -116,10 +116,25 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
         case value if value >= scala.math.BigDecimal(50.0) => "E+"
         case value if value < scala.math.BigDecimal(50.0) => "F"
       }
+    case assessmentType if assessmentType == "finalCalculation" =>
+      value match {
+        case value if value > scala.math.BigDecimal(95.0) => "A+"
+        case value if value > scala.math.BigDecimal(90.0) => "A"
+        case value if value > scala.math.BigDecimal(85.0) => "B"
+        case value if value > scala.math.BigDecimal(80.0) => "B+"
+        case value if value > scala.math.BigDecimal(75.0) => "C"
+        case value if value > scala.math.BigDecimal(70.0) => "C+"
+        case value if value > scala.math.BigDecimal(65.0) => "D"
+        case value if value > scala.math.BigDecimal(60.0) => "E"
+        case value if value >= scala.math.BigDecimal(50.0) => "E+"
+        case value if value < scala.math.BigDecimal(50.0) => "F"
+      }
   }
 }
+}
+  // depreciated
 
-  def getGradeJava(maxMarks:scala.math.BigDecimal,marksObtained:java.math.BigDecimal,examType:String="CA")=
+  def getGradeHybrid(maxMarks:scala.math.BigDecimal,marksObtained:java.math.BigDecimal,examType:String="CA")=
     marksObtained.multiply(new java.math.BigDecimal((100/ maxMarks).toInt)) match {
  //  scala.math.BigDecimal(marksObtained.toString.toDouble) / (100/ maxMarks) match {
     case value => examType match {
@@ -159,6 +174,52 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
         }
     }
   }
+
+
+  def getGradeJava(maxMarks:java.math.BigDecimal,marksObtained:java.math.BigDecimal,examType:String="CA")=
+    marksObtained.multiply(new java.math.BigDecimal(100.0).divide(maxMarks)) match {
+      //  scala.math.BigDecimal(marksObtained.toString.toDouble) / (100/ maxMarks) match {
+      case value => examType match {
+        case assessmentType if assessmentType == cumulativeAssessment =>
+          value match {
+            case value if value.compareTo(new java.math.BigDecimal(95.0)) == 1 => "A+"
+            case value if value.compareTo(new java.math.BigDecimal(90.0)) == 1 => "A"
+            case value if value.compareTo(new java.math.BigDecimal(85.0)) == 1 => "B+"
+            case value if value.compareTo(new java.math.BigDecimal(80.0)) == 1 => "B"
+            case value if value.compareTo(new java.math.BigDecimal(75.0)) == 1 => "C+"
+            case value if value.compareTo(new java.math.BigDecimal(70.0)) == 1 => "C"
+            case value if value.compareTo(new java.math.BigDecimal(65.0)) == 1 => "D+"
+            case value if value.compareTo(new java.math.BigDecimal(60.0)) == 1 => "D"
+            case value if value.compareTo(new java.math.BigDecimal(50.0)) == 1 => "E+"
+            case value if List(0,1).contains( value.compareTo(new java.math.BigDecimal(45.0))) => "E"
+            case value if value.compareTo(new java.math.BigDecimal(45.0)) == -1  => "F"
+          }
+        case assessmentType if assessmentType == summativeAssessment =>
+          value match {
+            case value if value.compareTo(new java.math.BigDecimal(95.0)) == 1 => "A+"
+            case value if value.compareTo(new java.math.BigDecimal(90.0)) == 1 => "A"
+            case value if value.compareTo(new java.math.BigDecimal(85.0)) == 1 => "B+"
+            case value if value.compareTo(new java.math.BigDecimal(80.0)) == 1 => "B"
+            case value if value.compareTo(new java.math.BigDecimal(75.0)) == 1 => "C+"
+            case value if value.compareTo(new java.math.BigDecimal(70.0)) == 1 => "C"
+            case value if value.compareTo(new java.math.BigDecimal(65.0)) == 1 => "D+"
+            case value if value.compareTo(new java.math.BigDecimal(60.0)) == 1 => "D"
+            case value if List(0,1).contains( value.compareTo(new java.math.BigDecimal(50.0))) => "E"
+            case value if value.compareTo(new java.math.BigDecimal(50.0)) == -1 => "F"
+          }
+       case assessmentType if assessmentType == "finalCalculation" =>
+          value match {
+            case value if value.compareTo(new java.math.BigDecimal(95.0)) == 1 => "A+"
+            case value if value.compareTo(new java.math.BigDecimal(90.0)) == 1 => "A"
+            case value if value.compareTo(new java.math.BigDecimal(85.0)) == 1 => "B+"
+            case value if value.compareTo(new java.math.BigDecimal(80.0)) == 1 => "B"
+            case value if value.compareTo(new java.math.BigDecimal(75.0)) == 1 => "C"
+            case value if value.compareTo(new java.math.BigDecimal(70.0)) == 1 => "D"
+            case value if List(0,1).contains( value.compareTo(new java.math.BigDecimal(60.0))) => "E"
+            case value if value.compareTo(new java.math.BigDecimal(60.0)) == -1 => "F"
+          }
+      }
+    }
 
   def array_filter_contains[T](arrayCol:Seq[T],filterObj:T) = arrayCol.filter(_.toString.contains(filterObj.toString))
 
@@ -254,6 +315,11 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
   def getMaxMarks(examType:String)= examType match {
     case value if value == summativeAssessment => 100
     case value if value == cumulativeAssessment => 60
+  }
+
+  def getMaxMarksFinal(examType:String)= examType match {
+    case value if value == summativeAssessment => 60
+    case value if value == cumulativeAssessment => 40
   }
 
 
@@ -508,12 +574,23 @@ object tmpCode{
 
 
 
+  sendMessages(getActualKafkaMessage(Seq(("e001",1,
+    "sub001,sub002,sub003,sub004,sub005".split(",").toSeq.zip(Seq.fill(5)("pass")),"CA","s001")
+    ,("e002",1,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq.zip(Seq.tabulate(5)(_ => "pass")),"CA","s001")
+    ,("ex001",1,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq.zip((1 to 5).map(_ => "pass")),"SA","s001")))
+    .flatMap(x=>x),"topicTmp")
+
   sendMessages(getActualKafkaMessage(Seq(("e001",3,
     "sub001,sub002,sub003,sub004,sub005".split(",").toSeq.zip(Seq.fill(5)("pass")),"CA","s001")
-    ,("e002",2,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq.zip(Seq.tabulate(5)(_ => "pass")),"CA","s001")
+    ,("e002",4,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq.zip(Seq.tabulate(5)(_ => "pass")),"CA","s001")
     ,("ex001",3,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq.zip((1 to 5).map(_ => "pass")),"SA","s001")))
     .flatMap(x=>x),"topicTmp")
 
+  sendMessages(getActualKafkaMessage(Seq(("e001",3,
+    "sub001,sub004".split(",").toSeq.zip(Seq.fill(2)("fail")),"CA","s001")
+    ,("e002",4,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq.zip(Seq.tabulate(5)(_ => "pass")),"CA","s001")
+    ,("ex001",3,"sub001,sub002,sub003,sub004,sub005".split(",").toSeq.zip((1 to 5).map(_ => "pass")),"SA","s001")))
+    .flatMap(x=>x),"topicTmp")
 
   val chars = (('a' to 'z') ++ ('A' to 'Z')).toSeq
   val charsSize=chars.size
