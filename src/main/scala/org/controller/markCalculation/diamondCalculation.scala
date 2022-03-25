@@ -171,8 +171,13 @@ def main(args:Array[String]):Unit ={
       .where(s"examId in ${getWhereCondition(
         saExamIdAndStudentIdInfo.map(_._1).toArray)} and studentId in ${getWhereCondition(
         saExamIdAndStudentIdInfo.map(_._2).toArray)}").withColumn("examType",lit(summativeAssessment))
-      .join(examIDsOfSemIdDF.drop("studentId").where(col("examType")=== lit(summativeAssessment))
-        ,Seq("examId","subjectCode","examType"),"right")
+      .as("readFromGold")
+      .join(examIDsOfSemIdDF.where(col("examType")=== lit(summativeAssessment))
+        .as("checkMissed")
+        ,col("readFromGold.examId") === col("checkMissed.examId")
+          &&  col("readFromGold.subjectCode") === $"checkMissed.subjectCode"
+    && col("readFromGold.examType")=== $"checkMissed.examType"
+    && col("readFromGold.studentId")===col("checkMissed.studentId"),"right")
 
      // .withColumn("countOfExamsPerKey",count(lit(1))
       //  .over(Window.partitionBy("examId,studentId".split(",").map(col).toSeq:_*)))
@@ -184,15 +189,30 @@ def main(args:Array[String]):Unit ={
       .where(s"examId in ${getWhereCondition(
         caExamIdAndStudentIdInfo.map(_._1).toArray)} and studentId in ${getWhereCondition(
         caExamIdAndStudentIdInfo.map(_._2).toArray)}").withColumn("examType",lit(cumulativeAssessment))
-      .join(examIDsOfSemIdDF.drop("studentId").where(col("examType")=== lit(cumulativeAssessment))
-        ,Seq("examId","subjectCode","examType"),"right")
+      .as("readFromGold")
+      .join(examIDsOfSemIdDF.where(col("examType")=== lit(cumulativeAssessment)).as("checkMissed")
+             //Seq("examId","subjectCode","examType","studentId")
+        ,col("readFromGold.examId") === col("checkMissed.examId")
+          &&  col("readFromGold.subjectCode") === $"checkMissed.subjectCode"
+          && col("readFromGold.examType")=== $"checkMissed.examType"
+          && col("readFromGold.studentId")===col("checkMissed.studentId") ,"right")
+      .withColumn("examId_read", when (col("readFromGold.examId").isNull , lit("NA")).otherwise(col("readFromGold.examId")) )
+      .withColumn("subjectCode_read", when (col("readFromGold.subjectCode").isNull , lit("NA")).otherwise(col("readFromGold.subjectCode")) )
+      .withColumn("examType_read", when (col("readFromGold.examType").isNull , lit("NA")).otherwise(col("readFromGold.examType")) )
+      .withColumn("studentId_read", when (col("readFromGold.studentId").isNull , lit("NA")).otherwise(col("readFromGold.studentId")) )
+   //   .drop("readFromGold.examId","readFromGold.subjectCode","readFromGold.examType","readFromGold.studentId")
+   // use select Expr.
 
+      Get the no entry stdents , join again, find , if 0 records are present , means No exams attended.
+
+      .groupBy("studentId","examType_read","semId").agg(sum(col("marks")),countDistinct(col("examId_read"))).show
 
     caRecordsForIncomingKeysDF.withColumn("caRecordsForIncomingKeysDF",lit("caRecordsForIncomingKeysDF")).show(false)
     // atleast 1 ca must be attended, doesn't matter fail or pass.
 
     ///// else just read gold SA and CA and join with incoming studId
     // and ExamId and filter subTotal and calc. But this gives inconsistent results.
+
 
     val caMarksCalculated= caRecordsForIncomingKeysDF
       .withColumn("maxMarksOfAssessmentCalculated",lit(40.0)/col("num_of_assessments"))
@@ -217,30 +237,35 @@ def main(args:Array[String]):Unit ={
       .withColumn("maxMarks",maxMarksUDF(col("examType")))
 
 
-    saMarksCalculated.as("sa")
+   val resultDF= saMarksCalculated.as("sa")
       .join(caMarksCalculated.as("ca"),
         Seq("subjectCode","semId","studentId"))
     .withColumn("passMarkForSA",round(lit(50.0)*(lit(60.0)/lit(100.0)),3))
+      .withColumn("passMarkForSem",round(lit(60.0),3))
       .withColumn("finalMarks",
         round(col("sa.marksObtained")+col("ca.marksObtained"),3))
       .withColumn("result",when(
         col("sa.marksObtained")>=col("passMarkForSA")
         && col("ca.examsAttended") > lit(0)
-        &&  col("finalMarks") >= lit(60.0)
+        &&  col("finalMarks") >= col("passMarkForSem")
         ,lit("PASS")).otherwise(lit("FAIL")))
       .withColumn("grade",getGradeUDF(lit(new java.math.BigDecimal(100.0)),col("finalMarks").cast(DecimalType(6,3))
         ,lit("finalCalculation")))
       .withColumn("remarks",when(col("result")===lit("PASS")
-        ,lit("Keep improving")).when(col("result")===lit("FAIL") &&
+        ,lit("Keep pushing")).when(col("result")===lit("FAIL") &&
         col("sa.marksObtained") < col("passMarkForSA")  ,
         lit("Failed in SA")).when(col("result")===lit("FAIL") &&
-        col("sa.marksObtained") > col("passMarkForSA") &&
-        col("finalMarks") < lit(60.0),
-        lit("Not adequate total marks between SA and CA")).otherwise("NA"))
-
-      .select(("sa.subjectCode,sa.semId,sa.studentId,result,finalMarks".split(",").map(col)
-        ++Seq(col("sa.marksObtained").as("SA_Marks")
-        ,col("ca.marksObtained").as("CA_Marks"))):_*)
+        (col("sa.marksObtained") > col("passMarkForSA") ||
+          col("sa.marksObtained") === col("passMarkForSA") ) &&
+        col("finalMarks") < col("passMarkForSem"),
+        lit("Cleared CA, but inadequate marks to clear sem"))
+       .otherwise("NA"))
+      .select("subjectCode,semId,studentId,passMarkForSA,passMarkForSem,finalMarks,remarks,grade,result"
+        .split(",").map(col).toSeq ++
+        Seq(col("sa.marksObtained").as("SA_marks")
+          ,col("ca.marksObtained").alias("CA_marks"),
+          col("ca.examsAttended").as("CA_appeared"),
+          col("sa.examsAttended").as("SA_appeared")) :_*)
 
 
 
@@ -248,7 +273,6 @@ def main(args:Array[String]):Unit ={
     // read semID for all examId.
 
     // for those examID and studentID read total and then calculate
-
 
     // examId|studentId|assessmentYear  |examType
 
