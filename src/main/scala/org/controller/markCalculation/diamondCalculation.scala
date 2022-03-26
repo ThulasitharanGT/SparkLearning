@@ -172,40 +172,31 @@ def main(args:Array[String]):Unit ={
         saExamIdAndStudentIdInfo.map(_._1).toArray)} and studentId in ${getWhereCondition(
         saExamIdAndStudentIdInfo.map(_._2).toArray)}").withColumn("examType",lit(summativeAssessment))
       .as("readFromGold")
-      .join(examIDsOfSemIdDF.where(col("examType")=== lit(summativeAssessment))
-        .as("checkMissed")
-        ,col("readFromGold.examId") === col("checkMissed.examId")
-          &&  col("readFromGold.subjectCode") === $"checkMissed.subjectCode"
-    && col("readFromGold.examType")=== $"checkMissed.examType"
-    && col("readFromGold.studentId")===col("checkMissed.studentId"),"right")
-
-     // .withColumn("countOfExamsPerKey",count(lit(1))
-      //  .over(Window.partitionBy("examId,studentId".split(",").map(col).toSeq:_*)))
+      .join(caGoldInfo
+        .where(s"examId in ${getWhereCondition(
+          caExamIdAndStudentIdInfo.map(_._1).toArray)} and studentId in ${getWhereCondition(
+          caExamIdAndStudentIdInfo.map(_._2).toArray)}").groupBy("studentId").agg(countDistinct("examId").as("examsAttended"))
+        .as("readFromGoldInner") , col("readFromGoldInner.studentId") === col("readFromGold.studentId")
+      ).select("readFromGold.*","examsAttended")
 
     saRecordsForIncomingKeysDF.withColumn("saRecordsForIncomingKeysDF",lit("saRecordsForIncomingKeysDF")).show(false)
-
 
     val caRecordsForIncomingKeysDF=caGoldInfo
       .where(s"examId in ${getWhereCondition(
         caExamIdAndStudentIdInfo.map(_._1).toArray)} and studentId in ${getWhereCondition(
         caExamIdAndStudentIdInfo.map(_._2).toArray)}").withColumn("examType",lit(cumulativeAssessment))
       .as("readFromGold")
-      .join(examIDsOfSemIdDF.where(col("examType")=== lit(cumulativeAssessment)).as("checkMissed")
-             //Seq("examId","subjectCode","examType","studentId")
-        ,col("readFromGold.examId") === col("checkMissed.examId")
-          &&  col("readFromGold.subjectCode") === $"checkMissed.subjectCode"
-          && col("readFromGold.examType")=== $"checkMissed.examType"
-          && col("readFromGold.studentId")===col("checkMissed.studentId") ,"right")
-      .withColumn("examId_read", when (col("readFromGold.examId").isNull , lit("NA")).otherwise(col("readFromGold.examId")) )
-      .withColumn("subjectCode_read", when (col("readFromGold.subjectCode").isNull , lit("NA")).otherwise(col("readFromGold.subjectCode")) )
-      .withColumn("examType_read", when (col("readFromGold.examType").isNull , lit("NA")).otherwise(col("readFromGold.examType")) )
-      .withColumn("studentId_read", when (col("readFromGold.studentId").isNull , lit("NA")).otherwise(col("readFromGold.studentId")) )
-   //   .drop("readFromGold.examId","readFromGold.subjectCode","readFromGold.examType","readFromGold.studentId")
-   // use select Expr.
+      .join(caGoldInfo
+        .where(s"examId in ${getWhereCondition(
+          caExamIdAndStudentIdInfo.map(_._1).toArray)} and studentId in ${getWhereCondition(
+          caExamIdAndStudentIdInfo.map(_._2).toArray)}").groupBy("studentId").agg(countDistinct("examId").as("examsAttended"))
+        .as("readFromGoldInner") , col("readFromGoldInner.studentId") === col("readFromGold.studentId")
+        ).select("readFromGold.*","examsAttended")
 
-      Get the no entry stdents , join again, find , if 0 records are present , means No exams attended.
 
-      .groupBy("studentId","examType_read","semId").agg(sum(col("marks")),countDistinct(col("examId_read"))).show
+
+     // Get the no entry stdents , join again, find , if 0 records are present , means No exams attended.
+
 
     caRecordsForIncomingKeysDF.withColumn("caRecordsForIncomingKeysDF",lit("caRecordsForIncomingKeysDF")).show(false)
     // atleast 1 ca must be attended, doesn't matter fail or pass.
@@ -214,18 +205,18 @@ def main(args:Array[String]):Unit ={
     // and ExamId and filter subTotal and calc. But this gives inconsistent results.
 
 
-    val caMarksCalculated= caRecordsForIncomingKeysDF
+    val caMarksCalculated= caRecordsForIncomingKeysDF.join(examIDsOfSemIdDF,Seq("examId","studentId","subjectCode"),"right")
       .withColumn("maxMarksOfAssessmentCalculated",lit(40.0)/col("num_of_assessments"))
       .withColumn("percentageOfMarksObtained",round((col("marks")*(lit(100.0)/col("maxMarks"))),3))
       .withColumn("marksObtainedAsPerNewMaxMarks",round(col("percentageOfMarksObtained")* (col("maxMarksOfAssessmentCalculated")/lit(100.0)),3))
       .na.fill("NA").na.fill(0.0)
-      .groupBy("semId","examType","studentId","subjectCode")
+      .groupBy("semId","examType","studentId","subjectCode","examsAttended")
       .agg(sum("marksObtainedAsPerNewMaxMarks").as("marksObtained"),
         countDistinct("examId").as("examsAttended"))
       .na.fill("NA").na.fill(0.0)
       .selectExpr("*","maxMarksUDF(examType) as maxMarks")
 
-    val saMarksCalculated= saRecordsForIncomingKeysDF
+    val saMarksCalculated= saRecordsForIncomingKeysDF.join(examIDsOfSemIdDF,Seq("examId","studentId","subjectCode"),"right")
       .withColumn("maxMarksOfAssessmentCalculated",lit(60.0)/col("num_of_assessments"))
       .withColumn("percentageOfMarksObtained",round((col("marks")*(lit(100.0)/col("maxMarks"))),3))
       .withColumn("marksObtainedAsPerNewMaxMarks",round(col("percentageOfMarksObtained")* (col("maxMarksOfAssessmentCalculated")/lit(100.0)),3))
@@ -259,7 +250,13 @@ def main(args:Array[String]):Unit ={
           col("sa.marksObtained") === col("passMarkForSA") ) &&
         col("finalMarks") < col("passMarkForSem"),
         lit("Cleared CA, but inadequate marks to clear sem"))
-       .otherwise("NA"))
+        .when(col("result")===lit("FAIL") &&
+          col("sa.marksObtained") > col("passMarkForSA") &&
+          col("finalMarks") > col("passMarkForSem")
+          &&
+          col("sa.examsAttended") == lit(0),
+          lit("Cleared SA, but have not even attended once CA")
+       ).otherwise("NA"))
       .select("subjectCode,semId,studentId,passMarkForSA,passMarkForSem,finalMarks,remarks,grade,result"
         .split(",").map(col).toSeq ++
         Seq(col("sa.marksObtained").as("SA_marks")
@@ -267,7 +264,7 @@ def main(args:Array[String]):Unit ={
           col("ca.examsAttended").as("CA_appeared"),
           col("sa.examsAttended").as("SA_appeared")) :_*)
 
-
+// what if they havnt attended one subjec alone
 
 
     // read semID for all examId.
