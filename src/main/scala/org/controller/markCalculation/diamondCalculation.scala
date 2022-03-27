@@ -50,21 +50,6 @@ def main(args:Array[String]):Unit ={
   }
 
   def forEachBatchFunction(df:org.apache.spark.sql.DataFrame,inputMap:collection.mutable.Map[String,String])={
-  /*  val keysToReadFromGold=df.map(x=> Row(x.getAs[String]("studentId")
-    ,x.getAs[String]("examId")
-    ,x.getAs[String]("assessmentYear")
-    ,x.getAs[String]("examType")))(RowEncoder
-    (new org.apache.spark.sql.types.StructType(
-      Array(
-        org.apache.spark.sql.types.StructField("studentId",StringType,true)
-     ,org.apache.spark.sql.types.StructField("examId",StringType,true)
-      ,org.apache.spark.sql.types.StructField("assessmentYear",StringType,true)
-      ,org.apache.spark.sql.types.StructField("examType",StringType,true)))))
-      .collect.toList.map(x=>(x.getAs[String]("studentId")
-      ,x.getAs[String]("examId")
-      ,x.getAs[String]("assessmentYear")
-      ,x.getAs[String]("examType")))
-*/
 
     spark.udf.register("maxMarksUDF",getMaxMarksFinal(_:String))
     val maxMarksUDF=udf(getMaxMarksFinal(_:String):Int)
@@ -90,7 +75,6 @@ def main(args:Array[String]):Unit ={
     val examIDSemIDAndTypeMappedDF= spark.table("exam_id_sem_id_exam_type")
 
     val semIdDF=  examIDSemIDAndTypeMappedDF
-      //.filter(s"examId in ${keysToReadFromGold.map(_._2)}")
       .as("semIds")
       .join(df.as("trigger"),
         col("trigger.examId")===col("semIds.examId"))
@@ -100,7 +84,6 @@ def main(args:Array[String]):Unit ={
       row_number.over(  org.apache.spark.sql.expressions.Window
         .partitionBy("semId","examId","studentId"
           ,"subjectCode","examType")
-        //.orderBy(lit(1))
         .orderBy(col("semId"))
       ))
       .where($"rankCol"===lit(1))
@@ -118,35 +101,26 @@ def main(args:Array[String]):Unit ={
         row_number.over(  org.apache.spark.sql.expressions.Window
           .partitionBy("semId","examId","studentId"
             ,"subjectCode","examType")
-          //.orderBy(lit(1))
-          .orderBy(col("semId"))
+           .orderBy(col("semId"))
         ))
       .where($"rankCol"===lit(1))
       .drop("rankCol")
       .orderBy("semId,examId,examType,subjectCode,studentId".split(",").toSeq.map(col):_*)
-    /*  .join(semIdDF.as("examTypeMap"),Seq("semId","examId","examType")) // removing exam type cross join
-      .select("semId,examId,examType,semSource.studentId,semSource.subjectCode".split(",").map(col).toSeq:_*)
-    //  .withColumn("rankCol",row_number.over(
-      .withColumn("rankCol",
-        row_number.over(  org.apache.spark.sql.expressions.Window
-          .partitionBy("semId","examId","studentId"
-            ,"subjectCode","examType")
-        //.orderBy(lit(1))
-        .orderBy(col("semId"))
-      ))
-     .where($"rankCol"===lit(1))
-      .drop("rankCol")
-      .orderBy("semId,examId,examType,subjectCode,studentId".split(",").toSeq.map(col):_*)
-*/
-    examIDsOfSemIdDF.withColumn("examIDsOfSemIdDF",lit("examIDsOfSemIdDF")).show(false)
 
-    // logic 1  read separately
+     examIDsOfSemIdDF.withColumn("examIDsOfSemIdDF",lit("examIDsOfSemIdDF")).show(false)
+
+    val caExamIDsOfSemIdDF=examIDsOfSemIdDF.filter(col("examType")=== lit(summativeAssessment))
+    val saExamIDsOfSemIdDF=examIDsOfSemIdDF.filter(s"examType ='${summativeAssessment}'")
+
+
+    // logic 1  read separately , join method
 
     val saExamDetails=examIDsOfSemIdDF.filter(col("examType")=== lit(summativeAssessment))
 
     val caExamDetails=examIDsOfSemIdDF.where(col("examType")=== lit(cumulativeAssessment))
-// take count OfCA . must be 2 else , comment missed one CA, so fails
-    // add examID partition to SA and CA in future
+
+  // examIDsOfSemIdDF.where(col("examType")=== lit(cumulativeAssessment)).filter("examId in ('e001')")
+     // add examID partition to SA and CA in future
 
     val saExamIdAndStudentIdInfo=saExamDetails
       .map(x=> Row(x.getAs[String]("examId"),
@@ -166,18 +140,17 @@ def main(args:Array[String]):Unit ={
 
     val saGoldInfo=spark.read.format("delta").load(inputMap("goldSAPath"))
 
-
     val saRecordsForIncomingKeysDF=saGoldInfo
       .where(s"examId in ${getWhereCondition(
         saExamIdAndStudentIdInfo.map(_._1).toArray)} and studentId in ${getWhereCondition(
         saExamIdAndStudentIdInfo.map(_._2).toArray)}").withColumn("examType",lit(summativeAssessment))
       .as("readFromGold")
-      .join(caGoldInfo
+/*      .join(saGoldInfo
         .where(s"examId in ${getWhereCondition(
           caExamIdAndStudentIdInfo.map(_._1).toArray)} and studentId in ${getWhereCondition(
           caExamIdAndStudentIdInfo.map(_._2).toArray)}").groupBy("studentId").agg(countDistinct("examId").as("examsAttended"))
         .as("readFromGoldInner") , col("readFromGoldInner.studentId") === col("readFromGold.studentId")
-      ).select("readFromGold.*","examsAttended")
+      ).select("readFromGold.*","examsAttended")*/
 
     saRecordsForIncomingKeysDF.withColumn("saRecordsForIncomingKeysDF",lit("saRecordsForIncomingKeysDF")).show(false)
 
@@ -186,16 +159,13 @@ def main(args:Array[String]):Unit ={
         caExamIdAndStudentIdInfo.map(_._1).toArray)} and studentId in ${getWhereCondition(
         caExamIdAndStudentIdInfo.map(_._2).toArray)}").withColumn("examType",lit(cumulativeAssessment))
       .as("readFromGold")
-      .join(caGoldInfo
+     /* .join(caGoldInfo
         .where(s"examId in ${getWhereCondition(
           caExamIdAndStudentIdInfo.map(_._1).toArray)} and studentId in ${getWhereCondition(
           caExamIdAndStudentIdInfo.map(_._2).toArray)}").groupBy("studentId").agg(countDistinct("examId").as("examsAttended"))
         .as("readFromGoldInner") , col("readFromGoldInner.studentId") === col("readFromGold.studentId")
         ).select("readFromGold.*","examsAttended")
-
-
-
-     // Get the no entry stdents , join again, find , if 0 records are present , means No exams attended.
+*/
 
 
     caRecordsForIncomingKeysDF.withColumn("caRecordsForIncomingKeysDF",lit("caRecordsForIncomingKeysDF")).show(false)
@@ -205,27 +175,65 @@ def main(args:Array[String]):Unit ={
     // and ExamId and filter subTotal and calc. But this gives inconsistent results.
 
 
-    val caMarksCalculated= caRecordsForIncomingKeysDF.join(examIDsOfSemIdDF,Seq("examId","studentId","subjectCode"),"right")
+    val caMarksCalculated= caRecordsForIncomingKeysDF.join(caExamIDsOfSemIdDF
+      ,Seq("examId","studentId","subjectCode","examType"),"right")
       .withColumn("maxMarksOfAssessmentCalculated",lit(40.0)/col("num_of_assessments"))
       .withColumn("percentageOfMarksObtained",round((col("marks")*(lit(100.0)/col("maxMarks"))),3))
       .withColumn("marksObtainedAsPerNewMaxMarks",round(col("percentageOfMarksObtained")* (col("maxMarksOfAssessmentCalculated")/lit(100.0)),3))
-      .na.fill("NA").na.fill(0.0)
-      .groupBy("semId","examType","studentId","subjectCode","examsAttended")
-      .agg(sum("marksObtainedAsPerNewMaxMarks").as("marksObtained"),
-        countDistinct("examId").as("examsAttended"))
-      .na.fill("NA").na.fill(0.0)
-      .selectExpr("*","maxMarksUDF(examType) as maxMarks")
+      .na.fill("NA").na.fill(0.0).withColumn("numAssessmentsAttended",
+      when(col("grade") === lit("NA") &&
+        col("result") === lit("NA"), "-1" ).otherwise(lit(0)))
+      .withColumn("marksObtained",sum("marksObtainedAsPerNewMaxMarks").over(
+        org.apache.spark.sql.expressions.Window.partitionBy("semId","examType","studentId","subjectCode")
+      ))
+      .withColumn("numAssessmentsAttended",max("numAssessmentsAttended").over(
+        org.apache.spark.sql.expressions.Window.partitionBy("semId","examType","examId","studentId","subjectCode")
+      ))
+      .withColumn("numAssessmentsAttended",sum("numAssessmentsAttended").over(
+        org.apache.spark.sql.expressions.Window.partitionBy("semId","examType","studentId","subjectCode")
+      ))
+      .withColumn("numAssessmentsAttended",(col("numAssessmentsAttended") + col("num_of_assessments") )
+      .cast(IntegerType))
+      .withColumn("rankCol", dense_rank.over(
+        org.apache.spark.sql.expressions.Window.partitionBy("semId","examType","studentId","subjectCode")
+          .orderBy(asc("examId"),asc("assessmentYear"))
+      )).where(col("rankCol") === lit(1))
+      .select("semId|studentId|subjectCode|examType|marksObtained|num_of_assessments|numAssessmentsAttended".split("\\|").map(col).toSeq:_*)
+      .orderBy("semId","studentId","subjectCode")
+/*
 
-    val saMarksCalculated= saRecordsForIncomingKeysDF.join(examIDsOfSemIdDF,Seq("examId","studentId","subjectCode"),"right")
-      .withColumn("maxMarksOfAssessmentCalculated",lit(60.0)/col("num_of_assessments"))
+      .groupBy("semId","examType","studentId","subjectCode","num_of_assessments")
+      .agg(sum("marksObtainedAsPerNewMaxMarks").as("marksObtained"),
+       max("numAssessmentsAttended" ).as("numAssessmentsAttended"))
+      .withColumn("numAssessmentsAttended",col("numAssessmentsAttended") + col("num_of_assessments"))
+      .na.fill("NA").na.fill(0.0).orderBy("semId","studentId","subjectCode")
+*/
+
+    val saMarksCalculated= saRecordsForIncomingKeysDF.join(saExamIDsOfSemIdDF
+      ,Seq("examId","studentId","subjectCode","examType"),"right")
+      .withColumn("maxMarksOfAssessmentCalculated",lit(40.0)/col("num_of_assessments"))
       .withColumn("percentageOfMarksObtained",round((col("marks")*(lit(100.0)/col("maxMarks"))),3))
       .withColumn("marksObtainedAsPerNewMaxMarks",round(col("percentageOfMarksObtained")* (col("maxMarksOfAssessmentCalculated")/lit(100.0)),3))
-      .na.fill("NA").na.fill(0.0)
-      .groupBy("semId","examType","studentId","subjectCode")
-      .agg(sum("marksObtainedAsPerNewMaxMarks").as("marksObtained"),
-        countDistinct("examId").as("examsAttended"))
-      .na.fill("NA").na.fill(0.0)
-      .withColumn("maxMarks",maxMarksUDF(col("examType")))
+      .na.fill("NA").na.fill(0.0).withColumn("numAssessmentsAttended",
+      when(col("grade") === lit("NA") &&
+        col("result") === lit("NA"), "-1" ).otherwise(lit(0)))
+      .withColumn("marksObtained",sum("marksObtainedAsPerNewMaxMarks").over(
+        org.apache.spark.sql.expressions.Window.partitionBy("semId","examType","studentId","subjectCode")
+      ))
+      .withColumn("numAssessmentsAttended",max("numAssessmentsAttended").over(
+        org.apache.spark.sql.expressions.Window.partitionBy("semId","examType","examId","studentId","subjectCode")
+      ))
+      .withColumn("numAssessmentsAttended",sum("numAssessmentsAttended").over(
+        org.apache.spark.sql.expressions.Window.partitionBy("semId","examType","studentId","subjectCode")
+      ))
+      .withColumn("numAssessmentsAttended",(col("numAssessmentsAttended") + col("num_of_assessments") )
+        .cast(IntegerType))
+      .withColumn("rankCol", dense_rank.over(
+        org.apache.spark.sql.expressions.Window.partitionBy("semId","examType","studentId","subjectCode")
+          .orderBy(asc("examId"),asc("assessmentYear"))
+      )).where(col("rankCol") === lit(1))
+      .select("semId|studentId|subjectCode|examType|marksObtained|num_of_assessments|numAssessmentsAttended".split("\\|").map(col).toSeq:_*)
+      .orderBy("semId","studentId","subjectCode")
 
 
    val resultDF= saMarksCalculated.as("sa")
@@ -237,41 +245,40 @@ def main(args:Array[String]):Unit ={
         round(col("sa.marksObtained")+col("ca.marksObtained"),3))
       .withColumn("result",when(
         col("sa.marksObtained")>=col("passMarkForSA")
-        && col("ca.examsAttended") > lit(0)
+        && col("ca.numAssessmentsAttended") > lit(0)
         &&  col("finalMarks") >= col("passMarkForSem")
         ,lit("PASS")).otherwise(lit("FAIL")))
       .withColumn("grade",getGradeUDF(lit(new java.math.BigDecimal(100.0)),col("finalMarks").cast(DecimalType(6,3))
         ,lit("finalCalculation")))
       .withColumn("remarks",when(col("result")===lit("PASS")
         ,lit("Keep pushing")).when(col("result")===lit("FAIL") &&
-        col("sa.marksObtained") < col("passMarkForSA")  ,
-        lit("Failed in SA")).when(col("result")===lit("FAIL") &&
         (col("sa.marksObtained") > col("passMarkForSA") ||
           col("sa.marksObtained") === col("passMarkForSA") ) &&
         col("finalMarks") < col("passMarkForSem"),
-        lit("Cleared CA, but inadequate marks to clear sem"))
+        lit("Cleared SA, but inadequate marks in CA"))
+        .when(col("result")===lit("FAIL") &&
+          (col("sa.numAssessmentsAttended") === lit(0) ||
+            col("ca.numAssessmentsAttended") === lit(0) ) ,
+          lit("Not appeared in adequate exams, Kindly maintain cognizance towards assessments"))
         .when(col("result")===lit("FAIL") &&
           col("sa.marksObtained") > col("passMarkForSA") &&
           col("finalMarks") > col("passMarkForSem")
           &&
-          col("sa.examsAttended") == lit(0),
-          lit("Cleared SA, but have not even attended once CA")
-       ).otherwise("NA"))
+          col("sa.numAssessmentsAttended") == lit(0),
+          lit("Cleared SA, but have not even attended CA")
+       ).when(col("result")===lit("FAIL") &&
+        col("sa.marksObtained") < col("passMarkForSA")  ,
+        lit("Failed in SA")).otherwise("NA"))
       .select("subjectCode,semId,studentId,passMarkForSA,passMarkForSem,finalMarks,remarks,grade,result"
         .split(",").map(col).toSeq ++
         Seq(col("sa.marksObtained").as("SA_marks")
           ,col("ca.marksObtained").alias("CA_marks"),
-          col("ca.examsAttended").as("CA_appeared"),
-          col("sa.examsAttended").as("SA_appeared")) :_*)
+          col("ca.numAssessmentsAttended").as("CA_appeared"),
+          col("sa.numAssessmentsAttended").as("SA_appeared"),
+          col("ca.num_of_assessments").as("totalAssessmentsInCA"),
+          col("sa.num_of_assessments").as("totalAssessmentsInSA")) :_*)
 
-// what if they havnt attended one subjec alone
-
-
-    // read semID for all examId.
-
-    // for those examID and studentID read total and then calculate
-
-    // examId|studentId|assessmentYear  |examType
+    resultDF.show(false)
 
   }
 
