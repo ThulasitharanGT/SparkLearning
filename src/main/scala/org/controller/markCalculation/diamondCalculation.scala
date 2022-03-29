@@ -9,7 +9,7 @@ import org.apache.spark.sql.Row
 import org.apache.spark.sql.catalyst.encoders.RowEncoder
 /*
 
- spark-submit --num-executors 2 --executor-cores 2 --driver-memory 512m --executor-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --class org.controller.markCalculation.diamondCalculation /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/GoldToTriggerInput/" goldCAPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Gold/" goldSAPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Gold/" semIdExamIDMapping="hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDMapping/" checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAGoldToDiamondCalc" examIdToExamType="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndTypeInfo/"
+ spark-submit --num-executors 2 --executor-cores 2 --driver-memory 512m --executor-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --class org.controller.markCalculation.diamondCalculation /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/GoldToTriggerInput/" goldCAPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Gold/" goldSAPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Gold/" semIdExamIDMapping="hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDMapping/" checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAGoldToDiamondCalc" examIdToExamType="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndTypeInfo/" diamondPath="hdfs://localhost:8020/user/raptor/persist/marks/diamondCalculatedAndPartitioned/"
 
 * */
 
@@ -285,7 +285,7 @@ def main(args:Array[String]):Unit ={
 
     resultDF.show(false)
 
-    resultDF.select(col("subjectCode"),col("semId"),col("studentId"),col("passMarkForSA"),col("passMarkForSem"),col("finalMarks"),col("remarks"),col("grade"),col("result"),col("SA_marks"),col("CA_marks"),col("CA_appeared"),col("SA_appeared"),col("totalAssessmentsInCA"),col("totalAssessmentsInSA"))
+   val finalResultDF= resultDF.select(col("subjectCode"),col("semId"),col("studentId"),col("passMarkForSA"),col("passMarkForSem"),col("finalMarks"),col("remarks"),col("grade"),col("result"),col("SA_marks"),col("CA_marks"),col("CA_appeared"),col("SA_appeared"),col("totalAssessmentsInCA"),col("totalAssessmentsInSA"))
       .union(resultDF.groupBy("studentId","semId").agg(
       sum("passMarkForSA").as("passMarkForSA")
     , sum("passMarkForSem").as("passMarkForSem"),
@@ -311,8 +311,10 @@ def main(args:Array[String]):Unit ={
         .select(col("subjectCode"),col("semId"),col("studentId"),col("passMarkForSA"),col("passMarkForSem"),col("finalMarks"),col("remarks"),
           getGradeUDF(lit(new java.math.BigDecimal(100.0)),col("finalMarks"),lit("finalCalculation")).as("grade")
           ,col("result"),col("SA_marks"),col("CA_marks"),col("CA_appeared"),col("SA_appeared"),col("totalAssessmentsInCA"),col("totalAssessmentsInSA"))
-    ).show(false)
+    )
 
+    spark.conf.set("spark.sql.sources.partitionOverwriteMode","dynamic")
+    saveDF(finalResultDF.write.mode("overwrite").format("delta").partitionBy("semId","studentId"),inputMap("diamondPath"))
 
 
 
