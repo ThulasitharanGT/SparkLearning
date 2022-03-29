@@ -330,11 +330,17 @@ products:
    src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> build/classes/scala/main/org/controller/markCalculation/bronzeToSilverTrigger$bronzeMarksData.class
    src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> build/classes/scala/main/org/controller/markCalculation/bronzeToSilverTrigger.class
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation$$typecreator1$1.class
+   src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation$$typecreator10$1.class
+   src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation$$typecreator11$1.class
+   src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation$$typecreator12$1.class
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation$$typecreator2$1.class
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation$$typecreator3$1.class
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation$$typecreator4$1.class
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation$$typecreator5$1.class
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation$$typecreator6$1.class
+   src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation$$typecreator7$1.class
+   src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation$$typecreator8$1.class
+   src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation$$typecreator9$1.class
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation$.class
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation.class
    src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToAssessmentLoad$.class
@@ -2032,11 +2038,17 @@ class names:
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> org.controller.markCalculation.diamondCalculation
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> org.controller.markCalculation.diamondCalculation$
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> org.controller.markCalculation.diamondCalculation$$typecreator1$1
+   src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> org.controller.markCalculation.diamondCalculation$$typecreator10$1
+   src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> org.controller.markCalculation.diamondCalculation$$typecreator11$1
+   src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> org.controller.markCalculation.diamondCalculation$$typecreator12$1
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> org.controller.markCalculation.diamondCalculation$$typecreator2$1
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> org.controller.markCalculation.diamondCalculation$$typecreator3$1
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> org.controller.markCalculation.diamondCalculation$$typecreator4$1
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> org.controller.markCalculation.diamondCalculation$$typecreator5$1
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> org.controller.markCalculation.diamondCalculation$$typecreator6$1
+   src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> org.controller.markCalculation.diamondCalculation$$typecreator7$1
+   src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> org.controller.markCalculation.diamondCalculation$$typecreator8$1
+   src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> org.controller.markCalculation.diamondCalculation$$typecreator9$1
    src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> org.controller.markCalculation.kafkaToAssessmentLoad
    src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> org.controller.markCalculation.kafkaToAssessmentLoad$
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> org.controller.markCalculation.kafkaToBronzeLoad

@@ -54,6 +54,8 @@ def main(args:Array[String]):Unit ={
     spark.udf.register("maxMarksUDF",getMaxMarksFinal(_:String))
     val maxMarksUDF=udf(getMaxMarksFinal(_:String):Int)
     val getGradeUDF=udf(getGradeJava(_:java.math.BigDecimal,_:java.math.BigDecimal,_:String):String)
+    val arrayFilterEqualsUDF=udf(array_filter_equals[String](_:Seq[String],_:String):Seq[String])
+    val arrayFilterContainsUDF=udf(array_filter_contains[String](_:Seq[String],_:String):Seq[String])
 
     val semIdAndExamIdDF=spark.read.format("delta").load(inputMap("semIdExamIDMapping"))
 
@@ -109,7 +111,7 @@ def main(args:Array[String]):Unit ={
 
      examIDsOfSemIdDF.withColumn("examIDsOfSemIdDF",lit("examIDsOfSemIdDF")).show(false)
 
-    val caExamIDsOfSemIdDF=examIDsOfSemIdDF.filter(col("examType")=== lit(summativeAssessment))
+    val caExamIDsOfSemIdDF=examIDsOfSemIdDF.filter(col("examType")=== lit(cumulativeAssessment))
     val saExamIDsOfSemIdDF=examIDsOfSemIdDF.filter(s"examType ='${summativeAssessment}'")
 
 
@@ -173,7 +175,7 @@ def main(args:Array[String]):Unit ={
 
     ///// else just read gold SA and CA and join with incoming studId
     // and ExamId and filter subTotal and calc. But this gives inconsistent results.
-
+// SEM logic 60 % from SA (1 Exam usually) , 40 % from (CA's , usually 2 to 3 exams taken in average)
 
     val caMarksCalculated= caRecordsForIncomingKeysDF.join(caExamIDsOfSemIdDF
       ,Seq("examId","studentId","subjectCode","examType"),"right")
@@ -200,6 +202,8 @@ def main(args:Array[String]):Unit ={
       )).where(col("rankCol") === lit(1))
       .select("semId|studentId|subjectCode|examType|marksObtained|num_of_assessments|numAssessmentsAttended".split("\\|").map(col).toSeq:_*)
       .orderBy("semId","studentId","subjectCode")
+
+    caMarksCalculated.show(false)
 /*
 
       .groupBy("semId","examType","studentId","subjectCode","num_of_assessments")
@@ -211,7 +215,7 @@ def main(args:Array[String]):Unit ={
 
     val saMarksCalculated= saRecordsForIncomingKeysDF.join(saExamIDsOfSemIdDF
       ,Seq("examId","studentId","subjectCode","examType"),"right")
-      .withColumn("maxMarksOfAssessmentCalculated",lit(40.0)/col("num_of_assessments"))
+      .withColumn("maxMarksOfAssessmentCalculated",lit(60.0)/col("num_of_assessments"))
       .withColumn("percentageOfMarksObtained",round((col("marks")*(lit(100.0)/col("maxMarks"))),3))
       .withColumn("marksObtainedAsPerNewMaxMarks",round(col("percentageOfMarksObtained")* (col("maxMarksOfAssessmentCalculated")/lit(100.0)),3))
       .na.fill("NA").na.fill(0.0).withColumn("numAssessmentsAttended",
@@ -235,6 +239,7 @@ def main(args:Array[String]):Unit ={
       .select("semId|studentId|subjectCode|examType|marksObtained|num_of_assessments|numAssessmentsAttended".split("\\|").map(col).toSeq:_*)
       .orderBy("semId","studentId","subjectCode")
 
+    saMarksCalculated.show(false)
 
    val resultDF= saMarksCalculated.as("sa")
       .join(caMarksCalculated.as("ca"),
@@ -279,6 +284,39 @@ def main(args:Array[String]):Unit ={
           col("sa.num_of_assessments").as("totalAssessmentsInSA")) :_*)
 
     resultDF.show(false)
+
+    resultDF.select(col("subjectCode"),col("semId"),col("studentId"),col("passMarkForSA"),col("passMarkForSem"),col("finalMarks"),col("remarks"),col("grade"),col("result"),col("SA_marks"),col("CA_marks"),col("CA_appeared"),col("SA_appeared"),col("totalAssessmentsInCA"),col("totalAssessmentsInSA"))
+      .union(resultDF.groupBy("studentId","semId").agg(
+      sum("passMarkForSA").as("passMarkForSA")
+    , sum("passMarkForSem").as("passMarkForSem"),
+      sum("finalMarks").as("finalMarks"),
+      collect_list(col("result")).as("resultTmp"),
+        collect_list(concat(col("result"),lit("~"),col("subjectCode"))).as("remarksTmp")
+       , sum("SA_marks").as("SA_marks")
+      ,  sum("CA_marks").as("CA_marks"),
+      max("CA_appeared").as("CA_appeared"),
+      max("SA_appeared").as("SA_appeared"),
+      max("totalAssessmentsInCA").as("totalAssessmentsInCA"),
+      max("totalAssessmentsInSA").as("totalAssessmentsInSA"))
+        .withColumn("subjectCode",lit("subTotal"))
+      .withColumn("result",when(array_contains(col("resultTmp"),lit("FAIL")),
+        lit("Reappear"))
+          .otherwise(lit("ALL-CLEAR")))
+      .withColumn("remarksColTmp",arrayFilterEqualsUDF(col("resultTmp")
+        ,lit("FAIL")))
+      .withColumn("remarks",
+        when(size(col("remarksColTmp")) > lit(0),concat(lit("Failed in "),concat_ws("",split(concat_ws(",",
+          arrayFilterContainsUDF(col("remarksTmp"),lit("FAIL"))),"FAIL~"))))
+        .otherwise(lit("Keep pushing")))
+        .select(col("subjectCode"),col("semId"),col("studentId"),col("passMarkForSA"),col("passMarkForSem"),col("finalMarks"),col("remarks"),
+          getGradeUDF(lit(new java.math.BigDecimal(100.0)),col("finalMarks"),lit("finalCalculation")).as("grade")
+          ,col("result"),col("SA_marks"),col("CA_marks"),col("CA_appeared"),col("SA_appeared"),col("totalAssessmentsInCA"),col("totalAssessmentsInSA"))
+    ).show(false)
+
+
+
+
+
 
   }
 
