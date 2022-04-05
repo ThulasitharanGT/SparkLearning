@@ -9,6 +9,8 @@ import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import org.apache.spark.TaskContext
 import org.apache.spark.sql.functions.{col, from_json, udf}
 
+import java.math.MathContext
+
 
 object marksCalculationUtil extends Serializable{
 
@@ -177,7 +179,7 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
 
 
   def getGradeJava(maxMarks:java.math.BigDecimal,marksObtained:java.math.BigDecimal,examType:String="CA")=
-    marksObtained.multiply(new java.math.BigDecimal(100.0).divide(maxMarks)) match {
+    marksObtained.multiply(new java.math.BigDecimal(100.0).divide(maxMarks,MathContext.DECIMAL128),MathContext.DECIMAL128) match {
       //  scala.math.BigDecimal(marksObtained.toString.toDouble) / (100/ maxMarks) match {
       case value => examType match {
         case assessmentType if assessmentType == cumulativeAssessment =>
@@ -298,8 +300,6 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
     case value if value == summativeAssessment => 50
     case value if value == cumulativeAssessment => 45
   }
-
-
 
   def nvl(ColIn: org.apache.spark.sql.Column, ReplaceVal: Any) =
     org.apache.spark.sql.functions.when(ColIn.isNull, org.apache.spark.sql.functions.lit(ReplaceVal)).otherwise(ColIn)
