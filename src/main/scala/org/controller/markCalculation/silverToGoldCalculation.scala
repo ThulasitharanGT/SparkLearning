@@ -199,7 +199,7 @@ CA:
       println(s"listY ${listY}")
 
       val passMarkPercentage=getPassMarkPercentage(x._4)
-      val maxMarks=getMaxMarks(x._4)
+      val maxMarks=getMaxMarks(x._4).toInt
       val passMarkCalculated= Math.round((maxMarks/100.0) * passMarkPercentage).toInt
 
       val finalistWithoutFinalResult=listY.map(x=> Row( getBigDecimalFromRow(x,"marks")

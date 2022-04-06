@@ -301,6 +301,10 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
     case value if value == cumulativeAssessment => 45
   }
 
+
+  def getSACACols(colArray:Array[String]) = for(colTmp<- colArray) yield Seq(col(s"sa.${colTmp}").as(s"sa_${colTmp}"),col(s"ca.${colTmp}").as(s"ca_${colTmp}"))
+  val getCASACols : (Array[String]) => Seq[org.apache.spark.sql.Column] = (tmpArray:Array[String])=> getSACACols(tmpArray).flatMap(x => x)
+
   def nvl(ColIn: org.apache.spark.sql.Column, ReplaceVal: Any) =
     org.apache.spark.sql.functions.when(ColIn.isNull, org.apache.spark.sql.functions.lit(ReplaceVal)).otherwise(ColIn)
 
@@ -314,15 +318,21 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
   }
 
   def getMaxMarks(examType:String)= examType match {
-    case value if value == summativeAssessment => 100
-    case value if value == cumulativeAssessment => 60
+    case value if value == summativeAssessment => 100.0
+    case value if value == cumulativeAssessment => 60.0
   }
+
+  def getPercentage(maxMarks:java.math.BigDecimal,currentMarks:java.math.BigDecimal)=currentMarks.multiply( new java.math.BigDecimal(100.0).divide(maxMarks,MathContext.DECIMAL128),MathContext.DECIMAL128)
+
+  def getMarksForPercentage(maxMarks:java.math.BigDecimal,percentage:java.math.BigDecimal)=(maxMarks.divide( new java.math.BigDecimal(100.0),MathContext.DECIMAL128) ).multiply(percentage ,MathContext.DECIMAL128)
 
   def getMaxMarksFinal(examType:String)= examType match {
     case value if value == summativeAssessment => 60
     case value if value == cumulativeAssessment => 40
   }
 
+  val checkPass:(java.math.BigDecimal,java.math.BigDecimal)=>Boolean =
+    (currentMarks:java.math.BigDecimal,passMarks:java.math.BigDecimal) =>  List(0,1).contains(currentMarks.compareTo(passMarks))
 
   val getReadStreamDF:(org.apache.spark.sql.SparkSession,collection.mutable.Map[String,String])=> org.apache.spark.sql.DataFrame = (spark:org.apache.spark.sql.SparkSession,inputMap:collection.mutable.Map[String,String]) =>
     Try{inputMap(readStreamFormat)} match {
