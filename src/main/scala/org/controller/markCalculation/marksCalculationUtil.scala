@@ -218,7 +218,7 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
             case value if value.compareTo(new java.math.BigDecimal(75.0)) == 1 => "C"
             case value if value.compareTo(new java.math.BigDecimal(70.0)) == 1 => "D"
             case value if List(0,1).contains( value.compareTo(new java.math.BigDecimal(60.0))) => "E"
-            case value if value.compareTo(new java.math.BigDecimal(0.0)) == 1  => "F-"
+            case value if value.compareTo(new java.math.BigDecimal(0.0)) == 0  => "F-"
             case value if value.compareTo(new java.math.BigDecimal(60.0)) == -1 => "F"
           }
       }
