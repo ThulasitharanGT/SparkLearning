@@ -438,6 +438,8 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
 
   def saveDF(dfWriter:org.apache.spark.sql.DataFrameWriter[org.apache.spark.sql.Row],path:String)= dfWriter.save(path)
 
+  def saveDFGeneric[T](dfWriter:org.apache.spark.sql.DataFrameWriter[T],path:String)= dfWriter.save(path)
+
   val mapper=new ObjectMapper() with ScalaObjectMapper
   mapper.registerModule(DefaultScalaModule)
   mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false)
@@ -452,6 +454,8 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
 
   val udfTSFromString= udf(getTSFromString(_:String))
   def innerMsgParser(df:org.apache.spark.sql.DataFrame)=df.select(from_json(col("actualMessage"),innerMarksSchema).as("structExtracted"),udfTSFromString(col("receivingTimeStamp")).as("incomingTS")).select(col("structExtracted.*"),col("incomingTS"))
+
+  def getTs= new java.sql.Timestamp(System.currentTimeMillis)
 
 }
 

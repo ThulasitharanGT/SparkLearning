@@ -1,6 +1,7 @@
 package org.controller.markCalculation
 // sem level
 
+import io.delta.tables.DeltaTable
 import org.controller.markCalculation.marksCalculationUtil._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
@@ -850,9 +851,126 @@ object diamondCalculation {
         StructField("saExamsAttended",IntegerType,true),
         StructField("caExamsAttended",IntegerType,true)
       ))))
-*/
+
+
+      col("alpha.semId") === col("delta.semId") &&
+col("alpha.studentId") === col("delta.studentId") &&
+col("alpha.subjectCode") === col("delta.subjectCode") &&
+col("alpha.caMarks") === col("delta.caMarks") &&
+col("alpha.saMarks") === col("delta.saMarks") &&
+col("alpha.caPassMarks") === col("delta.caPassMarks") &&
+col("alpha.saPassMarks") === col("delta.saPassMarks") &&
+col("alpha.totalMarks") === col("delta.totalMarks") &&
+col("alpha.passMarkForTotal") === col("delta.passMarkForTotal") &&
+col("alpha.result") === col("delta.result") &&
+col("alpha.remarks") === col("delta.remarks") &&
+col("alpha.grade") === col("delta.grade") &&
+col("alpha.saTotalNumberOfExams") === col("delta.saTotalNumberOfExams") &&
+col("alpha.caTotalNumberOfExams") === col("delta.caTotalNumberOfExams") &&
+col("alpha.saExamsAttended") === col("delta.saExamsAttended") &&
+col("alpha.caExamsAttended") === col("delta.caExamsAttended") &&
+
+col("alpha.semId") =!= col("delta.semId") ||
+col("alpha.studentId") =!= col("delta.studentId") ||
+col("alpha.subjectCode") =!= col("delta.subjectCode") ||
+col("alpha.caMarks") =!= col("delta.caMarks") ||
+col("alpha.saMarks") =!= col("delta.saMarks") ||
+col("alpha.caPassMarks") =!= col("delta.caPassMarks") ||
+col("alpha.saPassMarks") =!= col("delta.saPassMarks") ||
+col("alpha.totalMarks") =!= col("delta.totalMarks") ||
+col("alpha.passMarkForTotal") =!= col("delta.passMarkForTotal") ||
+col("alpha.result") =!= col("delta.result") ||
+col("alpha.remarks") =!= col("delta.remarks") ||
+col("alpha.grade") =!= col("delta.grade") ||
+col("alpha.saTotalNumberOfExams") =!= col("delta.saTotalNumberOfExams") ||
+col("alpha.caTotalNumberOfExams") =!= col("delta.caTotalNumberOfExams") ||
+col("alpha.saExamsAttended") =!= col("delta.saExamsAttended") ||
+col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
+ */
+
+
 
     // totalmarks, 50 % on SA, and atleast 1 apperance in CA and 60 % in total
+
+
+    scala.util.Try{DeltaTable.forPath(spark,inputMap("diamondPath"))} match {
+      case scala.util.Success(s) =>
+        s.as("alpha").merge(
+          examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF).withColumn("incomingTs",lit(getTs)).as("delta"),
+          col("alpha.semId") === col("delta.semId") &&
+            col("alpha.studentId") === col("delta.studentId")).whenMatched(
+          col("alpha.subjectCode") === col("delta.subjectCode")    &&
+            col("alpha.caMarks") === col("delta.caMarks") &&
+            col("alpha.saMarks") === col("delta.saMarks") &&
+            col("alpha.caPassMarks") === col("delta.caPassMarks") &&
+            col("alpha.saPassMarks") === col("delta.saPassMarks") &&
+            col("alpha.totalMarks") === col("delta.totalMarks") &&
+            col("alpha.passMarkForTotal") === col("delta.passMarkForTotal") &&
+            col("alpha.result") === col("delta.result") &&
+            col("alpha.remarks") === col("delta.remarks") &&
+            col("alpha.grade") === col("delta.grade") &&
+            col("alpha.saTotalNumberOfExams") === col("delta.saTotalNumberOfExams") &&
+            col("alpha.caTotalNumberOfExams") === col("delta.caTotalNumberOfExams") &&
+            col("alpha.saExamsAttended") === col("delta.saExamsAttended") &&
+            col("alpha.caExamsAttended") === col("delta.caExamsAttended")
+            ).updateExpr(Map("incomingTs"->"alpha.incomingTs")).whenMatched(
+          col("alpha.subjectCode") =!= col("delta.subjectCode") ||
+            col("alpha.caMarks") =!= col("delta.caMarks") ||
+            col("alpha.saMarks") =!= col("delta.saMarks") ||
+            col("alpha.caPassMarks") =!= col("delta.caPassMarks") ||
+            col("alpha.saPassMarks") =!= col("delta.saPassMarks") ||
+            col("alpha.totalMarks") =!= col("delta.totalMarks") ||
+            col("alpha.passMarkForTotal") =!= col("delta.passMarkForTotal") ||
+            col("alpha.result") =!= col("delta.result") ||
+            col("alpha.remarks") =!= col("delta.remarks") ||
+            col("alpha.grade") =!= col("delta.grade") ||
+            col("alpha.saTotalNumberOfExams") =!= col("delta.saTotalNumberOfExams") ||
+            col("alpha.caTotalNumberOfExams") =!= col("delta.caTotalNumberOfExams") ||
+            col("alpha.saExamsAttended") =!= col("delta.saExamsAttended") ||
+            col("alpha.caExamsAttended") =!= col("delta.caExamsAttended")
+        ).updateExpr(Map(
+          "subjectCode" -> "delta.subjectCode" ,
+          "caMarks" -> "delta.caMarks" ,
+          "saMarks" -> "delta.saMarks" ,
+          "caPassMarks" -> "delta.caPassMarks" ,
+          "saPassMarks" -> "delta.saPassMarks" ,
+          "totalMarks" -> "delta.totalMarks" ,
+          "passMarkForTotal" -> "delta.passMarkForTotal" ,
+          "result" -> "delta.result" ,
+          "remarks" -> "delta.remarks" ,
+          "grade" -> "delta.grade" ,
+          "saTotalNumberOfExams" -> "delta.saTotalNumberOfExams" ,
+          "caTotalNumberOfExams" -> "delta.caTotalNumberOfExams" ,
+          "saExamsAttended" -> "delta.saExamsAttended" ,
+          "caExamsAttended" -> "delta.caExamsAttended" ,
+          "incomingTs"->"alpha.incomingTs")).whenNotMatched.insertExpr(Map("semId" -> "delta.semId" ,
+          "studentId" -> "delta.studentId" ,
+          "subjectCode" -> "delta.subjectCode" ,
+          "caMarks" -> "delta.caMarks" ,
+          "saMarks" -> "delta.saMarks" ,
+          "caPassMarks" -> "delta.caPassMarks" ,
+          "saPassMarks" -> "delta.saPassMarks" ,
+          "totalMarks" -> "delta.totalMarks" ,
+          "passMarkForTotal" -> "delta.passMarkForTotal" ,
+          "result" -> "delta.result" ,
+          "remarks" -> "delta.remarks" ,
+          "grade" -> "delta.grade" ,
+          "saTotalNumberOfExams" -> "delta.saTotalNumberOfExams" ,
+          "caTotalNumberOfExams" -> "delta.caTotalNumberOfExams" ,
+          "saExamsAttended" -> "delta.saExamsAttended" ,
+          "caExamsAttended" -> "delta.caExamsAttended" ,
+          "incomingTs"->"alpha.incomingTs")).execute
+
+      case scala.util.Failure(f) =>
+
+        saveDFGeneric[org.apache.spark.sql.Row]
+        (
+          examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF).withColumn("incomingTs",lit(getTs)).write.format("delta").mode("append").partitionBy("semId","studentId")
+          ,inputMap("diamondPath")
+        )
+
+
+    }
 
 
   }
@@ -1128,7 +1246,7 @@ examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsFo
   def examMarksCalculatedMapGroupResultDF(incomingRecordDF:org.apache.spark.sql.DataFrame,referenceDF:org.apache.spark.sql.DataFrame)=examMarksCalculatedMapGroup(incomingRecordDF.where(s"examType = '${cumulativeAssessment}'"),referenceDF.where(s"examType = '${cumulativeAssessment}'")).as("ca")
     .join(examMarksCalculatedMapGroup(incomingRecordDF.where(s"examType = '${summativeAssessment}'"),referenceDF.where(s"examType = '${summativeAssessment}'")).as("sa"), "semId,studentId,subjectCode".split(",").toSeq).select(
     "semId,studentId,subjectCode".split(",").map(col) ++
-      getCASACols( /*saMarksCalculatedMapGroupsDF*/
+      getCASACols( /* saMarksCalculatedMapGroupsDF */
         examMarksCalculatedMapGroup(incomingRecordDF.where(s"examType = '${summativeAssessment}'"),referenceDF.where(s"examType = '${cumulativeAssessment}'"))
         .columns.diff("semId,studentId,subjectCode".split(",")))  :_*
   ).groupByKey(x => (x.getAs[String]("semId"),x.getAs[String]("studentId"),x.getAs[String]("subjectCode")))
@@ -1247,6 +1365,8 @@ examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsFo
       StructField("saExamsAttended",IntegerType,true),
       StructField("caExamsAttended",IntegerType,true)
     ))))
+
+
 
 
 }
