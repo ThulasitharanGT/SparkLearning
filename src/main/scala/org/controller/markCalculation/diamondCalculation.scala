@@ -360,8 +360,8 @@ object diamondCalculation {
       )
 */
     spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
-    saveDF(finalResultDF.write.mode("overwrite").format("delta").partitionBy("semId", "studentId"), inputMap("diamondPath"))
-
+  //  saveDF(finalResultDF.write.mode("overwrite").format("delta").partitionBy("semId", "studentId"), inputMap("diamondPath"))
+    finalResultDF.withColumn("finalResultDF",lit("finalResultDF")).show(false)
 
     // 2nd method using mapgroups
 
@@ -892,6 +892,7 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
 
     // totalmarks, 50 % on SA, and atleast 1 apperance in CA and 60 % in total
 
+      examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF).withColumn("finalMapGroupsDF",lit("finalMapGroupsDF")).show(false)
 
     scala.util.Try{DeltaTable.forPath(spark,inputMap("diamondPath"))} match {
       case scala.util.Success(s) =>
@@ -962,9 +963,8 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
           "incomingTs"->"alpha.incomingTs")).execute
 
       case scala.util.Failure(f) =>
-
-        saveDFGeneric[org.apache.spark.sql.Row]
-        (
+        println(s"Failure ${f.getMessage}")
+        saveDFGeneric[org.apache.spark.sql.Row](
           examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF).withColumn("incomingTs",lit(getTs)).write.format("delta").mode("append").partitionBy("semId","studentId")
           ,inputMap("diamondPath")
         )
@@ -1047,15 +1047,15 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
 
   def getFinalResultDFJoin(incomingDataRecords:org.apache.spark.sql.DataFrame,examIdsOfSemID:org.apache.spark.sql.DataFrame)=getResultDFJoin(incomingDataRecords,examIdsOfSemID).select(col("subjectCode"), col("semId"), col("studentId"), col("passMarkForSA"), col("passMarkForSem"), col("finalMarks"), col("remarks"), col("grade"), col("result"), col("SA_marks"), col("CA_marks"), col("CA_appeared"), col("SA_appeared"), col("totalAssessmentsInCA"), col("totalAssessmentsInSA"))
     .union(getResultDFJoin(incomingDataRecords,examIdsOfSemID).groupBy("studentId", "semId").agg(
-      sum("passMarkForSA").as("passMarkForSA")
-      , sum("passMarkForSem").as("passMarkForSem"),
-      sum("finalMarks").as("finalMarks"),
+      sum(col("passMarkForSA")).as("passMarkForSA")
+      , sum($"passMarkForSem").as("passMarkForSem"),
+      round(sum($"finalMarks"),3).as("finalMarks"),
       collect_list(col("result")).as("resultTmp"),
       collect_list(concat(col("result"), lit("~"), col("subjectCode"))).as("remarksTmp")
-      , sum("SA_marks").as("SA_marks")
-      , sum("CA_marks").as("CA_marks"),
-      max("CA_appeared").as("CA_appeared"),
-      max("SA_appeared").as("SA_appeared"),
+      , round(sum($"SA_marks"),3).as("SA_marks")
+      , round(sum($"CA_marks"),3).as("CA_marks"),
+      round(max($"CA_appeared"),3).as("CA_appeared"),
+      round(max($"SA_appeared"),3).as("SA_appeared"),
       max("totalAssessmentsInCA").as("totalAssessmentsInCA"),
       max("totalAssessmentsInSA").as("totalAssessmentsInSA"))
       .withColumn("subjectCode", lit("subTotal"))
@@ -1264,7 +1264,7 @@ examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsFo
       val caPassMarkNew= getMarksForPercentage(new java.math.BigDecimal(40.0),new java.math.BigDecimal(45.0) )
       val saPassMarkNew= getMarksForPercentage(new java.math.BigDecimal(60.0),new java.math.BigDecimal(50.0) )
 
-      val totalMarksCalculated=caMarksRecalculated.add(saMarksRecalculated)
+      val totalMarksCalculated=caMarksRecalculated.add(saMarksRecalculated).setScale(3,java.math.BigDecimal.ROUND_HALF_UP)
 
       val (semResult,semRemarks)=  totalMarksCalculated match {
         case value if rowsTmp.head.getAs[Int]("ca_examsAttended") == 0 =>
@@ -1336,10 +1336,10 @@ examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsFo
         totalRecord.getAs[String](2),
         totalRecord.getAs[java.math.BigDecimal](3),
         totalRecord.getAs[java.math.BigDecimal](4),
-        totalRecord.getAs[java.math.BigDecimal](5),
-        totalRecord.getAs[java.math.BigDecimal](6),
+        rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[java.math.BigDecimal](5)).reduce((x,y) => x.add(y)),
+        rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[java.math.BigDecimal](6)).foldLeft(new java.math.BigDecimal(0.0))((x,y) => x.add(y)) ,
         totalRecord.getAs[java.math.BigDecimal](7),
-        totalRecord.getAs[java.math.BigDecimal](8),
+      rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[java.math.BigDecimal](8)).reduceLeft((x,y) => x.add(y)) ,// .reduce((x,y) => x.add(y)),
         rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[String](9)).contains("FAIL") match {case true => "Re-Appear for failed subjects" case false => "All clear"} ,
         rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[String](9)).contains("FAIL") match {case true if rowsTmp.map(_.getAs[String](10)).filter(_.contains("Failed")).size >1 && rowsTmp.map(_.getAs[String](10)).filter(_.contains("Did not")) .size >1 => "Concentrate on failed subjects next time, appear in all exams to increase the chances of clearing" case true if rowsTmp.map(_.getAs[String](10)).filter(_.contains("Failed")).size >1 => "Concentrate on failed subjects next time" case true if rowsTmp.map(_.getAs[String](10)).filter(_.contains("Did not")).size >1 => "Appear in all exams to increase the chances of clearing" case false => "Keep pushing"},
         rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[String](9)).contains("FAIL") match {case value if value == true && totalRecord.getAs[java.math.BigDecimal](7).compareTo(new java.math.BigDecimal(0)) ==0 => "F-" case true => "F" case false =>totalRecord.getAs[Int](11) },
