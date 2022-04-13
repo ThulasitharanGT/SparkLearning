@@ -46,7 +46,6 @@ spark-submit --master local --class org.controller.markCalculation.kafkaToBronze
 // this just persists whatever data which comes in
      */
 
-
     val readStreamDF=getReadStreamDF(spark,inputMap).select(col("value").cast(StringType)).select(from_json(col("value"),wrapperSchema).as("schemaExploded")).select(col("schemaExploded.*"))
 
     readStreamDF.writeStream.format("console").outputMode("append")
@@ -60,11 +59,11 @@ spark-submit --master local --class org.controller.markCalculation.kafkaToBronze
       })
       .option("checkpointLocation",inputMap("bronzeCheckpoint"))
       .start
-/*
-    /*val summativeAssessmentStream=readStreamDF.filter(s"messageType='${summativeAssessment}'")
 
-    val cumulativeAssessmentStream=readStreamDF.filter(s"messageType='${cumulativeAssessment}'")*/
+    /*
+    val summativeAssessmentStream=readStreamDF.filter(s"messageType='${summativeAssessment}'")
 
+    val cumulativeAssessmentStream=readStreamDF.filter(s"messageType='${cumulativeAssessment}'")
 
 
     readStreamDF.writeStream.format("console").outputMode("append").option("truncate","false").option("numRows","99999999").option("checkpointLocation",inputMap("consoleCheckpoint")).start

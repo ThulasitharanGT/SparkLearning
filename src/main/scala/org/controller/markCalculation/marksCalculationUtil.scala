@@ -574,8 +574,7 @@ object tmpCode{
 
  // def sendMessage(message:String,topic:String,kafkaProducer:org.apache.kafka.clients.producer.KafkaProducer[Any,Any]=getKafkaProducer())=kafkaProducer.send(new org.apache.kafka.clients.producer.ProducerRecord(topic,getRandomStr(),message))
 
-  def sendMessageGeneric[K:TypeTag,V:TypeTag](key:K,message:V,topic:String,
-                                               )= getKafkaProducerGeneric[K,V] match {
+  def sendMessageGeneric[K:TypeTag,V:TypeTag](key:K,message:V,topic:String)= getKafkaProducerGeneric[K,V] match {
     case kafkaProducer =>
    val recordMeta=kafkaProducer.send(new org.apache.kafka.clients.producer.ProducerRecord(topic,key,message))
       kafkaProducer.close
@@ -586,8 +585,6 @@ object tmpCode{
     Seq[java.util.concurrent.Future[org.apache.kafka.clients.producer.RecordMetadata]]
   = (messages:Seq[String],topic:String) =>for (message <- messages) yield
       sendMessageGeneric[String,String](getRandomStr(),message,topic)
-
-
 
   sendMessages(getActualKafkaMessage(Seq(("e001",1,
     "sub001,sub002,sub003,sub004,sub005".split(",").toSeq.zip(Seq.fill(5)("pass")),"CA","s001")
@@ -618,6 +615,100 @@ object tmpCode{
   def getRandomStr(lengthOfString:Int=5,tmpString:String="") :String= lengthOfString match {
     case value if value ==1 => s"${tmpString}${getRandomChar()}"
     case value if value >1 => getRandomStr(value-1,s"${tmpString}${getRandomChar()}")
+  }
+
+  object coolTmp {
+
+    def getkVPair(key:String,value:String) =s""""${key}":${value}"""
+
+    def getStrVal(value:String)=s""""${value}""""
+
+    def getRandomMarks(startMark:Int=0,endMark:Int=60) = java.util.concurrent.ThreadLocalRandom.current.nextInt(startMark,endMark)
+
+    def getMarks(marksInfo:(String,String))= marksInfo._1 match {
+      case "SA" => marksInfo._2.toLowerCase.startsWith("p") match {
+        case true => getRandomMarks(50,100)
+        case false => getRandomMarks(0,49)
+      }
+      case "CA" => marksInfo._2.toLowerCase.startsWith("p") match {
+        case true => getRandomMarks(27,60)
+        case false => getRandomMarks(0,26)
+      }
+    }
+
+    val getActualMessage:((String,Seq[(String,Seq[(String,String)],String)]))=> Seq[String] = (studentAndExamInfo:(String,Seq[(String,Seq[(String,String)],String)])) => {for (info  <- studentAndExamInfo._2) yield for (infoSub  <- info._2) yield  Seq(getkVPair("examId",getStrVal(info._1)),getkVPair("studentId",getStrVal(studentAndExamInfo._1)),getkVPair("subjectCode",getStrVal(infoSub._1)),getkVPair("marks", s"${getMarks((info._3,infoSub._2))}"),getkVPair("incomingTs",getStrVal(s"${new java.sql.Timestamp(System.currentTimeMillis)}"))).mkString("{",",","}")}.flatMap(x => x)
+
+    val getPayloadMessage:(String) => String = (actualMessage:String) => actualMessage.replace("\"","\\\"")
+
+    getActualMessage(("s001",Seq(("e001",Seq(("s001","p"), ("s002","p"), ("s003","p"), ("s004","p"), ("s005","p")),"CA"))))
+
+    val getTs:() => String = () => s"""${new java.sql.Timestamp(System.currentTimeMillis)}"""
+
+    val getWrappedMessage:((Seq[String], (String, Seq[(String, String)], String))) => Seq[String] = (messageAndExamInfo:(Seq[String], (String, Seq[(String, String)], String))) => messageAndExamInfo._1.map(x => Seq(getkVPair("messageType",getStrVal(messageAndExamInfo._2._3)),getkVPair("messageType",getStrVal(x)),getkVPair("receivingTimeStamp",getStrVal(getTs()))).mkString("{",",","}"))
+
+    // student id ,exam id,(subjectId's/ [pass / fail]),examType
+    def getKafkaMessage(msgInfo:Seq[(String,Seq[(String,Seq[(String,String)],String)])]) = msgInfo.flatMap(x => x._2.map(y => (getActualMessage((x._1,Seq(y))),y))).map(x=> (x._1.map(getPayloadMessage),x._2)).flatMap(getWrappedMessage)
+
+    getKafkaMessage(Seq(("s001",Seq(("e001",Seq(("sub001","p"), ("sub002","p"), ("sub003","p"), ("sub004","p"), ("sub005","p")),"CA"),("e002",Seq(("sub001","p"), ("sub002","p"), ("sub003","p"), ("sub004","p"), ("sub005","p")),"CA"),("ex001",Seq(("sub001","p"), ("sub002","p"), ("sub003","p"), ("sub004","p"), ("sub005","p")),"SA"))),("s002",Seq(("e001",Seq(("sub001","p"), ("sub002","p"), ("sub003","f"), ("sub004","f"), ("sub005","p")),"CA"),("e002",Seq(("sub001","p"), ("sub002","p"), ("sub003","f"), ("sub004","f"), ("sub005","p")),"CA"),("ex001",Seq(("sub001","p"), ("sub002","p"), ("sub003","f"), ("sub004","f")),"SA")))))
+
+    import scala.reflect.runtime.universe._
+
+    def getSerializer[T:TypeTag] = typeOf[T] match {
+      case value if  value == typeOf[Long] => "org.apache.kafka.common.serialization.LongSerializer"
+      case value if  value == typeOf[String] => "org.apache.kafka.common.serialization.StringSerializer"
+      case value if  value == typeOf[Int] =>"org.apache.kafka.common.serialization.IntegerSerializer"
+      case value if  value == typeOf[Double] => "org.apache.kafka.common.serialization.DoubleSerializer"
+      case value if  value == typeOf[Byte] => "org.apache.kafka.common.serialization.ByteSerializer"
+      case value if  value == typeOf[Float] => "org.apache.kafka.common.serialization.FloatSerializer"
+    }
+
+    val getProperties :() => java.util.Properties = () => new java.util.Properties
+
+    def getKafkaProps[K:TypeTag,V:TypeTag] = {
+      val props=getProperties()
+      props.put("key.serializer",getSerializer[K])
+      props.put("bootstrap.servers","localhost:8081,localhost:8082,localhost:8083")
+      props.put("value.serializer",getSerializer[V])
+      props
+    }
+
+    def getKafkaProducer[K:TypeTag,V:TypeTag] = new org.apache.kafka.clients.producer.KafkaProducer[K,V](getKafkaProps[K,V])
+
+    def getProducerRecord[K:TypeTag,V:TypeTag](key:K,value:V,topic:String)=
+      new org.apache.kafka.clients.producer.ProducerRecord[K,V](topic,key,value)
+
+    import scala.concurrent.Future
+    import scala.concurrent.ExecutionContext.Implicits.global
+
+    val sendKafkaMessages:(Seq[String],org.apache.kafka.clients.producer.KafkaProducer[String,String]) => List[Future[org.apache.kafka.clients.producer.RecordMetadata]] = (messages:Seq[String],producer:org.apache.kafka.clients.producer.KafkaProducer[String,String]) => {
+      // val producer=getKafkaProducer[String,String]
+      // val resT=messages.foldLeft(List(Future(new org.apache.kafka.clients.producer.RecordMetadata(new org.apache.kafka.common.TopicPartition("",0),0L,0L,0L,0L,0,0))))((x,y) => x :+ Future((producer.send(getProducerRecord[String,String]("",y,"tmpTopic"))).get)) // returns java.util.concurrent.Future, we have used sala future
+      messages.map(x =>Future((producer.send(getProducerRecord[String,String]("",x,"tmpTopic"))).get)).toList
+      // producer.close
+      // arrayBuff.toList
+    }
+
+    def sendMessages(messages:Seq[String])= getKafkaProducer[String,String] match {
+      case value =>
+        val result=sendKafkaMessages(messages,value)
+        value.close
+        result
+    }
+
+    def main(args:Array[String])= {
+      val producer = getKafkaProducer[String, String]
+      sendKafkaMessages(getKafkaMessage(Seq(("s001", Seq(("e001", Seq(("sub001", "p"), ("sub002", "p"), ("sub003", "p"), ("sub004", "p"), ("sub005", "p")), "CA"), ("e002", Seq(("sub001", "p"), ("sub002", "p"), ("sub003", "p"), ("sub004", "p"), ("sub005", "p")), "CA"), ("ex001", Seq(("sub001", "p"), ("sub002", "p"), ("sub003", "p"), ("sub004", "p"), ("sub005", "p")), "SA"))), ("s002", Seq(("e001", Seq(("sub001", "p"), ("sub002", "p"), ("sub003", "f"), ("sub004", "f"), ("sub005", "p")), "CA"), ("e002", Seq(("sub001", "p"), ("sub002", "p"), ("sub003", "f"), ("sub004", "f"), ("sub005", "p")), "CA"), ("ex001", Seq(("sub001", "p"), ("sub002", "p"), ("sub003", "f"), ("sub004", "f")), "SA"))))), producer)
+      producer.close
+    }
+
+    /*
+     ("hdfs dfs -ls hdfs://localhost:8020/user/raptor/persist/marks/"!! ).split("\n").map(_.trim).map(_.split(" ").map(_.trim).filter(_.startsWith("hdfs://"))).flatMap(x=>x).filter(_.size>0).filter(x=> x.split("/").last match { case value if value.toLowerCase.startsWith("ca") ||  value.toLowerCase.startsWith("sa") =>
+     true
+     case value if value.toLowerCase.startsWith("diamond") || value.toLowerCase.startsWith("gold") => true
+     case _ => false
+     } ).map(x => s"hdfs dfs -rm -r ${x}"!)
+
+*/
   }
 
 }
