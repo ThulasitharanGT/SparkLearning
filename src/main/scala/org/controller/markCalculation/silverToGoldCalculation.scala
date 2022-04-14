@@ -250,6 +250,9 @@ CA:
       .add(StructField("passMarkCalculated",IntegerType,true))
       .add(StructField("comment",StringType,true))))
 
+
+    /// ue exam id and subid mapping to check for number of exams and total
+
     /*
     (RowEncoder(new StructType(Array(StructField("examId",StringType,true)
     ,StructField("studentID",StringType,true)

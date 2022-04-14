@@ -30,10 +30,10 @@ object diamondCalculation {
   import spark.implicits._
 
   // mark calculation
-  // 70 % from SA
-  // 30 % from CA
+  // 60 % from SA
+  // 40 % from CA
   // if you failed in SA (on any subject) then you failed
-  // if you cleared SA but failed in CA and get 50 % , then you passed
+  // if you cleared SA but failed in CA and get 60 % , then you passed
   def main(args: Array[String]): Unit = {
 
     val inputMap = inputArrayToMap(args)
@@ -1099,7 +1099,7 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
       && x.getAs[Int]("maxMarks") == 0
     ).distinct.map(_.getAs[String]("examId")).distinct
 
-    numberOfExamIds == examsNotAttended.size match {
+    (examsNotAttended.size ==  numberOfExamIds) && examsNotAttended.intersect(numberOfExamsAttended).size ==0  match {
       case true =>
         rowList.groupBy(_.getAs[String]("subjectCode")).map(recordsAndKey =>
           Row(recordsAndKey._2.head.getAs[String]("semId"), //semId
@@ -1116,13 +1116,13 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
             0, "NA") // exams Appeared
         )
       case false =>
-        // calculate fo valid exams, and update attended count in last count
-        rowList.filterNot(x => examsNotAttended.contains(x.getAs[String]("examId")) ).map(x => Row(
+        // calculate for valid exams, and update attended count in last count
+        rowList/*.filterNot(x => examsNotAttended.contains(x.getAs[String]("examId")) )*/.map(x => Row(
           x.getAs[String]("semId"),
           x.getAs[String]("examId"),
           x.getAs[String]("studentId"),
           x.getAs[String]("subjectCode"),
-          x.getAs[String]("assessmentYear"),
+          rowList.filter(r => numberOfExamsAttended.contains(r.getAs[String]("examId")) && r.getAs[String]("assessmentYear") != "NA").head.getAs[String]("assessmentYear") ,
           x.getAs[java.math.BigDecimal]("marks"),
           // marks percentage
           (x.getAs[java.math.BigDecimal]("marks"), x.getAs[Int]("maxMarks")) match {
@@ -1154,7 +1154,7 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
           } ,
           x.getAs[String]("comment"),
           numberOfExamIds,
-          numberOfExamsAttended.size)).groupBy(x => (x.getAs[String](0),x.getAs[String](2),x.getAs[String](3)))
+          rowList.filter(r => x.getAs[String]("examId") == r.getAs[String]("examId") && r.getAs[String]("subjectCode") == x.getAs[String]("subjectCode") && r.getAs[String]("assessmentYear") != "NA").size)).groupBy(x => (x.getAs[String](0),x.getAs[String](2),x.getAs[String](3)))
           .map(examPerSubject => {
             val marksTotalPerSubID = {
               for (record <- examPerSubject._2) yield record.getAs[java.math.BigDecimal](13)
@@ -1171,7 +1171,7 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
               marksTotalPerSubID, // aggMarks
               examPerSubject._2.head.getString(7), // examType
               passMarksTotalPerSubID, // aggPassMarks
-              new java.math.BigDecimal(100.0), // max marks Agg
+              new java.math.BigDecimal(getMaxMarks(rowList.head.getAs[String]("examType"))), // max marks Agg
               marksTotalPerSubID match { case value if value.compareTo(passMarksTotalPerSubID) == -1 => "FAIL" case value if List(0, 1).contains(value.compareTo(passMarksTotalPerSubID)) => "PASS" }, // result
               getGradeJava(new java.math.BigDecimal(getMaxMarks(rowList.head.getAs[String]("examType"))), marksTotalPerSubID, examPerSubject._2.head.getString(7)), // grade
               examPerSubject._2.head.getInt(17), //total Number of exams
