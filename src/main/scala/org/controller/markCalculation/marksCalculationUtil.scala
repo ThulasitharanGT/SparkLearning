@@ -448,6 +448,13 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
 
   def fromJson[T](json:String)(implicit m:Manifest[T])=mapper.readValue[T](json)
 
+  import org.json4s._
+  import org.json4s.jackson.JsonMethods._
+
+  def jsonStrToMap(jsonStr: String)= {
+    implicit val formats = org.json4s.DefaultFormats
+    parse(jsonStr).extract[Map[String, Any]]
+  }
 
   val simpleDateFormat= new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
   def getTSFromString(tsStr:String)=new java.sql.Timestamp(simpleDateFormat.parse(tsStr).getTime)
