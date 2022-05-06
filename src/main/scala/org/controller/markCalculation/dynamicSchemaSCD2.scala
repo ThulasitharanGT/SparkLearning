@@ -61,9 +61,34 @@ colInfo.split(":",2) match {case value =>
 
   case class stateStore(dataMap:Map[String,org.apache.spark.sql.Row])
 
-  def getJdbcConnection
+  type driver=String
+  case class ConnectionDetails(user:String,password:String,url:String,driver:driver)
+
+  def getProps = new java.util.Properties
+  def getJDBCProps(connectionDetails:ConnectionDetails)=getProps match {
+    case value =>
+      value.put("url",connectionDetails.url)
+      value.put("user",connectionDetails.user)
+      value.put("password",connectionDetails.password)
+      value
+  }
+  def getJdbcConnection(connectionDetails:ConnectionDetails) = {
+    val props = getJDBCProps(connectionDetails)
+    Class.forName(connectionDetails.driver)
+    java.sql.DriverManager.getConnection(props.getProperty("user"),props)
+   }
+  case class connectionHolder(connectionDetails:ConnectionDetails){
+    var connectionVariable:java.sql.Connection=null
+    def connection  =  connectionVariable.isValid(5) match {
+     case true =>connectionVariable
+     case false =>
+       connectionVariable= getJdbcConnection(connectionDetails)
+    }
+  }
+
   val getSemIdFromTable=(semId:String)=>    {
-    val connection= getJdbcConnection
+    val connection= getJdbcConnection(constructConnectionConfig("postgres" +
+      ""))
   }
 
 
