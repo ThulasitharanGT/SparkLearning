@@ -7,6 +7,8 @@ object dynamicSchemaSCD2 {
 
   val spark = org.apache.spark.sql.SparkSession.builder.getOrCreate
   spark.sparkContext.setLogLevel("ERROR")
+    val inputMap=collection.mutable.Map[String,String]()
+
 def main(args:Array[String]):Unit ={
 
   val getDataType:(String) => org.apache.spark.sql.types.DataType = (dTypeInfo:String)  =>dTypeInfo.toLowerCase match {
@@ -59,15 +61,42 @@ colInfo.split(":",2) match {case value =>
 
   case class stateStore(dataMap:Map[String,org.apache.spark.sql.Row])
 
+  def getJdbcConnection
+  val getSemIdFromTable=(semId:String)=>    {
+    val connection= getJdbcConnection
+  }
+
+
+
   def stateFunction(key:String,incomingRowList:List[org.apache.spark.sql.Row],
                     groupState:org.apache.spark.sql.streaming.GroupState[stateStore]
                    )=
     groupState.getOption match {
       case Some(state) =>
       case None =>
-        val parentRows =incomingRowList.filter(_.getAs[String](""))
-    }
+                                       /*
+                                       assessment is pnt
+                                       childExamAndSub child
+                                       childExamAndType is grand child
+                                       */
+        var releasedRows=Seq.empty[org.apache.spark.sql.Row]
+        val parentRows =incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("assessmentYearRefValue"))
+        val childExamAndSub=incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("semIdExamIdSubCodeRefValue"))
+        val childExamAndType=incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("semIdExamIdExamTypeRefValue"))
 
+        parentRows.size match {
+          case 0 =>
+               childExamAndSub.size match {
+                 case value if value >1 =>
+               //    check delete or insert
+                   val childKeys=childExamAndSub.map(x=>jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))).map(x=>(x("semId").asInstanceOf[String],x("examId").toString,x("CRUDType").toString))
+
+
+               }
+          case _ =>
+
+        }
+    }
 
     // colName:Dtype()~colName:Dtype~colName:Dtype
 /*
@@ -81,10 +110,11 @@ is_valid  boolean
 );
 
 */
+
   def getSchema(schemaInfo:String) =new org.apache.spark.sql.types.StructType(
     schemaInfo.split("~").map(getStructField))
 
-  val inputMap=collection.mutable.Map[String,String]()
+
   for(arg <- args)
     inputMap.put(arg.split("=",2)(0),arg.split("=",2)(1))
 
@@ -103,9 +133,18 @@ is_valid  boolean
 
     )
   )))
+           /*
+          typeFilterColumn
+           assessmentYearRefValue
+          semIdExamIdSubCodeRefValue
+          semIdExamIdExamTypeRefValue
 
-     //assessmentYearSemIdDF
-       readStreamDF
+          actualMsgColumn
+           assessmentYearSchema
+
+
+            */
+        readStreamDF
       .filter(s"${inputMap("typeFilterColumn")} = '${inputMap("assessmentYearRefValue")}'")
       .select(org.apache.spark.sql.functions.from_json
       (org.apache.spark.sql.functions.col(inputMap("actualMsgColumn"))
