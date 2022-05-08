@@ -1,7 +1,7 @@
 package org.controller.markCalculation
 
 import org.apache.spark.sql.streaming.GroupStateTimeout
-import org.controller.markCalculation.marksCalculationUtil.jsonStrToMap
+import org.controller.markCalculation.marksCalculationUtil.{jsonStrToMap, toJson}
 
 object dynamicSchemaSCD2 {
 
@@ -52,8 +52,10 @@ def main(args:Array[String]):Unit = {
     }
 
 
-  def getKeyFromInnerMessage(innerMsg: String) =
-    jsonStrToMap(innerMsg).get("semId").asInstanceOf[String]
+  def getKeyFromInnerMessage(innerMsg : String) =
+    jsonStrToMap(innerMsg) match {
+      case value => (value("semId").asInstanceOf[String],value("examId").toString)
+    }
 
   def getKey(row: org.apache.spark.sql.Row
              , inputMap: scala.collection.mutable.Map[String, String]) =
@@ -124,14 +126,36 @@ def main(args:Array[String]):Unit = {
             !deleteKeys.contains(value("examId"))
         }
     }
+  val simpleDateParser = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS")
+
+  def deleteChildRow(keyCombination:(String,String))=s"update set is_valid=0 where exam_id = '${keyCombination._2}' and sem_id='${keyCombination._1}' and is_valid=1"
+
+  def getLatestRecord(rowTmp:List[org.apache.spark.sql.Row])=rowTmp.sortBy[Long](x=> simpleDateParser.parse(x.getAs[String]("receivingTimeStamp")).getTime).last
+
+  def getLatestDeleteRecord(rowTmp:List[org.apache.spark.sql.Row])=rowTmp.sortWith((one:org.apache.spark.sql.Row,two:org.apache.spark.sql.Row) => {
+    simpleDateParser.parse(one.getAs[String]("receivingTimeStamp")).getTime > simpleDateParser.parse(two.getAs[String]("receivingTimeStamp")).getTime
+  }).head match {
+    case value =>
+      jsonStrToMap(value.getAs[String](inputMap("actualMsgColumn")))("CRUDType").asInstanceOf[String]=="Delete" match {
+        case true =>
+          value
+        case false =>
+          org.apache.spark.sql.Row(value.schema.map(_.name).foldLeft(Seq.empty[Any])((seqVariable,currVariable)=>
+            currVariable==inputMap("actualMsgColumn") match  {
+              case true =>
+                seqVariable :+ toJson(jsonStrToMap(value.getAs[String](currVariable)).filterNot(_._1 == "CRUDType") ++ Map("CRUDType"->"Delete"))
+              case false =>
+                seqVariable :+ value.getAs[String](currVariable)
+            }) :_*)
+      }
+  }
 
 
 
-  def stateFunction(key: String, incomingRowList: List[org.apache.spark.sql.Row],
+
+  def stateFunction(key: (String,String), incomingRowList: List[org.apache.spark.sql.Row],
                     groupState: org.apache.spark.sql.streaming.GroupState[stateStore]
-                   ) = {
-    val simpleDateParser = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS")
-    groupState.getOption match {
+                   ) = groupState.getOption match {
       case Some(state) =>
       case None =>
         /*
@@ -139,7 +163,7 @@ def main(args:Array[String]):Unit = {
          childExamAndSub child
          childExamAndType is grand child
        */
-        var releasedRows = Seq.empty[org.apache.spark.sql.Row]
+        var latestRows=Seq.empty[org.apache.spark.sql.Row]
         val parentRows = incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("assessmentYearRefValue"))
         val childExamAndSub = incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("semIdExamIdSubCodeRefValue"))
         val grandChildExamAndType = incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("semIdExamIdExamTypeRefValue"))
@@ -147,108 +171,45 @@ def main(args:Array[String]):Unit = {
         parentRows.size match {
           case 0 =>
             childExamAndSub.size match {
-              case value if value > 1 =>
-                //    check delete or insert
-                val childKeys = childExamAndSub.map(x => jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))).map(x => (x("semId").asInstanceOf[String], x("examId").toString, x("CRUDType").toString))
-                val deleteKeys = childKeys.filter(_._3 == "Delete").map(x => (x._1, x._2))
-                val insertOrUpdateKeys = childKeys.filterNot(_._3 == "Delete").map(x => (x._1, x._2))
-                val finalInsertOrUpdateKeys = insertOrUpdateKeys.diff(deleteKeys)
+              case value if value >= 1 =>
+                val childCRUDDeleteCheck=childExamAndSub.filter(x => jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))("CRUDType").toString match {case "Insert" || "Update" => false case "Delete"  =>true })
 
-                val distinctKeys = childKeys.distinct
-                /* filter insert records in finalInsertOrUpdateKeys
-                   ++ filter delete records in delete keys */
-
-                val childRecords = (childExamAndSub.filter(filterRecordsForIOUChild(_, finalInsertOrUpdateKeys))
-                  ++ childExamAndSub.filterNot(filterRecordsForIOUChild(_, finalInsertOrUpdateKeys)))
-                  .groupBy[(String, String,String)](x => jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))
-                  match {
-                    case value => (value("semId").asInstanceOf[String], value("examId").toString, value("subjectCode").toString)
-                  }).map(innerVariable => {
-                  deleteKeys.contains((innerVariable._1._1,innerVariable._1._2)) match {
-                    case true =>
-                      innerVariable._2.filter(x => jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))("CRUDType").toString == "Delete").sortWith(
-                        (one: org.apache.spark.sql.Row, two: org.apache.spark.sql.Row) =>
-                          simpleDateParser.parse(jsonStrToMap(one.getAs[String](inputMap("actualMsgColumn")))("receivingTimeStamp").toString).getTime > simpleDateParser.parse(jsonStrToMap(two.getAs[String](inputMap("actualMsgColumn")))("receivingTimeStamp").toString).getTime
-                      ).head
-                    case false =>
-                      innerVariable._2.sortWith(
-                        (one: org.apache.spark.sql.Row, two: org.apache.spark.sql.Row) =>
-                          simpleDateParser.parse(jsonStrToMap(one.getAs[String](inputMap("actualMsgColumn")))("receivingTimeStamp").toString).getTime > simpleDateParser.parse(jsonStrToMap(two.getAs[String](inputMap("actualMsgColumn")))("receivingTimeStamp").toString).getTime
-                      ).head
-                  }
-                    // if true , right variable is kept at top in sortWith
-                  //.sortBy(x =>simpleDateParser.parse(x.getAs[String]("receivingTimeStamp"))/*.getTime*/)
-                }).toList
-
-
-                // record release
-                getSemIdFromTable(key) match {
-                  case true => // update state with latest records
-
-                    // grandParent check
-                    val grandChildKeys = grandChildExamAndType.map(x => (x,jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn"))))).map(x =>(x._1,x._2("examId").asInstanceOf[String],x._2("CRUDType").toString))
-                    val grandChildCheckedKeys = grandChildKeys.map(x => (x._1,x._2, distinctKeys.map(_._2).contains(x._2) match { case true=> true case false =>  getSemIdAndExamIdFromTable(key, x._2)}
-                      ,x._3))
-
-                    val grandChildDeleteKeys=grandChildKeys.filter(_._3=="Delete").map(_._2)
-
-                    val grandChildRecordsFiltered=grandChildCheckedKeys.filter(x =>filterGrandChildRecords(x._1,grandChildDeleteKeys))
-                       .groupBy[String](_._2).map(internalValue =>{
-                      grandChildDeleteKeys.contains(internalValue._1) match {
-                        case true =>
-                          internalValue._2.filter(_._4=="Delete").map(x=>(x._1,x._3)).sortWith(
-                            (one:(org.apache.spark.sql.Row,Boolean),two:(org.apache.spark.sql.Row,Boolean)) =>
-                              simpleDateParser.parse(jsonStrToMap(one._1.getAs[String](inputMap("actualMsgColumn")))("receivingTimeStamp").toString).getTime > simpleDateParser.parse(jsonStrToMap(two._1.getAs[String](inputMap("actualMsgColumn")))("receivingTimeStamp").toString).getTime
-                          ).head
-                        case false =>
-                          internalValue._2.map(x=>(x._1,x._3)).sortWith(
-                            (one:(org.apache.spark.sql.Row,Boolean),two:(org.apache.spark.sql.Row,Boolean)) =>
-                              simpleDateParser.parse(jsonStrToMap(one._1.getAs[String](inputMap("actualMsgColumn")))("receivingTimeStamp").toString).getTime > simpleDateParser.parse(jsonStrToMap(two._1.getAs[String](inputMap("actualMsgColumn")))("receivingTimeStamp").toString).getTime
-                          ).head
-                      }
-                        }).toList
-
-                    val dataMap=collection.mutable.Map[String,List[org.apache.spark.sql.Row]]()
-                    dataMap.put("parent",List.empty[org.apache.spark.sql.Row])
-                    dataMap.put("child",childRecords)
-                    dataMap.put("grandChild",grandChildRecordsFiltered.map(_._1))
-                    groupState.update(stateStore(dataMap))
-                    grandChildRecordsFiltered.filter(_._2==true).map(_._1)  ++ childRecords
-
+                childCRUDDeleteCheck.size >=1 match {
+                  case true =>
+                    latestRows= latestRows ++ Seq(
+                     getLatestRecord(childCRUDDeleteCheck),
+                       grandChildExamAndType.filter(x=> jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))("CRUDType").asInstanceOf[String]=="Delete") match {
+                         case value if value.size >0 =>
+                           getLatestDeleteRecord(grandChildExamAndType)
+                         case _ =>
+                           getLatestRecord(grandChildExamAndType)
+                       })
                   case false =>
-                    val grandChildKeys = grandChildExamAndType.map(x => (x,jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn"))))).map(x =>(x._1,x._2("examId").asInstanceOf[String],x._2("CRUDType").toString))
-                    val grandChildDeleteKeys=grandChildKeys.filter(_._3=="Delete").map(_._2)
-
-                    val grandChildRecordsFiltered=grandChildKeys.filter(x =>filterGrandChildRecords(x._1,grandChildDeleteKeys))
-                      .groupBy[String](_._2).map(internalValue =>{
-                      grandChildDeleteKeys.contains(internalValue._1) match {
-                        case true =>
-                          internalValue._2.filter(_._3=="Delete").map(_._1).sortWith(
-                            (one:org.apache.spark.sql.Row,two:org.apache.spark.sql.Row) =>
-                              simpleDateParser.parse(jsonStrToMap(one.getAs[String](inputMap("actualMsgColumn")))("receivingTimeStamp").toString).getTime > simpleDateParser.parse(jsonStrToMap(two.getAs[String](inputMap("actualMsgColumn")))("receivingTimeStamp").toString).getTime
-                          ).head
-                        case false =>
-                          internalValue._2.map(_._1).sortWith(
-                            (one:org.apache.spark.sql.Row,two:org.apache.spark.sql.Row) =>
-                              simpleDateParser.parse(jsonStrToMap(one.getAs[String](inputMap("actualMsgColumn")))("receivingTimeStamp").toString).getTime > simpleDateParser.parse(jsonStrToMap(two.getAs[String](inputMap("actualMsgColumn")))("receivingTimeStamp").toString).getTime
-                          ).head
+                    latestRows= latestRows ++ Seq( getLatestRecord(childExamAndSub)
+                    , grandChildExamAndType.filter(x => jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))("CRUDType").toString == "Delete") match {
+                          case value if value.size > 0 =>
+                            getLatestDeleteRecord(grandChildExamAndType)
+                          case value if value.size == 0 =>
+                            getLatestRecord(grandChildExamAndType)
+                        } )
                       }
-                    }).toList
-                    val dataMap=collection.mutable.Map[String,List[org.apache.spark.sql.Row]]()
-                    dataMap.put("parent",List.empty[org.apache.spark.sql.Row])
-                    dataMap.put("child",childRecords)
-                    dataMap.put("grandChild",grandChildRecordsFiltered)
-                    groupState.update(stateStore(dataMap))
-
-                    List.empty[org.apache.spark.sql.Row]
-                }
+              case 0 =>
+                latestRows= latestRows :+ {grandChildExamAndType.filter(x => jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))("CRUDType").toString == "Delete") match {
+                    case value if value.size > 0 =>
+                      getLatestDeleteRecord(grandChildExamAndType)
+                    case value if value.size == 0 =>
+                      getLatestRecord(grandChildExamAndType)
+                  }}
 
             }
           case _ =>
-// no state,parent in incoming
+                    // parent row incoming
+
+
         }
     }
-  }
+
+
 
 
   // colName:Dtype()~colName:Dtype~colName:Dtype
