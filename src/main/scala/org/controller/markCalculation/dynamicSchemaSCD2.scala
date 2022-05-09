@@ -156,7 +156,8 @@ def main(args:Array[String]):Unit = {
   }
 
   def getDeleteRecords(rowTmp:List[org.apache.spark.sql.Row])=rowTmp.filter(x => jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))("CRUDType").asInstanceOf[String]=="Delete" )
-  def replicateGrandChild(record:org.apache.spark.sql.Row)=org.apache.spark.sql.Row(record.schema.foldRight(Seq.empty[Any])((seqVar)))
+  def replicateGrandChild(record:org.apache.spark.sql.Row)=org.apache.spark.sql.Row(record.schema.map(_.name).foldRight(Seq.empty[Any])((currVar,seqVar) => inputMap("typeFilterColumn")==currVar match {case true =>seqVar:+ inputMap("semIdExamIdExamTypeRefValue") case true =>seqVar:+ record.getAs[String](currVar) } ) :_*)
+  def replicateChild(record:org.apache.spark.sql.Row)=org.apache.spark.sql.Row(record.schema.map(_.name).foldRight(Seq.empty[Any])((currVar,seqVar) => inputMap("typeFilterColumn")==currVar match {case true =>seqVar:+ inputMap("semIdExamIdSubCodeRefValue") case true =>seqVar:+ record.getAs[String](currVar) } ) :_*)
 
   /*
           assessment is pnt // soft deletes postgres table // scd2 deletes in delta
@@ -226,72 +227,97 @@ def main(args:Array[String]):Unit = {
           case _ =>  // parent row incoming
             getDeleteRecords(parentRows).size match {
               case 0 =>
-                (getDeleteRecords(childExamAndSub),childExamAndSub,getDeleteRecords(grandChildExamAndType),getDeleteRecords(grandChildExamAndType)) match {
-                  case (delChildRec,inChildRecords,delGrandChildRec,inGrandChildRecords) if delChildRec.size ==0
-                    && inChildRecords.size >0  && delGrandChildRec.size==0 && inGrandChildRecords.size>0=>
-                  // latest child and grandchild and parent
+                (getDeleteRecords(childExamAndSub).size,childExamAndSub.size,getDeleteRecords(grandChildExamAndType).size,getDeleteRecords(grandChildExamAndType).size) match {
+                  case (0,0,0,0) => {}
+                  // nothing to put
+                    /*
+                     No child , with delete Grand child , without delete grand child
+                     delete child  => grandchild delete auto generated
+                     i || u  child => with delete Grand child , without delete grand child
+                     */
+
+                  case (0,child,0,grandChild) if child >0 && grandChild >0 => // no deletes on both end
+                    // latest child and grandchild and parent
                     val latestChildRecord=getLatestRecord(childExamAndSub)
                     val latestGrandChildRecord=getLatestRecord(grandChildExamAndType)
                     val latestParentRecord=getLatestRecord(parentRows)
 
-                  case (delChildRec,inChildRecords,delGrandChildRec,inGrandChildRecords) if delChildRec.size >0
-                    && inGrandChildRecords.size>0=>
-                  //latest parent, delete child and grandchild
-                    val latestChildRecord=getLatestDeleteRecord(childExamAndSub)
-                    val latestGrandChildRecord=getLatestDeleteRecord(grandChildExamAndType)
-                    val latestParentRecord=getLatestRecord(parentRows)
+                    tmpMap.put("parent",List(latestParentRecord))
+                    tmpMap.put("child",List(latestChildRecord))
+                    tmpMap.put("grandChild",List(latestGrandChildRecord))
 
+                    releasedRows = releasedRows :+ latestChildRecord :+ latestGrandChildRecord :+  latestParentRecord
+                  case (0,0,0,grandChild) if grandChild >0=>
 
-
-                  case (delChildRec,inChildRecords,delGrandChildRec,inGrandChildRecords) if inChildRecords.size == 0
-                    && delGrandChildRec.size ==0 && inGrandChildRecords.size >0=>
-
-                  //latest parent and grandchild , no child
+                    //latest parent and grandchild , no child
 
                     val latestGrandChildRecord=getLatestRecord(grandChildExamAndType)
                     val latestParentRecord=getLatestRecord(parentRows)
 
-                  case (delChildRec,inChildRecords,delGrandChildRec,inGrandChildRecords) if inChildRecords.size == 0
-                    && delGrandChildRec.size > 0=>
-                    //latest parent, delete grandchild , no child
+                    tmpMap.put("parent",List(latestParentRecord))
+                    tmpMap.put("grandChild",List(latestGrandChildRecord))
 
-                    val latestGrandChildRecord=getLatestDeleteRecord(grandChildExamAndType)
-                    val latestParentRecord=getLatestRecord(parentRows)
+                    releasedRows = releasedRows :+ latestGrandChildRecord :+  latestParentRecord
 
-                  case (delChildRec,inChildRecords,delGrandChildRec,inGrandChildRecords) if delChildRec.size ==0
-                && inChildRecords.size >0  && delGrandChildRec.size >0 =>
-                  // latest parent,child . delete grandchild
-
-                    val latestChildRecord=getLatestRecord(childExamAndSub)
-                    val latestGrandChildRecord=getLatestDeleteRecord(grandChildExamAndType)
-                    val latestParentRecord=getLatestRecord(parentRows)
-
-                  case (delChildRec,inChildRecords,delGrandChildRec,inGrandChildRecords) if inChildRecords.size >0
-                    && inGrandChildRecords.size == 0 =>
-                  // latest parent,child . no grandchild
-
-                    val latestChildRecord=getLatestRecord(childExamAndSub)
-                    val latestParentRecord=getLatestRecord(parentRows)
-
-                  case (delChildRec,inChildRecords,delGrandChildRec,inGrandChildRecords) if inChildRecords.size >0
-                    && delChildRec.size > 0 && inGrandChildRecords.size == 0 =>
-                  // latest parent,child . replicate grandchild Type withDelete
+                  case (0,child,0,0) if child >0 =>
+                    //latest parent,child and no grandchild
                     val latestChildRecord=getLatestDeleteRecord(childExamAndSub)
                     val latestParentRecord=getLatestRecord(parentRows)
-                    val latestGrandParentRecord=getLatestDeleteRecord(replicateGrandChild(childExamAndSub))
 
+                    tmpMap.put("parent",List(latestParentRecord))
+                    tmpMap.put("child",List(latestChildRecord))
 
+                    releasedRows = releasedRows :+ latestParentRecord :+  latestChildRecord
+
+                  case (0,0,deleteGrandChild,_) if deleteGrandChild >0 =>
+                  //latest parent, no child and delete grandchild
+                    val latestGrandChildRecord=getLatestDeleteRecord(grandChildExamAndType)
+                    val latestParentRecord=getLatestRecord(parentRows)
+
+                    tmpMap.put("parent",List(latestParentRecord))
+                    tmpMap.put("grandChild",List(latestGrandChildRecord))
+
+                    releasedRows = releasedRows :+ latestParentRecord :+  latestGrandChildRecord
+
+                  case (deleteChild,_,_,_) if deleteChild >0 =>
+                    //latest parent, delete child and no grandchild // generate grandchild
+                    val latestChildRecord=getLatestDeleteRecord(childExamAndSub)
+                    val latestGrandChildRecord=replicateGrandChild(latestChildRecord)
+                    val latestParentRecord=getLatestRecord(parentRows)
+
+                    tmpMap.put("parent",List(latestParentRecord))
+                    tmpMap.put("child",List(latestChildRecord))
+                    tmpMap.put("grandChild",List(latestGrandChildRecord))
+
+                    releasedRows = releasedRows :+ latestParentRecord :+  latestGrandChildRecord :+ latestChildRecord
                 }
               case _ =>
-                getLatestDeleteRecord(parentRows)
-                (getLatestRecord(childExamAndSub),getLatestRecord(grandChildExamAndType)) match {
-                  case sie==0
-                    replicateGrandChild, replicateChild
+                val parentDeleteRecord=getLatestDeleteRecord(parentRows)
+                tmpMap.put("parent",List(parentDeleteRecord))
+                (childExamAndSub.size,grandChildExamAndType.size) match {
+                  case (0,0)=>
+
+                    tmpMap.put("grandChild",List(replicateGrandChild(parentDeleteRecord)))
+                    tmpMap.put("child",List(replicateChild(parentDeleteRecord)))
+
+                    releasedRows = releasedRows :+ latestParentRecord :+  latestGrandChildRecord :+ latestChildRecord
+
+                  case (0,_)=>
+
+                    tmpMap.put("child",List(replicateChild(parentDeleteRecord)))
+                    tmpMap.put("grandChild",List(getLatestDeleteRecord(grandChildExamAndType)))
+
+                  case (_,0)=>
+
+                    tmpMap.put("grandChild",List(replicateGrandChild(parentDeleteRecord)))
+                    tmpMap.put("child",List(getLatestDeleteRecord(childExamAndSub)))
+
+                  case (_,_)=>
+
+                    tmpMap.put("grandChild",List(getLatestDeleteRecord(grandChildExamAndType)))
+                    tmpMap.put("child",List(getLatestDeleteRecord(childExamAndSub)))
+
                 }
-
-              //check if child and grand child are present, if yes thenn replicate eith delte
-
-
             }
 
 
