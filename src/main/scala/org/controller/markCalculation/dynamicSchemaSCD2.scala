@@ -121,8 +121,8 @@ def main(args:Array[String]):Unit = {
     jsonStrToMap(row.getAs[String](inputMap("actualMsgColumn"))) match {
       case value =>
         value("CRUDType") match {
-          case "DELETE" => false
-          case "INSERT" || "UPDATE" =>
+          case "Delete" => false
+          case "Insert" || "Update" =>
             !deleteKeys.contains(value("examId"))
         }
     }
@@ -150,20 +150,27 @@ def main(args:Array[String]):Unit = {
       }
   }
 
+  def getLatestRecordWithDeleteCheck(rowTmp:List[org.apache.spark.sql.Row])= getDeleteRecords(rowTmp).size match {
+    case 0 => getLatestRecord(rowTmp)
+    case _ => getLatestDeleteRecord(rowTmp)
+  }
 
+  def getDeleteRecords(rowTmp:List[org.apache.spark.sql.Row])=rowTmp.filter(x => jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))("CRUDType").asInstanceOf[String]=="Delete" )
+  def replicateGrandChild(record:org.apache.spark.sql.Row)=org.apache.spark.sql.Row(record.schema.foldRight(Seq.empty[Any])((seqVar)))
 
+  /*
+          assessment is pnt // soft deletes postgres table // scd2 deletes in delta
+          childExamAndSub child  // scd2 deletes in delta
+          childExamAndType is grand child // scd2 deletes in delta
+        */
 
   def stateFunction(key: (String,String), incomingRowList: List[org.apache.spark.sql.Row],
                     groupState: org.apache.spark.sql.streaming.GroupState[stateStore]
                    ) = groupState.getOption match {
       case Some(state) =>
       case None =>
-        /*
-         assessment is pnt
-         childExamAndSub child
-         childExamAndType is grand child
-       */
-        var latestRows=Seq.empty[org.apache.spark.sql.Row]
+        var releasedRows=Seq.empty[org.apache.spark.sql.Row]
+        val tmpMap=collection.mutable.Map[String,List[org.apache.spark.sql.Row]]()
         val parentRows = incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("assessmentYearRefValue"))
         val childExamAndSub = incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("semIdExamIdSubCodeRefValue"))
         val grandChildExamAndType = incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("semIdExamIdExamTypeRefValue"))
@@ -173,37 +180,119 @@ def main(args:Array[String]):Unit = {
             childExamAndSub.size match {
               case value if value >= 1 =>
                 val childCRUDDeleteCheck=childExamAndSub.filter(x => jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))("CRUDType").toString match {case "Insert" || "Update" => false case "Delete"  =>true })
-
+                // delete grandChild too
                 childCRUDDeleteCheck.size >=1 match {
                   case true =>
-                    latestRows= latestRows ++ Seq(
-                     getLatestRecord(childCRUDDeleteCheck),
-                       grandChildExamAndType.filter(x=> jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))("CRUDType").asInstanceOf[String]=="Delete") match {
-                         case value if value.size >0 =>
-                           getLatestDeleteRecord(grandChildExamAndType)
-                         case _ =>
-                           getLatestRecord(grandChildExamAndType)
-                       })
+                    val childLatestRecord=getLatestDeleteRecord(childExamAndSub)
+                    val grandChildLatestRecord=getLatestDeleteRecord(grandChildExamAndType)
+                    getSemIdAndExamIdFromTable(key._1,key._2) match {
+                      case true =>
+                        releasedRows= releasedRows ++ Seq(
+                          childLatestRecord,
+                          grandChildLatestRecord
+                        )
+                      case false =>{println(s"No Release, no parent found in msg and table. No state")}
+                    }
+
+                    tmpMap.put("child",List(childLatestRecord))
+                    tmpMap.put("grandChild",List(grandChildLatestRecord))
+
                   case false =>
-                    latestRows= latestRows ++ Seq( getLatestRecord(childExamAndSub)
-                    , grandChildExamAndType.filter(x => jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))("CRUDType").toString == "Delete") match {
-                          case value if value.size > 0 =>
-                            getLatestDeleteRecord(grandChildExamAndType)
-                          case value if value.size == 0 =>
-                            getLatestRecord(grandChildExamAndType)
-                        } )
+                    val childLatestRecord= getLatestRecord(childExamAndSub)
+                    val grandChildLatestRecord=getLatestRecordWithDeleteCheck(grandChildExamAndType)
+
+                    getSemIdAndExamIdFromTable(key._1,key._2) match {
+                      case true =>
+                        releasedRows= releasedRows ++ Seq(
+                          childLatestRecord,
+                          grandChildLatestRecord
+                        )
+                      case false =>{println(s"No Release, no parent found in msg and table. No state")}
+                    }
+
+                    tmpMap.put("child",List(childLatestRecord))
+                    tmpMap.put("grandChild",List(grandChildLatestRecord))
                       }
               case 0 =>
-                latestRows= latestRows :+ {grandChildExamAndType.filter(x => jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))("CRUDType").toString == "Delete") match {
-                    case value if value.size > 0 =>
-                      getLatestDeleteRecord(grandChildExamAndType)
-                    case value if value.size == 0 =>
-                      getLatestRecord(grandChildExamAndType)
-                  }}
+
+                val latestGrandChildRecord=getLatestRecordWithDeleteCheck(grandChildExamAndType)
+                getSemIdAndExamIdFromTable(key._1,key._2) match {
+                  case true =>
+                    releasedRows = releasedRows :+ latestGrandChildRecord
+                  case false => {println("No parent in table, grand child not released")}
+                 }
+                 tmpMap.put("grandChild",List(latestGrandChildRecord))
+            }
+          case _ =>  // parent row incoming
+            getDeleteRecords(parentRows).size match {
+              case 0 =>
+                (getDeleteRecords(childExamAndSub),childExamAndSub,getDeleteRecords(grandChildExamAndType),getDeleteRecords(grandChildExamAndType)) match {
+                  case (delChildRec,inChildRecords,delGrandChildRec,inGrandChildRecords) if delChildRec.size ==0
+                    && inChildRecords.size >0  && delGrandChildRec.size==0 && inGrandChildRecords.size>0=>
+                  // latest child and grandchild and parent
+                    val latestChildRecord=getLatestRecord(childExamAndSub)
+                    val latestGrandChildRecord=getLatestRecord(grandChildExamAndType)
+                    val latestParentRecord=getLatestRecord(parentRows)
+
+                  case (delChildRec,inChildRecords,delGrandChildRec,inGrandChildRecords) if delChildRec.size >0
+                    && inGrandChildRecords.size>0=>
+                  //latest parent, delete child and grandchild
+                    val latestChildRecord=getLatestDeleteRecord(childExamAndSub)
+                    val latestGrandChildRecord=getLatestDeleteRecord(grandChildExamAndType)
+                    val latestParentRecord=getLatestRecord(parentRows)
+
+
+
+                  case (delChildRec,inChildRecords,delGrandChildRec,inGrandChildRecords) if inChildRecords.size == 0
+                    && delGrandChildRec.size ==0 && inGrandChildRecords.size >0=>
+
+                  //latest parent and grandchild , no child
+
+                    val latestGrandChildRecord=getLatestRecord(grandChildExamAndType)
+                    val latestParentRecord=getLatestRecord(parentRows)
+
+                  case (delChildRec,inChildRecords,delGrandChildRec,inGrandChildRecords) if inChildRecords.size == 0
+                    && delGrandChildRec.size > 0=>
+                    //latest parent, delete grandchild , no child
+
+                    val latestGrandChildRecord=getLatestDeleteRecord(grandChildExamAndType)
+                    val latestParentRecord=getLatestRecord(parentRows)
+
+                  case (delChildRec,inChildRecords,delGrandChildRec,inGrandChildRecords) if delChildRec.size ==0
+                && inChildRecords.size >0  && delGrandChildRec.size >0 =>
+                  // latest parent,child . delete grandchild
+
+                    val latestChildRecord=getLatestRecord(childExamAndSub)
+                    val latestGrandChildRecord=getLatestDeleteRecord(grandChildExamAndType)
+                    val latestParentRecord=getLatestRecord(parentRows)
+
+                  case (delChildRec,inChildRecords,delGrandChildRec,inGrandChildRecords) if inChildRecords.size >0
+                    && inGrandChildRecords.size == 0 =>
+                  // latest parent,child . no grandchild
+
+                    val latestChildRecord=getLatestRecord(childExamAndSub)
+                    val latestParentRecord=getLatestRecord(parentRows)
+
+                  case (delChildRec,inChildRecords,delGrandChildRec,inGrandChildRecords) if inChildRecords.size >0
+                    && delChildRec.size > 0 && inGrandChildRecords.size == 0 =>
+                  // latest parent,child . replicate grandchild Type withDelete
+                    val latestChildRecord=getLatestDeleteRecord(childExamAndSub)
+                    val latestParentRecord=getLatestRecord(parentRows)
+                    val latestGrandParentRecord=getLatestDeleteRecord(replicateGrandChild(childExamAndSub))
+
+
+                }
+              case _ =>
+                getLatestDeleteRecord(parentRows)
+                (getLatestRecord(childExamAndSub),getLatestRecord(grandChildExamAndType)) match {
+                  case sie==0
+                    replicateGrandChild, replicateChild
+                }
+
+              //check if child and grand child are present, if yes thenn replicate eith delte
+
 
             }
-          case _ =>
-                    // parent row incoming
 
 
         }
