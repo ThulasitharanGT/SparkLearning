@@ -1,6 +1,7 @@
 package org.controller.markCalculation
 
 import org.apache.spark.sql.streaming.GroupStateTimeout
+import org.controller.markCalculation.marksCalculationConstant.wrapperSchema
 import org.controller.markCalculation.marksCalculationUtil.{jsonStrToMap, toJson}
 
 object dynamicSchemaSCD2 {
@@ -398,7 +399,7 @@ is_valid  boolean
   def getSchema(schemaInfo:String) =new org.apache.spark.sql.types.StructType(
     schemaInfo.split("~").map(getStructField))
 
-
+  import org.apache.spark.sql.{Encoder, Encoders}
   for(arg <- args)
     inputMap.put(arg.split("=",2)(0),arg.split("=",2)(1))
 
@@ -409,14 +410,10 @@ is_valid  boolean
     org.apache.spark.sql.functions.from_json(org.apache.spark.sql.functions.col("value")
       .cast(org.apache.spark.sql.types.StringType),getSchema(inputMap("outerSchema"))).as("dataExtracted"))
     .select(org.apache.spark.sql.functions.col("dataExtracted.*"))
-    .groupByKey(getKey(_,inputMap)).mapGroupsWithState(GroupStateTimeout.NoTimeout)( (key,rowList,) =>
-    stateFunction()
-
-   )(org.apache.spark.sql.catalyst.encoders.RowEncoder(new org.apache.spark.sql.types.StructType(
-    Array(
-
-    )
-  )))
+    .groupByKey(getKey(_,inputMap))(Encoders.product[(String,String)])
+    .mapGroupsWithState(GroupStateTimeout.NoTimeout)( (key,rowList,state) =>
+    stateFunction(key,rowList.toList,state)
+  )(org.apache.spark.sql.catalyst.encoders.RowEncoder( wrapperSchema ))
            /*
           typeFilterColumn
            assessmentYearRefValue
