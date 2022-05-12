@@ -3,14 +3,16 @@ package org.controller.markCalculation
 import org.apache.spark.sql.streaming.GroupStateTimeout
 import org.controller.markCalculation.marksCalculationConstant.wrapperSchema
 import org.controller.markCalculation.marksCalculationUtil.{jsonStrToMap, toJson}
+import org.apache.spark.sql.{Encoder, Encoders}
 
 object dynamicSchemaSCD2 {
+  case class stateStore(dataMap: collection.mutable.Map[String, List[org.apache.spark.sql.Row]])
 
   val spark = org.apache.spark.sql.SparkSession.builder.getOrCreate
   spark.sparkContext.setLogLevel("ERROR")
     val inputMap=collection.mutable.Map[String,String]()
 
-def main(args:Array[String]):Unit = {
+
 
   val getDataType: (String) => org.apache.spark.sql.types.DataType = (dTypeInfo: String) => dTypeInfo.toLowerCase match {
     case value if value.startsWith("str") => org.apache.spark.sql.types.StringType
@@ -62,7 +64,6 @@ def main(args:Array[String]):Unit = {
              , inputMap: scala.collection.mutable.Map[String, String]) =
     getKeyFromInnerMessage(row.getAs[String](inputMap("actualMsgColumn")))
 
-  case class stateStore(dataMap: collection.mutable.Map[String, List[org.apache.spark.sql.Row]])
 
   type driver = String
   case class ConnectionDetails(user: String, password: String, url: String, driver: driver)
@@ -367,9 +368,9 @@ def main(args:Array[String]):Unit = {
 
   }
 
-  def stateFunction(key: (String,String), incomingRowList: List[org.apache.spark.sql.Row],
-                    groupState: org.apache.spark.sql.streaming.GroupState[stateStore]
-                   ) = groupState.getOption match {
+   def stateFunction(key: (String,String), incomingRowList: List[org.apache.spark.sql.Row],
+                    groupState: org.apache.spark.sql.streaming.GroupState[stateStore])
+   = groupState.getOption match {
       case Some(state) =>
         val (releaseRecords,dataMap)=processIncomingRecords(key,incomingRowList,state.dataMap)
         groupState.update(stateStore(dataMap))
@@ -399,7 +400,8 @@ is_valid  boolean
   def getSchema(schemaInfo:String) =new org.apache.spark.sql.types.StructType(
     schemaInfo.split("~").map(getStructField))
 
-  import org.apache.spark.sql.{Encoder, Encoders}
+  def main(args:Array[String]):Unit = {
+
   for(arg <- args)
     inputMap.put(arg.split("=",2)(0),arg.split("=",2)(1))
 
@@ -411,9 +413,15 @@ is_valid  boolean
       .cast(org.apache.spark.sql.types.StringType),getSchema(inputMap("outerSchema"))).as("dataExtracted"))
     .select(org.apache.spark.sql.functions.col("dataExtracted.*"))
     .groupByKey(getKey(_,inputMap))(Encoders.product[(String,String)])
-    .mapGroupsWithState(GroupStateTimeout.NoTimeout)( (key,rowList,state) =>
+   .flatMapGroupsWithState(new flatMapGroupFunction,org.apache.spark.sql.streaming.OutputMode.Update,
+      Encoders.product[stateStore],org.apache.spark.sql.catalyst.encoders.RowEncoder(wrapperSchema)
+    ,GroupStateTimeout.NoTimeout)
+
+
+    /*.mapGroupsWithState(GroupStateTimeout.NoTimeout)( (key,rowList,state) =>
     stateFunction(key,rowList.toList,state)
-  )(org.apache.spark.sql.catalyst.encoders.RowEncoder( wrapperSchema ))
+  )(org.apache.spark.sql.catalyst.encoders.RowEncoder( new org.apache.spark.sql.types.StructType(
+     Array( org.apache.spark.sql.types.StructField("data",wrapperSchema,true ))))*/
            /*
           typeFilterColumn
            assessmentYearRefValue
@@ -425,35 +433,40 @@ is_valid  boolean
 
 
             */
-        readStreamDF
-      .filter(s"${inputMap("typeFilterColumn")} = '${inputMap("assessmentYearRefValue")}'")
-      .select(org.apache.spark.sql.functions.from_json
-      (org.apache.spark.sql.functions.col(inputMap("actualMsgColumn"))
-      ,getSchema(inputMap("assessmentYearSchema"))))
-         .writeStream.format("console").outputMode("append")
-         .option("checkpointLocation","")
-         .start
 
-
-    val semIdExamIdSubjectCodeDF= readStreamDF
-      .filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
-        === org.apache.spark.sql.functions.lit(inputMap("semIdExamIdSubCodeRefValue")))
-
-    val semIdExamIdAndExamTypeDF= readStreamDF
-      .where(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
-        === org.apache.spark.sql.functions.lit(inputMap("semIdExamIdExamTypeRefValue")))
-
+    readStreamDF.writeStream.format("console").outputMode("update")
+      .option("truncate","false").start
 
   /*
-  spark.readStream.format("kafka").option("kafka.bootstrap.servers",inputMap("bootstrapServer"))
-    .option("startingOffsets",inputMap("startingOffsets"))
-    .option("subscribe",inputMap("topic")).load.select(org.apache.spark.sql.functions.from_json(org.apache.spark.sql.functions.col("value")
-  .cast(org.apache.spark.sql.types.StringType).as("value"),getSchema(inputMap("schemaStr"))))
-    .writeStream.format("console").outputMode("append").option("truncate","false")
-    .option("numRows","999999999")
-    .option("checkpointLocation",inputMap("checkpointLocation")).start
+    readStreamDF
+        .filter(s"${inputMap("typeFilterColumn")} = '${inputMap("assessmentYearRefValue")}'")
+        .select(org.apache.spark.sql.functions.from_json
+        (org.apache.spark.sql.functions.col(inputMap("actualMsgColumn"))
+        ,getSchema(inputMap("assessmentYearSchema"))))
+           .writeStream.format("console").outputMode("append")
+           .option("checkpointLocation","")
+           .start
 
-*/
+
+      val semIdExamIdSubjectCodeDF= readStreamDF
+        .filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
+          === org.apache.spark.sql.functions.lit(inputMap("semIdExamIdSubCodeRefValue")))
+
+      val semIdExamIdAndExamTypeDF= readStreamDF
+        .where(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
+          === org.apache.spark.sql.functions.lit(inputMap("semIdExamIdExamTypeRefValue")))
+
+
+
+    spark.readStream.format("kafka").option("kafka.bootstrap.servers",inputMap("bootstrapServer"))
+      .option("startingOffsets",inputMap("startingOffsets"))
+      .option("subscribe",inputMap("topic")).load.select(org.apache.spark.sql.functions.from_json(org.apache.spark.sql.functions.col("value")
+    .cast(org.apache.spark.sql.types.StringType).as("value"),getSchema(inputMap("schemaStr"))))
+      .writeStream.format("console").outputMode("append").option("truncate","false")
+      .option("numRows","999999999")
+      .option("checkpointLocation",inputMap("checkpointLocation")).start
+
+  */
 
 
   /*
