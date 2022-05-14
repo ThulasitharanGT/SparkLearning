@@ -347,8 +347,19 @@ products:
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation$$typecreator9$1.class
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation$.class
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> build/classes/scala/main/org/controller/markCalculation/diamondCalculation.class
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> build/classes/scala/main/org/controller/markCalculation/dynamicSchemaSCD2$$typecreator1$1.class
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> build/classes/scala/main/org/controller/markCalculation/dynamicSchemaSCD2$$typecreator2$1.class
    src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> build/classes/scala/main/org/controller/markCalculation/dynamicSchemaSCD2$.class
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> build/classes/scala/main/org/controller/markCalculation/dynamicSchemaSCD2$ConnectionDetails$.class
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> build/classes/scala/main/org/controller/markCalculation/dynamicSchemaSCD2$ConnectionDetails.class
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> build/classes/scala/main/org/controller/markCalculation/dynamicSchemaSCD2$connectionHolder$.class
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> build/classes/scala/main/org/controller/markCalculation/dynamicSchemaSCD2$connectionHolder.class
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> build/classes/scala/main/org/controller/markCalculation/dynamicSchemaSCD2$rowStore$.class
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> build/classes/scala/main/org/controller/markCalculation/dynamicSchemaSCD2$rowStore.class
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> build/classes/scala/main/org/controller/markCalculation/dynamicSchemaSCD2$stateStore$.class
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> build/classes/scala/main/org/controller/markCalculation/dynamicSchemaSCD2$stateStore.class
    src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> build/classes/scala/main/org/controller/markCalculation/dynamicSchemaSCD2.class
+   src/main/scala/org/controller/markCalculation/flatMapGroupFunction.scala -> build/classes/scala/main/org/controller/markCalculation/flatMapGroupFunction.class
    src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToAssessmentLoad$.class
    src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToAssessmentLoad.class
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> build/classes/scala/main/org/controller/markCalculation/kafkaToBronzeLoad$.class
@@ -1087,7 +1098,12 @@ binary dependencies:
    src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/markCalculation/flatMapGroupFunction.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/flatMapGroupFunction.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/flatMapGroupFunction.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/markCalculation/flatMapGroupFunction.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.1/532245109acc03258cc352ea5e203fc8c0558a09/delta-core_2.11-0.6.1.jar
    src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
@@ -1121,6 +1137,8 @@ binary dependencies:
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-core_2.11/2.4.5/8f658b9b71ad2ea211fa09296ae88645109ea8d8/spark-core_2.11-2.4.5.jar
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.json4s/json4s-core_2.11/3.5.3/4ea70f8fec94e03341c81d21e924d8c469ef0b61/json4s-core_2.11-3.5.3.jar
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.json4s/json4s-jackson_2.11/3.5.3/733a711a66d8eecbde9cfd7618235eae0d349a6d/json4s-jackson_2.11-3.5.3.jar
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-reflect/2.11.12/2bb23c13c527566d9828107ca4108be2a2c06f01/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
@@ -1602,6 +1620,10 @@ source dependencies:
    src/main/scala/org/controller/markCalculation/bronzeToSilverTrigger.scala -> src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> src/main/scala/org/controller/markCalculation/flatMapGroupFunction.scala
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala
+   src/main/scala/org/controller/markCalculation/flatMapGroupFunction.scala -> src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala
    src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala
    src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> src/main/scala/org/controller/markCalculation/marksCalculationConstant.scala
@@ -2075,6 +2097,17 @@ class names:
    src/main/scala/org/controller/markCalculation/diamondCalculation.scala -> org.controller.markCalculation.diamondCalculation$$typecreator9$1
    src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> org.controller.markCalculation.dynamicSchemaSCD2
    src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> org.controller.markCalculation.dynamicSchemaSCD2$
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> org.controller.markCalculation.dynamicSchemaSCD2$$typecreator1$1
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> org.controller.markCalculation.dynamicSchemaSCD2$$typecreator2$1
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> org.controller.markCalculation.dynamicSchemaSCD2$ConnectionDetails
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> org.controller.markCalculation.dynamicSchemaSCD2$ConnectionDetails$
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> org.controller.markCalculation.dynamicSchemaSCD2$connectionHolder
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> org.controller.markCalculation.dynamicSchemaSCD2$connectionHolder$
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> org.controller.markCalculation.dynamicSchemaSCD2$rowStore
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> org.controller.markCalculation.dynamicSchemaSCD2$rowStore$
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> org.controller.markCalculation.dynamicSchemaSCD2$stateStore
+   src/main/scala/org/controller/markCalculation/dynamicSchemaSCD2.scala -> org.controller.markCalculation.dynamicSchemaSCD2$stateStore$
+   src/main/scala/org/controller/markCalculation/flatMapGroupFunction.scala -> org.controller.markCalculation.flatMapGroupFunction
    src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> org.controller.markCalculation.kafkaToAssessmentLoad
    src/main/scala/org/controller/markCalculation/kafkaToAssessmentLoad.scala -> org.controller.markCalculation.kafkaToAssessmentLoad$
    src/main/scala/org/controller/markCalculation/kafkaToBronzeLoad.scala -> org.controller.markCalculation.kafkaToBronzeLoad
