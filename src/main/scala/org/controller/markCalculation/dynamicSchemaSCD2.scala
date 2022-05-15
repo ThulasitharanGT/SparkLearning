@@ -144,7 +144,11 @@ object dynamicSchemaSCD2 {
 
   def deleteChildRow(keyCombination:(String,String),inputMap:collection.mutable.Map[String,String])=s"update ${inputMap("postgresTableName")} set is_valid=false where exam_id = '${keyCombination._2}' and sem_id='${keyCombination._1}' and is_valid=true"
 
-  def getLatestRecord(rowTmp:List[org.apache.spark.sql.Row])=rowTmp.sortBy[Long](x=> simpleDateParser.parse(x.getAs[String]("receivingTimeStamp")).getTime).last
+  def getLatestRecord(rowTmp:List[org.apache.spark.sql.Row])=rowTmp.sortBy[Long](x=> simpleDateParser.parse(x.getAs[String]("receivingTimeStamp")).getTime) match {case value if value.size >0 => value.last case _ => null }
+
+  def getCRUDType(row:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=row.getAs[String](inputMap("actualMsgColumn"))
+
+  def getDeleteRecord(row:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=getRow(row.schema.map(_.name).reverse.foldRight(Array.empty[Any])((currVariable,arrVariable) => currVariable==inputMap("actualMsgColumn") match {case true => arrVariable :+ toJson(jsonStrToMap(row.getAs[String](currVariable)).filterNot(_._1 != inputMap("CRUDType")) ++ Map("CRUDType"->"Delete")) case false =>arrVariable :+ row.getAs[String](currVariable)}))
 
   def getLatestDeleteRecord(rowTmp:List[org.apache.spark.sql.Row],inputMap:collection.mutable.Map[String,String])=rowTmp.sortWith((one:org.apache.spark.sql.Row,two:org.apache.spark.sql.Row) => {
     simpleDateParser.parse(one.getAs[String]("receivingTimeStamp")).getTime > simpleDateParser.parse(two.getAs[String]("receivingTimeStamp")).getTime
@@ -170,14 +174,21 @@ object dynamicSchemaSCD2 {
   }
 
   def getDeleteRecords(rowTmp:List[org.apache.spark.sql.Row],inputMap:collection.mutable.Map[String,String])=rowTmp.filter(x => jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))("CRUDType").asInstanceOf[String]=="Delete" )
-  def replicateGrandChild(record:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=org.apache.spark.sql.Row(record.schema.map(_.name).foldRight(Seq.empty[Any])((currVar,seqVar) => inputMap("typeFilterColumn")==currVar match {case true =>seqVar:+ inputMap("semIdExamIdExamTypeRefValue") case false =>seqVar:+ record.getAs[String](currVar) } ) :_*)
-  def replicateChild(record:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=org.apache.spark.sql.Row(record.schema.map(_.name).foldRight(Seq.empty[Any])((currVar,seqVar) => inputMap("typeFilterColumn")==currVar match {case true =>seqVar:+ inputMap("semIdExamIdSubCodeRefValue") case false =>seqVar:+ record.getAs[String](currVar) } ) :_*)
+  def replicateGrandChild(record:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=getRow(record.schema.map(_.name).reverse.foldRight(Array.empty[Any])((currVar, arrVar) => inputMap("typeFilterColumn")==currVar match {case true =>arrVar:+ inputMap("semIdExamIdExamTypeRefValue") case false =>arrVar:+ record.getAs[String](currVar) } ))
+  def replicateChild(record:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=getRow(record.schema.map(_.name).reverse.foldRight(Array.empty[Any])((currVar, arrVar) => inputMap("typeFilterColumn")==currVar match {case true =>arrVar:+ inputMap("semIdExamIdSubCodeRefValue") case false =>arrVar:+ record.getAs[String](currVar) } ))
 
         /*
           assessment is pnt // soft deletes postgres table // scd2 deletes in delta
           childExamAndSub child  // scd2 deletes in delta
           childExamAndType is grand child // scd2 deletes in delta
         */
+
+  val parentInfoCheck= (key:(String,String),inputMap:collection.mutable.Map[String,String],checkString:String) => postgresConnection.connection.prepareStatement(s"select count(*) as dataCount from ${inputMap("postgresTableName")} where sem_id='${key._1}' and exam_id='${key._2}' and is_valid=${checkString}").executeQuery match {
+    case value =>
+      value.next
+      value.getInt("dataCount")
+  }
+
 
   // one exam and semID combo can be deleted and inserted only once. // maximum deletes/insert that can happen is 2
   def checkParentRecordRule(key:(String,String),latestRow:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])= postgresConnection.connection.prepareStatement(s"select count(*) as dataCount from ${inputMap ("postgresTableName")} where sem_id='${key._1}' and exam_id ='${key._2}' and is_valid=true").executeQuery match {
@@ -186,7 +197,7 @@ object dynamicSchemaSCD2 {
     value.getInt("dataCount") match {
         case value if value ==1 =>
           println(s"data true count 1")
-          true
+          (1,true)
         case value if value ==0 =>
           println(s"data true count 0")
           val rsTemp=postgresConnection.connection.prepareStatement(s"select count(*) as dataCount from ${inputMap ("postgresTableName")} where sem_id='${key._1}' and exam_id ='${key._2}' and is_valid=false").executeQuery
@@ -194,17 +205,37 @@ object dynamicSchemaSCD2 {
           rsTemp.getInt("dataCount") match {
             case value if List(0,1).contains(value) =>
               println(s"data false count 0,1 ${value}")
-              true
+              (value,true)
             case value =>
               println(s"data false count ${value}")
-              false
+              (value,false)
           }
       }
   }
 
-  def softDeleteParentRecord(key:(String,String),inputMap:collection.mutable.Map[String,String])=postgresConnection.connection.prepareStatement(s"update ${inputMap("postgresTableName")} set is_valid=false where sem_id='${key._1}' and exam_id='${key._2}' and is_valid=true").executeUpdate
+  def softDeleteParentRecord(key:(String,String),inputMap:collection.mutable.Map[String,String])=
+    parentInfoCheck(key,inputMap,"true") match {
+      case 1 =>
+        updateTable(key,inputMap,"false")
+      case 0 =>
+        insertIntoTable(key,inputMap,"false")
+    }
 
+  val getReverseBoolStr= (bool:String) => bool.toLowerCase.trim match {case "false" => "true" case _ => "false"}
 
+  def insertIntoTable(key:(String,String),inputMap:collection.mutable.Map[String,String],bool:String)=postgresConnection.connection.prepareStatement(s"insert into ${inputMap("postgresTableName")} (sem_id,exam_id,is_valid) values('${key._1}','${key._2}',${bool})").executeUpdate
+  def updateTable(key:(String,String),inputMap:collection.mutable.Map[String,String],bool:String)=postgresConnection.connection.prepareStatement(s"update ${inputMap("postgresTableName")} set is_valid=${bool} where sem_id='${key._1}' and exam_id='${key._2}' and is_valid=${getReverseBoolStr(bool)}").executeUpdate
+
+  val checkAndPersistParentRecord = (key:(String,String),inputMap:collection.mutable.Map[String,String]) => postgresConnection.connection.prepareStatement(s"select * from ${inputMap ("postgresTableName")} where sem_id='${key._1}' and exam_id ='${key._2}' and is_valid=true").executeQuery match {
+    case value =>
+      value.next match {
+        case false =>
+          println(s"result set false")
+          insertIntoTable(key,inputMap,"true")
+        case true =>
+          println(s"Record already present in table")
+      }
+  }
 
    def getRow(tmp:Array[Any])=new GenericRowWithSchema(tmp, wrapperSchema)
 
@@ -219,20 +250,21 @@ object dynamicSchemaSCD2 {
     val childExamAndSub = incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("semIdExamIdSubCodeRefValue")) ++ (dataMap.get("child") match {case Some(x) =>  x case None=> Seq.empty[org.apache.spark.sql.Row]})
     val grandChildExamAndType = incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("semIdExamIdExamTypeRefValue")) ++ (dataMap.get("childParent") match {case Some(x) =>  x case None=> Seq.empty[org.apache.spark.sql.Row]})
 */
-   val parentRows = (incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("assessmentYearRefValue")) ++ (dataMap.get("parent") match {case Some(x) => x case None=> Seq.empty[org.apache.spark.sql.Row]})).map(x => {println(s"parent records ${x}");x})
-    val childExamAndSub = (incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("semIdExamIdSubCodeRefValue")) ++ (dataMap.get("child") match {case Some(x) =>  x case None=> Seq.empty[org.apache.spark.sql.Row]})).map(x => {println(s"child records ${x}");x})
-    val grandChildExamAndType = (incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("semIdExamIdExamTypeRefValue")) ++ (dataMap.get("childParent") match {case Some(x) =>  x case None=> Seq.empty[org.apache.spark.sql.Row]})).map(x => {println(s"grand child records ${x}");x})
+    val parentRows = getLatestRecord(incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("assessmentYearRefValue")) ++ (dataMap.get("parent") match {case Some(x) => x case None=> Seq.empty[org.apache.spark.sql.Row]}))//.map(x => {println(s"parent records ${x}");x})
+    val childExamAndSub = getLatestRecord(incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("semIdExamIdSubCodeRefValue")) ++ (dataMap.get("child") match {case Some(x) =>  x case None=> Seq.empty[org.apache.spark.sql.Row]}))//.map(x => {println(s"child records ${x}");x})
+    val grandChildExamAndType = getLatestRecord(incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("semIdExamIdExamTypeRefValue")) ++ (dataMap.get("childParent") match {case Some(x) =>  x case None=> Seq.empty[org.apache.spark.sql.Row]}))//.map(x => {println(s"grand child records ${x}");x})
 
-    parentRows.size match {
-      case 0 =>
-        childExamAndSub.size match {
-          case value if value >= 1 =>
-            val childCRUDDeleteCheck=childExamAndSub.filter(x => jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))("CRUDType").toString match {case tmp if tmp =="Insert" || tmp == "Update" => false case "Delete"  =>true })
+    val dataMapKeys=dataMap.keys.toList
+
+    parentRows match {
+      case null =>
+        childExamAndSub match {
+          case value =>
             // delete grandChild too
-            childCRUDDeleteCheck.size >=1 match {
-              case true =>
-                val childLatestRecord=getLatestDeleteRecord(childExamAndSub,inputMap)
-                val grandChildLatestRecord=getLatestDeleteRecord(grandChildExamAndType,inputMap)
+            getCRUDType(childExamAndSub,inputMap) match {
+              case "Delete" =>
+                val childLatestRecord=childExamAndSub
+                val grandChildLatestRecord=getDeleteRecord(grandChildExamAndType match {case null =>childLatestRecord case value => value },inputMap)
                 getSemIdAndExamIdFromTable(key._1,key._2,inputMap) match {
                   case true =>
                     releasedRows= releasedRows ++ Seq(
@@ -241,55 +273,57 @@ object dynamicSchemaSCD2 {
                     )
                   case false =>{println(s"No Release, no parent found in msg and table. No state")}
                 }
+             //   Don't persist child delete in state, persist only parent delete
+             /*   dataMap.put("child",List(childLatestRecord))
+                dataMap.put("grandChild",List(grandChildLatestRecord))*/
 
-                dataMap.put("child",List(childLatestRecord))
-                dataMap.put("grandChild",List(grandChildLatestRecord))
-
-              case false =>
-                val childLatestRecord= getLatestRecord(childExamAndSub)
-                val grandChildLatestRecord=getLatestRecordWithDeleteCheck(grandChildExamAndType,inputMap)
+              case value if value == "Insert" || value == "Update" =>
 
                 getSemIdAndExamIdFromTable(key._1,key._2,inputMap) match {
                   case true =>
                     releasedRows= releasedRows ++ Seq(
-                      childLatestRecord,
-                      grandChildLatestRecord
+                      childExamAndSub,
+                      grandChildExamAndType
                     )
                   case false =>{println(s"No Release, no parent found in msg and table. No state")}
                 }
 
-                dataMap.put("child",List(childLatestRecord))
-                dataMap.put("grandChild",List(grandChildLatestRecord))
+                dataMap.put("child",List(childExamAndSub))
+                dataMap.put("grandChild",List(grandChildExamAndType))
             }
-          case 0 =>
+          case null =>
 
-            val latestGrandChildRecord=getLatestRecordWithDeleteCheck(grandChildExamAndType,inputMap)
-            getSemIdAndExamIdFromTable(key._1,key._2,inputMap) match {
+           grandChildExamAndType match {
+             case value =>
+               getSemIdAndExamIdFromTable(key._1,key._2,inputMap) match {
               case true =>
-                releasedRows = releasedRows :+ latestGrandChildRecord
-              case false => {println("No parent in table, grand child not released")}
+                releasedRows = releasedRows :+ grandChildExamAndType
+              case false => println("No parent in table, grand child not released")
             }
-            dataMap.put("grandChild",List(latestGrandChildRecord))
+            dataMap.put("grandChild",List(grandChildExamAndType))
+             case null =>
+               println(s"Impossible scenario")
+             }
         }
       case _ =>  // parent row incoming
         println(s"inside parent row _")
-        getDeleteRecords(parentRows,inputMap).size match {
-          case 0 =>
+        getCRUDType(parentRows,inputMap) match {
+          case value if value == "Update" || value == "Insert" =>
             println(s"No deletes for parent")
             import scala.util.control.Breaks._
             breakable {
-              val latestParentRecord = getLatestRecord(parentRows)
-              println(s"latest parent record ${latestParentRecord}")
-              checkParentRecordRule(key,latestParentRecord,inputMap)  match {
-                case false =>
+              println(s"latest parent record ${parentRows}")
+              checkParentRecordRule(key, parentRows, inputMap) match {
+                case (value, false) if value >= 2 =>
                   println(s"parent record rule false ")
                   break
-                case true =>
+                case (value, true) if value <= 2 =>
                   println(s"parent record rule true ")
-                  (getDeleteRecords(childExamAndSub,inputMap).size, childExamAndSub.size, getDeleteRecords(grandChildExamAndType,inputMap).size, grandChildExamAndType.size) match {
-                    case (0, 0, 0, 0) =>
-                      dataMap.put("parent", List(latestParentRecord))
-                      releasedRows = releasedRows :+ latestParentRecord
+                  checkAndPersistParentRecord(key, inputMap)
+                  (childExamAndSub, grandChildExamAndType) match {
+                    case (null, null) =>
+                      dataMap.put("parent", List(parentRows))
+                      releasedRows = releasedRows :+ parentRows
                     // nothing to put
                     /*
                    No child , with delete Grand child , without delete grand child
@@ -297,102 +331,78 @@ object dynamicSchemaSCD2 {
                    i || u  child => with delete Grand child , without delete grand child
                    */
 
-                    case (0, child, 0, grandChild) if child > 0 && grandChild > 0 => // no deletes on both end
+                    case (null, value) => // no deletes on both end
                       // latest child and grandchild and parent
-                      val latestChildRecord = getLatestRecord(childExamAndSub)
-                      val latestGrandChildRecord = getLatestRecord(grandChildExamAndType)
 
-                      dataMap.put("parent", List(latestParentRecord))
-                      dataMap.put("child", List(latestChildRecord))
-                      dataMap.put("grandChild", List(latestGrandChildRecord))
+                      dataMap.put("parent", List(parentRows))
+                      dataMap.put("grandChild", List(value))
 
-                      releasedRows = releasedRows :+ latestChildRecord :+ latestGrandChildRecord :+ latestParentRecord
-                    case (0, 0, 0, grandChild) if grandChild > 0 =>
+                      releasedRows = releasedRows :+ parentRows :+ value
+                    case (value, null) =>
 
-                      // latest parent and grandchild , no child
+                      dataMap.put("parent", List(parentRows))
+                      dataMap.put("grandChild", List(value))
 
-                      val latestGrandChildRecord = getLatestRecord(grandChildExamAndType)
+                      releasedRows = releasedRows :+ value :+ parentRows
 
-                      dataMap.put("parent", List(latestParentRecord))
-                      dataMap.put("grandChild", List(latestGrandChildRecord))
-
-                      releasedRows = releasedRows :+ latestGrandChildRecord :+ latestParentRecord
-
-                    case (0, child, 0, 0) if child > 0 =>
+                    case (child, grandChild) =>
                       //latest parent,child and no grandchild
-                      val latestChildRecord = getLatestDeleteRecord(childExamAndSub,inputMap)
 
-                      dataMap.put("parent", List(latestParentRecord))
-                      dataMap.put("child", List(latestChildRecord))
+                      dataMap.put("parent", List(parentRows))
+                      dataMap.put("child", List(child))
+                      dataMap.put("grandChild", List(grandChild))
 
-                      releasedRows = releasedRows :+ latestParentRecord :+ latestChildRecord
+                      releasedRows = releasedRows :+ parentRows :+ child :+ grandChild
 
-                    case (0, 0, deleteGrandChild, _) if deleteGrandChild > 0 =>
-                      //latest parent, no child and delete grandchild
-                      val latestGrandChildRecord = getLatestDeleteRecord(grandChildExamAndType,inputMap)
-
-                      dataMap.put("parent", List(latestParentRecord))
-                      dataMap.put("grandChild", List(latestGrandChildRecord))
-
-                      releasedRows = releasedRows :+ latestParentRecord :+ latestGrandChildRecord
-
-                    case (deleteChild, _, _, _) if deleteChild > 0 =>
-                      //latest parent, delete child and no grandchild // generate grandchild
-                      val latestChildRecord = getLatestDeleteRecord(childExamAndSub,inputMap)
-                      val latestGrandChildRecord = replicateGrandChild(latestChildRecord,inputMap)
-
-                      dataMap.put("parent", List(latestParentRecord))
-                      dataMap.put("child", List(latestChildRecord))
-                      dataMap.put("grandChild", List(latestGrandChildRecord))
-
-                      releasedRows = releasedRows :+ latestParentRecord :+ latestGrandChildRecord :+ latestChildRecord
                   }
               }
             }
-          case _ =>
+          case  "Delete"=>
 
-            val parentDeleteRecord=getLatestDeleteRecord(parentRows,inputMap)
-            dataMap.put("parent",List(parentDeleteRecord))
-            softDeleteParentRecord(key,inputMap)
+         //    dataMap.put("parent",List(parentDeleteRecord))
+            // do not store delete in state. If another insert comes check rule and insert it
+            dataMap.put("parent",List.empty[org.apache.spark.sql.Row])
+            dataMap.put("grandChild",List.empty[org.apache.spark.sql.Row])
+            dataMap.put("child",List.empty[org.apache.spark.sql.Row])
 
-            (childExamAndSub.size,grandChildExamAndType.size) match {
-              case (0,0)=>
-                val latestGrandChild= replicateGrandChild(parentDeleteRecord,inputMap)
-                val latestChild=replicateChild(parentDeleteRecord,inputMap)
-                dataMap.put("grandChild",List(latestGrandChild))
-                dataMap.put("child",List(latestChild))
+            parentInfoCheck(key,inputMap,"false") match {
+              case 0 =>
+                println(s"no deletes in table")
+                dataMap.put("parent-1",List(parentRows))
+                softDeleteParentRecord(key,inputMap)
+              case 1 =>
+                println(s"one delete in table")
+                dataMap.put("parent-1",List(parentRows))
+                dataMap.put("parent-2",List(parentRows))
+              case 2 =>
+                println(s"two deletes in table")
+                dataMap.put("parent-1",List(parentRows))
+                dataMap.put("parent-2",List(parentRows))
+            }
 
-                releasedRows = releasedRows :+ parentDeleteRecord :+  latestGrandChild :+ latestChild
 
-              case (0,_)=>
+            (childExamAndSub, grandChildExamAndType) match {
+              case (null, null) =>
+                releasedRows = releasedRows :+ parentRows :+ replicateChild(parentRows,inputMap):+ replicateGrandChild(parentRows,inputMap)
+              // nothing to put
+              /*
+             No child , with delete Grand child , without delete grand child
+             delete child  => grandchild delete auto generated
+             i || u  child => with delete Grand child , without delete grand child
+             */
 
-                val latestGrandChild=  getLatestDeleteRecord(grandChildExamAndType,inputMap)
-                val latestChild=replicateChild(parentDeleteRecord,inputMap)
+              case (null, value) => // no deletes on both end
+                // latest child and grandchild and parent
 
-                dataMap.put("child",List(latestChild))
-                dataMap.put("grandChild",List(latestGrandChild))
+                releasedRows = releasedRows :+ parentRows :+ getDeleteRecord(value,inputMap) :+ replicateChild(parentRows,inputMap)
+              case (value, null) =>
 
-                releasedRows = releasedRows :+ parentDeleteRecord :+  latestGrandChild :+ latestChild
+                releasedRows = releasedRows :+ getDeleteRecord(value,inputMap) :+ parentRows:+ replicateGrandChild(getDeleteRecord(value,inputMap),inputMap)
 
-              case (_,0)=>
+              case (child, grandChild) =>
+                //latest parent,child and no grandchild
 
-                val latestGrandChild= replicateGrandChild(parentDeleteRecord,inputMap)
-                val latestChild = getLatestDeleteRecord(grandChildExamAndType,inputMap)
-
-                dataMap.put("grandChild",List(latestGrandChild))
-                dataMap.put("child",List(latestChild))
-
-                releasedRows = releasedRows :+ parentDeleteRecord :+  latestGrandChild :+ latestChild
-
-              case (_,_)=>
-
-                val latestChild = getLatestDeleteRecord(grandChildExamAndType,inputMap)
-                val latestGrandChild=  getLatestDeleteRecord(grandChildExamAndType,inputMap)
-
-                dataMap.put("grandChild",List(getLatestDeleteRecord(grandChildExamAndType,inputMap)))
-                dataMap.put("child",List(getLatestDeleteRecord(childExamAndSub,inputMap)))
-
-                releasedRows = releasedRows :+ parentDeleteRecord :+  latestGrandChild :+ latestChild
+                releasedRows = releasedRows :+ parentRows :+ getDeleteRecord(child,inputMap) :+ getDeleteRecord(grandChild,inputMap)
 
             }
         }
