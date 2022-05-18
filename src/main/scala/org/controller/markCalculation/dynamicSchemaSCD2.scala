@@ -148,7 +148,7 @@ object dynamicSchemaSCD2 {
 
   def getCRUDType(row:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=jsonStrToMap(row.getAs[String](inputMap("actualMsgColumn")))("CRUDType").asInstanceOf[String]
 
-  def getDeleteRecord(row:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=getRow(row.schema.map(_.name).reverse.foldRight(Array.empty[Any])((currVariable,arrVariable) => currVariable==inputMap("actualMsgColumn") match {case true => arrVariable :+ toJson(jsonStrToMap(row.getAs[String](currVariable)).filterNot(_._1 != inputMap("CRUDType")) ++ Map("CRUDType"->"Delete")) case false =>arrVariable :+ row.getAs[String](currVariable)}))
+  def getDeleteRecord(row:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=getRow(row.schema.map(_.name).reverse.foldRight(Array.empty[Any])((currVariable,arrVariable) => currVariable==inputMap("actualMsgColumn") match {case true => arrVariable :+ toJson(jsonStrToMap(row.getAs[String](currVariable)).filterNot(_._1 == "CRUDType") ++ Map("CRUDType"->"Delete")) case false =>arrVariable :+ row.getAs[String](currVariable)}))
 
   def getLatestDeleteRecord(rowTmp:List[org.apache.spark.sql.Row],inputMap:collection.mutable.Map[String,String])=rowTmp.sortWith((one:org.apache.spark.sql.Row,two:org.apache.spark.sql.Row) => {
     simpleDateParser.parse(one.getAs[String]("receivingTimeStamp")).getTime > simpleDateParser.parse(two.getAs[String]("receivingTimeStamp")).getTime
@@ -176,6 +176,9 @@ object dynamicSchemaSCD2 {
   def getDeleteRecords(rowTmp:List[org.apache.spark.sql.Row],inputMap:collection.mutable.Map[String,String])=rowTmp.filter(x => jsonStrToMap(x.getAs[String](inputMap("actualMsgColumn")))("CRUDType").asInstanceOf[String]=="Delete" )
   def replicateGrandChild(record:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=getRow(record.schema.map(_.name).reverse.foldRight(Array.empty[Any])((currVar, arrVar) => inputMap("typeFilterColumn")==currVar match {case true =>arrVar:+ inputMap("semIdExamIdExamTypeRefValue") case false =>arrVar:+ record.getAs[String](currVar) } ))
   def replicateChild(record:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=getRow(record.schema.map(_.name).reverse.foldRight(Array.empty[Any])((currVar, arrVar) => inputMap("typeFilterColumn")==currVar match {case true =>arrVar:+ inputMap("semIdExamIdSubCodeRefValue") case false =>arrVar:+ record.getAs[String](currVar) } ))
+
+  def replicateChildDelete(record:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=getRow(record.schema.map(_.name).reverse.foldRight(Array.empty[Any])((currVar, arrVar) => inputMap("typeFilterColumn")==currVar match {case true =>arrVar:+ s"${inputMap("semIdExamIdSubCodeRefValue")}-D" case false =>arrVar:+ record.getAs[String](currVar) } ))
+  def replicateGrandChildDelete(record:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=getRow(record.schema.map(_.name).reverse.foldRight(Array.empty[Any])((currVar, arrVar) => inputMap("typeFilterColumn")==currVar match {case true =>arrVar:+ s"${inputMap("semIdExamIdExamTypeRefValue")}-D" case false =>arrVar:+ record.getAs[String](currVar) } ))
 
   /*
     assessment is pnt // soft deletes postgres table // scd2 deletes in delta
@@ -249,7 +252,9 @@ object dynamicSchemaSCD2 {
 
   def getRowWrapper(record:rowStore)=getRow(getArrayRow(record))
 
-  def processIncomingRecords(key:(String,String),incomingRowList: List[org.apache.spark.sql.Row],dataMap:collection.mutable.Map[String,List[org.apache.spark.sql.Row]]=collection.mutable.Map[String,List[org.apache.spark.sql.Row]](),inputMap:collection.mutable.Map[String,String]) ={
+  def processIncomingRecords(key:(String,String),incomingRowListTmp: List[org.apache.spark.sql.Row],dataMapTemp:collection.mutable.Map[String,List[org.apache.spark.sql.Row]]=collection.mutable.Map[String,List[org.apache.spark.sql.Row]](),inputMap:collection.mutable.Map[String,String]) ={
+    val incomingRowList=incomingRowListTmp.map(x=>{println(s"Incoming row ${x}");x})
+    val dataMap=dataMapTemp.map(x => (x._1,x._2.map(y => {println(s"data inside data map for key ${x._1} is ${y}");y})))
 
     var releasedRows=Seq.empty[org.apache.spark.sql.Row]
     /* val parentRows = incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("assessmentYearRefValue")) ++ (dataMap.get("parent") match {case Some(x) => x case None=> Seq.empty[org.apache.spark.sql.Row]})
@@ -258,7 +263,12 @@ object dynamicSchemaSCD2 {
  */
     val parentRows = getLatestRecord(incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("assessmentYearRefValue")) ++ (dataMap.get("parent") match {case Some(x) => x case None=> Seq.empty[org.apache.spark.sql.Row]}))//.map(x => {println(s"parent records ${x}");x})
     val childExamAndSub = getLatestRecord(incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("semIdExamIdSubCodeRefValue")) ++ (dataMap.get("child") match {case Some(x) =>  x case None=> Seq.empty[org.apache.spark.sql.Row]}))//.map(x => {println(s"child records ${x}");x})
-    val grandChildExamAndType = getLatestRecord(incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("semIdExamIdExamTypeRefValue")) ++ (dataMap.get("childParent") match {case Some(x) =>  x case None=> Seq.empty[org.apache.spark.sql.Row]}))//.map(x => {println(s"grand child records ${x}");x})
+    val grandChildExamAndType = getLatestRecord(incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("semIdExamIdExamTypeRefValue")) ++ (dataMap.get("grandChild") match {case Some(x) =>  x case None=> Seq.empty[org.apache.spark.sql.Row]}))//.map(x => {println(s"grand child records ${x}");x})
+
+
+    println(s"parentRows ${parentRows}")
+    println(s"childExamAndSub ${childExamAndSub}")
+    println(s"grandChildExamAndType ${grandChildExamAndType}")
 
     val dataMapKeys=dataMap.keys.toList
 
@@ -282,10 +292,11 @@ object dynamicSchemaSCD2 {
             }
           case value =>
             // delete grandChild too
-            val grandChildLatestRecord=getDeleteRecord(grandChildExamAndType match {case null =>replicateGrandChild(childExamAndSub,inputMap) case value => value },inputMap)
 
             getCRUDType(childExamAndSub,inputMap) match {
               case "Delete" =>
+                val grandChildLatestRecord=getDeleteRecord(grandChildExamAndType match {case null =>replicateGrandChild(childExamAndSub,inputMap) case value => value },inputMap)
+
                 getSemIdAndExamIdFromTable(key._1,key._2,inputMap) match {
                   case true =>
                     releasedRows= releasedRows ++ Seq(
@@ -300,17 +311,29 @@ object dynamicSchemaSCD2 {
 
               case value if value == "Insert" || value == "Update" =>
 
-                getSemIdAndExamIdFromTable(key._1,key._2,inputMap) match {
-                  case true =>
-                    releasedRows= releasedRows ++ Seq(
-                      childExamAndSub,
-                      grandChildLatestRecord
-                    )
-                  case false =>{println(s"No Release, no parent found in msg and table. No state")}
+                grandChildExamAndType match {
+                  case null =>
+                    getSemIdAndExamIdFromTable(key._1,key._2,inputMap) match {
+                      case true =>
+                        releasedRows= releasedRows ++ Seq(
+                          childExamAndSub
+                        )
+                      case false =>println(s"No Release, no parent found in msg and table. No state")
+                    }
+                  case value =>
+                    getSemIdAndExamIdFromTable(key._1,key._2,inputMap) match {
+                      case true =>
+                        releasedRows= releasedRows ++ Seq(
+                          childExamAndSub,
+                          value
+                        )
+                      case false =>println(s"No Release, no parent found in msg and table. No state")
+                    }
+                    dataMap.put("grandChild",List(value))
                 }
 
                 dataMap.put("child",List(childExamAndSub))
-                dataMap.put("grandChild",List(grandChildLatestRecord))
+
             }
 
         }
@@ -355,7 +378,6 @@ object dynamicSchemaSCD2 {
                           dataMap.put("grandChild", List(replicateGrandChild(childExamAndSub,inputMap)))
                       }
 
-
                       releasedRows = releasedRows :+ value :+ parentRows
 
                     case (child, grandChild) =>
@@ -366,14 +388,16 @@ object dynamicSchemaSCD2 {
                       getCRUDType(child, inputMap) match {
                         case value if value == "Insert" || value == "Update" =>
                           dataMap.put("child", List(childExamAndSub))
-                          dataMap.put("grandChild", List(childExamAndSub))
+                          dataMap.put("grandChild", List(grandChild))
+
+                          releasedRows = releasedRows :+ parentRows :+ child :+ grandChild
+
                         case "Delete" =>
                           dataMap.put("child", List(childExamAndSub))
                           dataMap.put("grandChild", List(getDeleteRecord(childExamAndSub,inputMap)))
+
+                          releasedRows = releasedRows :+ parentRows :+ child :+ getDeleteRecord(childExamAndSub,inputMap)
                       }
-
-                      releasedRows = releasedRows :+ parentRows :+ child :+ getDeleteRecord(childExamAndSub,inputMap)
-
                   }
               }
             }
@@ -404,19 +428,24 @@ object dynamicSchemaSCD2 {
 
             (childExamAndSub, grandChildExamAndType) match {
               case (null, null) =>
-                releasedRows = releasedRows :+ parentRows :+ replicateChild(parentRows,inputMap):+ replicateGrandChild(parentRows,inputMap)
+     //   println(s"Parent - delete null,null")
+
+                releasedRows = releasedRows :+ parentRows :+ replicateChildDelete(parentRows,inputMap):+ replicateGrandChildDelete(parentRows,inputMap)
               // nothing to put
 
-              case (null, value) => // no deletes on both end
-                // latest child and grandchild and parent
+              case (null, value) =>
+            //    println(s"Parent - delete null,value")
 
-                releasedRows = releasedRows :+ parentRows :+ getDeleteRecord(value,inputMap) :+ replicateChild(parentRows,inputMap)
+                releasedRows = releasedRows :+ parentRows :+ getDeleteRecord(value,inputMap) :+ replicateChildDelete(parentRows,inputMap)
               case (value, null) =>
 
-                releasedRows = releasedRows :+ getDeleteRecord(value,inputMap) :+ parentRows:+ replicateGrandChild(getDeleteRecord(value,inputMap),inputMap)
+           //     println(s"Parent - delete value,null")
+
+                releasedRows = releasedRows :+ getDeleteRecord(value,inputMap) :+ parentRows:+ replicateGrandChildDelete(getDeleteRecord(value,inputMap),inputMap)
 
               case (child, grandChild) =>
-                //latest parent,child and no grandchild
+
+            //    println(s"Parent - delete value,value")
 
                 releasedRows = releasedRows :+ parentRows :+ getDeleteRecord(child,inputMap) :+ getDeleteRecord(grandChild,inputMap)
 
@@ -441,7 +470,7 @@ object dynamicSchemaSCD2 {
       releaseRecords
     case None =>
       println(s"inside None")
-      val (releaseRecords,dataMap)=processIncomingRecords(key=key,incomingRowList=incomingRowList,inputMap=inputMap)
+      val (releaseRecords,dataMap)=processIncomingRecords(key=key,incomingRowListTmp=incomingRowList,inputMap=inputMap)
       groupState.update(stateStore(dataMap.map(x => (x._1,x._2.map(x => getRowStore(x,inputMap))))))
       releaseRecords
   }
@@ -498,7 +527,7 @@ object dynamicSchemaSCD2 {
   )(org.apache.spark.sql.catalyst.encoders.RowEncoder( new org.apache.spark.sql.types.StructType(
      Array( org.apache.spark.sql.types.StructField("data",wrapperSchema,true ))))*/
     /*
-spark-submit --class org.controller.markCalculation.dynamicSchemaSCD2 --packages org.postgresql:postgresql:42.3.5,org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 1g --executor-cores 2 --driver-memory 1g --conf spark.sql.streaming.checkpointLocation=hdfs://localhost:8020/user/raptor/streaming/checkpointLocation/ --driver-cores 2 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar typeFilterColumn=messageType assessmentYearRefValue=assessmentInfo semIdExamIdSubCodeRefValue=examAndSubInfo semIdExamIdExamTypeRefValue=examTyeInfo outerSchema=messageType:string~actualMessage:string~receivingTimeStamp:string actualMsgColumn=actualMessage postgresUser=postgres postgresPassword=IAMTHEemperor postgresUrl=jdbc:postgresql://localhost:5432/temp_db postgresDriver=org.postgresql.Driver bootstrapServer=localhost:8081,localhost:8082,localhost:8083 startingOffsets=latest topic=tmpTopic postgresTableName=temp_schema.sem_id_and_exam_id
+spark-submit --class org.controller.markCalculation.dynamicSchemaSCD2 --packages org.postgresql:postgresql:42.3.5,org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 1g --executor-cores 2 --driver-memory 1g --conf spark.sql.streaming.checkpointLocation=hdfs://localhost:8020/user/raptor/streaming/checkpointLocation/ --driver-cores 2 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar typeFilterColumn=messageType assessmentYearRefValue=assessmentInfo semIdExamIdSubCodeRefValue=examAndSubInfo semIdExamIdExamTypeRefValue=examTypeInfo outerSchema=messageType:string~actualMessage:string~receivingTimeStamp:string actualMsgColumn=actualMessage postgresUser=postgres postgresPassword=IAMTHEemperor postgresUrl=jdbc:postgresql://localhost:5432/temp_db postgresDriver=org.postgresql.Driver bootstrapServer=localhost:8081,localhost:8082,localhost:8083 startingOffsets=latest topic=tmpTopic postgresTableName=temp_schema.sem_id_and_exam_id
    actualMsgColumn
     assessmentYearSchema
    outerSchema=messageType:string~actualMessage:string~receivingTimeStamp:string
@@ -512,7 +541,22 @@ spark-submit --class org.controller.markCalculation.dynamicSchemaSCD2 --packages
 {"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
 
 
-{"messageType":"examAndSubInfo","actualMessage":"{\"subjectCode\":\"s001\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
+{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2020-09-15 12:33:44.333"}
+
+// old schema
+{"messageType":"examAndSubInfo","actualMessage":"{\"subjectCode\":\"sub001\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
+{"messageType":"examAndSubInfo","actualMessage":"{\"subjectCode\":\"sub002\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
+{"messageType":"examAndSubInfo","actualMessage":"{\"subjectCode\":\"sub003\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-08-15 11:33:44.333"}
+
+// new schema
+
+{"messageType":"examAndSubInfo","actualMessage":"{\"subjectCode\":[\"sub001\",\"sub002\"],\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
+
+{"messageType":"examAndSubInfo","actualMessage":"{\"subjectCode\":[\"sub001\",\"sub002\"],\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
+
+{"messageType":"examTypeInfo","actualMessage":"{\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\",\"examType\":\"SA\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
+
+
 
 
  */
