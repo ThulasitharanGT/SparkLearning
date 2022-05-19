@@ -52,6 +52,7 @@ object dynamicSchemaSCD2 {
       case value if value.startsWith("long") => org.apache.spark.sql.types.LongType
       case value if value.startsWith("date") => org.apache.spark.sql.types.DateType
       case value if value.startsWith("timestamp") => org.apache.spark.sql.types.TimestampType
+      case value if value.startsWith("arr") => org.apache.spark.sql.types.ArrayType(getDTypeNew(value.split("\\(").last.split("\\)").head))
     }
 
 
@@ -494,6 +495,8 @@ object dynamicSchemaSCD2 {
   def getSchema(schemaInfo:String) =new org.apache.spark.sql.types.StructType(
     schemaInfo.split("~").map(getStructField))
 
+  def processDF(df:org.apache.spark.sql.DataFrame,inputMap:collection.mutable.Map[String,String],schema:org.apache.spark.sql.types.StructType)=df.select(org.apache.spark.sql.functions.from_json(org.apache.spark.sql.functions.col(inputMap("actualMsgColumn")),schema).as("dataExploded")).select("dataExploded.*")
+
   def main(args:Array[String]):Unit = {
     val spark = org.apache.spark.sql.SparkSession.builder.getOrCreate
     spark.sparkContext.setLogLevel("ERROR")
@@ -521,6 +524,42 @@ object dynamicSchemaSCD2 {
         Encoders.product[stateStore],org.apache.spark.sql.catalyst.encoders.RowEncoder(wrapperSchema)
         ,GroupStateTimeout.NoTimeout)
 
+    val assessmentYearSchema=getSchema(inputMap("assessmentYearSchema"))
+    val semIdExamIdSubCodeSchema=getSchema(inputMap("semIdExamIdSubCodeSchema"))
+    val semIdExamIdExamTypeSchema=getSchema(inputMap("semIdExamIdExamTypeSchema"))
+
+
+    val assessmentYearInMsgDF=  processDF(
+      readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
+        === org.apache.spark.sql.functions.lit(inputMap("assessmentYearRefValue")))
+        ,inputMap,  assessmentYearSchema)
+
+    val semIdExamIdSubCodeInMsgDF=  processDF(
+      readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
+        === org.apache.spark.sql.functions.lit(inputMap("semIdExamIdSubCodeRefValue")))
+      ,inputMap,  semIdExamIdSubCodeSchema)
+
+    val semIdExamIdExamTypeInMsgDF=  processDF(
+      readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
+        === org.apache.spark.sql.functions.lit(inputMap("semIdExamIdExamTypeRefValue")))
+      ,inputMap,  semIdExamIdExamTypeSchema)
+
+
+      /*readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
+      === org.apache.spark.sql.functions.lit(inputMap("assessmentYearRefValue")))
+      .select(org.apache.spark.sql.functions.from_json(
+        org.apache.spark.sql.functions.col(inputMap("actualMsgColumn")),assessmentYearSchema).as("dataExtract"))
+      .select("dataExtract.*")*/
+
+
+
+
+    assessmentInfo
+    examAndSubInfo
+    examTypeInfo
+
+    examAndSubInfo-D
+    examTypeInfo-D
 
     /*.mapGroupsWithState(GroupStateTimeout.NoTimeout)( (key,rowList,state) =>
     stateFunction(key,rowList.toList,state)
@@ -532,7 +571,17 @@ spark-submit --class org.controller.markCalculation.dynamicSchemaSCD2 --packages
     assessmentYearSchema
    outerSchema=messageType:string~actualMessage:string~receivingTimeStamp:string
 
+assessmentYearSchema
+semIdExamIdSubCodeSchema
+semIdExamIdExamTypeSchema
 
+
+assessmentInfo
+examAndSubInfo
+examTypeInfo
+
+examAndSubInfo-D
+examTypeInfo -D
 
 {"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-09 11:33:44.333"}
 {"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2020-09-10 11:33:44.333"}
@@ -560,7 +609,6 @@ spark-submit --class org.controller.markCalculation.dynamicSchemaSCD2 --packages
 
 
  */
-
 
     readStreamDF.writeStream.format("console").outputMode("update")
       .option("truncate","false").start
