@@ -178,8 +178,8 @@ object dynamicSchemaSCD2 {
   def replicateGrandChild(record:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=getRow(record.schema.map(_.name).reverse.foldRight(Array.empty[Any])((currVar, arrVar) => inputMap("typeFilterColumn")==currVar match {case true =>arrVar:+ inputMap("semIdExamIdExamTypeRefValue") case false =>arrVar:+ record.getAs[String](currVar) } ))
   def replicateChild(record:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=getRow(record.schema.map(_.name).reverse.foldRight(Array.empty[Any])((currVar, arrVar) => inputMap("typeFilterColumn")==currVar match {case true =>arrVar:+ inputMap("semIdExamIdSubCodeRefValue") case false =>arrVar:+ record.getAs[String](currVar) } ))
 
-  def replicateChildDelete(record:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=getRow(record.schema.map(_.name).reverse.foldRight(Array.empty[Any])((currVar, arrVar) => inputMap("typeFilterColumn")==currVar match {case true =>arrVar:+ s"${inputMap("semIdExamIdSubCodeRefValue")}-D" case false =>arrVar:+ record.getAs[String](currVar) } ))
-  def replicateGrandChildDelete(record:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=getRow(record.schema.map(_.name).reverse.foldRight(Array.empty[Any])((currVar, arrVar) => inputMap("typeFilterColumn")==currVar match {case true =>arrVar:+ s"${inputMap("semIdExamIdExamTypeRefValue")}-D" case false =>arrVar:+ record.getAs[String](currVar) } ))
+  def replicateChildDelete(record:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String],controlStr:String)=getRow(record.schema.map(_.name).reverse.foldRight(Array.empty[Any])((currVar, arrVar) => inputMap("typeFilterColumn")==currVar match {case true =>arrVar:+ s"${inputMap("semIdExamIdSubCodeRefValue")}-${controlStr}" case false =>arrVar:+ record.getAs[String](currVar) } ))
+  def replicateGrandChildDelete(record:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String],controlStr:String)=getRow(record.schema.map(_.name).reverse.foldRight(Array.empty[Any])((currVar, arrVar) => inputMap("typeFilterColumn")==currVar match {case true =>arrVar:+ s"${inputMap("semIdExamIdExamTypeRefValue")}-${controlStr}" case false =>arrVar:+ record.getAs[String](currVar) } ))
 
   /*
     assessment is pnt // soft deletes postgres table // scd2 deletes in delta
@@ -359,10 +359,8 @@ object dynamicSchemaSCD2 {
                     case (null, null) =>
                       dataMap.put("parent", List(parentRows))
                       releasedRows = releasedRows :+ parentRows
-                    // nothing to put
 
                     case (null, value) =>
-                      // latest child and grandchild and parent
 
                       dataMap.put("parent", List(parentRows))
                       dataMap.put("grandChild", List(value))
@@ -370,16 +368,22 @@ object dynamicSchemaSCD2 {
                       releasedRows = releasedRows :+ parentRows :+ value
                     case (value, null) =>
 
+
                       dataMap.put("parent", List(parentRows))
                       getCRUDType(value, inputMap) match {
                         case value if value == "Insert" || value == "Update" =>
                           dataMap.put("child", List(childExamAndSub))
                         case "Delete" =>
                           dataMap.put("child", List(childExamAndSub))
-                          dataMap.put("grandChild", List(replicateGrandChild(childExamAndSub,inputMap)))
+                          dataMap.put("grandChild", List(replicateGrandChildDelete(getDeleteRecord(value,inputMap),inputMap,"C-D")))
                       }
 
-                      releasedRows = releasedRows :+ value :+ parentRows
+                      dataMap.get("grandChild") match {
+                        case Some(x) =>
+                          releasedRows = releasedRows :+ value :+ parentRows :+ x.head
+                        case None =>
+                          releasedRows = releasedRows :+ value
+                      }
 
                     case (child, grandChild) =>
                       //latest parent,child and no grandchild
@@ -394,10 +398,11 @@ object dynamicSchemaSCD2 {
                           releasedRows = releasedRows :+ parentRows :+ child :+ grandChild
 
                         case "Delete" =>
+                          val deleteGrandChild=getDeleteRecord(childExamAndSub,inputMap)
                           dataMap.put("child", List(childExamAndSub))
-                          dataMap.put("grandChild", List(getDeleteRecord(childExamAndSub,inputMap)))
+                          dataMap.put("grandChild", List(deleteGrandChild))
 
-                          releasedRows = releasedRows :+ parentRows :+ child :+ getDeleteRecord(childExamAndSub,inputMap)
+                          releasedRows = releasedRows :+ parentRows :+ child :+ deleteGrandChild
                       }
                   }
               }
@@ -429,24 +434,18 @@ object dynamicSchemaSCD2 {
 
             (childExamAndSub, grandChildExamAndType) match {
               case (null, null) =>
-     //   println(s"Parent - delete null,null")
 
-                releasedRows = releasedRows :+ parentRows :+ replicateChildDelete(parentRows,inputMap):+ replicateGrandChildDelete(parentRows,inputMap)
+                releasedRows = releasedRows :+ parentRows :+ replicateChildDelete(parentRows,inputMap,"-D"):+ replicateGrandChildDelete(parentRows,inputMap,"D")
               // nothing to put
 
               case (null, value) =>
-            //    println(s"Parent - delete null,value")
 
-                releasedRows = releasedRows :+ parentRows :+ getDeleteRecord(value,inputMap) :+ replicateChildDelete(parentRows,inputMap)
+                releasedRows = releasedRows :+ parentRows :+ getDeleteRecord(value,inputMap) :+ replicateChildDelete(parentRows,inputMap,"D")
               case (value, null) =>
 
-           //     println(s"Parent - delete value,null")
-
-                releasedRows = releasedRows :+ getDeleteRecord(value,inputMap) :+ parentRows:+ replicateGrandChildDelete(getDeleteRecord(value,inputMap),inputMap)
+                releasedRows = releasedRows :+ getDeleteRecord(value,inputMap) :+ parentRows:+ replicateGrandChildDelete(getDeleteRecord(value,inputMap),inputMap,"C-D")
 
               case (child, grandChild) =>
-
-            //    println(s"Parent - delete value,value")
 
                 releasedRows = releasedRows :+ parentRows :+ getDeleteRecord(child,inputMap) :+ getDeleteRecord(grandChild,inputMap)
 
@@ -544,12 +543,33 @@ object dynamicSchemaSCD2 {
         === org.apache.spark.sql.functions.lit(inputMap("semIdExamIdExamTypeRefValue")))
       ,inputMap,  semIdExamIdExamTypeSchema)
 
+    val semIdExamIdSubCodeDeleteDF=  processDF(
+      readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
+        === org.apache.spark.sql.functions.lit(s"${inputMap("semIdExamIdSubCodeRefValue")}-D"))
+      ,inputMap,  assessmentYearSchema)
 
-      /*readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
+    val semIdExamIdExamTypeDeleteDF_1 =  processDF(
+      readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
+        === org.apache.spark.sql.functions.lit(s"${inputMap("semIdExamIdExamTypeRefValue")}-D"))
+      ,inputMap,  semIdExamIdSubCodeSchema)
+
+    val semIdExamIdExamTypeDeleteDF_2 =  processDF(
+      readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
+        === org.apache.spark.sql.functions.lit(s"${inputMap("semIdExamIdExamTypeRefValue")}-C-D"))
+      ,inputMap,  semIdExamIdSubCodeSchema)
+
+    val semIdExamIdExamTypeDeleteDF= semIdExamIdExamTypeDeleteDF_1.select("semId","examId")
+      .union(semIdExamIdExamTypeDeleteDF_2.select("semId","examId"))
+
+      /*
+
+      readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
       === org.apache.spark.sql.functions.lit(inputMap("assessmentYearRefValue")))
       .select(org.apache.spark.sql.functions.from_json(
         org.apache.spark.sql.functions.col(inputMap("actualMsgColumn")),assessmentYearSchema).as("dataExtract"))
-      .select("dataExtract.*")*/
+      .select("dataExtract.*")
+
+      */
 
 
 
@@ -560,6 +580,7 @@ object dynamicSchemaSCD2 {
 
     examAndSubInfo-D
     examTypeInfo-D
+    examTypeInfo-C-D
 
     /*.mapGroupsWithState(GroupStateTimeout.NoTimeout)( (key,rowList,state) =>
     stateFunction(key,rowList.toList,state)
