@@ -496,6 +496,26 @@ object dynamicSchemaSCD2 {
 
   def processDF(df:org.apache.spark.sql.DataFrame,inputMap:collection.mutable.Map[String,String],schema:org.apache.spark.sql.types.StructType)=df.select(org.apache.spark.sql.functions.from_json(org.apache.spark.sql.functions.col(inputMap("actualMsgColumn")),schema).as("dataExploded")).select("dataExploded.*")
 
+  def selectReqColsForGrandChild(df:org.apache.spark.sql.DataFrame)=df.select("semId,examId".split(",").map(org.apache.spark.sql.functions.col):_*)
+
+  val getJoinOfDataCol= (dataColumns:Array[String],keyColumns:Array[String]) => keyColumns.foldLeft(org.apache.spark.sql.functions.col("lambdaDF.endDate").isNull)((columnVar, currVar)=>columnVar && org.apache.spark.sql.functions.col(s"lambdaDF.${currVar}")===org.apache.spark.sql.functions.col(s"delta.${currVar}")) && dataColumns.foldRight(org.apache.spark.sql.functions.lit(1)===org.apache.spark.sql.functions.lit(1))((currVal,colVal) => colVal && org.apache.spark.sql.functions.col(s"lambdaDF.${currVal}")=!=org.apache.spark.sql.functions.col(s"delta.${currVal}")  )
+
+
+  def getProperDFtoUpsert(lambdaTable:io.delta.tables.DeltaTable,deltaDF:org.apache.spark.sql.DataFrame
+                          ,columnsToSelect:Seq[String],keyColumns:Array[String],dataColumn:Array[String])=
+    lambdaTable.toDF.as("lambdaDF").join(deltaDF.as("delta")
+      , getJoinOfDataCol(keyColumns,dataColumn)).select(columnsToSelect.filterNot(_ == "endDate")
+      .map(x=> s"lambdaDF.${x}").map(org.apache.spark.sql.functions.col) :+
+      org.apache.spark.sql.functions.col("delta.startDate").as("endDate") :_*)
+      .withColumn("CRUDType",org.apache.spark.sql.functions.lit("C"))
+      .union(deltaDF.withColumn("endDate",org.apache.spark.sql.functions.col("startDate"))
+        .select((columnsToSelect :+ "CRUDType").map(org.apache.spark.sql.functions.col) :_*))
+      .withColumn("endDate", org.apache.spark.sql.functions.when(
+        org.apache.spark.sql.functions.col("CRUDType") === org.apache.spark.sql.functions.lit("C")
+        , org.apache.spark.sql.functions.date_sub(
+          org.apache.spark.sql.functions.col("startDate"),1)).otherwise(org.apache.spark.sql.functions.lit(null)))
+
+
   def main(args:Array[String]):Unit = {
     val spark = org.apache.spark.sql.SparkSession.builder.getOrCreate
     spark.sparkContext.setLogLevel("ERROR")
@@ -543,36 +563,67 @@ object dynamicSchemaSCD2 {
         === org.apache.spark.sql.functions.lit(inputMap("semIdExamIdExamTypeRefValue")))
       ,inputMap,  semIdExamIdExamTypeSchema)
 
-    val semIdExamIdSubCodeDeleteDF=  processDF(
+    val semIdExamIdSubCodeDeleteDF=  selectReqColsForGrandChild(processDF(
       readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
         === org.apache.spark.sql.functions.lit(s"${inputMap("semIdExamIdSubCodeRefValue")}-D"))
-      ,inputMap,  assessmentYearSchema)
+      ,inputMap,  assessmentYearSchema))
 
-    val semIdExamIdExamTypeDeleteDF_1 =  processDF(
+    val semIdExamIdExamTypeDeleteDF_1 =  selectReqColsForGrandChild(processDF(
       readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
         === org.apache.spark.sql.functions.lit(s"${inputMap("semIdExamIdExamTypeRefValue")}-D"))
-      ,inputMap,  semIdExamIdSubCodeSchema)
+      ,inputMap,  semIdExamIdSubCodeSchema))
 
-    val semIdExamIdExamTypeDeleteDF_2 =  processDF(
+    val semIdExamIdExamTypeDeleteDF_2 =  selectReqColsForGrandChild(processDF(
       readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
         === org.apache.spark.sql.functions.lit(s"${inputMap("semIdExamIdExamTypeRefValue")}-C-D"))
-      ,inputMap,  semIdExamIdSubCodeSchema)
+      ,inputMap,  semIdExamIdSubCodeSchema))
 
-    val semIdExamIdExamTypeDeleteDF= semIdExamIdExamTypeDeleteDF_1.select("semId","examId")
-      .union(semIdExamIdExamTypeDeleteDF_2.select("semId","examId"))
+    val semIdExamIdExamTypeDeleteDF= semIdExamIdExamTypeDeleteDF_1.union(semIdExamIdExamTypeDeleteDF_2)
 
-      /*
-
-      readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
-      === org.apache.spark.sql.functions.lit(inputMap("assessmentYearRefValue")))
-      .select(org.apache.spark.sql.functions.from_json(
-        org.apache.spark.sql.functions.col(inputMap("actualMsgColumn")),assessmentYearSchema).as("dataExtract"))
-      .select("dataExtract.*")
-
-      */
+    val parentDeltaTable=io.delta.tables.DeltaTable.forPath(spark,inputMap("examIdSemIdPath"))
+    val childDeltaTable=io.delta.tables.DeltaTable.forPath(spark,inputMap("examIdSemIdSubCodePath"))
+    val grandChildDeltaTable=io.delta.tables.DeltaTable.forPath(spark,inputMap("examIdSemIdExamTypePath"))
 
 
+    val parentColumnsToSelect=parentDeltaTable.toDF.columns
 
+    assessmentYearInMsgDF.writeStream.format("console").outputMode("update").foreachBatch( (df:org.apache.spark.sql.DataFrame,batchId:Long) =>
+
+    parentDeltaTable.as("lambda").merge(
+    getProperDFtoUpsert(parentDeltaTable,df,parentColumnsToSelect,Array("semId","examId"),Array("assessmentYear"))
+      .as("delta"),
+      org.apache.spark.sql.functions.col("lambda.examId")
+        ===org.apache.spark.sql.functions.col("delta.examId")&&
+        org.apache.spark.sql.functions.col("lambda.semId")
+          ===org.apache.spark.sql.functions.col("delta.semId")
+      && org.apache.spark.sql.functions.col("lambda.endDate").isNull
+        && org.apache.spark.sql.functions.col("delta.endDate").isNotNull
+    ).whenMatched.updateExpr(Map("endDate" -> "delta.endDate"))
+      .whenNotMatched(org.apache.spark.sql.functions.col("delta.endDate").isNull)
+      .insertExpr(Map("assessmentYear"->"delta.assessmentYear"
+        ,"semId"->"delta.semId","startDate"->"delta.startDate"
+        ,"endDate"->"delta.endDate","examId"->"delta.examId")).execute
+
+    ).option("truncate","false")
+      // checkpoint , numRows
+      .start
+
+
+
+
+    /*
+
+examIdSemIdPath=hdfs://localhost:8020/user/raptor/persist/marks/assessmentYearInfo_scd2 examIdSemIdSubCodePath=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndSubCode_scd2 examIdSemIdExamTypePath=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndExamType_scd2
+
+
+    readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
+    === org.apache.spark.sql.functions.lit(inputMap("assessmentYearRefValue")))
+    .select(org.apache.spark.sql.functions.from_json(
+      org.apache.spark.sql.functions.col(inputMap("actualMsgColumn")),assessmentYearSchema).as("dataExtract"))
+    .select("dataExtract.*")
+
+    */
+/*
 
     assessmentInfo
     examAndSubInfo
@@ -581,7 +632,7 @@ object dynamicSchemaSCD2 {
     examAndSubInfo-D
     examTypeInfo-D
     examTypeInfo-C-D
-
+*/
     /*.mapGroupsWithState(GroupStateTimeout.NoTimeout)( (key,rowList,state) =>
     stateFunction(key,rowList.toList,state)
   )(org.apache.spark.sql.catalyst.encoders.RowEncoder( new org.apache.spark.sql.types.StructType(
@@ -592,9 +643,9 @@ spark-submit --class org.controller.markCalculation.dynamicSchemaSCD2 --packages
     assessmentYearSchema
    outerSchema=messageType:string~actualMessage:string~receivingTimeStamp:string
 
-assessmentYearSchema
-semIdExamIdSubCodeSchema
-semIdExamIdExamTypeSchema
+assessmentYearSchema=assessmentYear:String,semId:String,examId:String,startDate:Date
+semIdExamIdSubCodeSchema=subjectCode:array(String),semId:String,examId:String,startDate:Date
+semIdExamIdExamTypeSchema=
 
 
 assessmentInfo
