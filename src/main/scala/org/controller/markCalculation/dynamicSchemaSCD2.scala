@@ -498,25 +498,48 @@ object dynamicSchemaSCD2 {
 
   def selectReqColsForGrandChild(df:org.apache.spark.sql.DataFrame)=df.select("semId,examId".split(",").map(org.apache.spark.sql.functions.col):_*)
 
-  val getJoinOfDataCol= (dataColumns:Array[String],keyColumns:Array[String]) => dataColumns.foldRight(keyColumns.foldLeft(org.apache.spark.sql.functions.col("lambdaDF.endDate").isNull && org.apache.spark.sql.functions.col("lambdaDF.startDate") > org.apache.spark.sql.functions.col("delta.startDate"))((columnVar, currVar)=>columnVar && org.apache.spark.sql.functions.col(s"lambdaDF.${currVar}")===org.apache.spark.sql.functions.col(s"delta.${currVar}")))((currVal,colVal) => colVal && org.apache.spark.sql.functions.col(s"lambdaDF.${currVal}")=!=org.apache.spark.sql.functions.col(s"delta.${currVal}")  )
+  val getJoinOfDataCol= (dataColumns:Array[String],keyColumns:Array[String]) => dataColumns.foldRight(keyColumns.foldLeft(org.apache.spark.sql.functions.col("lambdaDF.endDate").isNull/*  -- use thi in join to determine defective records&& org.apache.spark.sql.functions.col("lambdaDF.startDate") > org.apache.spark.sql.functions.col("delta.startDate")*/)((columnVar, currVar)=>columnVar && org.apache.spark.sql.functions.col(s"lambdaDF.${currVar}")===org.apache.spark.sql.functions.col(s"delta.${currVar}")))((currVal,colVal) => colVal && org.apache.spark.sql.functions.col(s"lambdaDF.${currVal}")=!=org.apache.spark.sql.functions.col(s"delta.${currVal}")  )
 
 
   def getProperDFtoUpsert(lambdaTable:io.delta.tables.DeltaTable,deltaDF:org.apache.spark.sql.DataFrame
                           ,columnsToSelect:Seq[String],keyColumns:Array[String],dataColumn:Array[String])= lambdaTable.toDF.as("lambdaDF").join(
     deltaDF.filter("CRUDType != 'Delete'").as("delta")
-      , getJoinOfDataCol(keyColumns,dataColumn),"right").select(columnsToSelect.filterNot(x => x == "endDate" || x == "CRUDType" )
-      .map(x=> s"delta.${x}").map(org.apache.spark.sql.functions.col) :+
-      org.apache.spark.sql.functions.col("delta.startDate").as("endDate") :_*)
-      .withColumn("CRUDType",org.apache.spark.sql.functions.lit("Computed"))
-      .select(columnsToSelect.map(org.apache.spark.sql.functions.col) :_*)
-      .union(deltaDF.withColumn("endDate",org.apache.spark.sql.functions.col("startDate"))
-        .select(columnsToSelect.map(org.apache.spark.sql.functions.col) :_*))
-      .withColumn("endDate", org.apache.spark.sql.functions.when(
-        org.apache.spark.sql.functions.col("CRUDType") === org.apache.spark.sql.functions.lit("Computed")
-        || org.apache.spark.sql.functions.col("CRUDType") === org.apache.spark.sql.functions.lit("Delete")
-        , org.apache.spark.sql.functions.date_sub(
-          org.apache.spark.sql.functions.col("startDate"),1))
-    .otherwise(org.apache.spark.sql.functions.lit(null)))
+      , getJoinOfDataCol(keyColumns,dataColumn))
+      .withColumn("CRUDType",org.apache.spark.sql.functions.when(org.apache.spark.sql.functions.col("delta.startDate")  >
+    org.apache.spark.sql.functions.col("lambdaDF.startDate")
+          ,org.apache.spark.sql.functions.lit("Computed")).otherwise(org.apache.spark.sql.functions.lit("Defective")))
+        .select(columnsToSelect.filterNot(x => x == "endDate" ||  x == "CRUDType")
+          .map(x=> s"delta.${x}").map(org.apache.spark.sql.functions.col) :+
+          org.apache.spark.sql.functions.col("delta.startDate").as("endDate")
+          :+ org.apache.spark.sql.functions.col("CRUDType") :_*)
+      .select(columnsToSelect.map(org.apache.spark.sql.functions.col) :_*) match {
+    case value =>
+      value.withColumn("lambdaC",org.apache.spark.sql.functions.lit("lambdaC")).show(false)
+
+      value.as("lambdaC").join(deltaDF.as("delta"),keyColumns.foldLeft(org.apache.spark.sql.functions.lit(1)=== org.apache.spark.sql.functions.lit(1))
+      ((seqVal,currVal) => seqVal && org.apache.spark.sql.functions.col(s"lambdaC.${currVal}") === org.apache.spark.sql.functions.col(s"delta.${currVal}"))
+        ,"right").withColumn("lambdaCJoin",org.apache.spark.sql.functions.lit("lambdaCJoin")).show(false)
+
+      value.as("lambdaC").join(deltaDF.as("delta"),keyColumns.foldLeft(org.apache.spark.sql.functions.lit(1)=== org.apache.spark.sql.functions.lit(1))
+      ((seqVal,currVal) => seqVal && org.apache.spark.sql.functions.col(s"lambdaC.${currVal}") === org.apache.spark.sql.functions.col(s"delta.${currVal}"))
+        ,"right").selectExpr("delta.*","nvl(lambdaC.CRUDType,'Defective') tmp","case when  nvl(lambdaC.CRUDType,'Unknown') != 'Defective' then true else false end cool")
+        .withColumn("endDate",org.apache.spark.sql.functions.col("startDate"))
+        .withColumn("lambdaCJoinFilter",org.apache.spark.sql.functions.lit("lambdaCJoinFilter")).show(false)
+
+      value.union(value.as("lambdaC").join(deltaDF.as("delta"),keyColumns.foldLeft(org.apache.spark.sql.functions.lit(1)=== org.apache.spark.sql.functions.lit(1))
+      ((seqVal,currVal) => seqVal && org.apache.spark.sql.functions.col(s"lambdaC.${currVal}") === org.apache.spark.sql.functions.col(s"delta.${currVal}"))
+        ,"right")
+        .filter("nvl(lambdaC.CRUDType,'Unknown') != 'Defective'").select("delta.*")
+        .withColumn("endDate",org.apache.spark.sql.functions.col("startDate"))
+  .select(columnsToSelect.map(org.apache.spark.sql.functions.col) :_*))
+  .withColumn("endDate", org.apache.spark.sql.functions.when(
+  org.apache.spark.sql.functions.col("CRUDType") === org.apache.spark.sql.functions.lit("Computed")
+  || org.apache.spark.sql.functions.col("CRUDType") === org.apache.spark.sql.functions.lit("Delete")
+  , org.apache.spark.sql.functions.date_sub(
+  org.apache.spark.sql.functions.col("startDate"),1))
+  .otherwise(org.apache.spark.sql.functions.lit(null)))
+  }
+
 
 
   def main(args:Array[String]):Unit = {
@@ -611,7 +634,8 @@ object dynamicSchemaSCD2 {
           =!= org.apache.spark.sql.functions.col("delta.assessmentYear")
           &&  org.apache.spark.sql.functions.col("delta.CRUDType").isin("Computed","Insert","Update")
         ).updateExpr(Map("endDate" -> "delta.endDate"))
-        .whenNotMatched(org.apache.spark.sql.functions.col("delta.endDate").isNull) // even first time delete will go in here
+        .whenNotMatched(org.apache.spark.sql.functions.col("delta.endDate").isNull
+          &&  org.apache.spark.sql.functions.col("delta.CRUDType").isin("Insert","Update")) // even first time delete will go in here
         .insertExpr(Map("assessmentYear" -> "delta.assessmentYear"
           , "semId" -> "delta.semId", "startDate" -> "delta.startDate"
           , "endDate" -> "delta.endDate", "examId" -> "delta.examId")).execute
@@ -677,10 +701,19 @@ examTypeInfo -D
 {"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2020-09-14 11:33:44.333"}
 {"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
 
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s002\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-09 11:33:44.333"}
+{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-09 11:33:44.333"}
 
 
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2020-09-15 12:33:44.333"}
+{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2022-2023\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Update\"}","receivingTimeStamp":"2020-09-09 11:33:44.333"}
+
+{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2024-2024\",\"examId\":\"e001\",\"semId\":\"s002\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-10-09 11:33:44.333"}
+
+{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s002\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2020-09-15 12:33:44.333"}
+
+{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s002\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2020-09-15 12:33:44.333"}
+
+
+
 
 // old schema
 {"messageType":"examAndSubInfo","actualMessage":"{\"subjectCode\":\"sub001\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
