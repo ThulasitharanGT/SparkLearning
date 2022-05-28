@@ -146,6 +146,8 @@ object dynamicSchemaSCD2 {
   def deleteChildRow(keyCombination:(String,String),inputMap:collection.mutable.Map[String,String])=s"update ${inputMap("postgresTableName")} set is_valid=false where exam_id = '${keyCombination._2}' and sem_id='${keyCombination._1}' and is_valid=true"
 
   def getLatestRecord(rowTmp:List[org.apache.spark.sql.Row])=rowTmp.sortBy[Long](x=> simpleDateParser.parse(x.getAs[String]("receivingTimeStamp")).getTime) match {case value if value.size >0 => value.last case _ => null }
+  def getLatestRecord2(rowTmp:List[org.apache.spark.sql.Row])=rowTmp.sortWith((x,y)=> simpleDateParser.parse(x.getAs[String]("receivingTimeStamp")).getTime >  simpleDateParser.parse(y.getAs[String]("receivingTimeStamp")).getTime).head
+
 
   def getCRUDType(row:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=jsonStrToMap(row.getAs[String](inputMap("actualMsgColumn")))("CRUDType").asInstanceOf[String]
 
@@ -268,6 +270,9 @@ object dynamicSchemaSCD2 {
 
 
     println(s"parentRows ${parentRows}")
+
+    println(s"parentRows2 ${getLatestRecord2(incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("assessmentYearRefValue")) ++ (dataMap.get("parent") match {case Some(x) => x case None=> Seq.empty[org.apache.spark.sql.Row]}))}")
+
     println(s"childExamAndSub ${childExamAndSub}")
     println(s"grandChildExamAndType ${grandChildExamAndType}")
 
@@ -498,20 +503,27 @@ object dynamicSchemaSCD2 {
 
   def selectReqColsForGrandChild(df:org.apache.spark.sql.DataFrame)=df.select("semId,examId".split(",").map(org.apache.spark.sql.functions.col):_*)
 
-  val getJoinOfDataCol= (dataColumns:Array[String],keyColumns:Array[String]) => dataColumns.foldRight(keyColumns.foldLeft(org.apache.spark.sql.functions.col("lambdaDF.endDate").isNull/*  -- use thi in join to determine defective records&& org.apache.spark.sql.functions.col("lambdaDF.startDate") > org.apache.spark.sql.functions.col("delta.startDate")*/)((columnVar, currVar)=>columnVar && org.apache.spark.sql.functions.col(s"lambdaDF.${currVar}")===org.apache.spark.sql.functions.col(s"delta.${currVar}")))((currVal,colVal) => colVal && org.apache.spark.sql.functions.col(s"lambdaDF.${currVal}")=!=org.apache.spark.sql.functions.col(s"delta.${currVal}")  )
+ // val getJoinOfDataCol= (dataColumns:Array[String],keyColumns:Array[String]) => dataColumns.foldRight(keyColumns.foldLeft(org.apache.spark.sql.functions.col("lambdaDF.endDate").isNull/*  -- use thi in join to determine defective records&& org.apache.spark.sql.functions.col("lambdaDF.startDate") > org.apache.spark.sql.functions.col("delta.startDate")*/)((columnVar, currVar)=>columnVar && org.apache.spark.sql.functions.col(s"lambdaDF.${currVar}")===org.apache.spark.sql.functions.col(s"delta.${currVar}")))((currVal,colVal) => colVal && org.apache.spark.sql.functions.col(s"lambdaDF.${currVal}")=!=org.apache.spark.sql.functions.col(s"delta.${currVal}")  )
+ val getJoinOfDataCol= (dataColumns:Array[String],keyColumns:Array[String]) => keyColumns.foldLeft(org.apache.spark.sql.functions.col("lambdaDF.endDate").isNull)((columnVar, currVar)=>columnVar && org.apache.spark.sql.functions.col(s"lambdaDF.${currVar}")===org.apache.spark.sql.functions.col(s"delta.${currVar}"))
 
 
   def getProperDFtoUpsert(lambdaTable:io.delta.tables.DeltaTable,deltaDF:org.apache.spark.sql.DataFrame
                           ,columnsToSelect:Seq[String],keyColumns:Array[String],dataColumn:Array[String])= lambdaTable.toDF.as("lambdaDF").join(
     deltaDF.filter("CRUDType != 'Delete'").as("delta")
       , getJoinOfDataCol(keyColumns,dataColumn))
-      .withColumn("CRUDType",org.apache.spark.sql.functions.when(org.apache.spark.sql.functions.col("delta.startDate")  >
-    org.apache.spark.sql.functions.col("lambdaDF.startDate")
-          ,org.apache.spark.sql.functions.lit("Computed")).otherwise(org.apache.spark.sql.functions.lit("Defective")))
+      .withColumn("CRUDType",
+        org.apache.spark.sql.functions.when(
+           dataColumn.foldRight(org.apache.spark.sql.functions.to_date(org.apache.spark.sql.functions.col("delta.startDate")) >
+    org.apache.spark.sql.functions.col("lambdaDF.startDate")) ((currCol,tmpCondition) => tmpCondition &&
+    org.apache.spark.sql.functions.col(s"lambdaDF.${currCol}" ) =!= org.apache.spark.sql.functions.col(s"delta.${currCol}" )
+         )
+          ,org.apache.spark.sql.functions.lit("Computed"))
+          .otherwise(org.apache.spark.sql.functions.lit("Defective")))
         .select(columnsToSelect.filterNot(x => x == "endDate" ||  x == "CRUDType")
           .map(x=> s"delta.${x}").map(org.apache.spark.sql.functions.col) :+
           org.apache.spark.sql.functions.col("delta.startDate").as("endDate")
-          :+ org.apache.spark.sql.functions.col("CRUDType") :_*)
+          :+ org.apache.spark.sql.functions.col("CRUDType")
+          :_*)
       .select(columnsToSelect.map(org.apache.spark.sql.functions.col) :_*) match {
     case value =>
       value.withColumn("lambdaC",org.apache.spark.sql.functions.lit("lambdaC")).show(false)
@@ -522,7 +534,7 @@ object dynamicSchemaSCD2 {
 
       value.as("lambdaC").join(deltaDF.as("delta"),keyColumns.foldLeft(org.apache.spark.sql.functions.lit(1)=== org.apache.spark.sql.functions.lit(1))
       ((seqVal,currVal) => seqVal && org.apache.spark.sql.functions.col(s"lambdaC.${currVal}") === org.apache.spark.sql.functions.col(s"delta.${currVal}"))
-        ,"right").selectExpr("delta.*","nvl(lambdaC.CRUDType,'Defective') tmp","case when  nvl(lambdaC.CRUDType,'Unknown') != 'Defective' then true else false end cool")
+        ,"right").selectExpr("delta.*","nvl(lambdaC.CRUDType,'Unknown') tmp","case when  nvl(lambdaC.CRUDType,'Unknown') != 'Defective' then true else false end cool")
         .withColumn("endDate",org.apache.spark.sql.functions.col("startDate"))
         .withColumn("lambdaCJoinFilter",org.apache.spark.sql.functions.lit("lambdaCJoinFilter")).show(false)
 
@@ -638,6 +650,11 @@ object dynamicSchemaSCD2 {
           &&  org.apache.spark.sql.functions.col("delta.CRUDType").isin("Insert","Update")) // even first time delete will go in here
         .insertExpr(Map("assessmentYear" -> "delta.assessmentYear"
           , "semId" -> "delta.semId", "startDate" -> "delta.startDate"
+          , "endDate" -> "delta.endDate", "examId" -> "delta.examId"))
+        .whenNotMatched(org.apache.spark.sql.functions.col("delta.endDate").isNotNull
+          &&  org.apache.spark.sql.functions.col("delta.CRUDType") === org.apache.spark.sql.functions.lit("Delete")) // even first time delete will go in here
+        .insertExpr(Map("assessmentYear" -> "delta.assessmentYear"
+          , "semId" -> "delta.semId", "startDate" -> "delta.startDate"
           , "endDate" -> "delta.endDate", "examId" -> "delta.examId")).execute
     ).option("truncate","false")
       // checkpoint , numRows
@@ -705,6 +722,9 @@ examTypeInfo -D
 
 
 {"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2022-2023\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Update\"}","receivingTimeStamp":"2020-09-09 11:33:44.333"}
+
+{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Update\"}","receivingTimeStamp":"2020-09-10 12:32:44.333"}
+
 
 {"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2024-2024\",\"examId\":\"e001\",\"semId\":\"s002\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-10-09 11:33:44.333"}
 
