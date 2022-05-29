@@ -146,7 +146,7 @@ object dynamicSchemaSCD2 {
   def deleteChildRow(keyCombination:(String,String),inputMap:collection.mutable.Map[String,String])=s"update ${inputMap("postgresTableName")} set is_valid=false where exam_id = '${keyCombination._2}' and sem_id='${keyCombination._1}' and is_valid=true"
 
   def getLatestRecord(rowTmp:List[org.apache.spark.sql.Row])=rowTmp.sortBy[Long](x=> simpleDateParser.parse(x.getAs[String]("receivingTimeStamp")).getTime) match {case value if value.size >0 => value.last case _ => null }
-  def getLatestRecord2(rowTmp:List[org.apache.spark.sql.Row])=rowTmp.sortWith((x,y)=> simpleDateParser.parse(x.getAs[String]("receivingTimeStamp")).getTime >  simpleDateParser.parse(y.getAs[String]("receivingTimeStamp")).getTime).head
+  // def getLatestRecord2(rowTmp:List[org.apache.spark.sql.Row])=rowTmp.sortWith((x,y)=> simpleDateParser.parse(x.getAs[String]("receivingTimeStamp")).getTime >  simpleDateParser.parse(y.getAs[String]("receivingTimeStamp")).getTime).head
 
 
   def getCRUDType(row:org.apache.spark.sql.Row,inputMap:collection.mutable.Map[String,String])=jsonStrToMap(row.getAs[String](inputMap("actualMsgColumn")))("CRUDType").asInstanceOf[String]
@@ -225,25 +225,40 @@ object dynamicSchemaSCD2 {
         }
     }
 
-  def softDeleteParentRecord(key:(String,String),inputMap:collection.mutable.Map[String,String])=
-    parentInfoCheck(key,inputMap,"true") match {
-      case 1 =>
-        updateTable(key,inputMap,"false")
-      case 0 =>
-        insertIntoTable(key,inputMap,"false")
-    }
+  def checkIfEligibleForDelete(key:(String,String),inputMap:collection.mutable.Map[String,String],timeStampStr:String) =  postgresConnection.connection.prepareStatement(s"select count(*) dataCount from ${inputMap("postgresTableName")} where sem_id='${key._1}' and exam_id='${key._2}' and is_valid=false and msg_ts = '${timeStampStr}'").executeQuery match {
+    case value =>
+      value.next
+      value.getInt(1) match {
+        case 0 => true
+        case _ => false
+      }
+  }
+
+  def softDeleteParentRecord(key:(String,String),inputMap:collection.mutable.Map[String,String],timeStampStr:String)=
+    (parentInfoCheck(key,inputMap,"true"),checkIfEligibleForDelete(key,inputMap,timeStampStr)) match {
+      case (1,true) =>
+        updateTable(key,inputMap,"false",timeStampStr)
+      case (0,true)=>
+        insertIntoTable(key,inputMap,"false",timeStampStr)
+      case (_,false)=>
+      println(s"No Need to update")
+        -1
+      case (_,true)=>
+        println(s"Error Please examine, more than one true record for the combination ${key} ")
+        -1
+     }
 
   val getReverseBoolStr= (bool:String) => bool.toLowerCase.trim match {case "false" => "true" case _ => "false"}
 
-  def insertIntoTable(key:(String,String),inputMap:collection.mutable.Map[String,String],bool:String)=postgresConnection.connection.prepareStatement(s"insert into ${inputMap("postgresTableName")} (sem_id,exam_id,is_valid) values('${key._1}','${key._2}',${bool})").executeUpdate
-  def updateTable(key:(String,String),inputMap:collection.mutable.Map[String,String],bool:String)=postgresConnection.connection.prepareStatement(s"update ${inputMap("postgresTableName")} set is_valid=${bool} where sem_id='${key._1}' and exam_id='${key._2}' and is_valid=${getReverseBoolStr(bool)}").executeUpdate
+  def insertIntoTable(key:(String,String),inputMap:collection.mutable.Map[String,String],bool:String,timeStampStr:String)=postgresConnection.connection.prepareStatement(s"insert into ${inputMap("postgresTableName")} (sem_id,exam_id,is_valid,msg_ts) values('${key._1}','${key._2}',${bool},'${timeStampStr}')").executeUpdate
+  def updateTable(key:(String,String),inputMap:collection.mutable.Map[String,String],bool:String,timeStampStr:String)=postgresConnection.connection.prepareStatement(s"update ${inputMap("postgresTableName")} set is_valid=${bool}, msg_ts='${timeStampStr}' where sem_id='${key._1}' and exam_id='${key._2}' and is_valid=${getReverseBoolStr(bool)}").executeUpdate
 
-  val checkAndPersistParentRecord = (key:(String,String),inputMap:collection.mutable.Map[String,String]) => postgresConnection.connection.prepareStatement(s"select * from ${inputMap ("postgresTableName")} where sem_id='${key._1}' and exam_id ='${key._2}' and is_valid=true").executeQuery match {
+  val checkAndPersistParentRecord = (key:(String,String),inputMap:collection.mutable.Map[String,String],timeStampStr:String) => postgresConnection.connection.prepareStatement(s"select * from ${inputMap ("postgresTableName")} where sem_id='${key._1}' and exam_id ='${key._2}' and is_valid=true").executeQuery match {
     case value =>
       value.next match {
         case false =>
           println(s"result set false")
-          insertIntoTable(key,inputMap,"true")
+          insertIntoTable(key,inputMap,"true",timeStampStr)
         case true =>
           println(s"Record already present in table")
       }
@@ -270,9 +285,7 @@ object dynamicSchemaSCD2 {
 
 
     println(s"parentRows ${parentRows}")
-
-    println(s"parentRows2 ${getLatestRecord2(incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("assessmentYearRefValue")) ++ (dataMap.get("parent") match {case Some(x) => x case None=> Seq.empty[org.apache.spark.sql.Row]}))}")
-
+//    println(s"parentRows2 ${getLatestRecord2(incomingRowList.filter(_.getAs[String](inputMap("typeFilterColumn")) == inputMap("assessmentYearRefValue")) ++ (dataMap.get("parent") match {case Some(x) => x case None=> Seq.empty[org.apache.spark.sql.Row]}))}")
     println(s"childExamAndSub ${childExamAndSub}")
     println(s"grandChildExamAndType ${grandChildExamAndType}")
 
@@ -359,7 +372,7 @@ object dynamicSchemaSCD2 {
                   break
                 case (value, true)  =>
                   println(s"parent record rule true ")
-                  checkAndPersistParentRecord(key, inputMap)
+                  checkAndPersistParentRecord(key, inputMap,parentRows.getAs[String]("receivingTimeStamp"))
                   (childExamAndSub, grandChildExamAndType) match {
                     case (null, null) =>
                       dataMap.put("parent", List(parentRows))
@@ -424,12 +437,12 @@ object dynamicSchemaSCD2 {
               case 0 =>
                 println(s"no deletes in table")
                 dataMap.put("parent-1",List(parentRows))
-                softDeleteParentRecord(key,inputMap)
+                softDeleteParentRecord(key,inputMap,parentRows.getAs[String]("receivingTimeStamp"))
               case 1 =>
                 println(s"one delete in table")
                 dataMap.put("parent-1",List(parentRows))
                 dataMap.put("parent-2",List(parentRows))
-                softDeleteParentRecord(key,inputMap)
+                softDeleteParentRecord(key,inputMap,parentRows.getAs[String]("receivingTimeStamp"))
               case 2 =>
                 println(s"two deletes in table")
                 dataMap.put("parent-1",List(parentRows))
@@ -764,9 +777,6 @@ examTypeInfo -D
 
 
  */
-
-    readStreamDF.writeStream.format("console").outputMode("update")
-      .option("truncate","false").start
 
     /*
       readStreamDF
