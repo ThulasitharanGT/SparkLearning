@@ -586,21 +586,35 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
                      ,df:org.apache.spark.sql.DataFrame
                      ,matchCondition:org.apache.spark.sql.Column
                      ,matchedExpressions:Option[Map[org.apache.spark.sql.Column,Map[String,org.apache.spark.sql.Column]]]
-                     ,notMatchedInsertExpressions:Option[Map[org.apache.spark.sql.Column,Map[String,org.apache.spark.sql.Column]]],
-                     ,notMatchedUpdateExpressions:Option[Map[org.apache.spark.sql.Column,Map[String,org.apache.spark.sql.Column]]])=deltaTable.as("lambda").merge(df.as("delta"),matchCondition) match {
+                     ,notMatchedExpressions:Option[Map[org.apache.spark.sql.Column,Map[String,org.apache.spark.sql.Column]]]
+                    )=deltaTable.as("lambda").merge(df.as("delta"),matchCondition) match {
   case value =>
-    (matchedExpressions,notMatchedInsertExpressions,notMatchedUpdateExpressions) match {
-      case (Some(x),Some(y),Some(z))
+  import scala.util.control.Breaks._
+    breakable {
+      var deltaReaderBuilder = value
+      (matchedExpressions, notMatchedExpressions) match {
+        case (Some(x), Some(y)) =>
+          x.map(x => deltaReaderBuilder = deltaReaderBuilder.whenMatched(x._1).update(x._2))
+          y.map(y => deltaReaderBuilder = deltaReaderBuilder.whenNotMatched(y._1).insert(y._2))
+        case (None, Some(y)) =>
+          y.map(y => deltaReaderBuilder = deltaReaderBuilder.whenNotMatched(y._1).insert(y._2))
+        case (Some(x), None) =>
+          x.map(x => deltaReaderBuilder = deltaReaderBuilder.whenMatched(x._1).update(x._2))
+        case (None, None) =>
+          println(s"No matched or Not matched condition given")
+          break
+      }
+      deltaReaderBuilder.execute
     }
-
-
-  /*    var deltaTableBuilder=value
-    matchedExpressions.map(x=> deltaTableBuilder=deltaTableBuilder.whenMatched(x._1).update(x._2)) match {
-      case x: io.delta.tables.DeltaMergeBuilder =>
-        notMatchedExpressions.map(x=> deltaTableBuilder=deltaTableBuilder.whenMatched(x._1).update(x._2)
-    }
-}*/
 }
+
+  val getDefaultMergeCondition = (keyCols:Array[String])=> keyCols.foldRight(org.apache.spark.sql.functions.col("lambda.endDate").isNull
+    && org.apache.spark.sql.functions.col("delta.endDate").isNotNull)(
+    (seqVariable, condition) =>
+      org.apache.spark.sql.functions.col(s"lambda.${seqVariable}")
+        === org.apache.spark.sql.functions.col(s"delta.${seqVariable}")
+  )
+
   def main(args:Array[String]):Unit = {
     val spark = org.apache.spark.sql.SparkSession.builder.getOrCreate
     spark.sparkContext.setLogLevel("ERROR")
@@ -662,13 +676,11 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
             readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
               === org.apache.spark.sql.functions.lit(s"${inputMap("semIdExamIdExamTypeRefValue")}-D"))
             ,inputMap,  semIdExamIdSubCodeSchema))
-            .withColumn("subjectCode",org.apache.spark.sql.functions.explode(org.apache.spark.sql.functions.col("subjectCode")).as("subjectCode"))
 
           val semIdExamIdExamTypeDeleteDF_2 =  selectReqColsForGrandChild(processDF(
             readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
               === org.apache.spark.sql.functions.lit(s"${inputMap("semIdExamIdExamTypeRefValue")}-C-D"))
             ,inputMap,  semIdExamIdSubCodeSchema))
-            .withColumn("subjectCode",org.apache.spark.sql.functions.explode(org.apache.spark.sql.functions.col("subjectCode")).as("subjectCode"))
 
           val semIdExamIdExamTypeDeleteDF= semIdExamIdExamTypeDeleteDF_1.union(semIdExamIdExamTypeDeleteDF_2)
 
@@ -683,40 +695,39 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
     val grandChildColumnsToSelect=grandChildDeltaTable.toDF.columns :+ "CRUDType"
 
 
-    assessmentYearInMsgDF.writeStream.format("console").outputMode("update").foreachBatch( (df:org.apache.spark.sql.DataFrame,batchId:Long) =>
-      parentDeltaTable.as("lambda").merge(
-        getProperDFtoUpsert(parentDeltaTable, df, parentColumnsToSelect, Array("semId", "examId"), Array("assessmentYear"))
-          .as("delta"),
-        org.apache.spark.sql.functions.col("lambda.examId")
-          === org.apache.spark.sql.functions.col("delta.examId") &&
-          org.apache.spark.sql.functions.col("lambda.semId")
-            === org.apache.spark.sql.functions.col("delta.semId")
-          && org.apache.spark.sql.functions.col("lambda.endDate").isNull
-          && org.apache.spark.sql.functions.col("delta.endDate").isNotNull
-      ).whenMatched(org.apache.spark.sql.functions.col("lambda.assessmentYear")
+    assessmentYearInMsgDF.writeStream.format("console").outputMode("append").foreachBatch( (df:org.apache.spark.sql.DataFrame,batchId:Long) =>
+      executeMergeCRUD(parentDeltaTable,
+        getProperDFtoUpsert(parentDeltaTable, df, parentColumnsToSelect, Array("semId", "examId"), Array("assessmentYear")),
+        getDefaultMergeCondition("examId,semId".split(",")),
+        Some(Map( (org.apache.spark.sql.functions.col("lambda.assessmentYear")
         === org.apache.spark.sql.functions.col("delta.assessmentYear")
       &&  org.apache.spark.sql.functions.col("delta.CRUDType")=== org.apache.spark.sql.functions.lit("Delete")
-      ).updateExpr(Map("endDate" -> "delta.endDate"))
-      .whenMatched(org.apache.spark.sql.functions.col("lambda.assessmentYear")
+          )  -> Map("endDate" -> org.apache.spark.sql.functions.col("delta.endDate"))
+      ,(org.apache.spark.sql.functions.col("lambda.assessmentYear")
           =!= org.apache.spark.sql.functions.col("delta.assessmentYear")
           &&  org.apache.spark.sql.functions.col("delta.CRUDType").isin("Computed","Insert","Update")
-        ).updateExpr(Map("endDate" -> "delta.endDate"))
-        .whenNotMatched(org.apache.spark.sql.functions.col("delta.endDate").isNull
+        ) -> Map("endDate" ->  org.apache.spark.sql.functions.col("delta.endDate"))
+        ))
+         , Some(Map( (org.apache.spark.sql.functions.col("delta.endDate").isNull
           &&  org.apache.spark.sql.functions.col("delta.CRUDType").isin("Insert","Update")) // even first time delete will go in here
-        .insertExpr(Map("assessmentYear" -> "delta.assessmentYear"
-          , "semId" -> "delta.semId", "startDate" -> "delta.startDate"
-          , "endDate" -> "delta.endDate", "examId" -> "delta.examId"))
-        .whenNotMatched(org.apache.spark.sql.functions.col("delta.endDate").isNotNull
+         -> Map("assessmentYear" -> org.apache.spark.sql.functions.col("delta.assessmentYear")
+          , "semId" -> org.apache.spark.sql.functions.col("delta.semId"),
+          "startDate" -> org.apache.spark.sql.functions.col("delta.startDate")
+          , "endDate" -> org.apache.spark.sql.functions.col("delta.endDate"),
+          "examId" -> org.apache.spark.sql.functions.col("delta.examId"))
+        , (org.apache.spark.sql.functions.col("delta.endDate").isNotNull
           &&  org.apache.spark.sql.functions.col("delta.CRUDType") === org.apache.spark.sql.functions.lit("Delete")) // even first time delete will go in here
-        .insertExpr(Map("assessmentYear" -> "delta.assessmentYear"
-          , "semId" -> "delta.semId", "startDate" -> "delta.startDate"
-          , "endDate" -> "delta.endDate", "examId" -> "delta.examId")).execute
+        -> Map("assessmentYear" -> org.apache.spark.sql.functions.col("delta.assessmentYear")
+          , "semId" -> org.apache.spark.sql.functions.col("delta.semId"),
+          "startDate" -> org.apache.spark.sql.functions.col("delta.startDate")
+          , "endDate" -> org.apache.spark.sql.functions.col("delta.endDate"),
+          "examId" -> org.apache.spark.sql.functions.col("delta.examId")))))
     ).option("truncate","false")
       // checkpoint , numRows
       .start
 
 
-    semIdExamIdSubCodeInMsgDF.writeStream.outputMode("update").option("truncate","false")
+    semIdExamIdSubCodeInMsgDF.writeStream.outputMode("append").option("truncate","false")
       .foreachBatch((df:org.apache.spark.sql.DataFrame,batchID:Long) => {
         childDeltaTable.as("lambda")
           .merge(getProperDFtoUpsert(childDeltaTable,df,childColumnsToSelect
@@ -739,7 +750,7 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
       }).start
 
 
-    semIdExamIdExamTypeInMsgDF.writeStream.outputMode("update").option("truncate","false")
+    semIdExamIdExamTypeInMsgDF.writeStream.outputMode("append").option("truncate","false")
       .foreachBatch((df:org.apache.spark.sql.DataFrame,batchID:Long) => {
         grandChildDeltaTable.as("lambda")
           .merge(getProperDFtoUpsert(grandChildDeltaTable,df,grandChildColumnsToSelect
@@ -762,7 +773,7 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
       }).start
 // update when not present don't insert
 
-    semIdExamIdSubCodeDeleteDF.writeStream.outputMode("update").format("console")
+    semIdExamIdSubCodeDeleteDF.writeStream.outputMode("append").format("console")
       .foreachBatch((df:org.apache.spark.sql.DataFrame,batchId:Long) => {
         df.withColumn("deleteData",org.apache.spark.sql.functions.lit("deleteData")).show(false)
 
@@ -781,7 +792,7 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
 
 
 
-    semIdExamIdExamTypeDeleteDF.writeStream.format("console").outputMode("update")
+    semIdExamIdExamTypeDeleteDF.writeStream.format("console").outputMode("append")
       .foreachBatch( (df:org.apache.spark.sql.DataFrame,batchId:Long)=>
       {
         grandChildDeltaTable.as("lambda").merge(df.as("delta"),
@@ -914,6 +925,7 @@ semId |examId|subjectCode|examTime|startDate |endDate
 
 {"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"exTmp1\",\"semId\":\"s001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2021-09-15 12:33:44.333"}
 
+{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s002\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2021-09-15 12:33:44.333"}
 
 
  */
