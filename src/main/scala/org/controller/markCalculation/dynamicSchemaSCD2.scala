@@ -514,7 +514,7 @@ object dynamicSchemaSCD2 {
 
   def processDF(df:org.apache.spark.sql.DataFrame,inputMap:collection.mutable.Map[String,String],schema:org.apache.spark.sql.types.StructType)=df.select(org.apache.spark.sql.functions.from_json(org.apache.spark.sql.functions.col(inputMap("actualMsgColumn")),schema).as("dataExploded"),org.apache.spark.sql.functions.col("receivingTimeStamp").cast(org.apache.spark.sql.types.TimestampType).as("startDate")).select("dataExploded.*","startDate")
 
-  def selectReqColsForGrandChild(df:org.apache.spark.sql.DataFrame)=df.select("semId,examId,startDate,CRUDType,endDate".split(",").map(org.apache.spark.sql.functions.col):_*)
+  def selectReqColsForGrandChild(df:org.apache.spark.sql.DataFrame)=df.select("semId,examId,startDate,CRUDType".split(",").map(org.apache.spark.sql.functions.col):_*)
 
  // val getJoinOfDataCol= (dataColumns:Array[String],keyColumns:Array[String]) => dataColumns.foldRight(keyColumns.foldLeft(org.apache.spark.sql.functions.col("lambdaDF.endDate").isNull/*  -- use thi in join to determine defective records&& org.apache.spark.sql.functions.col("lambdaDF.startDate") > org.apache.spark.sql.functions.col("delta.startDate")*/)((columnVar, currVar)=>columnVar && org.apache.spark.sql.functions.col(s"lambdaDF.${currVar}")===org.apache.spark.sql.functions.col(s"delta.${currVar}")))((currVal,colVal) => colVal && org.apache.spark.sql.functions.col(s"lambdaDF.${currVal}")=!=org.apache.spark.sql.functions.col(s"delta.${currVal}")  )
  val getJoinOfDataCol= (keyColumns:Array[String]) => keyColumns.foldLeft(org.apache.spark.sql.functions.col("lambdaDF.endDate").isNull)((columnVar, currVar)=>columnVar && org.apache.spark.sql.functions.col(s"lambdaDF.${currVar}")===org.apache.spark.sql.functions.col(s"delta.${currVar}"))
@@ -611,9 +611,26 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
   val getDefaultMergeCondition = (keyCols:Array[String])=> keyCols.foldRight(org.apache.spark.sql.functions.col("lambda.endDate").isNull
     && org.apache.spark.sql.functions.col("delta.endDate").isNotNull)(
     (seqVariable, condition) =>
-      org.apache.spark.sql.functions.col(s"lambda.${seqVariable}")
+      condition && org.apache.spark.sql.functions.col(s"lambda.${seqVariable}")
         === org.apache.spark.sql.functions.col(s"delta.${seqVariable}")
   )
+
+  def dopDuplicates(df:org.apache.spark.sql.DataFrame,partitionColumns:Array[String],orderColumns:Array[String],orderType:String)= orderType match {
+    case "desc" =>
+      df.withColumn("rowNum",
+        org.apache.spark.sql.functions.row_number.over(
+          org.apache.spark.sql.expressions.Window.partitionBy(partitionColumns.map(org.apache.spark.sql.functions.col) :_*)
+            .orderBy(orderColumns.map(org.apache.spark.sql.functions.desc) :_*)))
+        .filter("rowNum =1").drop("rowNum")
+    case "asc" =>
+      df.withColumn("rowNum",
+        org.apache.spark.sql.functions.row_number.over(
+          org.apache.spark.sql.expressions.Window.partitionBy(partitionColumns.map(org.apache.spark.sql.functions.col) :_*)
+            .orderBy(orderColumns.map(org.apache.spark.sql.functions.asc) :_*)))
+        .filter("rowNum =1").drop("rowNum")
+  }
+
+
 
   def main(args:Array[String]):Unit = {
     val spark = org.apache.spark.sql.SparkSession.builder.getOrCreate
@@ -642,6 +659,8 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
         Encoders.product[stateStore],org.apache.spark.sql.catalyst.encoders.RowEncoder(wrapperSchema)
         ,GroupStateTimeout.NoTimeout)
 
+    readStreamDF.writeStream.format("console").outputMode("update").option("truncate","false").start
+
     val assessmentYearSchema=getSchema(inputMap("assessmentYearSchema"))
     val semIdExamIdSubCodeSchema=getSchema(inputMap("semIdExamIdSubCodeSchema"))
     val semIdExamIdExamTypeSchema=getSchema(inputMap("semIdExamIdExamTypeSchema"))
@@ -654,6 +673,8 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
       readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
         === org.apache.spark.sql.functions.lit(inputMap("assessmentYearRefValue")))
         ,inputMap,  assessmentYearSchema)
+
+
     /*
     val semIdExamIdSubCodeInMsgDF=  processDF(
       readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
@@ -781,26 +802,23 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
 
         val deleteDF=selectReqColsForGrandChild(processDF(
           df.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
-        === org.apache.spark.sql.functions.lit(s"${inputMap("semIdExamIdExamTypeRefValue")}-D"))
+        === org.apache.spark.sql.functions.lit(s"${inputMap("semIdExamIdSubCodeRefValue")}-D"))
           ,inputMap,  semIdExamIdSubCodeSchema))
 
-        val deleteDFComputed=childDeltaTable.toDF
-          .withColumn("rowNumber", org.apache.spark.sql.functions.row_number.over(
-            org.apache.spark.sql.expressions.Window.partitionBy("semId,examId,subjectCode".split(",")
-              .map(org.apache.spark.sql.functions.col):_*)
-              .orderBy(org.apache.spark.sql.functions.desc("startDate"))
-          )).filter("rowNumber =1").drop("rowNumber")
+ //       deleteDF.withColumn("delDF",org.apache.spark.sql.functions.lit("delDF")).show(false)
+// drop duplicates custom (key)
+        val deleteDFComputed=
+          dopDuplicates(childDeltaTable.toDF,"semId,examId,subjectCode".split(","),Array("startDate"), "desc")
           .as("lambda")
-          .join(deleteDF.as("delta"),
+          .join(deleteDF.dropDuplicates("semId","examId").as("delta"),
         "semId,examId".split(",").foldRight(
           org.apache.spark.sql.functions.lit("1") === org.apache.spark.sql.functions.lit("1")
         ) ((currInfo,seqCol) => seqCol && org.apache.spark.sql.functions.col(s"lambda.${currInfo}")
-          === org.apache.spark.sql.functions.col(s"delta.${currInfo}"))
-           )
+          === org.apache.spark.sql.functions.col(s"delta.${currInfo}")))
           .select(("semId,examId,startDate,CRUDType".split(",")
             .map(x=>s"delta.${x}")  :+ "lambda.subjectCode")
-            .map(org.apache.spark.sql.functions.col):_*)
-        //  .withColumn("endDate",org.apache.spark.sql.functions.col("startDate"))
+            .map(org.apache.spark.sql.functions.col) :_* )
+          .withColumn("endDate",org.apache.spark.sql.functions.col("startDate"))
 
         childDeltaTable.as("lambda").merge(deleteDFComputed.as("delta"),
           "semId,examId,subjectCode".split(",").foldRight(
@@ -948,7 +966,7 @@ examIdSemIdPath=hdfs://localhost:8020/user/raptor/persist/marks/assessmentYearIn
   )(org.apache.spark.sql.catalyst.encoders.RowEncoder( new org.apache.spark.sql.types.StructType(
      Array( org.apache.spark.sql.types.StructField("data",wrapperSchema,true ))))*/
     /*
-spark-submit --class org.controller.markCalculation.dynamicSchemaSCD2 --packages org.postgresql:postgresql:42.3.5,org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 1g --executor-cores 2 --driver-memory 1g --conf spark.sql.streaming.checkpointLocation=hdfs://localhost:8020/user/raptor/streaming/checkpointLocation/ --driver-cores 2 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar typeFilterColumn=messageType assessmentYearRefValue=assessmentInfo semIdExamIdSubCodeRefValue=examAndSubInfo semIdExamIdExamTypeRefValue=examTypeInfo outerSchema=messageType:string~actualMessage:string~receivingTimeStamp:string actualMsgColumn=actualMessage postgresUser=postgres postgresPassword=IAMTHEemperor postgresUrl=jdbc:postgresql://localhost:5432/temp_db postgresDriver=org.postgresql.Driver bootstrapServer=localhost:8081,localhost:8082,localhost:8083 startingOffsets=latest topic=tmpTopic postgresTableName=temp_schema.sem_id_and_exam_id assessmentYearSchema=assessmentYear:String~semId:String~examId:String~CRUDType:string semIdExamIdSubCodeSchema="subjectCode:array(String)~semId:String~examId:String~CRUDType:string~examTime:String" semIdExamIdExamTypeSchema=examType:String~semId:String~examId:String~CRUDType:string examIdSemIdPath=hdfs://localhost:8020/user/raptor/persist/marks/assessmentYearInfo_scd2 examIdSemIdSubCodePath=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndSubCode_scd2 examIdSemIdExamTypePath=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndExamType_scd2
+  spark-submit --class org.controller.markCalculation.dynamicSchemaSCD2 --packages org.postgresql:postgresql:42.3.5,org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 1g --executor-cores 2 --driver-memory 1g --conf spark.sql.streaming.checkpointLocation=hdfs://localhost:8020/user/raptor/streaming/checkpointLocation/ --driver-cores 2 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar typeFilterColumn=messageType assessmentYearRefValue=assessmentInfo semIdExamIdSubCodeRefValue=examAndSubInfo semIdExamIdExamTypeRefValue=examTypeInfo outerSchema=messageType:string~actualMessage:string~receivingTimeStamp:string actualMsgColumn=actualMessage postgresUser=postgres postgresPassword=IAMTHEemperor postgresUrl=jdbc:postgresql://localhost:5432/temp_db postgresDriver=org.postgresql.Driver bootstrapServer=localhost:8081,localhost:8082,localhost:8083 startingOffsets=latest topic=tmpTopic postgresTableName=temp_schema.sem_id_and_exam_id assessmentYearSchema=assessmentYear:String~semId:String~examId:String~CRUDType:string semIdExamIdSubCodeSchema="subjectCode:array(String)~semId:String~examId:String~CRUDType:string~examTime:String" semIdExamIdExamTypeSchema=examType:String~semId:String~examId:String~CRUDType:string examIdSemIdPath=hdfs://localhost:8020/user/raptor/persist/marks/assessmentYearInfo_scd2 examIdSemIdSubCodePath=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndSubCode_scd2 examIdSemIdExamTypePath=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndExamType_scd2
 
 
 
@@ -1016,6 +1034,7 @@ examTypeInfo -D
 {"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"ex001\",\"semId\":\"sem001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 12:33:44.333"}
 
 
+{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"ex001\",\"semId\":\"s002\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2020-09-15 12:33:44.333"}
 
 semId |examId|subjectCode|examTime|startDate |endDate
 
@@ -1042,7 +1061,7 @@ semId |examId|subjectCode|examTime|startDate |endDate
 
 
 
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"ex002\",\"semId\":\"sem001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2021-09-15 13:34:44.333"}
+{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"ex001\",\"semId\":\"sem001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2021-09-15 13:37:44.333"}
 
 {"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"exTmp1\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2021-09-15 12:33:44.333"}
 {"messageType":"examTypeInfo","actualMessage":"{\"examId\":\"exTmp1\",\"semId\":\"s001\",\"CRUDType\":\"Insert\",\"examType\":\"SA\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
