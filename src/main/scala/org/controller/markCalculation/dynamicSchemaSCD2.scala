@@ -514,7 +514,7 @@ object dynamicSchemaSCD2 {
 
   def processDF(df:org.apache.spark.sql.DataFrame,inputMap:collection.mutable.Map[String,String],schema:org.apache.spark.sql.types.StructType)=df.select(org.apache.spark.sql.functions.from_json(org.apache.spark.sql.functions.col(inputMap("actualMsgColumn")),schema).as("dataExploded"),org.apache.spark.sql.functions.col("receivingTimeStamp").cast(org.apache.spark.sql.types.TimestampType).as("startDate")).select("dataExploded.*","startDate")
 
-  def selectReqColsForGrandChild(df:org.apache.spark.sql.DataFrame)=df.select("semId,examId,startDate,CRUDType".split(",").map(org.apache.spark.sql.functions.col):_*)
+  def selectReqColsForChildAndGrandChild(df:org.apache.spark.sql.DataFrame)=df.select("semId,examId,startDate,CRUDType".split(",").map(org.apache.spark.sql.functions.col):_*)
 
  // val getJoinOfDataCol= (dataColumns:Array[String],keyColumns:Array[String]) => dataColumns.foldRight(keyColumns.foldLeft(org.apache.spark.sql.functions.col("lambdaDF.endDate").isNull/*  -- use thi in join to determine defective records&& org.apache.spark.sql.functions.col("lambdaDF.startDate") > org.apache.spark.sql.functions.col("delta.startDate")*/)((columnVar, currVar)=>columnVar && org.apache.spark.sql.functions.col(s"lambdaDF.${currVar}")===org.apache.spark.sql.functions.col(s"delta.${currVar}")))((currVal,colVal) => colVal && org.apache.spark.sql.functions.col(s"lambdaDF.${currVal}")=!=org.apache.spark.sql.functions.col(s"delta.${currVal}")  )
  val getJoinOfDataCol= (keyColumns:Array[String]) => keyColumns.foldLeft(org.apache.spark.sql.functions.col("lambdaDF.endDate").isNull)((columnVar, currVar)=>columnVar && org.apache.spark.sql.functions.col(s"lambdaDF.${currVar}")===org.apache.spark.sql.functions.col(s"delta.${currVar}"))
@@ -614,6 +614,8 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
       condition && org.apache.spark.sql.functions.col(s"lambda.${seqVariable}")
         === org.apache.spark.sql.functions.col(s"delta.${seqVariable}")
   )
+  val getCol= (colName:String)=> org.apache.spark.sql.functions.col(colName)
+  val getLit= (literalValue:Any)=> org.apache.spark.sql.functions.lit(literalValue)
 
   def dopDuplicates(df:org.apache.spark.sql.DataFrame,partitionColumns:Array[String],orderColumns:Array[String],orderType:String)= orderType match {
     case "desc" =>
@@ -629,7 +631,11 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
             .orderBy(orderColumns.map(org.apache.spark.sql.functions.asc) :_*)))
         .filter("rowNum =1").drop("rowNum")
   }
+/*
+Deleting parent , deletes all subject codes in child and deletes all active grandchild
+deleting child deletes incoming child deletes anddeletes all active grandchild
 
+* */
 
 
   def main(args:Array[String]):Unit = {
@@ -771,7 +777,57 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
           ,inputMap,  semIdExamIdSubCodeSchema)
           .withColumn("subjectCode",org.apache.spark.sql.functions.explode(org.apache.spark.sql.functions.col("subjectCode")).as("subjectCode"))
 
-        childDeltaTable.as("lambda").merge(
+        executeMergeCRUD(childDeltaTable,
+          getProperDFtoUpsert(childDeltaTable,crudDF,childColumnsToSelect,"semId,examId,subjectCode".split(","),
+            Array("examTime") )
+          ,"semId,examId,subjectCode".split(",").foldRight(
+            org.apache.spark.sql.functions.col("lambda.endDate").isNull
+              && org.apache.spark.sql.functions.col("delta.endDate").isNotNull
+          )((currCol,finalColumn) => finalColumn && org.apache.spark.sql.functions.col(s"lambda.${currCol}") ===
+            org.apache.spark.sql.functions.col(s"delta.${currCol}"))
+          ,
+          Some(Map( (org.apache.spark.sql.functions.col(s"delta.CRUDType").isin("Computed")
+            &&  org.apache.spark.sql.functions.col(s"lambda.examTime") =!=
+            org.apache.spark.sql.functions.col(s"delta.examTime")
+            && getCol("lambda.startDate") > getCol("delta.endDate")) ->
+            Map("endDate"->  org.apache.spark.sql.functions.to_timestamp( org.apache.spark.sql.functions.unix_timestamp(getCol("lambda.startDate"))
+              - getLit(60))  ),
+            (org.apache.spark.sql.functions.col(s"delta.CRUDType").isin("Delete")
+              &&  org.apache.spark.sql.functions.col(s"lambda.examTime") ===
+              org.apache.spark.sql.functions.col(s"delta.examTime")
+              && getCol("lambda.startDate") > getCol("delta.endDate")) ->
+              Map("endDate"->  org.apache.spark.sql.functions.to_timestamp( org.apache.spark.sql.functions.unix_timestamp(getCol("lambda.startDate"))
+                - getLit(60))  ),
+            (org.apache.spark.sql.functions.col(s"delta.CRUDType").isin("Delete")
+              &&  org.apache.spark.sql.functions.col(s"lambda.examTime") ===
+              org.apache.spark.sql.functions.col(s"delta.examTime")
+              && getCol("lambda.startDate") <= getCol("delta.endDate")) ->
+              Map("endDate"-> org.apache.spark.sql.functions.col(s"delta.endDate")),
+            (org.apache.spark.sql.functions.col(s"delta.CRUDType").isin("Computed")
+              &&  org.apache.spark.sql.functions.col(s"lambda.examTime") =!=
+              org.apache.spark.sql.functions.col(s"delta.examTime")
+              && getCol("lambda.startDate") <= getCol("delta.endDate")) ->
+              Map("endDate"-> org.apache.spark.sql.functions.col(s"delta.endDate"))))
+          ,
+          Some(Map((org.apache.spark.sql.functions.col(s"delta.CRUDType")
+            .isin("Computed","Insert","Update") && getCol("delta.endDate").isNull)->
+            Map("semId" -> org.apache.spark.sql.functions.col(s"delta.semId")
+            ,"examId" -> org.apache.spark.sql.functions.col(s"delta.examId")
+            ,"subjectCode" -> org.apache.spark.sql.functions.col(s"delta.subjectCode")
+            ,"examTime" -> org.apache.spark.sql.functions.col(s"delta.examTime")
+            ,"startDate" -> org.apache.spark.sql.functions.col(s"delta.startDate")
+            ,"endDate" -> org.apache.spark.sql.functions.col(s"delta.endDate") )
+          ,(org.apache.spark.sql.functions.col(s"delta.CRUDType")
+              .isin("Delete") &&  getCol("delta.endDate").isNotNull)->  Map("semId" -> org.apache.spark.sql.functions.col(s"delta.semId")
+              ,"examId" -> org.apache.spark.sql.functions.col(s"delta.examId")
+              ,"subjectCode" -> org.apache.spark.sql.functions.col(s"delta.subjectCode")
+              ,"examTime" -> org.apache.spark.sql.functions.col(s"delta.examTime")
+              ,"startDate" -> org.apache.spark.sql.functions.col(s"delta.startDate")
+              ,"endDate" -> org.apache.spark.sql.functions.col(s"delta.endDate") ),
+          ))
+        )
+
+     /*   childDeltaTable.as("lambda").merge(
           getProperDFtoUpsert(childDeltaTable,crudDF,childColumnsToSelect,"semId,examId,subjectCode".split(","),
           Array("examTime") ).as("delta"),
             "semId,examId,subjectCode".split(",").foldRight(
@@ -798,15 +854,18 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
               ,"endDate" -> org.apache.spark.sql.functions.col(s"delta.endDate") )
           ).execute
 
+*/
+// Handle delete from parent separately
 
-
-        val deleteDF=selectReqColsForGrandChild(processDF(
+        val deleteDF=selectReqColsForChildAndGrandChild(processDF(
           df.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
         === org.apache.spark.sql.functions.lit(s"${inputMap("semIdExamIdSubCodeRefValue")}-D"))
           ,inputMap,  semIdExamIdSubCodeSchema))
 
- //       deleteDF.withColumn("delDF",org.apache.spark.sql.functions.lit("delDF")).show(false)
+        deleteDF.withColumn("delDF",org.apache.spark.sql.functions.lit("delDF")).show(false)
+
 // drop duplicates custom (key)
+
         val deleteDFComputed=
           dopDuplicates(childDeltaTable.toDF,"semId,examId,subjectCode".split(","),Array("startDate"), "desc")
           .as("lambda")
@@ -818,8 +877,33 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
           .select(("semId,examId,startDate,CRUDType".split(",")
             .map(x=>s"delta.${x}")  :+ "lambda.subjectCode")
             .map(org.apache.spark.sql.functions.col) :_* )
-          .withColumn("endDate",org.apache.spark.sql.functions.col("startDate"))
+            .withColumn("endDate",
+              org.apache.spark.sql.functions.unix_timestamp(getCol("startDate")) - getLit(60))
 
+        deleteDFComputed.withColumn("delDFComp",org.apache.spark.sql.functions.lit("delDFComp")).show(false)
+
+        executeMergeCRUD(childDeltaTable,
+          deleteDFComputed,
+          "semId,examId,subjectCode".split(",").foldRight(
+            org.apache.spark.sql.functions.col("lambda.endDate").isNull)
+          (  (currCol,condition) => condition &&
+            org.apache.spark.sql.functions.col(s"lambda.${currCol}") ===
+              org.apache.spark.sql.functions.col(s"delta.${currCol}")),
+          Some(Map((org.apache.spark.sql.functions.col("delta.endDate").isNotNull
+            && org.apache.spark.sql.functions.col("delta.CRUDType")
+            ===org.apache.spark.sql.functions.lit("Delete")) -> Map("endDate" ->
+            org.apache.spark.sql.functions.col("delta.endDate")))),
+          Some(Map((org.apache.spark.sql.functions.lit(1)=== org.apache.spark.sql.functions.lit(1))
+          ->
+            Map("semId" -> org.apache.spark.sql.functions.col(s"delta.semId")
+              ,"examId" -> org.apache.spark.sql.functions.col(s"delta.examId")
+              ,"subjectCode" -> org.apache.spark.sql.functions.col(s"delta.subjectCode")
+              ,"examTime" -> org.apache.spark.sql.functions.lit("NA") // changed
+              ,"startDate" -> org.apache.spark.sql.functions.col(s"delta.startDate")
+              ,"endDate" -> org.apache.spark.sql.functions.col(s"delta.endDate") ) )
+        ))
+
+        /*
         childDeltaTable.as("lambda").merge(deleteDFComputed.as("delta"),
           "semId,examId,subjectCode".split(",").foldRight(
             org.apache.spark.sql.functions.col("lambda.endDate").isNull)
@@ -836,17 +920,87 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
             Map("semId" -> org.apache.spark.sql.functions.col(s"delta.semId")
               ,"examId" -> org.apache.spark.sql.functions.col(s"delta.examId")
               ,"subjectCode" -> org.apache.spark.sql.functions.col(s"delta.subjectCode")
-              ,"examTime" -> org.apache.spark.sql.functions.lit(null)
+              ,"examTime" -> org.apache.spark.sql.functions.lit("NA") // changed
               ,"startDate" -> org.apache.spark.sql.functions.col(s"delta.startDate")
               ,"endDate" -> org.apache.spark.sql.functions.col(s"delta.endDate") )
           ).execute
+*/
+      }
+      ).start
 
 
+    val semIdExamIdAndExamTypeDF=readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
+      .like(s"${inputMap("semIdExamIdExamTypeRefValue")}%"))
 
-        // merger here
+    semIdExamIdAndExamTypeDF.writeStream.format("console").outputMode("update")
+      .foreachBatch((df:org.apache.spark.sql.DataFrame,batchId:Long) => {
+
+        val crudDF = processDF(df.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
+          ===(s"${inputMap("semIdExamIdExamTypeRefValue")}")),inputMap,semIdExamIdExamTypeSchema)
+
+        executeMergeCRUD(grandChildDeltaTable,
+          getProperDFtoUpsert(grandChildDeltaTable,crudDF,
+            grandChildColumnsToSelect,"semId,examId".split(","),Array("examType")),
+          getDefaultMergeCondition("semId,examId".split(",")),
+          Some(Map((org.apache.spark.sql.functions.col("delta.examType") =!=
+            org.apache.spark.sql.functions.col("lambda.examType")&&
+            org.apache.spark.sql.functions.col("delta.CRUDType").isin("Computed","Delete")) //possibility
+          -> Map("endDate" -> getCol("delta.endDate")),
+            (org.apache.spark.sql.functions.col("delta.examType") ===
+              org.apache.spark.sql.functions.col("lambda.examType")
+              && getCol("delta.CRUDType").isin("Delete"))
+              -> Map("endDate" -> getCol("delta.endDate"))
+            ))
+          ,
+          Some(Map((getCol("delta.endDate").isNull &&
+            getCol("delta.CRUDType").isin("Insert","Update")) ->
+          Map("semId" -> getCol("delta.semId"),
+            "examId" -> getCol("delta.examId"),
+            "examType" -> getCol("delta.examType")
+            ,"startDate" -> getCol("delta.startDate"),
+            "endDate" -> getCol("delta.endDate")),
+            (getCol("delta.endDate").isNotNull &&
+              getCol("delta.CRUDType").isin("Delete","Computed")) ->
+              Map("semId" -> getCol("delta.semId"),
+                "examId" -> getCol("delta.examId"),
+                "examType" -> getCol("delta.examType")
+                ,"startDate" -> getCol("delta.startDate"),
+                "endDate" -> getCol("delta.endDate")))))
+
+        val delete_D = processDF(df.where(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
+          ===(s"${inputMap("semIdExamIdExamTypeRefValue")}-D")),inputMap,assessmentYearSchema) // comes from parent
+        val delete_C_D = processDF(df.filter(
+          s"${inputMap("typeFilterColumn")} ='${inputMap("semIdExamIdExamTypeRefValue")}-C-D' ")
+          ,inputMap,semIdExamIdSubCodeSchema) // comes from child
+
+        val deleteDF=selectReqColsForChildAndGrandChild(delete_D)
+          .union(selectReqColsForChildAndGrandChild(delete_C_D)).withColumn("endDate",
+          org.apache.spark.sql.functions.to_timestamp(
+          org.apache.spark.sql.functions.unix_timestamp(getCol("startDate")) - getLit(60))
+        )
+
+        executeMergeCRUD(
+          grandChildDeltaTable,
+          deleteDF,
+          getDefaultMergeCondition("semId,examId".split(",")),
+          Some(Map((getCol("delta.endDate") >= getCol("lambda.startDate") &&
+            getCol("delta.CRUDType") === getLit("Delete")) ->
+          Map("endDate" -> getCol("delta.endDate")),
+            (getCol("delta.endDate") < getCol("lambda.startDate")
+              && getCol("delta.CRUDType") === getLit("Delete")) ->
+              Map("endDate" -> org.apache.spark.sql.functions.to_timestamp(
+                org.apache.spark.sql.functions.unix_timestamp(getCol("lambda.startDate")) + getLit(60)
+              )))),
+          Some(Map((getCol("delta.CRUDType") === getLit("Delete") )
+            -> Map("examId" -> getCol("delta.examId")
+            ,"semId" -> getCol("delta.semId")
+            ,"examType" -> getLit("NA")
+            ,"startDate" -> getCol("delta.startDate")
+            ,"endDate" -> getCol("delta.endDate")))))
 
       }
       ).start
+
 
 
 /*
@@ -941,9 +1095,6 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
 
     /*
 
-examIdSemIdPath=hdfs://localhost:8020/user/raptor/persist/marks/assessmentYearInfo_scd2 examIdSemIdSubCodePath=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndSubCode_scd2 examIdSemIdExamTypePath=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndExamType_scd2
-
-
     readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
     === org.apache.spark.sql.functions.lit(inputMap("assessmentYearRefValue")))
     .select(org.apache.spark.sql.functions.from_json(
@@ -951,16 +1102,7 @@ examIdSemIdPath=hdfs://localhost:8020/user/raptor/persist/marks/assessmentYearIn
     .select("dataExtract.*")
 
     */
-/*
 
-    assessmentInfo
-    examAndSubInfo
-    examTypeInfo
-
-    examAndSubInfo-D
-    examTypeInfo-D
-    examTypeInfo-C-D
-*/
     /*.mapGroupsWithState(GroupStateTimeout.NoTimeout)( (key,rowList,state) =>
     stateFunction(key,rowList.toList,state)
   )(org.apache.spark.sql.catalyst.encoders.RowEncoder( new org.apache.spark.sql.types.StructType(
@@ -968,13 +1110,6 @@ examIdSemIdPath=hdfs://localhost:8020/user/raptor/persist/marks/assessmentYearIn
     /*
   spark-submit --class org.controller.markCalculation.dynamicSchemaSCD2 --packages org.postgresql:postgresql:42.3.5,org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 1g --executor-cores 2 --driver-memory 1g --conf spark.sql.streaming.checkpointLocation=hdfs://localhost:8020/user/raptor/streaming/checkpointLocation/ --driver-cores 2 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar typeFilterColumn=messageType assessmentYearRefValue=assessmentInfo semIdExamIdSubCodeRefValue=examAndSubInfo semIdExamIdExamTypeRefValue=examTypeInfo outerSchema=messageType:string~actualMessage:string~receivingTimeStamp:string actualMsgColumn=actualMessage postgresUser=postgres postgresPassword=IAMTHEemperor postgresUrl=jdbc:postgresql://localhost:5432/temp_db postgresDriver=org.postgresql.Driver bootstrapServer=localhost:8081,localhost:8082,localhost:8083 startingOffsets=latest topic=tmpTopic postgresTableName=temp_schema.sem_id_and_exam_id assessmentYearSchema=assessmentYear:String~semId:String~examId:String~CRUDType:string semIdExamIdSubCodeSchema="subjectCode:array(String)~semId:String~examId:String~CRUDType:string~examTime:String" semIdExamIdExamTypeSchema=examType:String~semId:String~examId:String~CRUDType:string examIdSemIdPath=hdfs://localhost:8020/user/raptor/persist/marks/assessmentYearInfo_scd2 examIdSemIdSubCodePath=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndSubCode_scd2 examIdSemIdExamTypePath=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndExamType_scd2
 
-
-
-  assessmentYearSchema=assessmentYear:String,semId:String,examId:String,receivingTimeStamp:string semIdExamIdSubCodeSchema=subjectCode:array(String),semId:String,examId:String,receivingTimeStamp:string semIdExamIdExamTypeSchema=examType:String,semId:String,examId:String,receivingTimeStamp:string
-
-   actualMsgColumn
-    assessmentYearSchema
-   outerSchema=messageType:string~actualMessage:string~receivingTimeStamp:string
 
 assessmentYearSchema=assessmentYear:String,semId:String,examId:String,receivingTimeStamp:string
 semIdExamIdSubCodeSchema=subjectCode:array(String),semId:String,examId:String,receivingTimeStamp:string
@@ -984,86 +1119,20 @@ semIdExamIdExamTypeSchema=examType:String,semId:String,examId:String,receivingTi
 assessmentInfo
 examAndSubInfo
 examTypeInfo
+// deletes from parent delete:
 
 examAndSubInfo-D
 examTypeInfo -D
 
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-09 11:33:44.333"}
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2020-09-10 11:33:44.333"}
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-11 11:33:44.333"}
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2020-09-14 11:33:44.333"}
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
+// deletes from child delete:
 
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-09 11:33:44.333"}
+examTypeInfo -C-D
 
+{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"ex001\",\"semId\":\"sem001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2021-09-15 13:40:44.333"}
 
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2022-2023\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Update\"}","receivingTimeStamp":"2020-09-09 11:33:44.333"}
+{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"ex001\",\"semId\":\"sem001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2021-09-15 13:40:44.333"}
 
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2022-2023\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Update\"}","receivingTimeStamp":"2020-09-10 12:32:44.333"}
-
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Update\"}","receivingTimeStamp":"2020-09-10 12:33:44.333"}
-
-
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2024-2024\",\"examId\":\"e001\",\"semId\":\"s002\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-10-09 11:33:44.333"}
-
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s002\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2020-09-15 12:33:44.333"}
-
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s002\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2020-09-15 12:33:44.333"}
-
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"ex001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 12:33:44.333"}
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"ex001\",\"semId\":\"s002\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 12:33:44.333"}
-
-{"messageType":"examAndSubInfo","actualMessage":"{\"examTime\":\"AN\",\"examId\":\"ex001\",\"semId\":\"s001\",\"subjectCode\":[\"sub004\",\"sub001\",\"sub005\",\"sub003\",\"sub002\"],\"CRUDType\":\"Update\"}","receivingTimeStamp":"2021-01-15 12:33:44.333"}
-
-{"messageType":"examAndSubInfo","actualMessage":"{\"examTime\":\"FN\",\"examId\":\"ex001\",\"semId\":\"s001\",\"subjectCode\":[\"sub003\",\"sub002\"],\"CRUDType\":\"Update\"}","receivingTimeStamp":"2021-01-15 12:33:44.333"}
-
-{"messageType":"examAndSubInfo","actualMessage":"{\"examTime\":\"FN\",\"examId\":\"ex001\",\"semId\":\"s001\",\"subjectCode\":[\"sub003\",\"sub004\"],\"CRUDType\":\"Update\"}","receivingTimeStamp":"2021-01-15 12:34:44.333"}
-
-{"messageType":"examAndSubInfo","actualMessage":"{\"examTime\":\"FN\",\"examId\":\"ex001\",\"semId\":\"s001\",\"subjectCode\":[\"sub003\"],\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2021-01-15 12:35:44.333"}
-
-
-
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"ex001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 12:33:44.333"}
-
-//////////////////
-
-{"messageType":"examTypeInfo","actualMessage":"{\"examType\":\"SA\",\"examId\":\"ex001\",\"semId\":\"s001\",\"CRUDType\":\"Update\"}","receivingTimeStamp":"2021-01-15 12:36:44.333"}
-
-{"messageType":"examTypeInfo","actualMessage":"{\"examType\":\"SN\",\"examId\":\"ex001\",\"semId\":\"sem001\",\"CRUDType\":\"Update\"}","receivingTimeStamp":"2021-01-15 12:36:44.333"}
-
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"ex001\",\"semId\":\"sem001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 12:33:44.333"}
-
-
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"ex001\",\"semId\":\"s002\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2020-09-15 12:33:44.333"}
-
-semId |examId|subjectCode|examTime|startDate |endDate
-
-// old schema
-{"messageType":"examAndSubInfo","actualMessage":"{\"subjectCode\":\"sub001\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
-{"messageType":"examAndSubInfo","actualMessage":"{\"subjectCode\":\"sub002\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
-{"messageType":"examAndSubInfo","actualMessage":"{\"subjectCode\":\"sub003\",\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-08-15 11:33:44.333"}
-
-// new schema
-
-{"messageType":"examAndSubInfo","actualMessage":"{\"subjectCode\":[\"sub001\",\"sub002\"],\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
-
-{"messageType":"examAndSubInfo","actualMessage":"{\"subjectCode\":[\"sub001\",\"sub002\"],\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
-
-{"messageType":"examTypeInfo","actualMessage":"{\"examId\":\"e001\",\"semId\":\"s001\",\"CRUDType\":\"Insert\",\"examType\":\"SA\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
-
-
-
-{"messageType":"examTypeInfo","actualMessage":"{\"examType\":\"SN\",\"examId\":\"ex001\",\"semId\":\"sem001\",\"CRUDType\":\"Update\"}","receivingTimeStamp":"2021-01-15 12:36:44.333"}
-
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"exTmp1\",\"semId\":\"s001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2021-09-15 12:33:44.333"}
-
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"s002\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2021-09-15 12:33:44.333"}
-
-
-
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"ex001\",\"semId\":\"sem001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2021-09-15 13:37:44.333"}
-
-{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"exTmp1\",\"semId\":\"s001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2021-09-15 12:33:44.333"}
+{"messageType":"examAndSubInfo","actualMessage":"{\"examTime\":\"DA\",\"subjectCode\":[\"sub001\",\"sub002\"],\"examId\":\"ex001\",\"semId\":\"sem001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2021-09-15 13:41:44.333"}
 {"messageType":"examTypeInfo","actualMessage":"{\"examId\":\"exTmp1\",\"semId\":\"s001\",\"CRUDType\":\"Insert\",\"examType\":\"SA\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
 
 
