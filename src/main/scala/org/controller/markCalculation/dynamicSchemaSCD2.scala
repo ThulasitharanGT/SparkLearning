@@ -616,7 +616,7 @@ def executeMergeCRUD(deltaTable:io.delta.tables.DeltaTable
   val getCol= (colName:String)=> org.apache.spark.sql.functions.col(colName)
   val getLit= (literalValue:Any)=> org.apache.spark.sql.functions.lit(literalValue)
 
-  def dopDuplicates(df:org.apache.spark.sql.DataFrame,partitionColumns:Array[String],orderColumns:Array[String],orderType:String)= orderType match {
+  def dropDuplicates(df:org.apache.spark.sql.DataFrame, partitionColumns:Array[String], orderColumns:Array[String], orderType:String)= orderType match {
     case "desc" =>
       df.withColumn("rowNum",
         org.apache.spark.sql.functions.row_number.over(
@@ -730,7 +730,10 @@ deleting child deletes incoming child deletes anddeletes all active grandchild
     val grandChildColumnsToSelect=grandChildDeltaTable.toDF.columns :+ "CRUDType"
 
 
-    assessmentYearInMsgDF.writeStream.format("console").outputMode("update").foreachBatch( (df:org.apache.spark.sql.DataFrame,batchId:Long) =>
+    assessmentYearInMsgDF
+      .writeStream.format("console").outputMode("update")
+      .option("checkpointLocation",s"${inputMap("baseCheckPointLocation")}/assessmentYear")
+      .foreachBatch( (df:org.apache.spark.sql.DataFrame,batchId:Long) =>
       executeMergeCRUD(parentDeltaTable,
         getProperDFtoUpsert(parentDeltaTable, df, parentColumnsToSelect, Array("semId", "examId"), Array("assessmentYear")),
         getDefaultMergeCondition("examId,semId".split(",")),
@@ -767,11 +770,12 @@ deleting child deletes incoming child deletes anddeletes all active grandchild
 
 
 
-    val semIdExamIdSubCodeInMsgDF=
+    val semIdExamIdSubCodeAllDF=
       readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn")).like(
         s"${inputMap("semIdExamIdSubCodeRefValue")}%"))
 
-    semIdExamIdSubCodeInMsgDF.writeStream.outputMode("update").format("console")
+    semIdExamIdSubCodeAllDF.writeStream.outputMode("update").format("console")
+      .option("checkpointLocation",s"${inputMap("baseCheckPointLocation")}/semIdExamIdSubCode")
       .foreachBatch((df:org.apache.spark.sql.DataFrame,batchId:Long) => {
 
         val crudDF =  processDF(
@@ -870,7 +874,7 @@ deleting child deletes incoming child deletes anddeletes all active grandchild
 // drop duplicates custom (key)
 
         val deleteDFComputed=
-          dopDuplicates(childDeltaTable.toDF,"semId,examId,subjectCode".split(","),Array("startDate"), "desc")
+          dropDuplicates(childDeltaTable.toDF,"semId,examId,subjectCode".split(","),Array("startDate"), "desc")
           .as("lambda")
           .join(deleteDF.dropDuplicates("semId","examId").as("delta"),
         "semId,examId".split(",").foldRight(
@@ -932,10 +936,11 @@ deleting child deletes incoming child deletes anddeletes all active grandchild
       ).start
 
 
-    val semIdExamIdAndExamTypeDF=readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
+    val semIdExamIdAndExamTypeAllDF=readStreamDF.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
       .like(s"${inputMap("semIdExamIdExamTypeRefValue")}%"))
 
-    semIdExamIdAndExamTypeDF.writeStream.format("console").outputMode("update")
+    semIdExamIdAndExamTypeAllDF.writeStream.format("console").outputMode("update")
+      .option("checkpointLocation",s"${inputMap("baseCheckPointLocation")}/semIdExamIdAndExamType")
       .foreachBatch((df:org.apache.spark.sql.DataFrame,batchId:Long) => {
 
         val crudDF = processDF(df.filter(org.apache.spark.sql.functions.col(inputMap("typeFilterColumn"))
@@ -1111,7 +1116,8 @@ deleting child deletes incoming child deletes anddeletes all active grandchild
   )(org.apache.spark.sql.catalyst.encoders.RowEncoder( new org.apache.spark.sql.types.StructType(
      Array( org.apache.spark.sql.types.StructField("data",wrapperSchema,true ))))*/
     /*
-  spark-submit --class org.controller.markCalculation.dynamicSchemaSCD2 --packages org.postgresql:postgresql:42.3.5,org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 1g --executor-cores 2 --driver-memory 1g --conf spark.sql.streaming.checkpointLocation=hdfs://localhost:8020/user/raptor/streaming/checkpointLocation/ --driver-cores 2 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar typeFilterColumn=messageType assessmentYearRefValue=assessmentInfo semIdExamIdSubCodeRefValue=examAndSubInfo semIdExamIdExamTypeRefValue=examTypeInfo outerSchema=messageType:string~actualMessage:string~receivingTimeStamp:string actualMsgColumn=actualMessage postgresUser=postgres postgresPassword=IAMTHEemperor postgresUrl=jdbc:postgresql://localhost:5432/temp_db postgresDriver=org.postgresql.Driver bootstrapServer=localhost:8081,localhost:8082,localhost:8083 startingOffsets=latest topic=tmpTopic postgresTableName=temp_schema.sem_id_and_exam_id assessmentYearSchema=assessmentYear:String~semId:String~examId:String~CRUDType:string semIdExamIdSubCodeSchema="subjectCode:array(String)~semId:String~examId:String~CRUDType:string~examTime:String" semIdExamIdExamTypeSchema=examType:String~semId:String~examId:String~CRUDType:string examIdSemIdPath=hdfs://localhost:8020/user/raptor/persist/marks/assessmentYearInfo_scd2 examIdSemIdSubCodePath=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndSubCode_scd2 examIdSemIdExamTypePath=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndExamType_scd2
+
+spark-submit --class org.controller.markCalculation.dynamicSchemaSCD2 --packages org.postgresql:postgresql:42.3.5,org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 1g --executor-cores 2 --driver-memory 1g --conf spark.sql.streaming.checkpointLocation=hdfs://localhost:8020/user/raptor/streaming/checkpointLocation/ --driver-cores 2 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar typeFilterColumn=messageType assessmentYearRefValue=assessmentInfo semIdExamIdSubCodeRefValue=examAndSubInfo semIdExamIdExamTypeRefValue=examTypeInfo outerSchema=messageType:string~actualMessage:string~receivingTimeStamp:string actualMsgColumn=actualMessage postgresUser=postgres postgresPassword=IAMTHEemperor postgresUrl=jdbc:postgresql://localhost:5432/temp_db postgresDriver=org.postgresql.Driver bootstrapServer=localhost:8081,localhost:8082,localhost:8083 startingOffsets=latest topic=referenceTopic postgresTableName=temp_schema.sem_id_and_exam_id assessmentYearSchema=assessmentYear:String~semId:String~examId:String~CRUDType:string semIdExamIdSubCodeSchema="subjectCode:array(String)~semId:String~examId:String~CRUDType:string~examTime:String" semIdExamIdExamTypeSchema=examType:String~semId:String~examId:String~CRUDType:string examIdSemIdPath=hdfs://localhost:8020/user/raptor/persist/marks/assessmentYearInfo_scd2 examIdSemIdSubCodePath=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndSubCode_scd2 examIdSemIdExamTypePath=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndExamType_scd2 baseCheckPointLocation=hdfs://localhost:8020/user/raptor/streams/marks/scd2Reference
 
 
 assessmentYearSchema=assessmentYear:String,semId:String,examId:String,receivingTimeStamp:string

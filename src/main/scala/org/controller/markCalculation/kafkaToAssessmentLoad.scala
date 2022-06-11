@@ -19,13 +19,17 @@ object kafkaToAssessmentLoad {
     /*
 
 // only updates if incomingTS is greater than what already is present in the table
+{"messageType":"CA","actualMessage":"{\"examId\":\"e001\",\"studentID\":\"stu001\",\"subjectCode\":\"sub001\",\"marks\":49.8,\"revisionNumber\":5}","receivingTimeStamp":"2020-01-01 12:34:56.444"}
+
+{"messageType":"CA","actualMessage":"{\"examId\":\"e001\",\"studentID\":\"stu001\",\"subjectCode\":\"sub001\",\"marks\":49,\"revisionNumber\":5}","receivingTimeStamp":"2020-01-01 12:34:56.444"}
+
 
 // bronze cleaned level 1
 
 CA
-    spark-submit --master local --class org.controller.markCalculation.kafkaToAssessmentLoad --num-executors 2 --executor-memory 512m --executor-cores 2 --driver-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar kafkaSubscribeAssignDecider=kafkaSubscribe kafkaSubscribe=topicTmp kafkaBootstrapServer=localhost:8081,localhost:8082,localhost:8083 readStreamFormat=kafka kafkaStartingOffsets=latest checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/CumulativeAssessment/" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/CA/" assessmentType=CA triggerPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_BronzeToTriggerInput/"
+    spark-submit --master local --class org.controller.markCalculation.kafkaToAssessmentLoad --num-executors 2 --executor-memory 512m --executor-cores 2 --driver-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar kafkaSubscribeAssignDecider=kafkaSubscribe kafkaSubscribe=bronzeTopic kafkaBootstrapServer=localhost:8081,localhost:8082,localhost:8083 readStreamFormat=kafka kafkaStartingOffsets=latest checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/CumulativeAssessment/" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/CA/" assessmentType=CA triggerPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_BronzeToTriggerInput/"
 SA
-    spark-submit --master local --class org.controller.markCalculation.kafkaToAssessmentLoad --num-executors 2 --executor-memory 512m --executor-cores 2 --driver-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar kafkaSubscribeAssignDecider=kafkaSubscribe kafkaSubscribe=topicTmp kafkaBootstrapServer=localhost:8081,localhost:8082,localhost:8083 readStreamFormat=kafka kafkaStartingOffsets=latest checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SummativeAssessment/" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/SA/" assessmentType=SA triggerPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_BronzeToTriggerInput/"
+    spark-submit --master local --class org.controller.markCalculation.kafkaToAssessmentLoad --num-executors 2 --executor-memory 512m --executor-cores 2 --driver-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar kafkaSubscribeAssignDecider=kafkaSubscribe kafkaSubscribe=bronzeTopic kafkaBootstrapServer=localhost:8081,localhost:8082,localhost:8083 readStreamFormat=kafka kafkaStartingOffsets=latest checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SummativeAssessment/" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/SA/" assessmentType=SA triggerPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_BronzeToTriggerInput/"
 
 */
     val writeStreamDF=innerMsgParser(getReadStreamDF(spark,inputMap).select(col("value").cast(StringType)).select(from_json(col("value"),wrapperSchema).as("schemaExploded")).select(col("schemaExploded.*")).filter(s"messageType='${inputMap(assessmentType)}'"))
@@ -38,7 +42,9 @@ SA
         //  foreachBatchFun(df,batchID,inputMap,cumulativeAssessment,spark)
         foreachBatchFunAssessment(spark,df,inputMap))
       .start
+
 /*  // batches may race, trigger might append first before original data gets updated
+
     writeStreamDF.writeStream.format("console")
       .outputMode("append")
       .option("checkpointLocation",inputMap("checkpointLocationTrigger"))
