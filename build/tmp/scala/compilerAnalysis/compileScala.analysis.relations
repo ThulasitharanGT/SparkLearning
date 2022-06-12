@@ -377,17 +377,23 @@ products:
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationUtil$$typecreator2$1.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationUtil$.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/marksCalculationUtil.class
-   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$$typecreator4$1.class
-   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$$typecreator5$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$$typecreator10$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$$typecreator9$1.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$.class
-   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$coolTmp$$typecreator10$1.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$coolTmp$$typecreator11$1.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$coolTmp$$typecreator12$1.class
-   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$coolTmp$$typecreator6$1.class
-   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$coolTmp$$typecreator7$1.class
-   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$coolTmp$$typecreator8$1.class
-   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$coolTmp$$typecreator9$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$coolTmp$$typecreator13$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$coolTmp$$typecreator14$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$coolTmp$$typecreator15$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$coolTmp$$typecreator16$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$coolTmp$$typecreator17$1.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$coolTmp$.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$tmpRun$$typecreator4$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$tmpRun$$typecreator5$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$tmpRun$$typecreator6$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$tmpRun$$typecreator7$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$tmpRun$$typecreator8$1.class
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode$tmpRun$.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpCode.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpD$.class
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> build/classes/scala/main/org/controller/markCalculation/tmpD.class
@@ -2128,16 +2134,22 @@ class names:
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.marksCalculationUtil$$typecreator2$1
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$
-   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$$typecreator4$1
-   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$$typecreator5$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$$typecreator10$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$$typecreator9$1
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$coolTmp$
-   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$coolTmp$$typecreator10$1
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$coolTmp$$typecreator11$1
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$coolTmp$$typecreator12$1
-   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$coolTmp$$typecreator6$1
-   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$coolTmp$$typecreator7$1
-   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$coolTmp$$typecreator8$1
-   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$coolTmp$$typecreator9$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$coolTmp$$typecreator13$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$coolTmp$$typecreator14$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$coolTmp$$typecreator15$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$coolTmp$$typecreator16$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$coolTmp$$typecreator17$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$tmpRun$
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$tmpRun$$typecreator4$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$tmpRun$$typecreator5$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$tmpRun$$typecreator6$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$tmpRun$$typecreator7$1
+   src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpCode$tmpRun$$typecreator8$1
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpD
    src/main/scala/org/controller/markCalculation/marksCalculationUtil.scala -> org.controller.markCalculation.tmpD$
    src/main/scala/org/controller/markCalculation/silverToGoldCalculation.scala -> org.controller.markCalculation.silverToGoldCalculation

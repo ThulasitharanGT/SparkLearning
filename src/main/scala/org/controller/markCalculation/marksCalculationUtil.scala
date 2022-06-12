@@ -552,6 +552,22 @@ object tmpCode{
       else
         "org.apache.kafka.common.serialization.StringSerializer"
   */
+object tmpRun {
+    def main (args:Array[String])=
+      println(getSerializer[String])
+  val baseSerializationPackage="org.apache.kafka.common.serialization"
+
+    def getSerializer[T:TypeTag]= typeOf[T] match {
+      case value if value == typeOf[Double] => s"${baseSerializationPackage}.DoubleSerializer"
+      case value if value == typeOf[String] =>s"${baseSerializationPackage}.StringSerializer"
+      case value if value == typeOf[Float] =>s"${baseSerializationPackage}.FloatSerializer"
+      case value if value == typeOf[Int] =>s"${baseSerializationPackage}.IntegerSerializer"
+      case value if value == typeOf[Short] =>s"${baseSerializationPackage}.ShortSerializer"
+      case value if value == typeOf[Array[Byte]] =>s"${baseSerializationPackage}.ByteArraySerializer"
+      case value if value == typeOf[java.sql.Date] =>s"${baseSerializationPackage}.StringSerializer"
+      case value if value == typeOf[java.sql.Timestamp] =>s"${baseSerializationPackage}.StringSerializer"
+    }
+  }
 
 
 

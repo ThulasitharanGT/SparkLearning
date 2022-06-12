@@ -1077,7 +1077,6 @@ deleting child deletes incoming child deletes anddeletes all active grandchild
       ).start
 
 
-
     semIdExamIdExamTypeDeleteDF.writeStream.format("console").outputMode("update")
       .foreachBatch( (df:org.apache.spark.sql.DataFrame,batchId:Long)=>
       {
@@ -1143,6 +1142,19 @@ examTypeInfo -C-D
 
 {"messageType":"examAndSubInfo","actualMessage":"{\"examTime\":\"NA\",\"subjectCode\":[\"sub001\",\"sub002\"],\"examId\":\"ex001\",\"semId\":\"sem001\",\"CRUDType\":\"Delete\"}","receivingTimeStamp":"2021-09-15 13:49:59.333"}
 {"messageType":"examTypeInfo","actualMessage":"{\"examId\":\"exTmp1\",\"semId\":\"s001\",\"CRUDType\":\"Insert\",\"examType\":\"SA\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
+
+
+--------------
+
+{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e001\",\"semId\":\"sem001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2021-09-15 13:40:44.333"}
+{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"e002\",\"semId\":\"sem001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2021-09-15 13:40:44.333"}
+{"messageType":"assessmentInfo","actualMessage":"{\"assessmentYear\":\"2021-2022\",\"examId\":\"ex001\",\"semId\":\"sem001\",\"CRUDType\":\"Insert\"}","receivingTimeStamp":"2021-09-15 13:40:44.333"}
+
+
+
+{"messageType":"examTypeInfo","actualMessage":"{\"examId\":\"e001\",\"semId\":\"sem001\",\"CRUDType\":\"Insert\",\"examType\":\"CA\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
+{"messageType":"examTypeInfo","actualMessage":"{\"examId\":\"e002\",\"semId\":\"sem001\",\"CRUDType\":\"Insert\",\"examType\":\"CA\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
+{"messageType":"examTypeInfo","actualMessage":"{\"examId\":\"ex001\",\"semId\":\"sem001\",\"CRUDType\":\"Insert\",\"examType\":\"SA\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
 
 
  */

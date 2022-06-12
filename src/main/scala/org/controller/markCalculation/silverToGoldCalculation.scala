@@ -38,10 +38,10 @@ object silverToGoldCalculation {
 // reads calculates total for examId and stud id level and calculates pass fail percentage for subject level and total level
 
 SA:
- spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=SA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/SA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Silver/" examTypePath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndTypeInfo/" goldPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Gold/" goldToDiamondTrigger="hdfs://localhost:8020/user/raptor/persist/marks/GoldToTriggerInput/"
+ spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=SA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/assessmentYearInfo_scd2/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/SA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Silver/" examTypePath="hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndExamType_scd2/" goldPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Gold/" goldToDiamondTrigger="hdfs://localhost:8020/user/raptor/persist/marks/GoldToTriggerInput/"
 
 CA:
- spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=CA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/CAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndAssessmentYearInfo/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/CA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Silver/" examTypePath="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndTypeInfo/" goldPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Gold/" goldToDiamondTrigger="hdfs://localhost:8020/user/raptor/persist/marks/GoldToTriggerInput/"
+ spark-submit --class org.controller.markCalculation.silverToGoldCalculation --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --num-executors 2 --executor-memory 512m --driver-memory 512m --driver-cores 2 --master local /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar  maxMarks=100 examType=CA checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/CAInterSilver" assessmentPath="hdfs://localhost:8020/user/raptor/persist/marks/assessmentYearInfo_scd2/" readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/CA_SilverToTriggerInput/"  silverPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Silver/" examTypePath="hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndExamType_scd2/" goldPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Gold/" goldToDiamondTrigger="hdfs://localhost:8020/user/raptor/persist/marks/GoldToTriggerInput/"
 
  // gold will read and compute semester wise marks
 
@@ -101,8 +101,8 @@ CA:
      Seq(("e001","CA"),("e002","CA"),("ex001","SA")).toDF("examId,examType".split(",").toSeq:_*).write.format("delta").mode("append").save("hdfs://localhost:8020/user/raptor/persist/marks/examIdAndTypeInfo/")
 
       */
-   val examAndAssessmentDetailsDF= spark.read.format("delta").load(inputMap("assessmentPath"))
-   val assessmentAndAssessmentTypeDF= spark.read.format("delta").load(inputMap("examTypePath"))
+   val examAndAssessmentDetailsDF= spark.read.format("delta").load(inputMap("assessmentPath")).filter(col("endDate").isNull).drop("startDate","endDate")
+   val assessmentAndAssessmentTypeDF= spark.read.format("delta").load(inputMap("examTypePath")).filter("endDate is null").drop("startDate","endDate")
 
 
 
@@ -189,7 +189,8 @@ CA:
 // examID to semID mapping
 
     // calculating using sum by map groups
-    val calcMapGroupsDF=tmpJoinDF.groupByKey(x=>(x.getAs[String]("studentId"),x.getAs[String]("examId"),
+    val calcMapGroupsDF=tmpJoinDF.groupByKey(x=>(x.getAs[String]("studentId")
+      ,x.getAs[String]("examId"),
       x.getAs[String]("assessmentYear"),
       x.getAs[String]("examType"))).flatMapGroups((x,y)=>{
 
@@ -243,7 +244,7 @@ CA:
         finalistWithoutFinalResult.map(x => (x.getAs[String](2) // ("subjectCode")
           , x.getAs[String](6))).filter(_._2 == "fail") match
         {case value if value.size > 0  => s"Failed in ${value.map(_._1).mkString(",")}" case _ => "" })
-    })  (RowEncoder(tmpJoinDF.schema.add(StructField("grade",StringType,true))
+    }) (RowEncoder(tmpJoinDF.schema.add(StructField("grade",StringType,true))
       .add(StructField("result",StringType,true))
       .add(StructField("passMarkPercentage",IntegerType,true))
       .add(StructField("maxMarks",IntegerType,true))

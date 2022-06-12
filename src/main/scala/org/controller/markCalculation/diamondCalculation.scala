@@ -12,7 +12,7 @@ import org.apache.spark.sql.catalyst.encoders.RowEncoder
 import java.math.MathContext
 /*
 
- spark-submit --num-executors 2 --executor-cores 2 --driver-memory 512m --executor-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --class org.controller.markCalculation.diamondCalculation /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/GoldToTriggerInput/" goldCAPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Gold/" goldSAPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Gold/" semIdExamIDMapping="hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDMapping/" checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAGoldToDiamondCalc" examIdToExamType="hdfs://localhost:8020/user/raptor/persist/marks/examIdAndTypeInfo/" diamondPath="hdfs://localhost:8020/user/raptor/persist/marks/diamondCalculatedAndPartitioned/"
+ spark-submit --num-executors 2 --executor-cores 2 --driver-memory 512m --executor-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --class org.controller.markCalculation.diamondCalculation /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/GoldToTriggerInput/" goldCAPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Gold/" goldSAPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Gold/" semIdExamIDAssessmentYear="hdfs://localhost:8020/user/raptor/persist/marks/assessmentYearInfo_scd2/" checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAGoldToDiamondCalc" examIdToExamType="hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndExamType_scd2/" diamondPath="hdfs://localhost:8020/user/raptor/persist/marks/diamondCalculatedAndPartitioned/" semIdAndExamIdAndSubCode=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndSubCode_scd2/
 
 * */
 
@@ -64,21 +64,26 @@ object diamondCalculation {
   def forEachBatchFunction(df: org.apache.spark.sql.DataFrame, inputMap: collection.mutable.Map[String, String]) = {
 
      //  val df= spark.read.format("delta").load("hdfs://localhost:8020/user/raptor/persist/marks/GoldToTriggerInput/").filter("examId in ('ex001','e001')")
-
-    val semIdAndExamIdDF = spark.read.format("delta").load(inputMap("semIdExamIDMapping"))
-
-    val examIdToExamTypeDF = spark.read.format("delta").load(inputMap("examIdToExamType"))
+// assessmentYear
+    val semIdExamIdAndAssessmentYearDF = spark.read.format("delta").load(inputMap("semIdExamIDAssessmentYear")).where("endDate is null").drop("endDate","startDate")
+// examType
+    val examIdToExamTypeDF = spark.read.format("delta").load(inputMap("examIdToExamType")).where("endDate is null").drop("endDate","startDate")
+// examType
+    val semIdAndExamIdToSubCodeDF = spark.read.format("delta").load(inputMap("semIdAndExamIdAndSubCode")).where("endDate is null").drop("endDate","startDate")
 
     examIdToExamTypeDF.createOrReplaceTempView("exam_type_table")
-    semIdAndExamIdDF.createOrReplaceTempView("sem_table")
-
+    semIdExamIdAndAssessmentYearDF.createOrReplaceTempView("assessment_year_table")
+    semIdAndExamIdToSubCodeDF.createOrReplaceTempView("sem_exam_subject")
+///// fix from here, get semId,assessment year,examId,subCode for those exams, and number of assessmenttPerype
     spark.sql(
       s"""
               select examType,semId,examId,max(rnk_col) over (partition by semId,examType) num_of_assessments from
               (select a.examType,b.semId,a.examId, dense_rank() over(partition by semId,examType order by a.examId )
              rnk_col from exam_type_table a join sem_table b on a.examId=b.examId
                order by a.examType,b.semId,a.examId) a """).as("num_exams")
-      .join(spark.table("exam_type_table").as("exam_info").join(spark.table("sem_table").as("sem_info"), Seq("examId"))
+      .join(spark.table("exam_type_table").as("exam_info").join(
+        spark.table("sem_exam_subject").as("sem_info"), Seq("examId","semId")
+      )
         .as("exam_info"), Seq("semId", "examId", "examType"))
       .createOrReplaceTempView("exam_id_sem_id_exam_type")
 
