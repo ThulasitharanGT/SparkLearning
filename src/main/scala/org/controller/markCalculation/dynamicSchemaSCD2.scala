@@ -1157,6 +1157,11 @@ examTypeInfo -C-D
 {"messageType":"examTypeInfo","actualMessage":"{\"examId\":\"ex001\",\"semId\":\"sem001\",\"CRUDType\":\"Insert\",\"examType\":\"SA\"}","receivingTimeStamp":"2020-09-15 11:33:44.333"}
 
 
+{"messageType":"examAndSubInfo","actualMessage":"{\"semId\":\"sem001\",\"subjectCode\":[\"sub001\",\"sub002\",\"sub003\",\"sub004\",\"sub005\"],\"examId\":\"ex001\",\"CRUDType\":\"Insert\",\"examTime\":\"FN\"}","receivingTimeStamp":"2022-06-13 10:18:34.967"}
+{"messageType":"examAndSubInfo","actualMessage":"{\"semId\":\"sem001\",\"subjectCode\":[\"sub001\",\"sub002\",\"sub003\",\"sub004\",\"sub005\"],\"examId\":\"e001\",\"CRUDType\":\"Insert\",\"examTime\":\"FN\"}","receivingTimeStamp":"2022-06-13 10:18:34.967"}
+{"messageType":"examAndSubInfo","actualMessage":"{\"semId\":\"sem001\",\"subjectCode\":[\"sub001\",\"sub002\",\"sub003\",\"sub004\",\"sub005\"],\"examId\":\"e002\",\"CRUDType\":\"Insert\",\"examTime\":\"FN\"}","receivingTimeStamp":"2022-06-13 10:18:34.967"}
+
+
  */
 
     /*

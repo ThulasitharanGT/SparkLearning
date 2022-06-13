@@ -71,11 +71,14 @@ object diamondCalculation {
 // examType
     val semIdAndExamIdToSubCodeDF = spark.read.format("delta").load(inputMap("semIdAndExamIdAndSubCode")).where("endDate is null").drop("endDate","startDate")
 
+
+
     examIdToExamTypeDF.createOrReplaceTempView("exam_type_table")
     semIdExamIdAndAssessmentYearDF.createOrReplaceTempView("assessment_year_table")
     semIdAndExamIdToSubCodeDF.createOrReplaceTempView("sem_exam_subject")
-///// fix from here, get semId,assessment year,examId,subCode for those exams, and number of assessmenttPerype
-    spark.sql(
+
+
+ /*   spark.sql(
       s"""
               select examType,semId,examId,max(rnk_col) over (partition by semId,examType) num_of_assessments from
               (select a.examType,b.semId,a.examId, dense_rank() over(partition by semId,examType order by a.examId )
@@ -85,7 +88,7 @@ object diamondCalculation {
         spark.table("sem_exam_subject").as("sem_info"), Seq("examId","semId")
       )
         .as("exam_info"), Seq("semId", "examId", "examType"))
-      .createOrReplaceTempView("exam_id_sem_id_exam_type")
+      .createOrReplaceTempView("exam_id_sem_id_exam_type")*/
 
     /*
          spark.sql(s"""
@@ -97,7 +100,31 @@ object diamondCalculation {
       .join(spark.table("exam_type_table").as("exam_info").join(spark.table("sem_table").as("sem_info"),Seq("examId"))
       * */
 
+    /* select  a.examId,a.semId,b.assessmentYear,b.examType,a.subjectCode,b.num_of_assessments_per_type
+     from sem_exam_subject a join (select examId,semId,assessmentYear,examType,
+     count(examId) over (partition by semId,assessmentYear,examType ) as num_of_assessments_per_type
+     from (select a.examId,a.semId,b.assessmentYear,a.examType,
+     row_number() over(partition by a.examId,b.semId,b.assessmentYear,a.examType order by a.examType) rankCol
+      from exam_type_table a join assessment_year_table b on a.semId=b.semId and a.examId=b.examId order by a.examId,a.semId,a.examType)
+       a where a.rankCol=1)b on a.semId=b.semId and a.examId=b.examId
+       // examId and semId is a primary key combo
+
+    */
+
+    spark.table("exam_type_table").as("a").join(
+      spark.table("assessment_year_table").as("b"),"examId,semId".split(",").toSeq).
+      withColumn("number_of_assessments_per_exam_type",
+        count("examId").over(org.apache.spark.sql.expressions.Window
+          .partitionBy("semId,b.assessmentYear,a.examType".split(",").map(col):_*))
+      ).select("examId,semId,b.assessmentYear,a.examType,number_of_assessments_per_exam_type".split(",").map(col):_*)
+      .as("b").join(spark.table("sem_exam_subject").as("b"),"examId,semId".split(",").toSeq)
+      .orderBy("examId,semId,subjectCode".split(",").map(asc):_*).createOrReplaceTempView("exam_id_sem_id_exam_type")
+
+
     val examIDSemIDAndTypeMappedDF = spark.table("exam_id_sem_id_exam_type")
+
+    examIDSemIDAndTypeMappedDF.persist(org.apache.spark.storage.StorageLevel.MEMORY_AND_DISK)
+    spark.table("exam_id_sem_id_exam_type").withColumn("finalRef",lit("finalRef")).show(false)
 
     // takes semID of incoming examID
 
@@ -976,6 +1003,7 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
 
 
     }
+    examIDSemIDAndTypeMappedDF.unpersist
 
 
   }
