@@ -926,6 +926,8 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
 
       examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF).withColumn("finalMapGroupsDF",lit("finalMapGroupsDF")).show(false)
 
+    examIDSemIDAndTypeMappedDF.unpersist
+
     scala.util.Try{DeltaTable.forPath(spark,inputMap("diamondPath"))} match {
       case scala.util.Success(s) =>
         s.as("alpha").merge(
@@ -1003,8 +1005,6 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
 
 
     }
-    examIDSemIDAndTypeMappedDF.unpersist
-
 
   }
 
