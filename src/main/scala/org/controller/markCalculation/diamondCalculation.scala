@@ -10,6 +10,7 @@ import org.apache.spark.sql.Row
 import org.apache.spark.sql.catalyst.encoders.RowEncoder
 
 import java.math.MathContext
+import org.apache.spark.sql.expressions.Window
 /*
 
  spark-submit --num-executors 2 --executor-cores 2 --driver-memory 512m --executor-memory 512m --driver-cores 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0,io.delta:delta-core_2.12:0.8.0,com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0,com.fasterxml.jackson.core:jackson-databind:2.10.0 --class org.controller.markCalculation.diamondCalculation /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar readStreamFormat=delta path="hdfs://localhost:8020/user/raptor/persist/marks/GoldToTriggerInput/" goldCAPath="hdfs://localhost:8020/user/raptor/persist/marks/CA_Gold/" goldSAPath="hdfs://localhost:8020/user/raptor/persist/marks/SA_Gold/" semIdExamIDAssessmentYear="hdfs://localhost:8020/user/raptor/persist/marks/assessmentYearInfo_scd2/" checkpointLocation="hdfs://localhost:8020/user/raptor/stream/checkpoint/SAGoldToDiamondCalc" examIdToExamType="hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndExamType_scd2/" diamondPath="hdfs://localhost:8020/user/raptor/persist/marks/diamondCalculatedAndPartitioned/" semIdAndExamIdAndSubCode=hdfs://localhost:8020/user/raptor/persist/marks/semIDAndExamIDAndSubCode_scd2/
@@ -63,7 +64,7 @@ object diamondCalculation {
 
   def forEachBatchFunction(df: org.apache.spark.sql.DataFrame, inputMap: collection.mutable.Map[String, String]) = {
 
-     //  val df= spark.read.format("delta").load("hdfs://localhost:8020/user/raptor/persist/marks/GoldToTriggerInput/").filter("examId in ('ex001','e001')")
+     //  val df= spark.read.format("delta").load("hdfs://localhost:8020/user/raptor/persist/marks/GoldToTriggerInput/").filter(" (examId in ('ex001','e001') and studentId ='stu001')  or (studentId ='stu002')")
 // assessmentYear
     val semIdExamIdAndAssessmentYearDF = spark.read.format("delta").load(inputMap("semIdExamIDAssessmentYear")).where("endDate is null").drop("endDate","startDate")
 // examType
@@ -152,7 +153,7 @@ object diamondCalculation {
       .join(semIdDF.as("semSource"), Seq("semId"))
       .selectExpr("semTarget.examId", "semId", "semSource.studentId"
         , "semTarget.subjectCode"
-        , "semTarget.examType", "number_of_assessments_per_exam_type as number_of_assessments") // cross joins exam type
+        , "semTarget.examType", "semTarget.number_of_assessments_per_exam_type as number_of_assessments") // cross joins exam type
       .withColumn("rankCol",
         row_number.over(org.apache.spark.sql.expressions.Window
           .partitionBy("semId", "examId", "studentId"
@@ -1008,8 +1009,20 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
 
   }
 
+
+
+  def getMarksCalculatedJoinAdvanced(incomingRecords:org.apache.spark.sql.DataFrame
+                                     ,semAndExamIdDF:org.apache.spark.sql.DataFrame)=incomingRecords.as("incoming").
+    join(semAndExamIdDF.as("reference"),"examId,subjectCode,studentId,examType".foldLeft(lit(1)===lit(1))(
+      (columnVariable,colName) => columnVariable && col(s"incoming.${colName}")===col(s"reference.${colName}"))
+      ,"right").
+    withColumn("maxMaxMarksCalculated", maxMarksUDF(col("examType"))/col("num_of_assessments")).
+    withColumn("marksPercentage",col("marks") * round((lit(100.0) /col("maxMarks")),3).cast(DecimalType(6,3)))
+    .withColumn("numberOfExamsAttendedPErExamType",count(when(col("marks").isNull,lit(0)).otherwise(lit(1)))
+      .over(Window.partitionBy("studentID","subjectCode","examType")))
+
   def getMarksCalculatedJoin(incomingRecords:org.apache.spark.sql.DataFrame,semAndExamIdDF:org.apache.spark.sql.DataFrame) =
-    incomingRecords.join(semAndExamIdDF
+    incomingRecords.as("incoming").join(semAndExamIdDF.as("reference")
       , Seq("examId", "studentId", "subjectCode", "examType"), "right")
       .withColumn("maxMarksOfAssessmentCalculated", maxMarksUDF(col("examType")) / col("num_of_assessments"))
       .withColumn("percentageOfMarksObtained", round((col("marks") * (lit(100.0) / col("maxMarks"))), 3))
@@ -1035,8 +1048,7 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
       .select("semId|studentId|subjectCode|examType|marksObtained|num_of_assessments|numAssessmentsAttended".split("\\|").map(col).toSeq: _*)
       .orderBy("semId", "studentId", "subjectCode")
 
-  def
-  getResultDFJoin(incomingDataRecords:org.apache.spark.sql.DataFrame,examIdsOfSemID:org.apache.spark.sql.DataFrame)=getMarksCalculatedJoin(incomingDataRecords.filter(col("examType") === lit(summativeAssessment)),examIdsOfSemID.filter(col("examType") === lit(summativeAssessment))).as("sa")
+  def getResultDFJoin(incomingDataRecords:org.apache.spark.sql.DataFrame,examIdsOfSemID:org.apache.spark.sql.DataFrame)=getMarksCalculatedJoin(incomingDataRecords.filter(col("examType") === lit(summativeAssessment)),examIdsOfSemID.filter(col("examType") === lit(summativeAssessment))).as("sa")
     .join(getMarksCalculatedJoin(incomingDataRecords.filter(col("examType") === lit(cumulativeAssessment)),examIdsOfSemID.filter(col("examType") === lit(cumulativeAssessment))).as("ca"),
       Seq("subjectCode", "semId", "studentId"))
     .withColumn("passMarkForSA", round(lit(50.0) * (lit(60.0) / lit(100.0)), 3))
@@ -1079,33 +1091,37 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
         col("sa.num_of_assessments").as("totalAssessmentsInSA")): _*)
 
 
-  def getFinalResultDFJoin(incomingDataRecords:org.apache.spark.sql.DataFrame,examIdsOfSemID:org.apache.spark.sql.DataFrame)=getResultDFJoin(incomingDataRecords,examIdsOfSemID).select(col("subjectCode"), col("semId"), col("studentId"), col("passMarkForSA"), col("passMarkForSem"), col("finalMarks"), col("remarks"), col("grade"), col("result"), col("SA_marks"), col("CA_marks"), col("CA_appeared"), col("SA_appeared"), col("totalAssessmentsInCA"), col("totalAssessmentsInSA"))
-    .union(getResultDFJoin(incomingDataRecords,examIdsOfSemID).groupBy("studentId", "semId").agg(
-      sum(col("passMarkForSA")).as("passMarkForSA")
-      , sum($"passMarkForSem").as("passMarkForSem"),
-      round(sum($"finalMarks"),3).as("finalMarks"),
-      collect_list(col("result")).as("resultTmp"),
-      collect_list(concat(col("result"), lit("~"), col("subjectCode"))).as("remarksTmp")
-      , round(sum($"SA_marks"),3).as("SA_marks")
-      , round(sum($"CA_marks"),3).as("CA_marks"),
-      round(max($"CA_appeared"),3).as("CA_appeared"),
-      round(max($"SA_appeared"),3).as("SA_appeared"),
-      max("totalAssessmentsInCA").as("totalAssessmentsInCA"),
-      max("totalAssessmentsInSA").as("totalAssessmentsInSA"))
-      .withColumn("subjectCode", lit("subTotal"))
-      .withColumn("result", when(array_contains(col("resultTmp"), lit("FAIL")),
-        lit("Reappear"))
-        .otherwise(lit("ALL-CLEAR")))
-      .withColumn("remarksColTmp", arrayFilterEqualsUDF(col("resultTmp")
-        , lit("FAIL")))
-      .withColumn("remarks",
-        when(size(col("remarksColTmp")) > lit(0), concat(lit("Failed in "), concat_ws("", split(concat_ws(",",
-          arrayFilterContainsUDF(col("remarksTmp"), lit("FAIL"))), "FAIL~"))))
-          .otherwise(lit("Keep pushing")))
-      .select(col("subjectCode"), col("semId"), col("studentId"), col("passMarkForSA"), col("passMarkForSem"), col("finalMarks"), col("remarks"),
-        getGradeUDF(lit(new java.math.BigDecimal(100.0)), col("finalMarks"), lit("finalCalculation")).as("grade")
-        , col("result"), col("SA_marks"), col("CA_marks"), col("CA_appeared"), col("SA_appeared"), col("totalAssessmentsInCA"), col("totalAssessmentsInSA"))
-    )
+  def getFinalResultDFJoin(incomingDataRecords:org.apache.spark.sql.DataFrame,examIdsOfSemID:org.apache.spark.sql.DataFrame)=getResultDFJoin(incomingDataRecords,examIdsOfSemID) match
+  {
+    case resultDF =>
+      resultDF.select(col("subjectCode"), col("semId"), col("studentId"), col("passMarkForSA"), col("passMarkForSem"), col("finalMarks"), col("remarks"), col("grade"), col("result"), col("SA_marks"), col("CA_marks"), col("CA_appeared"), col("SA_appeared"), col("totalAssessmentsInCA"), col("totalAssessmentsInSA"))
+        .union(resultDF.groupBy("studentId", "semId").agg(
+          sum(col("passMarkForSA")).as("passMarkForSA")
+          , sum($"passMarkForSem").as("passMarkForSem"),
+          round(sum($"finalMarks"),3).as("finalMarks"),
+          collect_list(col("result")).as("resultTmp"),
+          collect_list(concat(col("result"), lit("~"), col("subjectCode"))).as("remarksTmp")
+          , round(sum($"SA_marks"),3).as("SA_marks")
+          , round(sum($"CA_marks"),3).as("CA_marks"),
+          round(max($"CA_appeared"),3).as("CA_appeared"),
+          round(max($"SA_appeared"),3).as("SA_appeared"),
+          max("totalAssessmentsInCA").as("totalAssessmentsInCA"),
+          max("totalAssessmentsInSA").as("totalAssessmentsInSA"))
+          .withColumn("subjectCode", lit("subTotal"))
+          .withColumn("result", when(array_contains(col("resultTmp"), lit("FAIL")),
+            lit("Reappear"))
+            .otherwise(lit("ALL-CLEAR")))
+          .withColumn("remarksColTmp", arrayFilterEqualsUDF(col("resultTmp")
+            , lit("FAIL")))
+          .withColumn("remarks",
+            when(size(col("remarksColTmp")) > lit(0), concat(lit("Failed in "), concat_ws("", split(concat_ws(",",
+              arrayFilterContainsUDF(col("remarksTmp"), lit("FAIL"))), "FAIL~"))))
+              .otherwise(lit("Keep pushing")))
+          .select(col("subjectCode"), col("semId"), col("studentId"), col("passMarkForSA"), col("passMarkForSem"), col("finalMarks"), col("remarks"),
+            getGradeUDF(lit(new java.math.BigDecimal(100.0)), col("finalMarks"), lit("finalCalculation")).as("grade")
+            , col("result"), col("SA_marks"), col("CA_marks"), col("CA_appeared"), col("SA_appeared"), col("totalAssessmentsInCA"), col("totalAssessmentsInSA"))
+        )
+  }
 
   def examMarksCalculatedMapGroup(incomingRecordDF:org.apache.spark.sql.DataFrame,referenceDF:org.apache.spark.sql.DataFrame)=incomingRecordDF.join(referenceDF, Seq("examId", "studentId", "subjectCode", "examType"), "right")
     .na.fill(0).na.fill("NA")
