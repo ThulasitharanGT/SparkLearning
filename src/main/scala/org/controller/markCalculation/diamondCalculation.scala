@@ -120,7 +120,6 @@ object diamondCalculation {
       .as("b").join(spark.table("sem_exam_subject").as("b"),"examId,semId".split(",").toSeq)
       .orderBy("examId,semId,subjectCode".split(",").map(asc):_*).createOrReplaceTempView("exam_id_sem_id_exam_type")
 
-
     val examIDSemIDAndTypeMappedDF = spark.table("exam_id_sem_id_exam_type")
 
     examIDSemIDAndTypeMappedDF.persist(org.apache.spark.storage.StorageLevel.MEMORY_AND_DISK)
@@ -134,9 +133,10 @@ object diamondCalculation {
         col("trigger.examId") === col("semIds.examId"))
       .select(col("trigger.examId"), col("semIds.semId"),
         col("trigger.studentId"), col("semIds.subjectCode")
-        , $"semIds.examType", col("num_of_assessments")).withColumn("rankCol",
+        , $"semIds.examType", col("semIds.number_of_assessments_per_exam_type")
+        , col("semIds.assessmentYear") ).withColumn("rankCol",
       row_number.over(org.apache.spark.sql.expressions.Window
-        .partitionBy("semId", "examId", "studentId"
+        .partitionBy("semId", "examId","assessmentYear", "studentId"
           , "subjectCode", "examType")
         .orderBy(col("semId"))
       ))
@@ -150,9 +150,9 @@ object diamondCalculation {
 
     val examIDsOfSemIdDF = examIDSemIDAndTypeMappedDF.as("semTarget")
       .join(semIdDF.as("semSource"), Seq("semId"))
-      .select("semTarget.examId", "semId", "semSource.studentId"
+      .selectExpr("semTarget.examId", "semId", "semSource.studentId"
         , "semTarget.subjectCode"
-        , "semTarget.examType", "semTarget.num_of_assessments") // cross joins exam type
+        , "semTarget.examType", "number_of_assessments_per_exam_type as number_of_assessments") // cross joins exam type
       .withColumn("rankCol",
         row_number.over(org.apache.spark.sql.expressions.Window
           .partitionBy("semId", "examId", "studentId"
@@ -1035,7 +1035,8 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
       .select("semId|studentId|subjectCode|examType|marksObtained|num_of_assessments|numAssessmentsAttended".split("\\|").map(col).toSeq: _*)
       .orderBy("semId", "studentId", "subjectCode")
 
-  def getResultDFJoin(incomingDataRecords:org.apache.spark.sql.DataFrame,examIdsOfSemID:org.apache.spark.sql.DataFrame)=getMarksCalculatedJoin(incomingDataRecords.filter(col("examType") === lit(summativeAssessment)),examIdsOfSemID.filter(col("examType") === lit(summativeAssessment))).as("sa")
+  def
+  getResultDFJoin(incomingDataRecords:org.apache.spark.sql.DataFrame,examIdsOfSemID:org.apache.spark.sql.DataFrame)=getMarksCalculatedJoin(incomingDataRecords.filter(col("examType") === lit(summativeAssessment)),examIdsOfSemID.filter(col("examType") === lit(summativeAssessment))).as("sa")
     .join(getMarksCalculatedJoin(incomingDataRecords.filter(col("examType") === lit(cumulativeAssessment)),examIdsOfSemID.filter(col("examType") === lit(cumulativeAssessment))).as("ca"),
       Seq("subjectCode", "semId", "studentId"))
     .withColumn("passMarkForSA", round(lit(50.0) * (lit(60.0) / lit(100.0)), 3))
