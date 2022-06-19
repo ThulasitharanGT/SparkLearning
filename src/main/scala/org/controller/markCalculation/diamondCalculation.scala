@@ -1009,17 +1009,33 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
 
   }
 
-
+/*"examId,subjectCode,studentId,examType".split(",").foldLeft(lit(1)===lit(1))(
+      (columnVariable,colName) => columnVariable && col(s"incoming.${colName}")===col(s"reference.${colName}"))*/
 
   def getMarksCalculatedJoinAdvanced(incomingRecords:org.apache.spark.sql.DataFrame
                                      ,semAndExamIdDF:org.apache.spark.sql.DataFrame)=incomingRecords.as("incoming").
-    join(semAndExamIdDF.as("reference"),"examId,subjectCode,studentId,examType".foldLeft(lit(1)===lit(1))(
-      (columnVariable,colName) => columnVariable && col(s"incoming.${colName}")===col(s"reference.${colName}"))
+    join(semAndExamIdDF.as("reference"),"examId,subjectCode,studentId,examType".split(",").toSeq
       ,"right").
-    withColumn("maxMaxMarksCalculated", maxMarksUDF(col("examType"))/col("num_of_assessments")).
-    withColumn("marksPercentage",col("marks") * round((lit(100.0) /col("maxMarks")),3).cast(DecimalType(6,3)))
-    .withColumn("numberOfExamsAttendedPErExamType",count(when(col("marks").isNull,lit(0)).otherwise(lit(1)))
-      .over(Window.partitionBy("studentID","subjectCode","examType")))
+    withColumn("maxMaxMarksCalculated", maxMarksUDF(col("examType"))/col("number_of_assessments")).
+    withColumn("marksPercentage",col("marks") * round((lit(100.0) /col("maxMarks")),3).cast(DecimalType(6,3))).
+    withColumn("numberOfExamsAttendedPerSubject",sum(when(col("marks").isNull,lit(0)).otherwise(lit(1)))
+      .over(Window.partitionBy("studentID","subjectCode","examType"))).withColumn("attendanceCommentTmp",
+    when(coalesce(col("numberOfExamsAttendedPerSubject"),lit(0)) === col("number_of_assessments")
+      ,lit("ALL")).otherwise(lit("NOT-ALL"))).
+    withColumn("keyCombination", concat(col("examId"),lit("~"),col("subjectCode"),lit("~")
+      ,coalesce(col("marks"),lit("")))).
+    withColumn("attendanceCommentTmp2", split(col("keyCombination"),"~")).
+    withColumn("attendanceCommentTmp2",expr("filter(attendanceCommentTmp2, x -> x != '')")).
+    withColumn("commentTmp", when(size(col("attendanceCommentTmp2")) === lit("2")
+      && col("attendanceCommentTmp") === lit("NOT-ALL"),
+      concat(col("attendanceCommentTmp2")(1)
+        ,lit(":"),col("attendanceCommentTmp2")(0))
+    ).otherwise(lit(""))).withColumn("newMarksCalculated",
+     ((col("maxMaxMarksCalculated")/lit(100.0).cast(DecimalType(6,3)) ) * col("marksPercentage") )
+     .cast(DecimalType(6,3)))
+
+
+
 
   def getMarksCalculatedJoin(incomingRecords:org.apache.spark.sql.DataFrame,semAndExamIdDF:org.apache.spark.sql.DataFrame) =
     incomingRecords.as("incoming").join(semAndExamIdDF.as("reference")
