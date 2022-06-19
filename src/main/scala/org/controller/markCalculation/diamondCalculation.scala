@@ -1015,8 +1015,8 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
   def getMarksCalculatedJoinAdvanced(incomingRecords:org.apache.spark.sql.DataFrame
                                      ,semAndExamIdDF:org.apache.spark.sql.DataFrame)=incomingRecords.as("incoming").
     join(semAndExamIdDF.as("reference"),"examId,subjectCode,studentId,examType".split(",").toSeq
-      ,"right").
-    withColumn("maxMaxMarksCalculated", maxMarksUDF(col("examType"))/col("number_of_assessments")).
+      ,"right").withColumn("newMaxMarks",maxMarksUDF(col("examType"))).
+    withColumn("maxMaxMarksCalculated",col("newMaxMarks")/col("number_of_assessments")).
     withColumn("marksPercentage",col("marks") * round((lit(100.0) /col("maxMarks")),3).cast(DecimalType(6,3))).
     withColumn("numberOfExamsAttendedPerSubject",sum(when(col("marks").isNull,lit(0)).otherwise(lit(1)))
       .over(Window.partitionBy("studentID","subjectCode","examType"))).withColumn("attendanceCommentTmp",
@@ -1031,8 +1031,20 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
       concat(col("attendanceCommentTmp2")(1)
         ,lit(":"),col("attendanceCommentTmp2")(0))
     ).otherwise(lit(""))).withColumn("newMarksCalculated",
-     ((col("maxMaxMarksCalculated")/lit(100.0).cast(DecimalType(6,3)) ) * col("marksPercentage") )
-     .cast(DecimalType(6,3)))
+     ((col("newMaxMarks")/lit(100.0).cast(DecimalType(6,3)) ) * col("marksPercentage") )
+     .cast(DecimalType(6,3))).withColumn("totalPerExamSubjectType",sum(coalesce(col("newMarksCalculated"),lit(0).cast(DecimalType(6,3))))
+  .over(Window.partitionBy("studentId","subjectCode","examType"))).withColumn("totalPerExamType",sum(coalesce(col("newMarksCalculated"),lit(0).cast(DecimalType(6,3))))
+    .over(Window.partitionBy("studentId","examType"))).
+    drop("marks |grade|result|attendanceCommentTmp|keyCombination     |attendanceCommentTmp2".split("\\|").map(_.trim):_*) match {
+    case value =>
+      value.select("semId,studentID,subjectCode,examType,numberOfExamsAttendedPerSubject,number_of_assessments,newMaxMarks,totalPerExamSubjectType,totalPerExamType".split(",").map(col) :_* ).
+        withColumnRenamed("newMaxMarks","maxMaxMarksCalculated").
+        withColumn("rowNumber",row_number.over(Window.partitionBy("semId,studentID,subjectCode,examType,numberOfExamsAttendedPerSubject,number_of_assessments,maxMaxMarksCalculated,totalPerExamSubjectType,totalPerExamType".split(",")
+          .map(col) :_*).orderBy(col("semId")))).
+        filter("rowNumber =1").drop("rowNumber").show(false)
+
+
+  }
 
 
 
