@@ -330,6 +330,7 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
     case value if value == summativeAssessment => 60
     case value if value == cumulativeAssessment => 40
   }
+  def mkString(seqString:Seq[String])=seqString match {case null => "" case _ => seqString.mkString(",")}
 
   val checkPass:(java.math.BigDecimal,java.math.BigDecimal)=>Boolean =
     (currentMarks:java.math.BigDecimal,passMarks:java.math.BigDecimal) =>  List(0,1).contains(currentMarks.compareTo(passMarks))

@@ -27,7 +27,7 @@ object diamondCalculation {
   val getGradeUDF = udf(getGradeJava(_: java.math.BigDecimal, _: java.math.BigDecimal, _: String): String)
   val arrayFilterEqualsUDF = udf(array_filter_equals[String](_: Seq[String], _: String): Seq[String])
   val arrayFilterContainsUDF = udf(array_filter_contains[String](_: Seq[String], _: String): Seq[String])
-
+  val getCommentMkString = udf(mkString(_:Seq[String]):String)
   import spark.implicits._
 
   // mark calculation
@@ -1031,17 +1031,69 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
       concat(col("attendanceCommentTmp2")(1)
         ,lit(":"),col("attendanceCommentTmp2")(0))
     ).otherwise(lit(""))).withColumn("newMarksCalculated",
-     ((col("newMaxMarks")/lit(100.0).cast(DecimalType(6,3)) ) * col("marksPercentage") )
+     ((col("maxMaxMarksCalculated")/lit(100.0).cast(DecimalType(6,3)) ) * col("marksPercentage") )
      .cast(DecimalType(6,3))).withColumn("totalPerExamSubjectType",sum(coalesce(col("newMarksCalculated"),lit(0).cast(DecimalType(6,3))))
-  .over(Window.partitionBy("studentId","subjectCode","examType"))).withColumn("totalPerExamType",sum(coalesce(col("newMarksCalculated"),lit(0).cast(DecimalType(6,3))))
+  .over(Window.partitionBy("studentId","subjectCode","examType")))
+    .withColumn("totalPerExamType",sum(coalesce(col("newMarksCalculated"),lit(0).cast(DecimalType(6,3))))
     .over(Window.partitionBy("studentId","examType"))).
-    drop("marks |grade|result|attendanceCommentTmp|keyCombination     |attendanceCommentTmp2".split("\\|").map(_.trim):_*) match {
+    drop("marks |grade|result|attendanceCommentTmp|keyCombination     |attendanceCommentTmp2".split("\\|").map(_.trim):_*).
+    withColumn("maxMarksPerExamType",sum(col("maxMaxMarksCalculated")).
+    over(Window.partitionBy("semId","studentID","examType","examId"))) match {
     case value =>
-      value.select("semId,studentID,subjectCode,examType,numberOfExamsAttendedPerSubject,number_of_assessments,newMaxMarks,totalPerExamSubjectType,totalPerExamType".split(",").map(col) :_* ).
-        withColumnRenamed("newMaxMarks","maxMaxMarksCalculated").
-        withColumn("rowNumber",row_number.over(Window.partitionBy("semId,studentID,subjectCode,examType,numberOfExamsAttendedPerSubject,number_of_assessments,maxMaxMarksCalculated,totalPerExamSubjectType,totalPerExamType".split(",")
+      val cleansedDF=value.select("semId,studentID,subjectCode,examType,numberOfExamsAttendedPerSubject,number_of_assessments,newMaxMarks,totalPerExamSubjectType,totalPerExamType,maxMarksPerExamType".split(",").map(col) :_* ).
+        withColumnRenamed("newMaxMarks","maxMarksCalculated").
+        withColumn("rowNumber",row_number.over(Window.
+          partitionBy("semId,studentID,subjectCode,examType,numberOfExamsAttendedPerSubject,number_of_assessments,maxMarksCalculated,totalPerExamSubjectType,totalPerExamType,maxMarksPerExamType".split(",")
           .map(col) :_*).orderBy(col("semId")))).
-        filter("rowNumber =1").drop("rowNumber").show(false)
+        filter("rowNumber =1").drop("rowNumber").join(value.filter("commentTmp != '' ").
+        groupBy("semId","studentID","examType").agg(collect_list(col("commentTmp"))),Seq("semId","studentID","examType"),"left")
+
+
+      org.apache.spark.sql.AnalysisException: Resolved attribute(s) number_of_assessments#120017L missing from subjectCode#120026,
+  semId#1659,number_of_assessments#120016L,examType#1662,examId#1658,studentId#535 in operator
+  !Project [examId#1658, semId#1659, studentId#535, subjectCode#120026, examType#1662, number_of_assessments#120017L]. Attribute(s) with
+  the same name appear in the operation: number_of_assessments. Please check if the right attribute(s) are used.;;
+
+
+  interIncoming
+      val calcIncoming=interIncoming.select("semId,studentID,subjectCode,examType,numberOfExamsAttendedPerSubject,number_of_assessments,newMaxMarks,totalPerExamSubjectType,totalPerExamType,maxMarksPerExamType".split(",").map(col) :_* ).
+        withColumnRenamed("newMaxMarks","maxMarksCalculated").
+        withColumn("rowNumber",row_number.over(Window.partitionBy("semId,studentID,subjectCode,examType,numberOfExamsAttendedPerSubject,number_of_assessments,maxMarksCalculated,totalPerExamSubjectType,totalPerExamType,maxMarksPerExamType".split(",")
+          .map(col) :_*).orderBy(col("semId")))).
+        filter("rowNumber =1").drop("rowNumber").as("a").join(interIncoming.filter("commentTmp != '' ").
+        groupBy("semId","studentID","examType").agg(collect_list(col("commentTmp")).as("finalComments")).as("a").
+        join(interIncoming.filter("commentTmp !=''").as("b"),Seq("semId","studentID","examType"),"right").
+        select("semId |studentID|examType|finalComments|examId|subjectCode|commentTmp".
+          split("\\|").map(_.trim).map(col) :_*).as("b")
+        ,Seq("semId","studentID","examType","subjectCode")
+       ,"left")
+
+      //   foldLeft(lit(1)===lit(1))((seqVar,tmpVar) => seqVar && col(s"a.${tmpVar}") === col(s"b.${tmpVar}"))
+        calcIncoming.select(col("semId"),col("subjectCode"),col("studentID"),col("examType")
+        ,col("totalPerExamSubjectType").as("marks"),col("maxMarksCalculated"),col("numberOfExamsAttendedPerSubject")
+          ,col("number_of_assessments"),coalesce(col("commentTmp"),lit("")).as("commentTmp")).union(calcIncoming.
+        select(col("semId"),lit("subTotal").as("subjectCode"),col("maxMarksPerExamType").as("maxMarksCalculated")
+          ,col("studentID"),col("examType")
+        ,col("totalPerExamType").as("marks"),col("numberOfExamsAttendedPerSubject"),col("number_of_assessments")
+            ,getCommentMkString(col("finalComments")).as("commentTmp")).
+          withColumn("numberOfExamsAttendedPerSubject",sum("numberOfExamsAttendedPerSubject")
+         .over(Window.partitionBy("semId","studentId","examType"))).
+          withColumn("maxMarksCalculated",max(col("maxMarksCalculated")).over(
+            Window.partitionBy("semId |subjectCode|studentID|examType".split("\\|").map(_.trim).map(col) :_*))  ).
+          withColumn("maxMarksCalculated",col("maxMarksCalculated")*col("number_of_assessments")).
+          withColumn("rankCol",row_number.over(Window.
+        partitionBy("semId |subjectCode|studentID|examType|marks".split("\\|").map(_.trim).map(col) :_*).
+        orderBy("semId"))).where(col("rankCol")===lit(1)).drop("rankCol").
+        select(col("semId"),col("subjectCode"),col("studentID"),col("examType")
+       ,col("marks"),col("maxMarksCalculated"),col("numberOfExamsAttendedPerSubject")
+       ,col("number_of_assessments"),col("commentTmp")) ).withColumnRenamed("number_of_assessments","numberOfAssessmentsPerSubCodeLevel").
+       orderBy("semId","examType","studentID","subjectCode")
+
+
+
+
+
+
 
 
   }
