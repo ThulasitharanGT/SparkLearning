@@ -1260,10 +1260,10 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
             println("newMarks 00")
             getBigDecimalFromInt()
           case (maxMarks,_)  if maxMarks.compareTo(getBigDecimalFromInt()) == 0 =>
-            println("newMarks 0")
+            println(s"newMarks 0 ${maxMarks}")
             getBigDecimalFromInt()
           case (maxMarks,marks)=>
-            println("newMarks value value")
+            println(s"newMarks value value ${maxMarks} ${marks}")
             newMaxMarks.divide(getBigDecimalFromInt(100),java.math.MathContext.DECIMAL128)
               .multiply(marks.multiply(getBigDecimalFromInt(100)
                   .divide(maxMarks,java.math.MathContext.DECIMAL128)
