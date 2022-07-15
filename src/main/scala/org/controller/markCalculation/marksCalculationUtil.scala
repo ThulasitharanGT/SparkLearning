@@ -82,8 +82,9 @@ object marksCalculationUtil extends Serializable{
     (spark:org.apache.spark.sql.SparkSession,deltaTablePath:String) =>
   io.delta.tables.DeltaTable.forPath(spark,deltaTablePath)
 
+   def getBigDecimalFromRow(row:org.apache.spark.sql.Row,columnName:String)= row.getAs[java.math.BigDecimal](columnName)
 
-  def getBigDecimalFromRow(row:org.apache.spark.sql.Row,fieldName:String)=convertToScalaBigDecimal(row.getAs[java.math.BigDecimal](fieldName))
+  def getBigDecimalFromRowAsScalaBD(row:org.apache.spark.sql.Row, fieldName:String)=convertToScalaBigDecimal(row.getAs[java.math.BigDecimal](fieldName))
   val convertToScalaBigDecimal:(java.math.BigDecimal)=> scala.math.BigDecimal= (javaBigD:java.math.BigDecimal) => scala.math.BigDecimal(javaBigD)
 
 //  val getTotalGrade(totalMarks:)
@@ -321,7 +322,10 @@ def getGrade(maxMarks:scala.math.BigDecimal,marksObtained:scala.math.BigDecimal,
     case value if value == summativeAssessment => 100.0
     case value if value == cumulativeAssessment => 60.0
   }
+  def getBigDecimalFromInt(intValue:Int=0)= new java.math.BigDecimal(intValue)
+  def getBigDecimalFromDouble(intValue:Double=0.0)= new java.math.BigDecimal(intValue)
 
+  val getSuccessCheck=(result:Int) => List(0,1).contains(result)
   def getPercentage(maxMarks:java.math.BigDecimal,currentMarks:java.math.BigDecimal)=currentMarks.multiply( new java.math.BigDecimal(100.0).divide(maxMarks,MathContext.DECIMAL128),MathContext.DECIMAL128)
 
   def getMarksForPercentage(maxMarks:java.math.BigDecimal,percentage:java.math.BigDecimal)=(maxMarks.divide( new java.math.BigDecimal(100.0),MathContext.DECIMAL128) ).multiply(percentage ,MathContext.DECIMAL128)

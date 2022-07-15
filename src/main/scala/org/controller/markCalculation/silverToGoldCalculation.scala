@@ -195,7 +195,7 @@ CA:
       x.getAs[String]("examType"))).flatMapGroups((x,y)=>{
 
       var total=scala.math.BigDecimal(0.0)
-      val listY=y.toList.map(z=> {total+= getBigDecimalFromRow(z,"marks") /*z.getAs[scala.math.BigDecimal]("marks")*/;z})
+      val listY=y.toList.map(z=> {total+= getBigDecimalFromRowAsScalaBD(z,"marks") /*z.getAs[scala.math.BigDecimal]("marks")*/;z})
       println(s"total ${total}")
       println(s"listY ${listY}")
 
@@ -203,13 +203,13 @@ CA:
       val maxMarks=getMaxMarks(x._4).toInt
       val passMarkCalculated= Math.round((maxMarks/100.0) * passMarkPercentage).toInt
 
-      val finalistWithoutFinalResult=listY.map(x=> Row( getBigDecimalFromRow(x,"marks")
+      val finalistWithoutFinalResult=listY.map(x=> Row( getBigDecimalFromRowAsScalaBD(x,"marks")
       ,x.getAs[String]("studentId")
       ,x.getAs[String]("subjectCode")
       ,x.getAs[String]("assessmentYear")
       ,x.getAs[String]("examId"),
         x.getAs[String]("examType"),
-        getBigDecimalFromRow(x,"marks") match
+        getBigDecimalFromRowAsScalaBD(x,"marks") match
         { case value if value.toLong >= passMarkCalculated => "pass"
         case value if value.toLong < passMarkCalculated => "fail" }
       ,passMarkPercentage
