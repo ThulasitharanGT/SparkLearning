@@ -830,7 +830,7 @@ deleting child deletes incoming child deletes anddeletes all active grandchild
               ,"subjectCode" -> org.apache.spark.sql.functions.col(s"delta.subjectCode")
               ,"examTime" -> org.apache.spark.sql.functions.col(s"delta.examTime")
               ,"startDate" -> org.apache.spark.sql.functions.col(s"delta.startDate")
-              ,"endDate" -> org.apache.spark.sql.functions.col(s"delta.endDate") ),
+              ,"endDate" -> org.apache.spark.sql.functions.col(s"delta.endDate") )
           ))
         )
 

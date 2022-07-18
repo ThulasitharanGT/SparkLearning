@@ -2,6 +2,7 @@
   <library name="Gradle: io.delta:delta-core_2.11:0.6.1">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.delta/delta-core_2.11/0.6.1/532245109acc03258cc352ea5e203fc8c0558a09/delta-core_2.11-0.6.1.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/delta/delta-core_2.11/0.6.1/delta-core_2.11-0.6.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

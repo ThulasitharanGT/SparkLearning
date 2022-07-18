@@ -82,11 +82,11 @@ object diamondCalculation {
 
   def forEachBatchFunction(df: org.apache.spark.sql.DataFrame, inputMap: collection.mutable.Map[String, String]) = {
 
-// assessmentYear
+    // assessmentYear
     val semIdExamIdAndAssessmentYearDF = spark.read.format("delta").load(inputMap("semIdExamIDAssessmentYear")).where("endDate is null").drop("endDate","startDate")
-// examType
+    // examType
     val examIdToExamTypeDF = spark.read.format("delta").load(inputMap("examIdToExamType")).where("endDate is null").drop("endDate","startDate")
-// examType
+    // examType
     val semIdAndExamIdToSubCodeDF = spark.read.format("delta").load(inputMap("semIdAndExamIdAndSubCode")).where("endDate is null").drop("endDate","startDate")
 
 
@@ -96,17 +96,17 @@ object diamondCalculation {
     semIdAndExamIdToSubCodeDF.createOrReplaceTempView("sem_exam_subject")
 
 
- /*   spark.sql(
-      s"""
-              select examType,semId,examId,max(rnk_col) over (partition by semId,examType) num_of_assessments from
-              (select a.examType,b.semId,a.examId, dense_rank() over(partition by semId,examType order by a.examId )
-             rnk_col from exam_type_table a join sem_table b on a.examId=b.examId
-               order by a.examType,b.semId,a.examId) a """).as("num_exams")
-      .join(spark.table("exam_type_table").as("exam_info").join(
-        spark.table("sem_exam_subject").as("sem_info"), Seq("examId","semId")
-      )
-        .as("exam_info"), Seq("semId", "examId", "examType"))
-      .createOrReplaceTempView("exam_id_sem_id_exam_type")*/
+    /*   spark.sql(
+         s"""
+                 select examType,semId,examId,max(rnk_col) over (partition by semId,examType) num_of_assessments from
+                 (select a.examType,b.semId,a.examId, dense_rank() over(partition by semId,examType order by a.examId )
+                rnk_col from exam_type_table a join sem_table b on a.examId=b.examId
+                  order by a.examType,b.semId,a.examId) a """).as("num_exams")
+         .join(spark.table("exam_type_table").as("exam_info").join(
+           spark.table("sem_exam_subject").as("sem_info"), Seq("examId","semId")
+         )
+           .as("exam_info"), Seq("semId", "examId", "examType"))
+         .createOrReplaceTempView("exam_id_sem_id_exam_type")*/
 
     /*
          spark.sql(s"""
@@ -141,7 +141,7 @@ object diamondCalculation {
     val examIDSemIDAndTypeMappedDF = spark.table("exam_id_sem_id_exam_type")
 
     examIDSemIDAndTypeMappedDF.persist(org.apache.spark.storage.StorageLevel.MEMORY_AND_DISK)
-  //  spark.table("exam_id_sem_id_exam_type").withColumn("finalRef",lit("finalRef")).show(false)
+    //  spark.table("exam_id_sem_id_exam_type").withColumn("finalRef",lit("finalRef")).show(false)
 
     // takes semID of incoming examID
 
@@ -162,7 +162,7 @@ object diamondCalculation {
       .drop("rankCol")
       .orderBy("semId,examId,examType,subjectCode,studentId".split(",").toSeq.map(col): _*)
 
-   // semIdDF.withColumn("semIdDF", lit("semIdDF")).show(false)
+    // semIdDF.withColumn("semIdDF", lit("semIdDF")).show(false)
 
     // takes examIds of incoming examID's semId
 
@@ -186,7 +186,7 @@ object diamondCalculation {
    val examIDsOfSemIdDF=examIDsOfSemIdDFTmp
     */
 
- //   examIDsOfSemIdDF.withColumn("examIDsOfSemIdDF", lit("examIDsOfSemIdDF")).show(false)
+    //   examIDsOfSemIdDF.withColumn("examIDsOfSemIdDF", lit("examIDsOfSemIdDF")).show(false)
 
     val caExamIDsOfSemIdDF = examIDsOfSemIdDF.filter(col("examType") === lit(cumulativeAssessment))
     val saExamIDsOfSemIdDF = examIDsOfSemIdDF.filter(s"examType ='${summativeAssessment}'")
@@ -226,15 +226,8 @@ object diamondCalculation {
         getWhereCondition(
           saExamIdAndStudentIdInfo.map(_._2).toArray)
       }").withColumn("examType", lit(summativeAssessment))
-    //  .as("readFromGold")
-    /*      .join(saGoldInfo
-        .where(s"examId in ${getWhereCondition(
-          caExamIdAndStudentIdInfo.map(_._1).toArray)} and studentId in ${getWhereCondition(
-          caExamIdAndStudentIdInfo.map(_._2).toArray)}").groupBy("studentId").agg(countDistinct("examId").as("examsAttended"))
-        .as("readFromGoldInner") , col("readFromGoldInner.studentId") === col("readFromGold.studentId")
-      ).select("readFromGold.*","examsAttended")*/
 
-  //  saRecordsForIncomingKeysDF.withColumn("saRecordsForIncomingKeysDF", lit("saRecordsForIncomingKeysDF")).show(false)
+    //  saRecordsForIncomingKeysDF.withColumn("saRecordsForIncomingKeysDF", lit("saRecordsForIncomingKeysDF")).show(false)
 
     val caRecordsForIncomingKeysDF = caGoldInfo
       .where(s"examId in ${
@@ -245,21 +238,10 @@ object diamondCalculation {
           caExamIdAndStudentIdInfo.map(_._2).toArray)
       }").withColumn("examType", lit(cumulativeAssessment))
 
-    /*
-    val caRecordsForIncomingKeysDFTmp=caRecordsForIncomingKeysDF.filter(s"examId in ('e001')")
-    val caRecordsForIncomingKeysDF=caRecordsForIncomingKeysDFTmp
-    * */
-    // .as("readFromGold")
-    /* .join(caGoldInfo
-        .where(s"examId in ${getWhereCondition(
-          caExamIdAndStudentIdInfo.map(_._1).toArray)} and studentId in ${getWhereCondition(
-          caExamIdAndStudentIdInfo.map(_._2).toArray)}").groupBy("studentId").agg(countDistinct("examId").as("examsAttended"))
-        .as("readFromGoldInner") , col("readFromGoldInner.studentId") === col("readFromGold.studentId")
-        ).select("readFromGold.*","examsAttended")
-*/
 
 
- //   caRecordsForIncomingKeysDF.withColumn("caRecordsForIncomingKeysDF", lit("caRecordsForIncomingKeysDF")).show(false)
+
+    //   caRecordsForIncomingKeysDF.withColumn("caRecordsForIncomingKeysDF", lit("caRecordsForIncomingKeysDF")).show(false)
     // atleast 1 ca must be attended, doesn't matter fail or pass.
 
     ///// else just read gold SA and CA and join with incoming studId
@@ -267,780 +249,28 @@ object diamondCalculation {
     // SEM logic 60 % from SA (1 Exam usually) , 40 % from (CA's , usually 2 to 3 exams taken in average)
 
     // logic 1  read separately , join method
-/*
 
-    val caMarksCalculated = caRecordsForIncomingKeysDF.join(caExamIDsOfSemIdDF
-      , Seq("examId", "studentId", "subjectCode", "examType"), "right")
-      .withColumn("maxMarksOfAssessmentCalculated", lit(40.0) / col("num_of_assessments"))
-      .withColumn("percentageOfMarksObtained", round((col("marks") * (lit(100.0) / col("maxMarks"))), 3))
-      .withColumn("marksObtainedAsPerNewMaxMarks", round(col("percentageOfMarksObtained") * (col("maxMarksOfAssessmentCalculated") / lit(100.0)), 3))
-      .na.fill("NA").na.fill(0.0).withColumn("numAssessmentsAttended",
-      when(col("grade") === lit("NA") &&
-        col("result") === lit("NA"), "-1").otherwise(lit(0)))
-      .withColumn("marksObtained", sum("marksObtainedAsPerNewMaxMarks").over(
-        org.apache.spark.sql.expressions.Window.partitionBy("semId", "examType", "studentId", "subjectCode")
-      ))
-      .withColumn("numAssessmentsAttended", max("numAssessmentsAttended").over(
-        org.apache.spark.sql.expressions.Window.partitionBy("semId", "examType", "examId", "studentId", "subjectCode")
-      ))
-      .withColumn("numAssessmentsAttended", sum("numAssessmentsAttended").over(
-        org.apache.spark.sql.expressions.Window.partitionBy("semId", "examType", "studentId", "subjectCode")
-      ))
-      .withColumn("numAssessmentsAttended", (col("numAssessmentsAttended") + col("num_of_assessments"))
-        .cast(IntegerType))
-      .withColumn("rankCol", dense_rank.over(
-        org.apache.spark.sql.expressions.Window.partitionBy("semId", "examType", "studentId", "subjectCode")
-          .orderBy(asc("examId"), asc("assessmentYear"))
-      )).where(col("rankCol") === lit(1))
-      .select("semId|studentId|subjectCode|examType|marksObtained|num_of_assessments|numAssessmentsAttended".split("\\|").map(col).toSeq: _*)
-      .orderBy("semId", "studentId", "subjectCode")
-
-     caMarksCalculated.show(false)
-   */ /*
-
-      .groupBy("semId","examType","studentId","subjectCode","num_of_assessments")
-      .agg(sum("marksObtainedAsPerNewMaxMarks").as("marksObtained"),
-       max("numAssessmentsAttended" ).as("numAssessmentsAttended"))
-      .withColumn("numAssessmentsAttended",col("numAssessmentsAttended") + col("num_of_assessments"))
-      .na.fill("NA").na.fill(0.0).orderBy("semId","studentId","subjectCode")
-*/
-
- /*   val saMarksCalculated = saRecordsForIncomingKeysDF.join(saExamIDsOfSemIdDF
-      , Seq("examId", "studentId", "subjectCode", "examType"), "right")
-      .withColumn("maxMarksOfAssessmentCalculated", lit(60.0) / col("num_of_assessments"))
-      .withColumn("percentageOfMarksObtained", round((col("marks") * (lit(100.0) / col("maxMarks"))), 3))
-      .withColumn("marksObtainedAsPerNewMaxMarks", round(col("percentageOfMarksObtained") * (col("maxMarksOfAssessmentCalculated") / lit(100.0)), 3))
-      .na.fill("NA").na.fill(0.0).withColumn("numAssessmentsAttended",
-      when(col("grade") === lit("NA") &&
-        col("result") === lit("NA"), "-1").otherwise(lit(0)))
-      .withColumn("marksObtained", sum("marksObtainedAsPerNewMaxMarks").over(
-        org.apache.spark.sql.expressions.Window.partitionBy("semId", "examType", "studentId", "subjectCode")
-      ))
-      .withColumn("numAssessmentsAttended", max("numAssessmentsAttended").over(
-        org.apache.spark.sql.expressions.Window.partitionBy("semId", "examType", "examId", "studentId", "subjectCode")
-      ))
-      .withColumn("numAssessmentsAttended", sum("numAssessmentsAttended").over(
-        org.apache.spark.sql.expressions.Window.partitionBy("semId", "examType", "studentId", "subjectCode")
-      ))
-      .withColumn("numAssessmentsAttended", (col("numAssessmentsAttended") + col("num_of_assessments"))
-        .cast(IntegerType))
-      .withColumn("rankCol", dense_rank.over(
-        org.apache.spark.sql.expressions.Window.partitionBy("semId", "examType", "studentId", "subjectCode")
-          .orderBy(asc("examId"), asc("assessmentYear"))
-      )).where(col("rankCol") === lit(1))
-      .select("semId|studentId|subjectCode|examType|marksObtained|num_of_assessments|numAssessmentsAttended".split("\\|").map(col).toSeq: _*)
-      .orderBy("semId", "studentId", "subjectCode")
-
-    saMarksCalculated.show(false)
-*/
-
-
-    /*val resultDF = getMarksCalculatedJoin(saRecordsForIncomingKeysDF,saExamIDsOfSemIdDF).as("sa")
-      .join(getMarksCalculatedJoin(caRecordsForIncomingKeysDF,caExamIDsOfSemIdDF).as("ca"),
-        Seq("subjectCode", "semId", "studentId"))
-      .withColumn("passMarkForSA", round(lit(50.0) * (lit(60.0) / lit(100.0)), 3))
-      .withColumn("passMarkForSem", round(lit(60.0), 3))
-      .withColumn("finalMarks",
-        round(col("sa.marksObtained") + col("ca.marksObtained"), 3))
-      .withColumn("result", when(
-        col("sa.marksObtained") >= col("passMarkForSA")
-          && col("ca.numAssessmentsAttended") > lit(0)
-          && col("finalMarks") >= col("passMarkForSem")
-        , lit("PASS")).otherwise(lit("FAIL")))
-      .withColumn("grade", getGradeUDF(lit(new java.math.BigDecimal(100.0)), col("finalMarks").cast(DecimalType(6, 3))
-        , lit("finalCalculation")))
-      .withColumn("remarks", when(col("result") === lit("PASS")
-        , lit("Keep pushing")).when(col("result") === lit("FAIL") &&
-        (col("sa.marksObtained") > col("passMarkForSA") ||
-          col("sa.marksObtained") === col("passMarkForSA")) &&
-        col("finalMarks") < col("passMarkForSem"),
-        lit("Cleared SA, but inadequate marks in CA"))
-        .when(col("result") === lit("FAIL") &&
-          (col("sa.numAssessmentsAttended") === lit(0) ||
-            col("ca.numAssessmentsAttended") === lit(0)),
-          lit("Not appeared in adequate exams, Kindly maintain cognizance towards assessments"))
-        .when(col("result") === lit("FAIL") &&
-          col("sa.marksObtained") > col("passMarkForSA") &&
-          col("finalMarks") > col("passMarkForSem")
-          &&
-          col("sa.numAssessmentsAttended") == lit(0),
-          lit("Cleared SA, but have not even attended CA")
-        ).when(col("result") === lit("FAIL") &&
-        col("sa.marksObtained") < col("passMarkForSA"),
-        lit("Failed in SA")).otherwise("NA"))
-      .select("subjectCode,semId,studentId,passMarkForSA,passMarkForSem,finalMarks,remarks,grade,result"
-        .split(",").map(col).toSeq ++
-        Seq(col("sa.marksObtained").as("SA_marks")
-          , col("ca.marksObtained").alias("CA_marks"),
-          col("ca.numAssessmentsAttended").as("CA_appeared"),
-          col("sa.numAssessmentsAttended").as("SA_appeared"),
-          col("ca.num_of_assessments").as("totalAssessmentsInCA"),
-          col("sa.num_of_assessments").as("totalAssessmentsInSA")): _*)
-
-    resultDF.show(false)
-*/
     val finalResultDF =getFinalResultDFJoin(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF.withColumnRenamed("number_of_assessments","num_of_assessments"))
 
 
-   // getMarksCalculatedJoinAdvancedRow(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF).show(false)
-   // getMarksCalculatedJoinAdvanced(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF).show(false)
-
-    /*
-    resultDF.select(col("subjectCode"), col("semId"), col("studentId"), col("passMarkForSA"), col("passMarkForSem"), col("finalMarks"), col("remarks"), col("grade"), col("result"), col("SA_marks"), col("CA_marks"), col("CA_appeared"), col("SA_appeared"), col("totalAssessmentsInCA"), col("totalAssessmentsInSA"))
-      .union(resultDF.groupBy("studentId", "semId").agg(
-        sum("passMarkForSA").as("passMarkForSA")
-        , sum("passMarkForSem").as("passMarkForSem"),
-        sum("finalMarks").as("finalMarks"),
-        collect_list(col("result")).as("resultTmp"),
-        collect_list(concat(col("result"), lit("~"), col("subjectCode"))).as("remarksTmp")
-        , sum("SA_marks").as("SA_marks")
-        , sum("CA_marks").as("CA_marks"),
-        max("CA_appeared").as("CA_appeared"),
-        max("SA_appeared").as("SA_appeared"),
-        max("totalAssessmentsInCA").as("totalAssessmentsInCA"),
-        max("totalAssessmentsInSA").as("totalAssessmentsInSA"))
-        .withColumn("subjectCode", lit("subTotal"))
-        .withColumn("result", when(array_contains(col("resultTmp"), lit("FAIL")),
-          lit("Reappear"))
-          .otherwise(lit("ALL-CLEAR")))
-        .withColumn("remarksColTmp", arrayFilterEqualsUDF(col("resultTmp")
-          , lit("FAIL")))
-        .withColumn("remarks",
-          when(size(col("remarksColTmp")) > lit(0), concat(lit("Failed in "), concat_ws("", split(concat_ws(",",
-            arrayFilterContainsUDF(col("remarksTmp"), lit("FAIL"))), "FAIL~"))))
-            .otherwise(lit("Keep pushing")))
-        .select(col("subjectCode"), col("semId"), col("studentId"), col("passMarkForSA"), col("passMarkForSem"), col("finalMarks"), col("remarks"),
-          getGradeUDF(lit(new java.math.BigDecimal(100.0)), col("finalMarks"), lit("finalCalculation")).as("grade")
-          , col("result"), col("SA_marks"), col("CA_marks"), col("CA_appeared"), col("SA_appeared"), col("totalAssessmentsInCA"), col("totalAssessmentsInSA"))
-      )
-*/
-    spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
-  //  saveDF(finalResultDF.write.mode("overwrite").format("delta").partitionBy("semId", "studentId"), inputMap("diamondPath"))
+    getMarksCalculatedJoinAdvancedRow(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF).show(false)
+    getMarksCalculatedJoinAdvanced(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF).show(false)
     finalResultDF.withColumn("finalResultDF",lit("finalResultDF")).show(false)
+    examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF.withColumnRenamed("number_of_assessments","num_of_assessments")).withColumn("finalMapGroupsDF",lit("finalMapGroupsDF")).show(false)
+
+    spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
+    saveDF(finalResultDF.write.mode("overwrite").format("delta").partitionBy("semId", "studentId"), inputMap("diamondPath"))
 
     // 2nd method using mapgroups
 
-/*
-
-    val saMarksCalculatedMapGroupsDF = saRecordsForIncomingKeysDF.join(saExamIDsOfSemIdDF, Seq("examId", "studentId", "subjectCode", "examType"), "right")
-      .na.fill(0).na.fill("NA")
-      .groupByKey(x => (x.getAs[String]("semId"), x.getAs[String]("studentId"))).flatMapGroups((keys, rows) => {
-      val rowList = rows.toList
-      // val examIds=rowList.map(_.getAs[String]("examId")).distinct
-      val numberOfExamIds = rowList.head.getAs[Int]("num_of_assessments")
-      val maxMarkPerExamId = getMaxMarks("SA") / numberOfExamIds
-
-      val numberOfExamsAttended = rowList.filter(x => x.getAs[String]("assessmentYear") != "NA"
-        && x.getAs[String]("grade") != "NA"
-        && x.getAs[String]("result") != "NA"
-        && x.getAs[String]("comment") != "NA"
-        && List(1, -1).contains(x.getAs[java.math.BigDecimal]("marks").compareTo(new java.math.BigDecimal(0.000)))
-        && x.getAs[Int]("passMarkPercentage") != 0
-        && x.getAs[Int]("maxMarks") != 0
-      ).map(_.getAs[String]("examId")).distinct
-
-      println(s"numberOfExamsAttended ${numberOfExamsAttended}")
-
-      val examsNotAttended = rowList /*.map(x => {
-        println(s"x ${x}")
-        println(s"""x.getAs[String]("assessmentYear") == "NA" ${ x.getAs[String]("assessmentYear") == "NA"}""")
-        println(s"""x.getAs[String]("grade") == "NA" ${ x.getAs[String]("grade") == "NA"}""")
-        println(s"""x.getAs[String]("result") == "NA" ${x.getAs[String]("result") == "NA"}""")
-        println(s"""x.getAs[String]("comment") == "NA" ${ x.getAs[String]("comment") == "NA"}""")
-        println(s"""x.getAs[java.math.BigDecimal]("marks") == new java.math.BigDecimal(0.000) ${ x.getAs[java.math.BigDecimal]("marks").compareTo(new java.math.BigDecimal(0.000))==0}""")
-        println(s"""x.getAs[java.math.BigDecimal]("passMarkPercentage") == new java.math.BigDecimal(0) ${ x.getAs[Int]("passMarkPercentage") ==0}""")
-        println(s"""x.getAs[java.math.BigDecimal]("maxMarks") ${ x.getAs[Int]("maxMarks")  ==0}""")
-        x
-      })*/ .filter(x => x.getAs[String]("assessmentYear") == "NA"
-        && x.getAs[String]("grade") == "NA"
-        && x.getAs[String]("result") == "NA"
-        && x.getAs[String]("comment") == "NA"
-        && x.getAs[java.math.BigDecimal]("marks").compareTo(new java.math.BigDecimal(0.000)) == 0
-        && x.getAs[Int]("passMarkPercentage") == 0
-        && x.getAs[Int]("maxMarks") == 0
-      ).distinct.map(_.getAs[String]("examId")).distinct
-
-      println(s"numberOfExamsNotAttended ${examsNotAttended}")
-
-      numberOfExamIds == examsNotAttended.size match {
-        case true =>
-          rowList.groupBy(_.getAs[String]("subjectCode")).map(recordsAndKey =>
-            Row(recordsAndKey._2.head.getAs[String]("semId"), //semId
-              recordsAndKey._2.head.getString(1), // studentId
-              recordsAndKey._2.head.getString(2), // subjectCode
-              recordsAndKey._2.head.getString(4), // assessmentYear
-              new java.math.BigDecimal(0.0), // aggMarks
-              recordsAndKey._2.head.getString(3), // examType
-              new java.math.BigDecimal(100.0).divide(new java.math.BigDecimal(100.0), MathContext.DECIMAL128).multiply(new java.math.BigDecimal(50.0), MathContext.DECIMAL128), // aggPassMarks
-              new java.math.BigDecimal(100.0), // max marks Agg
-              "FAIL", // result
-              getGradeJava(new java.math.BigDecimal(100.0), new java.math.BigDecimal(0.0), "SA"), // grade
-              numberOfExamIds, //total Number of exams
-              0, "NA") // exams Appeared
-          )
-        case false =>
-          // calculate fo valid exams, and update attended count in last count
-          rowList.filterNot(x => examsNotAttended.contains(x.getAs[String]("examId")) ).map(x => Row(
-            x.getAs[String]("semId"),
-            x.getAs[String]("examId"),
-            x.getAs[String]("studentId"),
-            x.getAs[String]("subjectCode"),
-            x.getAs[String]("assessmentYear"),
-            x.getAs[java.math.BigDecimal]("marks"),
-            // marks percentage
-            x.getAs[java.math.BigDecimal]("marks").multiply(new java.math.BigDecimal(100).divide(new java.math.BigDecimal(x.getAs[Int]("maxMarks")), MathContext.DECIMAL128), MathContext.DECIMAL128),
-            x.getAs[String]("examType"),
-            x.getAs[String]("grade"),
-            x.getAs[String]("result"),
-            x.getAs[Int]("passMarkPercentage"),
-            x.getAs[Int]("maxMarks"),
-            maxMarkPerExamId,
-            // new marks calculated
-            new java.math.BigDecimal(maxMarkPerExamId / 100.0).multiply(x.getAs[java.math.BigDecimal]("marks").multiply(new java.math.BigDecimal(100).divide(new java.math.BigDecimal(x.getAs[Int]("maxMarks")), MathContext.DECIMAL128))),
-            x.getAs[Int]("passMarkCalculated"),
-            // new pass marks calculated
-            new java.math.BigDecimal((maxMarkPerExamId / 100.0) * x.getAs[Int]("passMarkPercentage")),
-            x.getAs[String]("comment"),
-            numberOfExamIds,
-            numberOfExamsAttended.size)).groupBy(x => (x.getAs[String](0),x.getAs[String](2),x.getAs[String](3)))
-            .map(examPerSubject => {
-            val marksTotalPerSubID = {
-              for (record <- examPerSubject._2) yield record.getAs[java.math.BigDecimal](13)
-            }.reduceRight /*(new java.math.BigDecimal(0.0))*/ ((x, y) => x.add(y, MathContext.DECIMAL128))
-            val passMarksTotalPerSubID = {
-              for (record <- examPerSubject._2) yield record.getAs[java.math.BigDecimal](15)
-            }.reduce[java.math.BigDecimal]((x, y) => x.add(y, MathContext.DECIMAL128))
-
-            Row(
-              examPerSubject._2.head.getString(0) , //semID
-              examPerSubject._2.head.getString(2), // studentId
-              examPerSubject._2.head.getString(3), // subjectCode
-              examPerSubject._2.head.getString(4), // assessmentYear
-              marksTotalPerSubID, // aggMarks
-              examPerSubject._2.head.getString(7), // examType
-              passMarksTotalPerSubID, // aggPassMarks
-              new java.math.BigDecimal(100.0), // max marks Agg
-              marksTotalPerSubID match { case value if value.compareTo(passMarksTotalPerSubID) == -1 => "FAIL" case value if List(0, 1).contains(value.compareTo(passMarksTotalPerSubID)) => "PASS" }, // result
-              getGradeJava(new java.math.BigDecimal(100.0), marksTotalPerSubID, "SA"), // grade
-              examPerSubject._2.head.getInt(17), //total Number of exams
-              examPerSubject._2.head.getInt(18), // exams Appeared
-              "")  // comment
-          })
-      }
-    })(RowEncoder(new StructType(Array(StructField("semId", StringType, true)
-      , StructField("studentId", StringType, true)
-      , StructField("subjectCode", StringType, true)
-      , StructField("assessmentYear", StringType, true)
-      , StructField("aggMarks", DecimalType(6, 3), true)
-      , StructField("examType", StringType, true)
-      , StructField("AggPassMark", DecimalType(6, 3), true)
-      , StructField("maxMarksAgg", DecimalType(6, 3), true),
-      StructField("result", StringType, true)
-      , StructField("grade", StringType, true)
-      , StructField("totalNumberOfExams", IntegerType, true),
-      StructField("examsAttended", IntegerType, true),
-      StructField("comment", StringType, true))))) /*.groupByKey(_.getAs[String]("studentId"))
-      .flatMapGroups( (key, rows) => {
-      val rowsTmp = rows.toList
-      val totalMarksScored=rowsTmp.map(_.getAs[java.math.BigDecimal]("aggMarks")).foldLeft(new java.math.BigDecimal(0.000))((x,y)=> x.add(y,MathContext.DECIMAL128))
-      val totalMaxMarks=  {for(rowTmp <- rowsTmp) yield rowTmp.getAs[java.math.BigDecimal]("maxMarksAgg") }.reduce((x,y)=> x.add(y,MathContext.DECIMAL128))
-      val aggPassMark={for(rowTmp <- rowsTmp) yield rowTmp.getAs[java.math.BigDecimal]("AggPassMark") }.foldRight(new java.math.BigDecimal(0.000))((x,y)=> x.add(y,MathContext.DECIMAL128))
-      val failPresentCondition=rowsTmp.map(_.getAs[String]("result")).contains("FAIL")
-
-        rowsTmp :+ Row(rowsTmp.head.getAs[String]("examId"),
-          rowsTmp.head.getAs[String]("studentId"),
-          "subTotal",
-          rowsTmp.head.getAs[String]("assessmentYear"),
-          totalMarksScored,
-          rowsTmp.head.getAs[String]("examType"),
-          aggPassMark,
-          totalMaxMarks,
-          totalMarksScored match { case value if failPresentCondition == false && List(0,1).contains(value.compareTo( aggPassMark)) => "PASS" case _ => "FAIL"},
-          getGrade(totalMaxMarks,totalMarksScored,"SA"),
-          rowsTmp.head.getAs[Int]("totalNumberOfExams"),
-          rowsTmp.head.getAs[Int]("examsAttended"),
-          rowsTmp.head.getAs[String]("Comment")
-        )
-    }
-    )*/ .groupByKey(x=> (x.getAs[String](0),x.getAs[String](1)))
-      .flatMapGroups((key, rows) => {
-        val rowsTmp = rows.toList
-        val totalMarksScored = rowsTmp.map(_.getAs[java.math.BigDecimal](4)).foldLeft(new java.math.BigDecimal(0.000))((x, y) => x.add(y, MathContext.DECIMAL128))
-        val totalMaxMarks = {
-          for (rowTmp <- rowsTmp) yield rowTmp.getAs[java.math.BigDecimal](7)
-        }.reduce((x, y) => x.add(y, MathContext.DECIMAL128))
-        val aggPassMark = {
-          for (rowTmp <- rowsTmp) yield rowTmp.getAs[java.math.BigDecimal](6)
-        }.foldRight(new java.math.BigDecimal(0.000))((x, y) => x.add(y, MathContext.DECIMAL128))
-        val failPresentCondition = rowsTmp.map(_.getAs[String](9)).contains("FAIL")
-
-        rowsTmp :+ Row(rowsTmp.head.getAs[String](0),
-          rowsTmp.head.getAs[String](1),
-          "subTotal",
-          rowsTmp.head.getAs[String](3),
-          totalMarksScored,
-          rowsTmp.head.getAs[String](5),
-          aggPassMark,
-          totalMaxMarks,
-          totalMarksScored match { case value if failPresentCondition == false && List(0, 1).contains(value.compareTo(aggPassMark)) => "PASS" case _ => "FAIL" },
-          getGrade(totalMaxMarks, totalMarksScored, "SA"),
-          rowsTmp.head.getAs[Int](10),
-          rowsTmp.head.getAs[Int](11),
-          rowsTmp.head.getAs[String](12)
-        )
-      }
-      )(RowEncoder(new StructType(Array(StructField("semId", StringType, true)
-        , StructField("studentId", StringType, true)
-        , StructField("subjectCode", StringType, true)
-        , StructField("assessmentYear", StringType, true)
-        , StructField("aggMarks", DecimalType(6, 3), true)
-        , StructField("examType", StringType, true)
-        , StructField("AggPassMark", DecimalType(6, 3), true)
-        , StructField("maxMarksAgg", DecimalType(6, 3), true),
-        StructField("result", StringType, true)
-        , StructField("grade", StringType, true)
-        , StructField("totalNumberOfExams", IntegerType, true),
-        StructField("examsAttended", IntegerType, true),
-        StructField("comment", StringType, true)))))
-
-
-    val caMarksCalculatedMapGroupsDF = caRecordsForIncomingKeysDF.join(caExamIDsOfSemIdDF, Seq("examId", "studentId", "subjectCode", "examType"), "right")
-      .na.fill(0).na.fill("NA")
-      .groupByKey(x => (x.getAs[String]("semId"), x.getAs[String]("studentId"))).flatMapGroups((keys, rows) => {
-      val rowList = rows.toList
-      val examIds = rowList.map(_.getAs[String]("examId")).distinct
-      val numberOfExamIds = examIds.size
-      val maxMarkPerExamId =getMaxMarks("CA") / numberOfExamIds
-
-      val numberOfExamsAttended = rowList.filter(x => x.getAs[String]("assessmentYear") != "NA"
-        && x.getAs[String]("grade") != "NA"
-        && x.getAs[String]("result") != "NA"
-        && x.getAs[String]("comment") != "NA"
-        && List(1, -1).contains(x.getAs[java.math.BigDecimal]("marks").compareTo(new java.math.BigDecimal(0.000)))
-        && x.getAs[Int]("passMarkPercentage") != 0
-        && x.getAs[Int]("maxMarks") != 0
-      ).map(_.getAs[String]("examId")).distinct
-
-      println(s"numberOfExamsAttended ${numberOfExamsAttended}")
-
-      val numberOfExamsNotAttended = rowList.filter(x => x.getAs[String]("assessmentYear") == "NA"
-        && x.getAs[String]("grade") == "NA"
-        && x.getAs[String]("result") == "NA"
-        && x.getAs[String]("comment") == "NA"
-        && x.getAs[java.math.BigDecimal]("marks").compareTo(new java.math.BigDecimal(0.000)) == 0
-        && x.getAs[Int]("passMarkPercentage") == 0
-        && x.getAs[Int]("maxMarks") == 0
-      ).distinct.map(_.getAs[String]("examId")).distinct
-
-      println(s"numberOfExamsNotAttended ${numberOfExamsNotAttended}")
-
-      numberOfExamIds == numberOfExamsNotAttended.size match {
-        case true =>
-          rowList.groupBy(_.getAs[String]("subjectCode")).map(recordsAndKey =>
-            Row(recordsAndKey._2.head.getAs[String]("semId"), //semId
-              recordsAndKey._2.head.getString(1), // studentId
-              recordsAndKey._2.head.getString(2), // subjectCode
-              recordsAndKey._2.head.getString(4), // assessmentYear
-              new java.math.BigDecimal(0.0), // aggMarks
-              recordsAndKey._2.head.getString(3), // examType
-              new java.math.BigDecimal(60.0).divide(new java.math.BigDecimal(100.0), MathContext.DECIMAL128).multiply(new java.math.BigDecimal(45.0), MathContext.DECIMAL128), // aggPassMarks
-              new java.math.BigDecimal(60.0), // max marks Agg
-              "FAIL", // result
-              getGradeJava(new java.math.BigDecimal(60.0), new java.math.BigDecimal(0.0), "CA"), // grade
-              numberOfExamIds, //total Number of exams
-              0, "NA") // exams Appeared
-          )
-        case false =>
-          rowList.map(x => Row(
-            x.getAs[String]("semId"),
-            x.getAs[String]("examId"),
-            x.getAs[String]("studentId"),
-            x.getAs[String]("subjectCode"),
-            x.getAs[String]("assessmentYear"),
-            x.getAs[java.math.BigDecimal]("marks"),
-            // marks percentage
-            (x.getAs[java.math.BigDecimal]("marks"), x.getAs[Int]("maxMarks")) match {
-              case (_, 0) => new java.math.BigDecimal(0.000)
-              case (tempVal, _) if tempVal.compareTo(new java.math.BigDecimal(0.000)) == 0 => new java.math.BigDecimal(0.000)
-              case (_, _) =>
-                x.getAs[java.math.BigDecimal]("marks").multiply(new java.math.BigDecimal(100).divide(new java.math.BigDecimal(x.getAs[Int]("maxMarks")), MathContext.DECIMAL128), MathContext.DECIMAL128)
-            },
-            x.getAs[String]("examType"),
-            x.getAs[String]("grade"),
-            x.getAs[String]("result"),
-            x.getAs[Int]("passMarkPercentage"),
-            x.getAs[Int]("maxMarks"),
-            maxMarkPerExamId,
-            // new marks calculated
-            (x.getAs[java.math.BigDecimal]("marks"), x.getAs[Int]("maxMarks")) match {
-              case (_, 0) => new java.math.BigDecimal(0.000)
-              case (tempVal, _) if tempVal.compareTo(new java.math.BigDecimal(0.000)) == 0 => new java.math.BigDecimal(0.000)
-              case (_, _) =>
-                new java.math.BigDecimal(maxMarkPerExamId / 100.0).multiply(x.getAs[java.math.BigDecimal]("marks").multiply(new java.math.BigDecimal(100).divide(new java.math.BigDecimal(x.getAs[Int]("maxMarks")), MathContext.DECIMAL128)))
-            },
-            x.getAs[Int]("passMarkCalculated"),
-            // new pass marks calculated
-            new java.math.BigDecimal((maxMarkPerExamId / 100.0) * getPassMarkPercentage("CA")),
-            x.getAs[String]("comment"),
-            numberOfExamIds,
-            numberOfExamsAttended.size)).groupBy(x => (x.getAs[String](0),x.getAs[String](2),x.getAs[String](3))).map(examPerSubject => {
-
-            val marksTotalPerSubID = {
-              for (record <- examPerSubject._2) yield record.getAs[java.math.BigDecimal](13)
-            }.reduceRight /*(new java.math.BigDecimal(0.0))*/ ((x, y) => x.add(y, MathContext.DECIMAL128))
-            val passMarksTotalPerSubID = {
-              for (record <- examPerSubject._2) yield record.getAs[java.math.BigDecimal](15)
-            }.reduce[java.math.BigDecimal]((x, y) => x.add(y, MathContext.DECIMAL128))
-            Row(examPerSubject._2.head.getString(0), // semId
-              examPerSubject._2.head.getString(2), // studentId
-              examPerSubject._2.head.getString(3), // subjectCode
-              examPerSubject._2.head.getString(4), // assessmentYear
-              marksTotalPerSubID, // aggMarks
-              examPerSubject._2.head.getString(7), // examType
-              passMarksTotalPerSubID, // aggPassMarks
-              new java.math.BigDecimal(60.0), // max marks Agg
-              marksTotalPerSubID match { case value if value.compareTo(passMarksTotalPerSubID) == -1 => "FAIL" case value if List(0, 1).contains(value.compareTo(passMarksTotalPerSubID)) => "PASS" }, // result
-              getGradeJava(new java.math.BigDecimal(60.0), marksTotalPerSubID, "CA"), // grade
-              examPerSubject._2.head.getInt(17), //total Number of exams
-              examPerSubject._2.head.getInt(18), // exams Appeared
-              "") // comment
-          })
-      }
-    })(RowEncoder(new StructType(Array(StructField("semId", StringType, true)
-      , StructField("studentId", StringType, true)
-      , StructField("subjectCode", StringType, true)
-      , StructField("assessmentYear", StringType, true)
-      , StructField("aggMarks", DecimalType(6, 3), true)
-      , StructField("examType", StringType, true)
-      , StructField("AggPassMark", DecimalType(6, 3), true)
-      , StructField("maxMarksAgg", DecimalType(6, 3), true),
-      StructField("result", StringType, true)
-      , StructField("grade", StringType, true)
-      , StructField("totalNumberOfExams", IntegerType, true),
-      StructField("examsAttended", IntegerType, true),
-      StructField("comment", StringType, true))))).groupByKey(x=>(x.getAs[String](0),x.getAs[String](1)))
-      .flatMapGroups((key, rows) => {
-        val rowsTmp = rows.toList
-         val totalMarksScored = rowsTmp.map(_.getAs[java.math.BigDecimal](4)).foldLeft(new java.math.BigDecimal(0.000))((x, y) => x.add(y, MathContext.DECIMAL128))
-        val totalMaxMarks = {
-          for (rowTmp <- rowsTmp) yield rowTmp.getAs[java.math.BigDecimal](7)
-        }.reduce((x, y) => x.add(y, MathContext.DECIMAL128))
-        val aggPassMark = {
-          for (rowTmp <- rowsTmp) yield rowTmp.getAs[java.math.BigDecimal](6)
-        }.foldRight(new java.math.BigDecimal(0.000))((x, y) => x.add(y, MathContext.DECIMAL128))
-        val failPresentCondition = rowsTmp.map(_.getAs[String](8)).contains("FAIL")
-
-        rowsTmp :+ Row(rowsTmp.head.getAs[String](0),
-          rowsTmp.head.getAs[String](1),
-          "subTotal",
-          rowsTmp.head.getAs[String](3),
-          totalMarksScored,
-          rowsTmp.head.getAs[String](5),
-          aggPassMark,
-          totalMaxMarks,
-          totalMarksScored match { case value if failPresentCondition == false && List(0, 1).contains(value.compareTo(aggPassMark)) => "PASS" case _ => "FAIL" },
-          getGradeJava(totalMaxMarks, totalMarksScored, "CA"),
-          rowsTmp.head.getAs[Int](10),
-          rowsTmp.head.getAs[Int](11),
-          rowsTmp.head.getAs[String](12)
-        )
-      }
-      )(RowEncoder(new StructType(Array(StructField("semId", StringType, true)
-        , StructField("studentId", StringType, true)
-        , StructField("subjectCode", StringType, true)
-        , StructField("assessmentYear", StringType, true)
-        , StructField("aggMarks", DecimalType(6, 3), true)
-        , StructField("examType", StringType, true)
-        , StructField("AggPassMark", DecimalType(6, 3), true)
-        , StructField("maxMarksAgg", DecimalType(6, 3), true),
-        StructField("result", StringType, true)
-        , StructField("grade", StringType, true)
-        , StructField("totalNumberOfExams", IntegerType, true),
-        StructField("examsAttended", IntegerType, true),
-        StructField("comment", StringType, true)))))
-*/
-/*
-
-    val resultMapGroupDF = saMarksCalculatedMapGroupsDF.as("sa")
-      .join(caMarksCalculatedMapGroupsDF.as("ca"), "semId,studentId,subjectCode".split(",").toSeq).select(
-       "semId,studentId,subjectCode".split(",").map(col) ++
-        getCASACols( saMarksCalculatedMapGroupsDF.columns.diff("semId,studentId,subjectCode".split(",")))  :_*
-    ).groupByKey(x => (x.getAs[String]("semId"),x.getAs[String]("studentId"),x.getAs[String]("subjectCode")))
-      .mapGroups((keys,rows) => {
-        /*
-        semId: string (nullable = true)
- |-- studentId: string (nullable = true)
- |-- subjectCode: string (nullable = true)
- |-- sa_assessmentYear: string (nullable = true)
- |-- ca_assessmentYear: string (nullable = true)
- |-- sa_aggMarks: decimal(6,3) (nullable = true)
- |-- ca_aggMarks: decimal(6,3) (nullable = true)
- |-- sa_examType: string (nullable = true)
- |-- ca_examType: string (nullable = true)
- |-- sa_AggPassMark: decimal(6,3) (nullable = true)
- |-- ca_AggPassMark: decimal(6,3) (nullable = true)
- |-- sa_maxMarksAgg: decimal(6,3) (nullable = true)
- |-- ca_maxMarksAgg: decimal(6,3) (nullable = true)
- |-- sa_result: string (nullable = true)
- |-- ca_result: string (nullable = true)
- |-- sa_grade: string (nullable = true)
- |-- ca_grade: string (nullable = true)
- |-- sa_totalNumberOfExams: integer (nullable = true)
- |-- ca_totalNumberOfExams: integer (nullable = true)
- |-- sa_examsAttended: integer (nullable = true)
- |-- ca_examsAttended: integer (nullable = true)
- |-- sa_comment: string (nullable = true)
- |-- ca_comment: str
-
-*/
-        val rowsTmp= rows.toList
-        val caMarksRecalculated=getPercentage(new java.math.BigDecimal(getMaxMarks("CA")),
-          rowsTmp.head.getAs[java.math.BigDecimal]("ca_aggMarks"))
-          .multiply(new java.math.BigDecimal(40.0 / 100),MathContext.DECIMAL128)
-
-         val saMarksRecalculated=getPercentage(new java.math.BigDecimal(getMaxMarks("SA")),
-           rowsTmp.head.getAs[java.math.BigDecimal]("sa_aggMarks"))
-           .multiply(new java.math.BigDecimal(60.0 / 100),MathContext.DECIMAL128)
-
-        val caPassMarkNew= getMarksForPercentage(new java.math.BigDecimal(40.0),new java.math.BigDecimal(45.0) )
-        val saPassMarkNew= getMarksForPercentage(new java.math.BigDecimal(60.0),new java.math.BigDecimal(50.0) )
-
-        val totalMarksCalculated=caMarksRecalculated.add(saMarksRecalculated)
-
-        val (semResult,semRemarks)=  totalMarksCalculated match {
-          case value if rowsTmp.head.getAs[Int]("ca_examsAttended") == 0 =>
-            ("FAIL","Did not appear in any CA")
-          case value if rowsTmp.head.getAs[Int]("sa_examsAttended") == 0 =>
-            ("FAIL","Did not appear in any SA")
-          case value if !checkPass(saMarksRecalculated,saPassMarkNew) =>
-            ("FAIL","Failed to clear SA")
-          case value if !checkPass(value,new java.math.BigDecimal(60.0)) && checkPass(saMarksRecalculated,saPassMarkNew) =>
-            ("FAIL","Failed in sem ,cleared SA")
-          case value if checkPass(value,new java.math.BigDecimal(60.0))
-          && rowsTmp.head.getAs[Int]("ca_examsAttended") >1  && checkPass(saMarksRecalculated,saPassMarkNew)
-          &&  checkPass(caMarksRecalculated,caPassMarkNew) =>
-            ("PASS","Keep pushing")
-          case value if checkPass(value,new java.math.BigDecimal(60.0))
-            && rowsTmp.head.getAs[Int]("ca_examsAttended") >1  && checkPass(saMarksRecalculated,saPassMarkNew)
-            &&  !checkPass(caMarksRecalculated,caPassMarkNew) =>
-            ("PASS","Keep pushing, try to clear CA")
-          case value if checkPass(value,new java.math.BigDecimal(60.0))
-            && rowsTmp.head.getAs[Int]("ca_examsAttended") ==1  && checkPass(saMarksRecalculated,saPassMarkNew)
-            &&  !checkPass(caMarksRecalculated,caPassMarkNew) =>
-            ("PASS","Keep pushing, try to attend and clear all CA")
-          case value if checkPass(value,new java.math.BigDecimal(60.0))
-            && rowsTmp.head.getAs[Int]("ca_examsAttended") ==1  && checkPass(saMarksRecalculated,saPassMarkNew)
-            &&  checkPass(caMarksRecalculated,caPassMarkNew) =>
-            ("PASS","Keep pushing, try to attend all CA")
-        }
-      Row(rowsTmp.head.getAs[String]("semId"),
-        rowsTmp.head.getAs[String]("studentId"),
-        rowsTmp.head.getAs[String]("subjectCode"),
-        caMarksRecalculated,
-        saMarksRecalculated,
-        caPassMarkNew,
-        saPassMarkNew,
-        totalMarksCalculated,
-        new java.math.BigDecimal(60.0),
-        semResult,
-        semRemarks,
-        getGradeJava(new java.math.BigDecimal(100.0),totalMarksCalculated,"finalCalculation"),
-        rowsTmp.head.getAs[Int]("sa_totalNumberOfExams"),
-        rowsTmp.head.getAs[Int]("ca_totalNumberOfExams"),
-        rowsTmp.head.getAs[Int]("sa_examsAttended"),
-        rowsTmp.head.getAs[Int]("ca_examsAttended")
-      )
-      }) (RowEncoder(new StructType(Array(StructField("semId",StringType,true),
-        StructField("studentId",StringType,true),
-        StructField("subjectCode",StringType,true),
-        StructField("caMarks",DecimalType(6,3),true),
-        StructField("saMarks",DecimalType(6,3),true),
-        StructField("caPassMarks",DecimalType(6,3),true),
-        StructField("saPassMarks",DecimalType(6,3),true),
-        StructField("totalMarks",DecimalType(6,3),true),
-        StructField("passMarkForTotal",DecimalType(6,3),true),
-        StructField("result",StringType,true),
-        StructField("remarks",StringType,true),
-        StructField("grade",StringType,true),
-        StructField("saTotalNumberOfExams",IntegerType,true),
-        StructField("caTotalNumberOfExams",IntegerType,true),
-        StructField("saExamsAttended",IntegerType,true),
-        StructField("caExamsAttended",IntegerType,true)
-      )))).groupByKey(x=> (x.getAs[String](0),x.getAs[String](1)))
-      .flatMapGroups((key,rows) => {
-        val rowsTmp=rows.toList
-        val totalRecord=rowsTmp.filter(_.getAs[String](2)=="subTotal").head
-
-        rowsTmp.filter(_.getAs[String](2)!="subTotal") :+ Row(
-          totalRecord.getAs[String](0),
-          totalRecord.getAs[String](1),
-          totalRecord.getAs[String](2),
-          totalRecord.getAs[java.math.BigDecimal](3),
-          totalRecord.getAs[java.math.BigDecimal](4),
-          totalRecord.getAs[java.math.BigDecimal](5),
-          totalRecord.getAs[java.math.BigDecimal](6),
-          totalRecord.getAs[java.math.BigDecimal](7),
-          totalRecord.getAs[java.math.BigDecimal](8),
-          rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[String](9)).contains("FAIL") match {case true => "Re-Appear for failed subjects" case false => "All clear"} ,
-          rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[String](9)).contains("FAIL") match {case true if rowsTmp.map(_.getAs[String](10)).filter(_.contains("Failed")).size >1 && rowsTmp.map(_.getAs[String](10)).filter(_.contains("Did not")) .size >1 => "Concentrate on failed subjects next time, appear in all exams to increase the chances of clearing" case true if rowsTmp.map(_.getAs[String](10)).filter(_.contains("Failed")).size >1 => "Concentrate on failed subjects next time" case true if rowsTmp.map(_.getAs[String](10)).filter(_.contains("Did not")).size >1 => "Appear in all exams to increase the chances of clearing" case false => "Keep pushing"},
-          rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[String](9)).contains("FAIL") match {case value if value == true && totalRecord.getAs[java.math.BigDecimal](7).compareTo(new java.math.BigDecimal(0)) ==0 => "F-" case true => "F" case false =>totalRecord.getAs[Int](11) },
-          totalRecord.getAs[Int](12),
-          totalRecord.getAs[Int](13),
-          totalRecord.getAs[Int](14),
-          totalRecord.getAs[Int](15)
-        )
-      })(RowEncoder(new StructType(Array(StructField("semId",StringType,true),
-        StructField("studentId",StringType,true),
-        StructField("subjectCode",StringType,true),
-        StructField("caMarks",DecimalType(6,3),true),
-        StructField("saMarks",DecimalType(6,3),true),
-        StructField("caPassMarks",DecimalType(6,3),true),
-        StructField("saPassMarks",DecimalType(6,3),true),
-        StructField("totalMarks",DecimalType(6,3),true),
-        StructField("passMarkForTotal",DecimalType(6,3),true),
-        StructField("result",StringType,true),
-        StructField("remarks",StringType,true),
-        StructField("grade",StringType,true),
-        StructField("saTotalNumberOfExams",IntegerType,true),
-        StructField("caTotalNumberOfExams",IntegerType,true),
-        StructField("saExamsAttended",IntegerType,true),
-        StructField("caExamsAttended",IntegerType,true)
-      ))))
-
-
-      col("alpha.semId") === col("delta.semId") &&
-col("alpha.studentId") === col("delta.studentId") &&
-col("alpha.subjectCode") === col("delta.subjectCode") &&
-col("alpha.caMarks") === col("delta.caMarks") &&
-col("alpha.saMarks") === col("delta.saMarks") &&
-col("alpha.caPassMarks") === col("delta.caPassMarks") &&
-col("alpha.saPassMarks") === col("delta.saPassMarks") &&
-col("alpha.totalMarks") === col("delta.totalMarks") &&
-col("alpha.passMarkForTotal") === col("delta.passMarkForTotal") &&
-col("alpha.result") === col("delta.result") &&
-col("alpha.remarks") === col("delta.remarks") &&
-col("alpha.grade") === col("delta.grade") &&
-col("alpha.saTotalNumberOfExams") === col("delta.saTotalNumberOfExams") &&
-col("alpha.caTotalNumberOfExams") === col("delta.caTotalNumberOfExams") &&
-col("alpha.saExamsAttended") === col("delta.saExamsAttended") &&
-col("alpha.caExamsAttended") === col("delta.caExamsAttended") &&
-
-col("alpha.semId") =!= col("delta.semId") ||
-col("alpha.studentId") =!= col("delta.studentId") ||
-col("alpha.subjectCode") =!= col("delta.subjectCode") ||
-col("alpha.caMarks") =!= col("delta.caMarks") ||
-col("alpha.saMarks") =!= col("delta.saMarks") ||
-col("alpha.caPassMarks") =!= col("delta.caPassMarks") ||
-col("alpha.saPassMarks") =!= col("delta.saPassMarks") ||
-col("alpha.totalMarks") =!= col("delta.totalMarks") ||
-col("alpha.passMarkForTotal") =!= col("delta.passMarkForTotal") ||
-col("alpha.result") =!= col("delta.result") ||
-col("alpha.remarks") =!= col("delta.remarks") ||
-col("alpha.grade") =!= col("delta.grade") ||
-col("alpha.saTotalNumberOfExams") =!= col("delta.saTotalNumberOfExams") ||
-col("alpha.caTotalNumberOfExams") =!= col("delta.caTotalNumberOfExams") ||
-col("alpha.saExamsAttended") =!= col("delta.saExamsAttended") ||
-col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
- */
-
-
-
-    // totalmarks, 50 % on SA, and atleast 1 apperance in CA and 60 % in total
-
-      examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF.withColumnRenamed("number_of_assessments","num_of_assessments")).withColumn("finalMapGroupsDF",lit("finalMapGroupsDF")).show(false)
-
-/*
-    examIDSemIDAndTypeMappedDF.unpersist
-
-    scala.util.Try{DeltaTable.forPath(spark,inputMap("diamondPath"))} match {
-      case scala.util.Success(s) =>
-        s.as("alpha").merge(
-          examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF).withColumn("incomingTs",lit(getTs)).as("delta"),
-          col("alpha.semId") === col("delta.semId") &&
-            col("alpha.studentId") === col("delta.studentId")).whenMatched(
-          col("alpha.subjectCode") === col("delta.subjectCode")    &&
-            col("alpha.caMarks") === col("delta.caMarks") &&
-            col("alpha.saMarks") === col("delta.saMarks") &&
-            col("alpha.caPassMarks") === col("delta.caPassMarks") &&
-            col("alpha.saPassMarks") === col("delta.saPassMarks") &&
-            col("alpha.totalMarks") === col("delta.totalMarks") &&
-            col("alpha.passMarkForTotal") === col("delta.passMarkForTotal") &&
-            col("alpha.result") === col("delta.result") &&
-            col("alpha.remarks") === col("delta.remarks") &&
-            col("alpha.grade") === col("delta.grade") &&
-            col("alpha.saTotalNumberOfExams") === col("delta.saTotalNumberOfExams") &&
-            col("alpha.caTotalNumberOfExams") === col("delta.caTotalNumberOfExams") &&
-            col("alpha.saExamsAttended") === col("delta.saExamsAttended") &&
-            col("alpha.caExamsAttended") === col("delta.caExamsAttended")
-            ).updateExpr(Map("incomingTs"->"alpha.incomingTs")).whenMatched(
-          col("alpha.subjectCode") =!= col("delta.subjectCode") ||
-            col("alpha.caMarks") =!= col("delta.caMarks") ||
-            col("alpha.saMarks") =!= col("delta.saMarks") ||
-            col("alpha.caPassMarks") =!= col("delta.caPassMarks") ||
-            col("alpha.saPassMarks") =!= col("delta.saPassMarks") ||
-            col("alpha.totalMarks") =!= col("delta.totalMarks") ||
-            col("alpha.passMarkForTotal") =!= col("delta.passMarkForTotal") ||
-            col("alpha.result") =!= col("delta.result") ||
-            col("alpha.remarks") =!= col("delta.remarks") ||
-            col("alpha.grade") =!= col("delta.grade") ||
-            col("alpha.saTotalNumberOfExams") =!= col("delta.saTotalNumberOfExams") ||
-            col("alpha.caTotalNumberOfExams") =!= col("delta.caTotalNumberOfExams") ||
-            col("alpha.saExamsAttended") =!= col("delta.saExamsAttended") ||
-            col("alpha.caExamsAttended") =!= col("delta.caExamsAttended")
-        ).updateExpr(Map(
-          "subjectCode" -> "delta.subjectCode" ,
-          "caMarks" -> "delta.caMarks" ,
-          "saMarks" -> "delta.saMarks" ,
-          "caPassMarks" -> "delta.caPassMarks" ,
-          "saPassMarks" -> "delta.saPassMarks" ,
-          "totalMarks" -> "delta.totalMarks" ,
-          "passMarkForTotal" -> "delta.passMarkForTotal" ,
-          "result" -> "delta.result" ,
-          "remarks" -> "delta.remarks" ,
-          "grade" -> "delta.grade" ,
-          "saTotalNumberOfExams" -> "delta.saTotalNumberOfExams" ,
-          "caTotalNumberOfExams" -> "delta.caTotalNumberOfExams" ,
-          "saExamsAttended" -> "delta.saExamsAttended" ,
-          "caExamsAttended" -> "delta.caExamsAttended" ,
-          "incomingTs"->"alpha.incomingTs")).whenNotMatched.insertExpr(Map("semId" -> "delta.semId" ,
-          "studentId" -> "delta.studentId" ,
-          "subjectCode" -> "delta.subjectCode" ,
-          "caMarks" -> "delta.caMarks" ,
-          "saMarks" -> "delta.saMarks" ,
-          "caPassMarks" -> "delta.caPassMarks" ,
-          "saPassMarks" -> "delta.saPassMarks" ,
-          "totalMarks" -> "delta.totalMarks" ,
-          "passMarkForTotal" -> "delta.passMarkForTotal" ,
-          "result" -> "delta.result" ,
-          "remarks" -> "delta.remarks" ,
-          "grade" -> "delta.grade" ,
-          "saTotalNumberOfExams" -> "delta.saTotalNumberOfExams" ,
-          "caTotalNumberOfExams" -> "delta.caTotalNumberOfExams" ,
-          "saExamsAttended" -> "delta.saExamsAttended" ,
-          "caExamsAttended" -> "delta.caExamsAttended" ,
-          "incomingTs"->"alpha.incomingTs")).execute
-
-      case scala.util.Failure(f) =>
-        println(s"Failure ${f.getMessage}")
-        saveDFGeneric[org.apache.spark.sql.Row](
-          examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF).withColumn("incomingTs",lit(getTs)).write.format("delta").mode("append").partitionBy("semId","studentId")
-          ,inputMap("diamondPath")
-        )
-    }
-*/
-
   }
-
-/*"examId,subjectCode,studentId,examType".split(",").foldLeft(lit(1)===lit(1))(
-      (columnVariable,colName) => columnVariable && col(s"incoming.${colName}")===col(s"reference.${colName}"))*/
-// val semAndExamIdDF = examIDsOfSemIdDF
   def getMarksCalculatedJoinAdvanced(incomingRecords:org.apache.spark.sql.DataFrame
                                      ,semAndExamIdDF:org.apache.spark.sql.DataFrame)=incomingRecords.as("incoming").
     join(semAndExamIdDF.as("reference"),"examId,subjectCode,studentId,examType".split(",").toSeq
       ,"right").withColumn("newMaxMarks",maxMarksUDF(col("examType"))).
     withColumn("newMaxMarksCalculated",col("newMaxMarks")/col("number_of_assessments")).
-      withColumn("newPassMarksCalculated", coalesce(col("passMarkPercentage") *
-        (col("newMaxMarksCalculated") / lit(100.0) ),lit(0.0))
+    withColumn("newPassMarksCalculated", coalesce(col("passMarkPercentage") *
+      (col("newMaxMarksCalculated") / lit(100.0) ),lit(0.0))
       .cast(DecimalType(6,3))).
     withColumn("marksPercentage",col("marks") * round((lit(100.0) /col("maxMarks")),3).cast(DecimalType(6,3))).
     withColumn("numberOfExamsAttendedPerSubject",sum(when(col("marks").isNull,lit(0)).otherwise(lit(1)))
@@ -1056,18 +286,18 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
       concat(col("attendanceCommentTmp2")(1)
         ,lit(":"),col("attendanceCommentTmp2")(0))
     ).otherwise(lit(""))).withColumn("newMarksCalculated",
-     ((col("newMaxMarksCalculated")/lit(100.0).cast(DecimalType(6,3)) ) * col("marksPercentage") )
-     .cast(DecimalType(6,3))).withColumn("totalPerExamSubjectType",sum(coalesce(col("newMarksCalculated"),lit(0).cast(DecimalType(6,3))))
-  .over(Window.partitionBy("studentId","subjectCode","examType"))).
+    ((col("newMaxMarksCalculated")/lit(100.0).cast(DecimalType(6,3)) ) * col("marksPercentage") )
+      .cast(DecimalType(6,3))).withColumn("totalPerExamSubjectType",sum(coalesce(col("newMarksCalculated"),lit(0).cast(DecimalType(6,3))))
+    .over(Window.partitionBy("studentId","subjectCode","examType"))).
     withColumn("totalPerExamType",sum(coalesce(col("newMarksCalculated"),lit(0).cast(DecimalType(6,3))))
-    .over(Window.partitionBy("studentId","examType"))).
+      .over(Window.partitionBy("studentId","examType"))).
     drop("marks |grade|result|attendanceCommentTmp|keyCombination     |attendanceCommentTmp2".split("\\|").map(_.trim):_*).
     withColumn("maxMarksPerExamType",sum(col("newMaxMarksCalculated")).
-    over(Window.partitionBy("semId","studentID","examType","examId"))).
+      over(Window.partitionBy("semId","studentID","examType","examId"))).
     withColumn("maxMarksPerExamType",(col("maxMarksPerExamType")
       * col("number_of_assessments")).cast(DecimalType(6,3))).
     withColumn("newPassMarksCalculatedPerExamType", sum(col("newPassMarksCalculated"))
-    .over(Window.partitionBy("semId","studentId","examType"))).
+      .over(Window.partitionBy("semId","studentId","examType"))).
     withColumn("newPassMarksCalculatedPerExamType", max(col("newPassMarksCalculatedPerExamType"))
       .over(Window.partitionBy("semId,examType".split(",").map(col):_*))) // should have included deptID for studentId
   match {
@@ -1075,8 +305,8 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
 
       val calcIncoming=interIncoming.select("semId,studentID,subjectCode,examType,numberOfExamsAttendedPerSubject,number_of_assessments,newPassMarksCalculated,newMaxMarks,totalPerExamSubjectType,totalPerExamType,maxMarksPerExamType,newPassMarksCalculatedPerExamType".split(",").map(col) :_* ).
         withColumnRenamed("newMaxMarks","maxMarksCalculated").withColumnRenamed("newPassMarksCalculated","passMarksCalculated").
-       withColumn("passMarksCalculated",max(col("passMarksCalculated")).
-         over(Window.partitionBy("semId,studentID,subjectCode,examType".split(",").map(col):_*))).
+        withColumn("passMarksCalculated",max(col("passMarksCalculated")).
+          over(Window.partitionBy("semId,studentID,subjectCode,examType".split(",").map(col):_*))).
         withColumn("rowNumber",row_number.over(Window.partitionBy("semId,studentID,subjectCode,examType,numberOfExamsAttendedPerSubject,number_of_assessments,passMarksCalculated,maxMarksCalculated,totalPerExamSubjectType,totalPerExamType,maxMarksPerExamType,newPassMarksCalculatedPerExamType".split(",")
           .map(col) :_*).orderBy(col("semId")))). // to take one record per multiple exam Id's
         filter("rowNumber =1").drop("rowNumber").as("a").join(interIncoming.filter("commentTmp != '' ").
@@ -1085,59 +315,59 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
         select("semId |studentID|examType|finalComments|subjectCode|commentTmp".
           split("\\|").map(_.trim).map(col) :_*).as("b")
         ,Seq("semId","studentID","examType","subjectCode")
-       ,"left").orderBy("semId","studentID","examType","subjectCode").withColumn("commentTmp",coalesce(col("commentTmp"),lit(""))).
+        ,"left").orderBy("semId","studentID","examType","subjectCode").withColumn("commentTmp",coalesce(col("commentTmp"),lit(""))).
         withColumn("finalComments",coalesce(concat_ws(",",col("finalComments")),lit("")))
 
       //   foldLeft(lit(1)===lit(1))((seqVar,tmpVar) => seqVar && col(s"a.${tmpVar}") === col(s"b.${tmpVar}"))
 
       val finalCalculated=calcIncoming.
-     select("semId |studentID|examType|subjectCode|numberOfExamsAttendedPerSubject numberOfExamsAttended|number_of_assessments totalNumberOfAssessments|maxMarksCalculated maxMarks|passMarksCalculated|totalPerExamSubjectType marks|finalComments|commentTmp".split("\\|").map(_.trim.split(" ") match {case value => col(value.head).as(value.last)  } )
-     :_*). //.withColumn("passMarksCalculated",sum("passMarksCalculated").over(Window.partitionBy("semId","studentId","subjectCode","examType"))).
-  withColumn("passMarksCalculated", ( col("passMarksCalculated") * col("totalNumberOfAssessments")).cast(DecimalType(6,3))).
-       withColumn("marks",col("marks").cast(DecimalType(6,3))).
-       withColumn("maxMarks",col("maxMarks").cast(DecimalType(6,3))).
+        select("semId |studentID|examType|subjectCode|numberOfExamsAttendedPerSubject numberOfExamsAttended|number_of_assessments totalNumberOfAssessments|maxMarksCalculated maxMarks|passMarksCalculated|totalPerExamSubjectType marks|finalComments|commentTmp".split("\\|").map(_.trim.split(" ") match {case value => col(value.head).as(value.last)  } )
+          :_*). //.withColumn("passMarksCalculated",sum("passMarksCalculated").over(Window.partitionBy("semId","studentId","subjectCode","examType"))).
+        withColumn("passMarksCalculated", ( col("passMarksCalculated") * col("totalNumberOfAssessments")).cast(DecimalType(6,3))).
+        withColumn("marks",col("marks").cast(DecimalType(6,3))).
+        withColumn("maxMarks",col("maxMarks").cast(DecimalType(6,3))).
         select("semId |studentID|examType|subjectCode|numberOfExamsAttendedPerSubject numberOfExamsAttended|number_of_assessments totalNumberOfAssessments|passMarksCalculated|maxMarksPerExamType maxMarks|totalPerExamSubjectType marks|finalComments|commentTmp".split("\\|").map(_.trim.split(" ") match {case value => col(value.last).as(value.last)  }) :_*).
-      union(
-      calcIncoming.
-        select("semId |studentID|examType|subjectCode|numberOfExamsAttendedPerSubject numberOfExamsAttended|number_of_assessments totalNumberOfAssessments|maxMarksPerExamType maxMarks|passMarksCalculated|totalPerExamSubjectType marks|finalComments|commentTmp".split("\\|").map(_.trim.split(" ") match {case value => col(value.head).as(value.last)  }) :_*).
-        groupBy("semId |studentID|examType|finalComments".split("\\|").map(_.trim).map(col):_*).
-      agg(sum("marks").cast(DecimalType(6,3)).as("marks")
-       ,max("maxMarks").cast(DecimalType(6,3)).as("maxMarks")
-      ,sum("numberOfExamsAttended").as("numberOfExamsAttended")
-      ,sum("totalNumberOfAssessments").as("totalNumberOfAssessments")
-      ,sum(col("passMarksCalculated") * col("totalNumberOfAssessments")).cast(DecimalType(6,3)).as("passMarksCalculated")).
-        withColumn("subjectCode",lit("subTotal")).
-        withColumn("commentTmp",lit(""))
-        select("semId |studentID|examType|subjectCode|numberOfExamsAttendedPerSubject numberOfExamsAttended|number_of_assessments totalNumberOfAssessments|passMarksCalculated|maxMarksPerExamType maxMarks|totalPerExamSubjectType marks|finalComments|commentTmp".split("\\|").map(_.trim.split(" ") match {case value => col(value.last).as(value.last)  }) :_*)
-      ).orderBy("semId |studentID|examType|subjectCode".split('|').map(_.trim).map(col):_*)
+        union(
+          calcIncoming.
+            select("semId |studentID|examType|subjectCode|numberOfExamsAttendedPerSubject numberOfExamsAttended|number_of_assessments totalNumberOfAssessments|maxMarksPerExamType maxMarks|passMarksCalculated|totalPerExamSubjectType marks|finalComments|commentTmp".split("\\|").map(_.trim.split(" ") match {case value => col(value.head).as(value.last)  }) :_*).
+            groupBy("semId |studentID|examType|finalComments".split("\\|").map(_.trim).map(col):_*).
+            agg(sum("marks").cast(DecimalType(6,3)).as("marks")
+              ,max("maxMarks").cast(DecimalType(6,3)).as("maxMarks")
+              ,sum("numberOfExamsAttended").as("numberOfExamsAttended")
+              ,sum("totalNumberOfAssessments").as("totalNumberOfAssessments")
+              ,sum(col("passMarksCalculated") * col("totalNumberOfAssessments")).cast(DecimalType(6,3)).as("passMarksCalculated")).
+            withColumn("subjectCode",lit("subTotal")).
+            withColumn("commentTmp",lit(""))
+            select("semId |studentID|examType|subjectCode|numberOfExamsAttendedPerSubject numberOfExamsAttended|number_of_assessments totalNumberOfAssessments|passMarksCalculated|maxMarksPerExamType maxMarks|totalPerExamSubjectType marks|finalComments|commentTmp".split("\\|").map(_.trim.split(" ") match {case value => col(value.last).as(value.last)  }) :_*)
+        ).orderBy("semId |studentID|examType|subjectCode".split('|').map(_.trim).map(col):_*)
 
 
       val finalResults=finalCalculated.filter("examType='CA'").as("ca").join(finalCalculated.filter(col("examType")===lit("SA")).as("sa")
-      ,Seq("semId","studentId","subjectCode")).withColumn("totalForSem",(col("sa.marks") + col("ca.marks")).cast(DecimalType(6,3)) ).
+        ,Seq("semId","studentId","subjectCode")).withColumn("totalForSem",(col("sa.marks") + col("ca.marks")).cast(DecimalType(6,3)) ).
         withColumn("totalMaxForSem",(col("sa.maxMarks") + col("ca.maxMarks")).cast(DecimalType(6,3))).
         select("semId,studentId,subjectCode,sa.examType as sa_examType, ca.examType as ca_examType, sa.numberOfExamsAttended as sa_numberOfExamsAttended, ca.numberOfExamsAttended as ca_numberOfExamsAttended, sa.totalNumberOfAssessments as sa_totalNumberOfAssessments, ca.totalNumberOfAssessments as ca_totalNumberOfAssessments, sa.maxMarks as sa_maxMarks, ca.maxMarks as ca_maxMarks, sa.marks as sa_marks, ca.marks as ca_marks,ca.passMarksCalculated as ca_passMarksCalculated,sa.passMarksCalculated as sa_passMarksCalculated, sa.finalComments as sa_finalComments, ca.finalComments as ca_finalComments, sa.commentTmp as sa_commentTmp, ca.commentTmp as ca_commentTmp,totalForSem,totalMaxForSem".split(",").map(_.trim.split(" ").filter(_.size >0) match {case value => col(value.head).as(value.last)}) :_*).
         withColumn("resultComment",when(col("sa_marks") >= col("sa_passMarksCalculated")
-        , when(col("totalForSem") >= lit(60.0).cast(DecimalType(6,3))
-          ,when(col("ca_marks") >= col("ca_passMarksCalculated"),
+          , when(col("totalForSem") >= lit(60.0).cast(DecimalType(6,3))
+            ,when(col("ca_marks") >= col("ca_passMarksCalculated"),
               lit("PASS in SA and CA"))
               .otherwise(lit("PASS in SA and total, but fail in CA")))
             .otherwise(lit("Failed to achieve total pass"))
         ).otherwise(lit("FAIL in SA"))).
-      withColumn("result",when(col("sa_marks") >= col("sa_passMarksCalculated")
-        , when(col("totalForSem") >= lit(60.0).cast(DecimalType(6,3))
-          ,lit("PASS"))
-          .otherwise(lit("FAIL"))
-      ).otherwise(lit("FAIL"))).
-      withColumn("finalComments",
-        when(trim(col("ca_finalComments")) =!= lit("") && trim(col("sa_finalComments")) =!= lit("")
-        ,concat(col("ca_finalComments"),lit(","),col("sa_finalComments"))
-        ).when(trim(col("ca_finalComments")) =!= lit("") , col("ca_finalComments"))
-          .when(trim(col("sa_finalComments")) =!= lit("") , col("sa_finalComments")).
-          otherwise(lit(""))).
-      withColumn("attendanceCommentTotal",attendanceCommentManipulator(col("finalComments"),lit("total"))).
+        withColumn("result",when(col("sa_marks") >= col("sa_passMarksCalculated")
+          , when(col("totalForSem") >= lit(60.0).cast(DecimalType(6,3))
+            ,lit("PASS"))
+            .otherwise(lit("FAIL"))
+        ).otherwise(lit("FAIL"))).
+        withColumn("finalComments",
+          when(trim(col("ca_finalComments")) =!= lit("") && trim(col("sa_finalComments")) =!= lit("")
+            ,concat(col("ca_finalComments"),lit(","),col("sa_finalComments"))
+          ).when(trim(col("ca_finalComments")) =!= lit("") , col("ca_finalComments"))
+            .when(trim(col("sa_finalComments")) =!= lit("") , col("sa_finalComments")).
+            otherwise(lit(""))).
+        withColumn("attendanceCommentTotal",attendanceCommentManipulator(col("finalComments"),lit("total"))).
         withColumn("attendanceCommentSeparate",
           when(length(trim(col("sa_commentTmp"))) =!= lit(0) && length(trim(col("sa_commentTmp"))) =!= lit(0)
-          ,concat(col("sa_commentTmp"),lit(","),col("ca_commentTmp")) ).
+            ,concat(col("sa_commentTmp"),lit(","),col("ca_commentTmp")) ).
             when( length(trim(col("sa_commentTmp"))) =!= lit(0) , trim(col("sa_commentTmp")))
             .when(length(trim(col("ca_commentTmp"))) =!= lit(0) , trim(col("ca_commentTmp"))).otherwise(lit(""))).
         withColumn("attendanceCommentSeparate",
@@ -1148,14 +378,14 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
 
       finalResults.filter("subjectCode != 'subTotal'").groupBy(Seq("semId","studentId").map(col) :_*).
         agg(collect_list(col("resultManipulation")).as("resultManipulation")).join(finalResults.drop("resultManipulation")
-      ,Seq("semId","studentId")).withColumn("resultTmp",expr("exists(resultManipulation, x -> x like '%FAIL%')")).
+        ,Seq("semId","studentId")).withColumn("resultTmp",expr("exists(resultManipulation, x -> x like '%FAIL%')")).
         withColumn("result",when(col("subjectCode")===lit("subTotal"),
           when(col("resultTmp") ===lit(true),lit("RE-APPEAR")).otherwise(lit("ALL-CLEAR"))
         ).otherwise(col("result")) ).
         withColumn("attendanceComment",when(col("subjectCode")===lit("subTotal"),
           col("attendanceCommentTotal")
         ).otherwise(col("attendanceCommentSeparate")) ).orderBy("semId,studentId,subjectCode".split(",").map(col) :_*).
-      drop("resultManipulation,resultTmp,attendanceCommentTotal,attendanceCommentSeparate".split(","):_*)
+        drop("resultManipulation,resultTmp,attendanceCommentTotal,attendanceCommentSeparate".split(","):_*).withColumn("grade",)
 
   }
 
@@ -1164,28 +394,28 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
   def attendanceCommentCreator(comment:String,typeVal:String)=     comment.split(",").map(_.trim).filter(_.size > 0) match {
     case value =>
       typeVal match {
-         case temp if temp=="total" =>
-           value match {
-         case value if value.size > 0 =>
-                value.map(_.split(":")).map(x => (x.head, x.last)) match {
+        case temp if temp=="total" =>
+          value match {
+            case value if value.size > 0 =>
+              value.map(_.split(":")).map(x => (x.head, x.last)) match {
                 case value =>
-                   value.groupBy(_._2).foldRight("Did not attend ")((currentKey, commentString) => s"${commentString}\n ${currentKey._2.map(_._1).mkString(",")} subjectID's for examId ${currentKey._1}")
-               }
-              case value if value.size == 0 =>
+                  value.groupBy(_._2).foldRight("Did not attend ")((currentKey, commentString) => s"${commentString}\n ${currentKey._2.map(_._1).mkString(",")} subjectID's for examId ${currentKey._1}")
+              }
+            case value if value.size == 0 =>
               ""
-           }
-         case "separate" =>
-           comment.split(",").map(_.trim).filter(_.size > 0) match {
-           case value if value.size != 0 =>
-           s"Did not attend ${value.flatMap(_.split(":")).toList.grouped(2).collect { case a :: b => b.headOption match {case Some(x) => x case None =>""} }.filterNot(_=="").mkString(",")}"
-             // value.grouped(2).collect{case a if a.size ==2 => a(1)}.mkString(",")
-           case value if value.size == 0 =>
-           ""
-           case _ =>
-           throw new Exception("Not a valid attendance comment")
-           }
-           }
           }
+        case "separate" =>
+          comment.split(",").map(_.trim).filter(_.size > 0) match {
+            case value if value.size != 0 =>
+              s"Did not attend ${value.flatMap(_.split(":")).toList.grouped(2).collect { case a :: b => b.headOption match {case Some(x) => x case None =>""} }.filterNot(_=="").mkString(",")}"
+            // value.grouped(2).collect{case a if a.size ==2 => a(1)}.mkString(",")
+            case value if value.size == 0 =>
+              ""
+            case _ =>
+              throw new Exception("Not a valid attendance comment")
+          }
+      }
+  }
 
 
 
@@ -1204,7 +434,7 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
   import org.apache.spark.sql.catalyst.encoders.RowEncoder
 
   def getMarksCalculatedJoinAdvancedRow(incomingRecords:org.apache.spark.sql.DataFrame
-                                     ,semAndExamIdDF:org.apache.spark.sql.DataFrame)=incomingRecords.as("incoming").
+                                        ,semAndExamIdDF:org.apache.spark.sql.DataFrame)=incomingRecords.as("incoming").
     join(semAndExamIdDF.as("reference"),"examId,subjectCode,studentId,examType".split(",").toSeq
       ,"right").groupByKey(x => (x.getAs[String]("semId")
     ,x.getAs[String]("studentId")
@@ -1398,29 +628,9 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
         StructField("result",StringType,true),
         StructField("attendanceComments",StringType,true)
       ))))  // no idea new group by key is not recognizing column names from the row encoder
-    /*.groupByKey(x => (x.getAs[String]("semId")
-    ,x.getAs[String]("studentId"),
-  x.getAs[String]("subCode"))).mapGroups((key,dataIterator)=>{
-
-    val dataList=dataIterator.toList
-
-    println(s"dataList ${dataList}")
-
-    val caRow=dataList.filter(_.getAs[String]("examType")=="CA").head
-    val saRow=dataList.filter(_.getAs[String]("examType")=="SA").head
-
-    Row(key._1, //semId
-      key._2,//studentId
-      key._3, //subCode
-      caRow.getAs[java.math.BigDecimal]("marks"), // ca marks
-      saRow.getAs[java.math.BigDecimal]("marks"), // sa marks
-      caRow.getAs[java.math.BigDecimal]("passMarks"), // ca pass marks
-      caRow.getAs[java.math.BigDecimal]("passMarks"), // sa pass marks
-      caRow.getAs[java.math.BigDecimal]("marks").add(saRow.getAs[java.math.BigDecimal]("marks"),java.math.MathContext.DECIMAL128) // total marks
-   )
-  })*/.groupByKey(x => (x.getAs[String](0) // semId
-    ,x.getAs[String](1) ) // studentId
-  ).flatMapGroups((key,dataIterator)=>{
+    .groupByKey(x => (x.getAs[String](0) // semId
+      ,x.getAs[String](1) ) // studentId
+    ).flatMapGroups((key,dataIterator)=>{
 
     val dataList=dataIterator.toList
 
@@ -1671,8 +881,10 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
     .na.fill(0).na.fill("NA")
     .groupByKey(x => (x.getAs[String]("semId"), x.getAs[String]("studentId"))).flatMapGroups((keys, rows) => {
     val rowList = rows.toList
+
+    println(s"rowList ${rowList.head.schema}")
     // val examIds=rowList.map(_.getAs[String]("examId")).distinct
-    val numberOfExamIds = rowList.head.getAs[Int]("num_of_assessments")
+    val numberOfExamIds = rowList.head.getAs[Long]("num_of_assessments")
     val maxMarkPerExamId = getMaxMarks(rowList.head.getAs[String]("examType")) / numberOfExamIds
 
     val numberOfExamsAttended = rowList.filter(x => x.getAs[String]("assessmentYear") != "NA"
@@ -1684,7 +896,7 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
       && x.getAs[Int]("maxMarks") != 0
     ).map(_.getAs[String]("examId")).distinct
 
-    val examsNotAttended = rowList  .filter(x => x.getAs[String]("assessmentYear") == "NA"
+    val examsNotAttended = rowList.filter(x => x.getAs[String]("assessmentYear") == "NA"
       && x.getAs[String]("grade") == "NA"
       && x.getAs[String]("result") == "NA"
       && x.getAs[String]("comment") == "NA"
@@ -1738,9 +950,9 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
             case (_,_) => new java.math.BigDecimal(maxMarkPerExamId / 100.0).multiply(x.getAs[java.math.BigDecimal]("marks").multiply(new java.math.BigDecimal(100).divide(new java.math.BigDecimal(x.getAs[Int]("maxMarks")), MathContext.DECIMAL128)))
           },
           x.getAs[Int]("passMarkCalculated") match {
-          case 0 =>getPassMarkPercentage(x.getAs[String]("examType"))
-          case value =>  value
-        } ,
+            case 0 =>getPassMarkPercentage(x.getAs[String]("examType"))
+            case value =>  value
+          } ,
           // new pass marks calculated
           x.getAs[Int]("passMarkPercentage") match {
             case 0 =>new java.math.BigDecimal((maxMarkPerExamId / 100.0) * getPassMarkPercentage(x.getAs[String]("examType")))
@@ -1768,7 +980,7 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
               new java.math.BigDecimal(getMaxMarks(rowList.head.getAs[String]("examType"))), // max marks Agg
               marksTotalPerSubID match { case value if value.compareTo(passMarksTotalPerSubID) == -1 => "FAIL" case value if List(0, 1).contains(value.compareTo(passMarksTotalPerSubID)) => "PASS" }, // result
               getGradeJava(new java.math.BigDecimal(getMaxMarks(rowList.head.getAs[String]("examType"))), marksTotalPerSubID, examPerSubject._2.head.getString(7)), // grade
-              examPerSubject._2.head.getInt(17), //total Number of exams
+              examPerSubject._2.head.getLong(17), //total Number of exams
               examPerSubject._2.head.getInt(18), // exams Appeared
               "")  // comment
           })
@@ -1783,7 +995,7 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
     , StructField("maxMarksAgg", DecimalType(6, 3), true),
     StructField("result", StringType, true)
     , StructField("grade", StringType, true)
-    , StructField("totalNumberOfExams", IntegerType, true),
+    , StructField("totalNumberOfExams", LongType, true),
     StructField("examsAttended", IntegerType, true),
     StructField("comment", StringType, true))))) .groupByKey(x=> (x.getAs[String](0),x.getAs[String](1)))
     .flatMapGroups((key, rows) => {
@@ -1807,7 +1019,7 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
         totalMaxMarks,
         totalMarksScored match { case value if failPresentCondition == false && List(0, 1).contains(value.compareTo(aggPassMark)) => "PASS" case _ => "FAIL" },
         getGrade(totalMaxMarks, totalMarksScored, rowsTmp.head.getAs[String](5)),
-        rowsTmp.head.getAs[Int](10),
+        rowsTmp.head.getAs[Long](10),
         rowsTmp.head.getAs[Int](11),
         rowsTmp.head.getAs[String](12)
       )
@@ -1822,31 +1034,32 @@ col("alpha.caExamsAttended") =!= col("delta.caExamsAttended") ||
       , StructField("maxMarksAgg", DecimalType(6, 3), true),
       StructField("result", StringType, true)
       , StructField("grade", StringType, true)
-      , StructField("totalNumberOfExams", IntegerType, true),
+      , StructField("totalNumberOfExams", LongType, true),
       StructField("examsAttended", IntegerType, true),
       StructField("comment", StringType, true)))))
 
-/*
-* convert ca avg to 40 %
-* convert sa avg to 60 %
-*
-* Clear SA and atleast attend 1 CA.
-*
-* Pass in SA and obtain 60 % in total agg of SA and CA to clear
-*
-examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF).show(false)
+  /*
+  * convert ca avg to 40 %
+  * convert sa avg to 60 %
+  *
+  * Clear SA and atleast attend 1 CA.
+  *
+  * Pass in SA and obtain 60 % in total agg of SA and CA to clear
+  *
+  examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsForIncomingKeysDF),examIDsOfSemIdDF).show(false)
 
-* */
+  * */
   def examMarksCalculatedMapGroupResultDF(incomingRecordDF:org.apache.spark.sql.DataFrame,referenceDF:org.apache.spark.sql.DataFrame)=examMarksCalculatedMapGroup(incomingRecordDF.where(s"examType = '${cumulativeAssessment}'"),referenceDF.where(s"examType = '${cumulativeAssessment}'")).as("ca")
     .join(examMarksCalculatedMapGroup(incomingRecordDF.where(s"examType = '${summativeAssessment}'"),referenceDF.where(s"examType = '${summativeAssessment}'")).as("sa"), "semId,studentId,subjectCode".split(",").toSeq).select(
     "semId,studentId,subjectCode".split(",").map(col) ++
       getCASACols( /* saMarksCalculatedMapGroupsDF */
         examMarksCalculatedMapGroup(incomingRecordDF.where(s"examType = '${summativeAssessment}'"),referenceDF.where(s"examType = '${cumulativeAssessment}'"))
-        .columns.diff("semId,studentId,subjectCode".split(",")))  :_*
+          .columns.diff("semId,studentId,subjectCode".split(",")))  :_*
   ).groupByKey(x => (x.getAs[String]("semId"),x.getAs[String]("studentId"),x.getAs[String]("subjectCode")))
     .mapGroups((keys,rows) => {
-
       val rowsTmp= rows.toList
+      println(s"inside after join rowsTmp ${rowsTmp} ")
+
       val caMarksRecalculated=getPercentage(new java.math.BigDecimal(getMaxMarks("CA")),
         rowsTmp.head.getAs[java.math.BigDecimal]("ca_aggMarks"))
         .multiply(new java.math.BigDecimal(40.0 / 100),MathContext.DECIMAL128)
@@ -1898,8 +1111,8 @@ examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsFo
         semResult,
         semRemarks,
         getGradeJava(new java.math.BigDecimal(100.0),totalMarksCalculated,"finalCalculation"),
-        rowsTmp.head.getAs[Int]("sa_totalNumberOfExams"),
-        rowsTmp.head.getAs[Int]("ca_totalNumberOfExams"),
+        rowsTmp.head.getAs[Long]("sa_totalNumberOfExams"),
+        rowsTmp.head.getAs[Long]("ca_totalNumberOfExams"),
         rowsTmp.head.getAs[Int]("sa_examsAttended"),
         rowsTmp.head.getAs[Int]("ca_examsAttended")
       )
@@ -1915,14 +1128,16 @@ examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsFo
       StructField("result",StringType,true),
       StructField("remarks",StringType,true),
       StructField("grade",StringType,true),
-      StructField("saTotalNumberOfExams",IntegerType,true),
-      StructField("caTotalNumberOfExams",IntegerType,true),
+      StructField("saTotalNumberOfExams",LongType,true),
+      StructField("caTotalNumberOfExams",LongType,true),
       StructField("saExamsAttended",IntegerType,true),
       StructField("caExamsAttended",IntegerType,true)
     )))).groupByKey(x=> (x.getAs[String](0),x.getAs[String](1)))
     .flatMapGroups((key,rows) => {
       val rowsTmp=rows.toList
       val totalRecord=rowsTmp.filter(_.getAs[String](2)=="subTotal").head
+
+      println(s"inside after join second rowsTmp ${rowsTmp} ")
 
       rowsTmp.filter(_.getAs[String](2)!="subTotal") :+ Row(
         totalRecord.getAs[String](0),
@@ -1933,12 +1148,12 @@ examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsFo
         rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[java.math.BigDecimal](5)).reduce((x,y) => x.add(y)),
         rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[java.math.BigDecimal](6)).foldLeft(new java.math.BigDecimal(0.0))((x,y) => x.add(y)) ,
         totalRecord.getAs[java.math.BigDecimal](7),
-      rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[java.math.BigDecimal](8)).reduceLeft((x,y) => x.add(y)) ,// .reduce((x,y) => x.add(y)),
+        rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[java.math.BigDecimal](8)).reduceLeft((x,y) => x.add(y)) ,// .reduce((x,y) => x.add(y)),
         rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[String](9)).contains("FAIL") match {case true => "Re-Appear for failed subjects" case false => "All clear"} ,
-        rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[String](9)).contains("FAIL") match {case true if rowsTmp.map(_.getAs[String](10)).filter(_.contains("Failed")).size >1 && rowsTmp.map(_.getAs[String](10)).filter(_.contains("Did not")) .size >1 => "Concentrate on failed subjects next time, appear in all exams to increase the chances of clearing" case true if rowsTmp.map(_.getAs[String](10)).filter(_.contains("Failed")).size >1 => "Concentrate on failed subjects next time" case true if rowsTmp.map(_.getAs[String](10)).filter(_.contains("Did not")).size >1 => "Appear in all exams to increase the chances of clearing" case false => "Keep pushing"},
+        rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[String](9)).contains("FAIL") match {case true if rowsTmp.map(_.getAs[String](10)).filter(_.contains("Failed")).size >=1 && rowsTmp.map(_.getAs[String](10)).filter(_.contains("Did not")) .size >0 => "Concentrate on failed subjects next time, appear in all exams to increase the chances of clearing" case true if rowsTmp.map(_.getAs[String](10)).filter(_.contains("Failed")).size >0 => "Concentrate on failed subjects next time" case true if rowsTmp.map(_.getAs[String](10)).filter(_.contains("Did not")).size >0 => "Appear in all exams to increase the chances of clearing" case false => "Keep pushing"},
         rowsTmp.filter(_.getAs[String](2)!="subTotal").map(_.getAs[String](9)).contains("FAIL") match {case value if value == true && totalRecord.getAs[java.math.BigDecimal](7).compareTo(new java.math.BigDecimal(0)) ==0 => "F-" case true => "F" case false =>totalRecord.getAs[Int](11) },
-        totalRecord.getAs[Int](12),
-        totalRecord.getAs[Int](13),
+        totalRecord.getAs[Long](12),
+        totalRecord.getAs[Long](13),
         totalRecord.getAs[Int](14),
         totalRecord.getAs[Int](15)
       )
@@ -1954,8 +1169,8 @@ examMarksCalculatedMapGroupResultDF(saRecordsForIncomingKeysDF.union(caRecordsFo
       StructField("result",StringType,true),
       StructField("remarks",StringType,true),
       StructField("grade",StringType,true),
-      StructField("saTotalNumberOfExams",IntegerType,true),
-      StructField("caTotalNumberOfExams",IntegerType,true),
+      StructField("saTotalNumberOfExams",LongType,true),
+      StructField("caTotalNumberOfExams",LongType,true),
       StructField("saExamsAttended",IntegerType,true),
       StructField("caExamsAttended",IntegerType,true)
     ))))
