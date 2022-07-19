@@ -46,6 +46,7 @@ object diamondCalculation {
   val getCommentMkString = udf(mkString(_:Seq[String]):String)
   val attendanceCommentManipulator=udf(attendanceCommentCreator(_:String,_:String):String)
 
+
   import spark.implicits._
 
   // mark calculation
@@ -385,7 +386,8 @@ object diamondCalculation {
         withColumn("attendanceComment",when(col("subjectCode")===lit("subTotal"),
           col("attendanceCommentTotal")
         ).otherwise(col("attendanceCommentSeparate")) ).orderBy("semId,studentId,subjectCode".split(",").map(col) :_*).
-        drop("resultManipulation,resultTmp,attendanceCommentTotal,attendanceCommentSeparate".split(","):_*).withColumn("grade",)
+        drop("resultManipulation,resultTmp,attendanceCommentTotal,attendanceCommentSeparate".split(","):_*).
+        withColumn("grade",getGradeUDF(col("totalMaxForSem"),col("totalForSem"),lit("finalCalculation")))
 
   }
 
@@ -771,7 +773,7 @@ object diamondCalculation {
     ,StructField("result",StringType,true)
     ,StructField("attendanceComment",StringType,true)
     ,StructField("failComments",StringType,true)
-  ))))
+  )))).withColumn("grade",getGradeUDF(lit(100.0),col("semTotal"),lit("finalCalculation")))
 
 
 
@@ -1110,6 +1112,7 @@ object diamondCalculation {
         new java.math.BigDecimal(60.0),
         semResult,
         semRemarks,
+        getGradeJava(new java.math.BigDecimal(100.0),totalMarksCalculated,"finalCalculation"),
         getGradeJava(new java.math.BigDecimal(100.0),totalMarksCalculated,"finalCalculation"),
         rowsTmp.head.getAs[Long]("sa_totalNumberOfExams"),
         rowsTmp.head.getAs[Long]("ca_totalNumberOfExams"),
