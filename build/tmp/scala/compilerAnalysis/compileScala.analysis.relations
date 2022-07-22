@@ -45,21 +45,40 @@ products:
    src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/UDAFScala$$typecreator13$1.class
    src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/UDAFScala$$typecreator20$1.class
    src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/UDAFScala$$typecreator21$1.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/UDAFScala$$typecreator25$1.class
    src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/UDAFScala$$typecreator5$1.class
    src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/UDAFScala$.class
    src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/UDAFScala.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/averageSpeedPerLap$$anon$4.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/averageSpeedPerLap$$anon$5.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/averageSpeedPerLap$$anon$6.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/averageSpeedPerLap$$typecreator34$1.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/averageSpeedPerLap$$typecreator35$1.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/averageSpeedPerLap$$typecreator36$1.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/averageSpeedPerLap$.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/averageSpeedPerLap.class
    src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/fastestLap$.class
    src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/fastestLap.class
-   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/findSpeedPerSector$$typecreator25$1.class
-   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/findSpeedPerSector$$typecreator26$1.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/findSpeedPerSector$$anon$1.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/findSpeedPerSector$$anon$2.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/findSpeedPerSector$$anon$3.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/findSpeedPerSector$$typecreator29$1.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/findSpeedPerSector$$typecreator30$1.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/findSpeedPerSector$$typecreator31$1.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/findSpeedPerSector$$typecreator32$1.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/findSpeedPerSector$$typecreator33$1.class
    src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/findSpeedPerSector$.class
    src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/findSpeedPerSector.class
-   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/lapInPerSector$.class
-   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/lapInPerSector.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/lapData.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/lapIOPerLap$.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/lapIOPerLap.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/lapIn$.class
+   src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/lapIn.class
    src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/lapInterPerSector$.class
    src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/lapInterPerSector.class
    src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/lapOutPerSector$.class
    src/main/scala/org/controller/UDAFScala.scala -> build/classes/scala/main/org/controller/lapOutPerSector.class
+   src/main/scala/org/controller/UDAFextention.scala -> build/classes/scala/main/org/controller/UDAFextention.class
    src/main/scala/org/controller/UDFNewTry.scala -> build/classes/scala/main/org/controller/UDFNewTry$$typecreator1$1.class
    src/main/scala/org/controller/UDFNewTry.scala -> build/classes/scala/main/org/controller/UDFNewTry$$typecreator2$1.class
    src/main/scala/org/controller/UDFNewTry.scala -> build/classes/scala/main/org/controller/UDFNewTry$$typecreator3$1.class
@@ -795,6 +814,10 @@ binary dependencies:
    src/main/scala/org/controller/UDAFScala.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/UDAFScala.scala -> /home/raptor/.m2/repository/org/scala-lang/scala-reflect/2.11.12/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/UDAFScala.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/UDAFextention.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
+   src/main/scala/org/controller/UDAFextention.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
+   src/main/scala/org/controller/UDAFextention.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/UDAFextention.scala -> /home/raptor/.m2/repository/org/scala-lang/scala-reflect/2.11.12/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/UDFNewTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/UDFNewTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/UDFNewTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
@@ -1531,6 +1554,8 @@ source dependencies:
    src/main/scala/org/controller/SCD/Type1/controller/scdStreamingWithMySqlTempTables.scala -> src/main/scala/org/util/readWriteUtil.scala
    src/main/scala/org/controller/ScalaMysqlExample.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/SplittingOneColumnToMultiple.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/UDAFScala.scala -> src/main/scala/org/controller/UDAFextention.scala
+   src/main/scala/org/controller/UDAFextention.scala -> src/main/scala/org/controller/UDAFScala.scala
    src/main/scala/org/controller/UDFNewTry.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/UDFNewTry.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/UDFNewTry.scala -> src/main/scala/org/util/readWriteUtil.scala
@@ -1838,19 +1863,38 @@ class names:
    src/main/scala/org/controller/UDAFScala.scala -> org.controller.UDAFScala$$typecreator13$1
    src/main/scala/org/controller/UDAFScala.scala -> org.controller.UDAFScala$$typecreator20$1
    src/main/scala/org/controller/UDAFScala.scala -> org.controller.UDAFScala$$typecreator21$1
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.UDAFScala$$typecreator25$1
    src/main/scala/org/controller/UDAFScala.scala -> org.controller.UDAFScala$$typecreator5$1
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.averageSpeedPerLap
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.averageSpeedPerLap$
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.averageSpeedPerLap$$anon$4
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.averageSpeedPerLap$$anon$5
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.averageSpeedPerLap$$anon$6
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.averageSpeedPerLap$$typecreator34$1
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.averageSpeedPerLap$$typecreator35$1
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.averageSpeedPerLap$$typecreator36$1
    src/main/scala/org/controller/UDAFScala.scala -> org.controller.fastestLap
    src/main/scala/org/controller/UDAFScala.scala -> org.controller.fastestLap$
    src/main/scala/org/controller/UDAFScala.scala -> org.controller.findSpeedPerSector
    src/main/scala/org/controller/UDAFScala.scala -> org.controller.findSpeedPerSector$
-   src/main/scala/org/controller/UDAFScala.scala -> org.controller.findSpeedPerSector$$typecreator25$1
-   src/main/scala/org/controller/UDAFScala.scala -> org.controller.findSpeedPerSector$$typecreator26$1
-   src/main/scala/org/controller/UDAFScala.scala -> org.controller.lapInPerSector
-   src/main/scala/org/controller/UDAFScala.scala -> org.controller.lapInPerSector$
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.findSpeedPerSector$$anon$1
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.findSpeedPerSector$$anon$2
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.findSpeedPerSector$$anon$3
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.findSpeedPerSector$$typecreator29$1
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.findSpeedPerSector$$typecreator30$1
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.findSpeedPerSector$$typecreator31$1
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.findSpeedPerSector$$typecreator32$1
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.findSpeedPerSector$$typecreator33$1
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.lapData
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.lapIOPerLap
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.lapIOPerLap$
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.lapIn
+   src/main/scala/org/controller/UDAFScala.scala -> org.controller.lapIn$
    src/main/scala/org/controller/UDAFScala.scala -> org.controller.lapInterPerSector
    src/main/scala/org/controller/UDAFScala.scala -> org.controller.lapInterPerSector$
    src/main/scala/org/controller/UDAFScala.scala -> org.controller.lapOutPerSector
    src/main/scala/org/controller/UDAFScala.scala -> org.controller.lapOutPerSector$
+   src/main/scala/org/controller/UDAFextention.scala -> org.controller.UDAFextention
    src/main/scala/org/controller/UDFNewTry.scala -> org.controller.UDFNewTry
    src/main/scala/org/controller/UDFNewTry.scala -> org.controller.UDFNewTry$
    src/main/scala/org/controller/UDFNewTry.scala -> org.controller.UDFNewTry$$typecreator1$1

@@ -32,12 +32,15 @@ object UDAFScala {
     val joinedDF=trackRefDF.join(dataOfLap,Seq("trackId","sectorId"))
 
     joinedDF.show(false)
-    joinedDF.as[lapInPerSector].show(false)
+    joinedDF.as[lapIn].show(false)
 
     // val avgSpeed = findSpeedPerSector.toColumn.name("speed")
 
-   Seq(1,2,3).map(x => joinedDF.filter(s"sectorId= ${x}").as[lapInPerSector].
+   Seq(1,2,3).map(x => joinedDF.filter(s"sectorId= ${x}").as[lapIn].
      select( findSpeedPerSector.toColumn.name("speed"))).reduce(_.union(_)).show(false)
+
+    Seq(1,2,3).map(x => joinedDF.filter(s"lapNo= ${x}").as[lapIn]
+      .select(averageSpeedPerLap.toColumn.name("speed"))).reduce(_.union(_)).show(false)
 
   }
 
@@ -49,41 +52,65 @@ object UDAFScala {
 Seq((1,1,2.45)).toSeq("trackId,sectorId,distanceInKM".split(","):_*)
 
 */
-case class lapInPerSector(trackId:Int,driverId:Int,lapNo:Int,sectorId:Int,timeTaken:Double,distanceInKM:Double)
-case class lapInterPerSector(trackId:Int,driverId:Int,sectorId:Int,timeTaken:Double,avgSpeed:Double,distanceInKM:Double)
-case class lapOutPerSector(trackId:Int,driverId:Int,sectorId:Int,avgTimeTaken:Double,avgSpeed:Double)
 
-case class fastestLap(trackId:Int,driverId:Int,lapId:Int,avgSpeed:Double,timeTaken:Double)
+class lapData extends Product {
+val trackId: Int = 0
+val  driverId: Int = 0
+val timeTaken: Double = 0.0
+val distanceInKM: Double = 0.0
 
-object findSpeedPerSector extends Aggregator[lapInPerSector,lapInterPerSector,lapOutPerSector] {
+  override def productElement(n: Int): Any = {}
+  override def productArity: Int = 0
+  override def canEqual(that: Any): Boolean = that.equals(this)
+}
+
+case class lapIn(override val trackId:Int,override val driverId:Int,lapNo:Int,sectorId:Int,override val timeTaken:Double,override val distanceInKM:Double) extends lapData {
+  override def toString =s"(trackId=${this.trackId},driverId=${this.driverId},sectorId=${this.sectorId},timeTaken=${this.timeTaken},distanceInKM=${this.distanceInKM})"
+}
+case class lapInterPerSector(override val trackId:Int,override val driverId:Int,sectorId:Int,override val timeTaken:Double,avgSpeed:Double,override val distanceInKM:Double) extends lapData{
+  override def toString =s"(trackId=${this.trackId},driverId=${this.driverId},sectorId=${this.sectorId},timeTaken=${this.timeTaken},avgSpeed=${this.avgSpeed},distanceInKM=${this.distanceInKM})"
+}
+case class lapOutPerSector(override val trackId:Int,override val driverId:Int,sectorId:Int,avgTimeTaken:Double,avgSpeed:Double) extends lapData{
+  override def toString =s"(trackId=${this.trackId},driverId=${this.driverId},sectorId=${this.sectorId},timeTaken=${this.timeTaken},avgTimeTaken=${this.avgTimeTaken},avgSpeed=${this.avgSpeed},distanceInKM=${this.distanceInKM})"
+}
+
+case class lapIOPerLap(override val trackId:Int,override val driverId:Int,override val timeTaken:Double,avgSpeed:Double,override val distanceInKM:Double) extends lapData{
+  override def toString =s"(trackId=${this.trackId},driverId=${this.driverId},timeTaken=${this.timeTaken},avgSpeed=${this.avgSpeed},distanceInKM=${this.distanceInKM})"
+}
+
+
+
+case class fastestLap(lapId:Int,avgSpeed:Double)  extends lapData
+
+object findSpeedPerSector extends UDAFextention[lapIn,lapInterPerSector,lapOutPerSector] {
   var lapSet:Set[Int] = Set.empty[Int]
- /* def this(totalRecords:Int){
-    this()
-    this.totalRecords=totalRecords
-  }*/
+  /* def this(totalRecords:Int){
+      this()
+      this.totalRecords=totalRecords
+    } */
   override def zero: lapInterPerSector = {
     println(s"Defined")
-    lapInterPerSector(0, 0, 0, 0.0, 0.0, 0.0)
+    lapInterPerSector( 0,0,0, 0.0, 0.0, 0.0)
   }
 
-  override def reduce(b: lapInterPerSector, a: lapInPerSector): lapInterPerSector = {
+  override def reduce(b: lapInterPerSector, a: lapIn): lapInterPerSector = {
     println(s"reduce lapSet ${lapSet}")
-    println(s"reduce lapInter ${b}")
-    println(s"reduce lapIn ${a}")
+    println(s"reduce lapInter ${b.toString}")
+    println(s"reduce lapIn ${a.toString}")
     lapSet+=a.lapNo
-    lapInterPerSector(a.trackId, a.driverId, a.sectorId, a.timeTaken + b.timeTaken, 0.0, a.distanceInKM + b.distanceInKM)
+    lapInterPerSector(a.trackId,a.driverId,a.driverId,a.timeTaken+b.timeTaken,0.0,a.distanceInKM+b.distanceInKM)
   }
 
   // b1  is always the initialized one
   override def merge(b1: lapInterPerSector, b2: lapInterPerSector): lapInterPerSector = {
     println(s"merge")
-    println(s"merge b1 ${b1}")
-    println(s"merge b2 ${b2}")
+    println(s"merge b1 ${b1.toString}")
+    println(s"merge b2 ${b2.toString}")
     lapInterPerSector(b2.trackId, b2.driverId, b2.sectorId, b1.timeTaken + b2.timeTaken, 0.0, b1.distanceInKM + b2.distanceInKM)
   }
 
   override def finish(reduction: lapInterPerSector): lapOutPerSector = {
-    println(s"reduction ${reduction}")
+    println(s"reduction ${reduction.toString}")
     println(s"lapSet ${lapSet}")
     lapOutPerSector(reduction.trackId, reduction.driverId, reduction.sectorId, reduction.timeTaken / lapSet.size, reduction.distanceInKM / ((reduction.timeTaken /60.0) /60.0) ) // to hour
 }
@@ -93,3 +120,23 @@ object findSpeedPerSector extends Aggregator[lapInPerSector,lapInterPerSector,la
   override def outputEncoder: Encoder[lapOutPerSector] = org.apache.spark.sql.Encoders.product[lapOutPerSector]
     //org.apache.spark.sql.Encoders.bean[lapOut](lapOut.getClass.asInstanceOf[Class[lapOut]])
 }
+
+ object averageSpeedPerLap extends UDAFextention[lapIn,lapIOPerLap,lapIOPerLap]{
+
+  // val tmpMap=collection.mutable.Map[Int,Int]()
+
+   override def zero: lapIOPerLap = lapIOPerLap(0,0,0.0,0.0,0.0)
+
+   override def reduce(b: lapIOPerLap, a: lapIn): lapIOPerLap = {
+     //tmpMap.put(a.sectorId,a.trackId)
+     lapIOPerLap(a.trackId,a.driverId,a.timeTaken+b.timeTaken,0.0,a.distanceInKM)
+   }
+
+   override def merge(b1: lapIOPerLap, b2: lapIOPerLap): lapIOPerLap =
+     b2.copy(distanceInKM = b1.distanceInKM+b2.distanceInKM,timeTaken = b1.timeTaken+b2.timeTaken)
+
+
+   override def finish(reduction: lapIOPerLap): lapIOPerLap =
+     reduction.copy(avgSpeed = (reduction.distanceInKM / ((reduction.timeTaken / 60.0 )/60.0)))
+
+ }
