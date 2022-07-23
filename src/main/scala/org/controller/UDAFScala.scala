@@ -43,7 +43,7 @@ object UDAFScala {
     Seq(1,2,3).map(x => joinedDF.filter(s"lapNo= ${x}").as[lapIn]
       .select(averageSpeedPerLap.toColumn.name("speed"))).reduce(_.union(_)).show(false)
 
-    joinedDF.as[lapIn].select(averageSpeedPerLapAdvanced.toColumn.name("speed")).select(explode(col("speed")).as("exploded")).select(col("exploded.*")).show(false)
+    joinedDF.as[lapIn].select(averageSpeedPerLapAdvanced.toColumn.name("speed")).select(explode(col("calculatedData")).as("exploded")).select(col("exploded.*")).show(false)
 
   }
 
