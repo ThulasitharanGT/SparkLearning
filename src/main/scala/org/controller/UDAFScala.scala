@@ -1,6 +1,6 @@
 package org.controller
 
-import org.apache.spark.sql.Encoder
+import org.apache.spark.sql.{Encoder, Encoders}
 import org.apache.spark.sql.expressions.Aggregator
 // spark-submit --class org.controller.UDAFScala --driver-memory 512m --driver-cores 2 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar
 
@@ -31,9 +31,9 @@ object UDAFScala {
 
     val joinedDF=trackRefDF.join(dataOfLap,Seq("trackId","sectorId"))
 
-    joinedDF.show(false)
+   /* joinedDF.show(false)
     joinedDF.as[lapIn].show(false)
-
+*/
     // val avgSpeed = findSpeedPerSector.toColumn.name("speed")
 
    Seq(1,2,3).map(x => joinedDF.filter(s"sectorId= ${x}").as[lapIn].
@@ -42,6 +42,7 @@ object UDAFScala {
     Seq(1,2,3).map(x => joinedDF.filter(s"lapNo= ${x}").as[lapIn]
       .select(averageSpeedPerLap.toColumn.name("speed"))).reduce(_.union(_)).show(false)
 
+    joinedDF.as[lapIn].select(averageSpeedPerLap.toColumn.name("speed")).show(false)
   }
 
 }
@@ -64,6 +65,8 @@ val distanceInKM: Double = 0.0
   override def canEqual(that: Any): Boolean = that.equals(this)
 }
 
+case class groupingInfo(driverId:Int,trackId:Int)
+
 case class lapIn(override val trackId:Int,override val driverId:Int,lapNo:Int,sectorId:Int,override val timeTaken:Double,override val distanceInKM:Double) extends lapData {
   override def toString =s"(trackId=${this.trackId},driverId=${this.driverId},sectorId=${this.sectorId},timeTaken=${this.timeTaken},distanceInKM=${this.distanceInKM})"
 }
@@ -77,6 +80,8 @@ case class lapOutPerSector(override val trackId:Int,override val driverId:Int,se
 case class lapIOPerLap(override val trackId:Int,override val driverId:Int,override val timeTaken:Double,avgSpeed:Double,override val distanceInKM:Double) extends lapData{
   override def toString =s"(trackId=${this.trackId},driverId=${this.driverId},timeTaken=${this.timeTaken},avgSpeed=${this.avgSpeed},distanceInKM=${this.distanceInKM})"
 }
+
+case class lapOutTotal(calculatedData:Array[lapIOPerLap]) extends lapData
 
 
 
@@ -123,14 +128,12 @@ object findSpeedPerSector extends UDAFextention[lapIn,lapInterPerSector,lapOutPe
 
  object averageSpeedPerLap extends UDAFextention[lapIn,lapIOPerLap,lapIOPerLap]{
 
-  // val tmpMap=collection.mutable.Map[Int,Int]()
 
    override def zero: lapIOPerLap = lapIOPerLap(0,0,0.0,0.0,0.0)
 
-   override def reduce(b: lapIOPerLap, a: lapIn): lapIOPerLap = {
-     //tmpMap.put(a.sectorId,a.trackId)
+   override def reduce(b: lapIOPerLap, a: lapIn): lapIOPerLap =
      lapIOPerLap(a.trackId,a.driverId,a.timeTaken+b.timeTaken,0.0,a.distanceInKM)
-   }
+
 
    override def merge(b1: lapIOPerLap, b2: lapIOPerLap): lapIOPerLap =
      b2.copy(distanceInKM = b1.distanceInKM+b2.distanceInKM,timeTaken = b1.timeTaken+b2.timeTaken)
@@ -140,3 +143,27 @@ object findSpeedPerSector extends UDAFextention[lapIn,lapInterPerSector,lapOutPe
      reduction.copy(avgSpeed = (reduction.distanceInKM / ((reduction.timeTaken / 60.0 )/60.0)))
 
  }
+
+import scala.util.{Try,Success,Failure}
+
+object averageSpeedPerLapAdvanced extends UDAFextention[lapIn,lapIOPerLap,lapOutTotal]{
+
+  val outputBufferMap=collection.mutable.Map[groupingInfo,lapOutTotal]()
+
+  def appendToOutputBufferMap(incomingData:lapIOPerLap)= Try{outputBufferMap(groupingInfo(incomingData.driverId,incomingData.trackId))} match {
+    case Success(s) => outputBufferMap.put(groupingInfo(incomingData.driverId,incomingData.trackId),lapOutTotal(s.calculatedData :+ incomingData))
+      incomingData
+    case Failure(f) =>outputBufferMap.put(groupingInfo(incomingData.driverId,incomingData.trackId),lapOutTotal(Array(incomingData)))
+      incomingData
+  }
+
+  override def zero: lapIOPerLap = lapIOPerLap(0,0,0.0,0.0,0.0)
+
+  override def reduce(b: lapIOPerLap, a: lapIn): lapIOPerLap =
+    appendToOutputBufferMap(lapIOPerLap(a.trackId,a.driverId,a.timeTaken,0.0,a.distanceInKM))
+
+  override def merge(b1: lapIOPerLap, b2: lapIOPerLap): lapIOPerLap = ???
+
+  override def finish(reduction: lapIOPerLap): lapOutTotal = ???
+
+}
