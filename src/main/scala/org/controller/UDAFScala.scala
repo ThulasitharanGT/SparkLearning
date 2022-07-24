@@ -1,8 +1,8 @@
 package org.controller
 
 import org.apache.spark.sql.{Encoder, Encoders}
-import org.apache.spark.sql.expressions.Aggregator
-import org.apache.spark.sql.functions.{col, explode}
+import org.apache.spark.sql.expressions.{Aggregator, UserDefinedAggregateFunction}
+import org.apache.spark.sql.functions.{asc, col, desc, explode}
 // spark-submit --class org.controller.UDAFScala --driver-memory 512m --driver-cores 2 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar
 
 object UDAFScala {
@@ -16,6 +16,9 @@ object UDAFScala {
    val trackRefDF= Seq((1,1,2.45)
      ,(1,2,3.85)
      ,(1,3,1.98)
+     ,(2,1,3.45)
+     ,(2,2,3.72)
+     ,(2,3,2.98)
    ).toDF("trackId,sectorId,distanceInKM".split(","):_*)
 
     val dataOfLap=Seq((1,1,1,1,29.8)
@@ -43,7 +46,28 @@ object UDAFScala {
     Seq(1,2,3).map(x => joinedDF.filter(s"lapNo= ${x}").as[lapIn]
       .select(averageSpeedPerLap.toColumn.name("speed"))).reduce(_.union(_)).show(false)
 
-    joinedDF.as[lapIn].select(averageSpeedPerLapAdvanced.toColumn.name("speed")).select(explode(col("calculatedData")).as("exploded")).select(col("exploded.*")).show(false)
+    joinedDF.as[lapIn].select(averageSpeedPerLapAdvanced.toColumn.name("speed")).select(explode(col("calculatedData")).as("exploded")).select(col("exploded.*")).orderBy("trackId|driverId|lapId".split("\\|").map(asc) :+ desc("sectorId") :_*).show(false)
+
+
+    val dataOfLapDriver2=Seq((1,2,1,1,34.5)
+      ,(1,2,1,2,25.9)
+      ,(1,2,1,3,41.3)
+      ,(1,2,2,1,21.6)
+      ,(1,2,2,2,31.5)
+      ,(1,2,2,3,34.8)
+      ,(1,2,3,1,28.5)
+      ,(1,2,3,2,18.9)
+      ,(1,2,3,3,31.4)
+      ,(2,1,1,1,41.5)
+      ,(2,1,1,2,38.9)
+      ,(2,1,1,3,35.2)
+    ).toDF("trackId,driverId,lapNo,sectorId,timeTaken".split(","):_*).union(dataOfLap)
+
+
+    val joinedDF2= dataOfLapDriver2.join(trackRefDF,Seq("trackId","sectorId"))
+
+    joinedDF2.as[lapIn].select(averageSpeedPerLapAdvancedPerDriver.toColumn.name("speed")).select(explode(col("calculatedData")).as("exploded")).select(col("exploded.*")).orderBy("trackId|driverId|lapId".split("\\|").map(asc) :+ desc("sectorId") :_*).show(false)
+
 
   }
 
@@ -69,7 +93,7 @@ val distanceInKM: Double = 0.0
   override def canEqual(that: Any): Boolean = that.equals(this)
 }
 
-case class groupingInfo(driverId:Int,trackId:Int,lapId:Int)
+case class groupingInfo(trackId:Int,lapId:Int)
 
 case class lapIn(override val trackId:Int,override val driverId:Int,lapNo:Int,sectorId:Int,override val timeTaken:Double,override val distanceInKM:Double) extends lapData {
   override def toString =s"(trackId=${this.trackId},driverId=${this.driverId},sectorId=${this.sectorId},timeTaken=${this.timeTaken},distanceInKM=${this.distanceInKM})"
@@ -156,21 +180,33 @@ object averageSpeedPerLapAdvanced extends UDAFextention[lapIn,lapInterPerLapTota
 
   val outputBufferMap=collection.mutable.Map[groupingInfo,lapOutTotal]()
 
-  def appendToOutputBufferMap(incomingData:lapInterPerLapTotal)= Try{outputBufferMap(groupingInfo(incomingData.driverId,incomingData.trackId,incomingData.lapId))} match {
-    case Success(s) => outputBufferMap.put(groupingInfo(incomingData.driverId,incomingData.trackId,incomingData.lapId),lapOutTotal(s.calculatedData :+ incomingData))
+  // [driverId,sectorId,[lapId's]]
+  val sectorLapMap=collection.mutable.Map[Int,Set[Int]]()
+
+  def appendToOutputBufferMap(incomingData:lapInterPerLapTotal)= Try{outputBufferMap(groupingInfo(incomingData.trackId,incomingData.lapId))} match {
+    case Success(s) => outputBufferMap.put(groupingInfo(incomingData.trackId,incomingData.lapId),lapOutTotal(s.calculatedData :+ incomingData))
       incomingData
-    case Failure(f) =>outputBufferMap.put(groupingInfo(incomingData.driverId,incomingData.trackId,incomingData.lapId),lapOutTotal(Array(incomingData)))
+    case Failure(f) =>outputBufferMap.put(groupingInfo(incomingData.trackId,incomingData.lapId),lapOutTotal(Array(incomingData)))
       incomingData
+  }
+
+  def addSectorAndLapInfo(sectorId:Int,lapId:Int)=sectorLapMap.get(sectorId) match {
+    case Some(laps) => sectorLapMap.put(sectorId,laps ++ Set(lapId))
+    case None =>  sectorLapMap.put(sectorId,Set(lapId))
   }
 
   override def zero: lapInterPerLapTotal = lapInterPerLapTotal(0,0,0,0,0.0,0.0,0.0)
 
-  override def reduce(b: lapInterPerLapTotal, a: lapIn)  =
+  override def reduce(b: lapInterPerLapTotal, a: lapIn)  = {
+    addSectorAndLapInfo(a.sectorId,a.lapNo)
     appendToOutputBufferMap(lapInterPerLapTotal(a.trackId,a.driverId,a.lapNo,a.sectorId,a.timeTaken,0.0,a.distanceInKM))
+  }
 
   override def merge(b1: lapInterPerLapTotal, b2: lapInterPerLapTotal) = b1 // no logic here. everything is collected in map and used in finish
 
   override def finish(reduction: lapInterPerLapTotal): lapOutTotal = {
+
+
     outputBufferMap.map(x =>
       outputBufferMap.put(x._1,
         lapOutTotal(x._2.calculatedData.map(x => x.copy(avgSpeed = x.distanceInKM / UDAFScala.getHour(x.timeTaken))) :+
@@ -180,8 +216,75 @@ object averageSpeedPerLapAdvanced extends UDAFextention[lapIn,lapInterPerLapTota
             avgSpeed = x._2.calculatedData.map(_.distanceInKM).reduce(_ + _) / UDAFScala.getHour(x._2.calculatedData.map(_.timeTaken).reduce(_ + _)))
         )))
 
-    lapOutTotal(outputBufferMap.foldLeft(Array.empty[lapInterPerLapTotal])((collector,input) => collector ++ input._2.calculatedData))
+    lapOutTotal( outputBufferMap.foldLeft(Array.empty[lapInterPerLapTotal])((collector,input) => collector ++ input._2.calculatedData) match {
+      case value =>
+        // avg sector time , lap id -1
+          sectorLapMap.keys.foldLeft(value)((totalSet, sectorId) => totalSet :+ totalSet.filter(_.sectorId==sectorId).head.copy(lapId = -1,
+          avgSpeed = totalSet.filter(_.sectorId == sectorId).map(_.avgSpeed).reduce(_ + _) / sectorLapMap(sectorId).size,
+          timeTaken = totalSet.filter(_.sectorId == sectorId).map(_.timeTaken).reduce(_ + _) / sectorLapMap(sectorId).size)) :+
+          value.filter(_.sectorId == 0).sortWith(_.timeTaken < _.timeTaken).head.copy(sectorId = -1) // fastest lap
+    } )
 
   }
 }
 
+
+object averageSpeedPerLapAdvancedPerDriver extends UDAFextention[lapIn,lapInterPerLapTotal,lapOutTotal]{
+  type driver=Int
+  type track=Int
+  type lap=Int
+  type keyInfo = (driver,track)
+
+  override def zero: lapInterPerLapTotal = lapInterPerLapTotal(0,0,0,0,0.0,0.0,0.0)
+
+  val driverIdTrackIdMap=collection.mutable.Map[keyInfo,collection.mutable.Map[lap,Array[lapInterPerLapTotal]]]()
+
+  val addInfoToMap= (incomingRow:lapInterPerLapTotal) =>
+    driverIdTrackIdMap.get((incomingRow.driverId,incomingRow.trackId)) match {
+      case Some(map) =>
+        Try{map(incomingRow.lapId)} match {
+          case Success(s) =>
+            driverIdTrackIdMap.put((incomingRow.driverId,incomingRow.trackId),
+              driverIdTrackIdMap((incomingRow.driverId,incomingRow.trackId)) match {
+                case value =>
+                  value.put(incomingRow.lapId,s :+incomingRow )
+                  value
+              })
+          case Failure(f) =>
+            driverIdTrackIdMap.put((incomingRow.driverId,incomingRow.trackId),
+              driverIdTrackIdMap((incomingRow.driverId,incomingRow.trackId)) match {
+                case value =>
+                  value.put(incomingRow.lapId,Array(incomingRow))
+                  value
+              })
+        }
+
+      case None =>
+        driverIdTrackIdMap.put((incomingRow.driverId,incomingRow.trackId),
+          collection.mutable.Map[lap,Array[lapInterPerLapTotal]](incomingRow.lapId->Array(incomingRow)))
+    }
+
+
+
+  // calculate per sector, while adding it to map
+  override def reduce(b: lapInterPerLapTotal, a: lapIn): lapInterPerLapTotal = {
+    addInfoToMap(lapInterPerLapTotal(a.trackId,a.driverId,a.lapNo,a.sectorId,a.timeTaken,a.distanceInKM / UDAFScala.getHour(a.timeTaken),a.distanceInKM))
+    b
+  }
+
+  override def merge(b1: lapInterPerLapTotal, b2: lapInterPerLapTotal): lapInterPerLapTotal = b1 // nothing here
+
+  override def finish(reduction: lapInterPerLapTotal): lapOutTotal = {
+    lapOutTotal( driverIdTrackIdMap.flatMap(_._2.flatMap(
+      x => x._2 :+ x._2.head.copy(sectorId = 0 , avgSpeed = x._2.map(_.avgSpeed).reduce(_+_) / x._2.size
+        , distanceInKM = x._2.map(_.distanceInKM).reduce(_+_)
+        , timeTaken = x._2.map(_.avgSpeed).reduce(_+_)
+      )
+    )).groupBy(x=> (x.trackId,x.driverId)).flatMap(values => {
+      values._2.toList match {
+        case listValues=> listValues:+ listValues.filter(_.sectorId ==0).sortWith(_.avgSpeed < _.avgSpeed).head.copy(lapId = -1)
+      }
+    }).toArray )
+  }
+
+}
