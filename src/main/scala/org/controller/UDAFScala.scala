@@ -69,7 +69,21 @@ object UDAFScala {
 
     joinedDF2.as[lapIn].select(averageSpeedPerLapAdvancedPerDriver.toColumn.name("speed")).select(explode(col("calculatedData")).as("exploded")).select(col("exploded.*")).orderBy("trackId|driverId|lapId".split("\\|").map(asc) :+ desc("sectorId") :_*).show(200,false)
 
-    joinedDF2.as[lapIn].withColumn("avgSpeedOfLap",new udafOriginal().apply(col("distanceInKM"),col("timeTaken")).over(Window.partitionBy("trackId,driverId,lapNo".split(",").map(col):_*))).show(false)
+    // old UDAF
+    joinedDF2.as[lapIn].withColumn("avgSpeedOfLap",new udafOriginal().apply(col("distanceInKM"),col("timeTaken")).over(Window.partitionBy("trackId,driverId,lapNo".split(",").map(col):_*))).show(1000,false)
+
+    // all info
+
+    joinedDF2.as[lapIn]
+      .withColumn("avgInfoPerTrackDriverLap",new udafTotalOfLapTimeSpeedAndDistance().apply(col("distanceInKM"),col("timeTaken"))
+        .over(Window.partitionBy("trackId,driverId,lapNo".split(",").map(col):_*)))
+      .withColumn("avgInfoPerTrackDriverSector",new udafTotalOfLapTimeSpeedAndDistance().apply(col("distanceInKM"),col("timeTaken"))
+        .over(Window.partitionBy("trackId,driverId,sectorId".split(",").map(col):_*)))
+      .withColumn("avgInfoPerTrackDriver",new udafTotalOfLapTimeSpeedAndDistance().apply(col("distanceInKM"),col("timeTaken"))
+        .over(Window.partitionBy("trackId,driverId".split(",").map(col):_*)))
+      .show(1000,false)
+
+
   }
 
   def getHour(timeInSeconds:Double) = (timeInSeconds / 60.0 ) / 60.0
@@ -100,18 +114,17 @@ class udafOriginal extends UserDefinedAggregateFunction
   override def initialize(buffer: MutableAggregationBuffer): Unit = Array((0,0.0),(1,0.0)).map(x => buffer.update(x._1,x._2) )
 
   override def update(buffer: MutableAggregationBuffer, input: Row): Unit =
-    Array((0,input.getAs[Double]("distanceInKM")),(1,input.getAs[Double]("timeTaken"))).map(x => buffer.update(x._1,x._2 + buffer.getAs[Double](x._1)))
+    Array((0,input.getAs[Double](0)),(1,input.getAs[Double](1))).map(x => buffer.update(x._1,x._2 + buffer.getAs[Double](x._1)))
 
   override def merge(buffer1: MutableAggregationBuffer, buffer2: Row): Unit =
     {
-      buffer1.update(0,buffer2.getAs[Double]("distanceInKM") + buffer1.getAs[Double](0))
-      buffer1.update(1,buffer2.getAs[Double]("timeTaken") + buffer1.getAs[Double](1))
+      buffer1.update(0,buffer2.getAs[Double](0) + buffer1.getAs[Double](0))
+      buffer1.update(1,buffer2.getAs[Double](1) + buffer1.getAs[Double](1))
     }
     // Array((0,buffer2.getAs[Double]("distanceInKM")),(1,UDAFScala.getHour(buffer2.getAs[Double]("timeTaken"))),(2,1)).map(x => buffer1.update(x._1+buffer1.get(x._1),x._2 + buffer1.get(x._1)))
 
-  override def evaluate(buffer: Row): Any = buffer.getAs[Double]("distanceInKm") /  UDAFScala.getHour(buffer.getAs[Double]("timeTaken"))
+  override def evaluate(buffer: Row): Any = buffer.getAs[Double](0) /  UDAFScala.getHour(buffer.getAs[Double](1))
 }
-
 class udafTotalOfLapTimeSpeedAndDistance extends UserDefinedAggregateFunction
 {
   override def inputSchema: StructType = new StructType(Array(StructField("distanceInKm",DoubleType,false),
@@ -120,23 +133,23 @@ class udafTotalOfLapTimeSpeedAndDistance extends UserDefinedAggregateFunction
   override def bufferSchema: StructType = new StructType(Array(StructField("distanceInKm",DoubleType,false),
     StructField("timeTaken",DoubleType,false)))
 
-  override def dataType: DataType = DoubleType
+  override def dataType: DataType = new StructType(Array(StructField("distanceOfLap",DoubleType,false),
+    StructField("totalLapTime",DoubleType,false),StructField("avgSpeed",DoubleType,false)))
 
   override def deterministic: Boolean = true
 
   override def initialize(buffer: MutableAggregationBuffer): Unit = Array((0,0.0),(1,0.0)).map(x => buffer.update(x._1,x._2) )
 
   override def update(buffer: MutableAggregationBuffer, input: Row): Unit =
-    Array((0,input.getAs[Double]("distanceInKM")),(1,input.getAs[Double]("timeTaken"))).map(x => buffer.update(x._1,x._2 + buffer.getAs[Double](x._1)))
+    Array((0,input.getAs[Double](0)),(1,input.getAs[Double](1))).map(x => buffer.update(x._1,x._2 + buffer.getAs[Double](x._1)))
 
   override def merge(buffer1: MutableAggregationBuffer, buffer2: Row): Unit =
   {
-    buffer1.update(0,buffer2.getAs[Double]("distanceInKM") + buffer1.getAs[Double](0))
-    buffer1.update(1,buffer2.getAs[Double]("timeTaken") + buffer1.getAs[Double](1))
+    buffer1.update(0,buffer2.getAs[Double](0) + buffer1.getAs[Double](0))
+    buffer1.update(1,buffer2.getAs[Double](1) + buffer1.getAs[Double](1))
   }
-  // Array((0,buffer2.getAs[Double]("distanceInKM")),(1,UDAFScala.getHour(buffer2.getAs[Double]("timeTaken"))),(2,1)).map(x => buffer1.update(x._1+buffer1.get(x._1),x._2 + buffer1.get(x._1)))
 
-  override def evaluate(buffer: Row): Any = buffer.getAs[Double]("distanceInKm") /  UDAFScala.getHour(buffer.getAs[Double]("timeTaken"))
+  override def evaluate(buffer: Row): Any = Row(buffer.getAs[Double](0) ,buffer.getAs[Double](1),buffer.getAs[Double](0) /  UDAFScala.getHour(buffer.getAs[Double](1)))
 }
 
 
