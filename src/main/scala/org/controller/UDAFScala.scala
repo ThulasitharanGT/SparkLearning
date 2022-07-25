@@ -125,6 +125,7 @@ class udafOriginal extends UserDefinedAggregateFunction
 
   override def evaluate(buffer: Row): Any = buffer.getAs[Double](0) /  UDAFScala.getHour(buffer.getAs[Double](1))
 }
+// takes avg of all and returns
 class udafTotalOfLapTimeSpeedAndDistance extends UserDefinedAggregateFunction
 {
   override def inputSchema: StructType = new StructType(Array(StructField("distanceInKm",DoubleType,false),
