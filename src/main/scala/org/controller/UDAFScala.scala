@@ -1,8 +1,9 @@
 package org.controller
 
-import org.apache.spark.sql.{Encoder, Encoders}
-import org.apache.spark.sql.expressions.{Aggregator, UserDefinedAggregateFunction}
+import org.apache.spark.sql.{Encoder, Encoders, Row}
+import org.apache.spark.sql.expressions.{Aggregator, MutableAggregationBuffer, UserDefinedAggregateFunction, Window}
 import org.apache.spark.sql.functions.{asc, col, desc, explode}
+import org.apache.spark.sql.types.{DataType, StructType}
 // spark-submit --class org.controller.UDAFScala --driver-memory 512m --driver-cores 2 /home/raptor/IdeaProjects/SparkLearning/build/libs/SparkLearning-1.0-SNAPSHOT.jar
 
 object UDAFScala {
@@ -66,9 +67,9 @@ object UDAFScala {
 
     val joinedDF2= dataOfLapDriver2.join(trackRefDF,Seq("trackId","sectorId"))
 
-    joinedDF2.as[lapIn].select(averageSpeedPerLapAdvancedPerDriver.toColumn.name("speed")).select(explode(col("calculatedData")).as("exploded")).select(col("exploded.*")).orderBy("trackId|driverId|lapId".split("\\|").map(asc) :+ desc("sectorId") :_*).show(false)
+    joinedDF2.as[lapIn].select(averageSpeedPerLapAdvancedPerDriver.toColumn.name("speed")).select(explode(col("calculatedData")).as("exploded")).select(col("exploded.*")).orderBy("trackId|driverId|lapId".split("\\|").map(asc) :+ desc("sectorId") :_*).show(200,false)
 
-
+    joinedDF2.as[lapIn].withColumn("avgSpeedOfLap",new udafOriginal().apply(col("distanceInKM"),col("timeTaken")).over(Window.partitionBy("trackId,driverId,lapNo".split(",").map(col):_*))).show(false)
   }
 
   def getHour(timeInSeconds:Double) = (timeInSeconds / 60.0 ) / 60.0
@@ -81,6 +82,63 @@ object UDAFScala {
 Seq((1,1,2.45)).toSeq("trackId,sectorId,distanceInKM".split(","):_*)
 
 */
+
+import org.apache.spark.sql.types._
+
+class udafOriginal extends UserDefinedAggregateFunction
+{
+  override def inputSchema: StructType = new StructType(Array(StructField("distanceInKm",DoubleType,false),
+    StructField("timeTaken",DoubleType,false)))
+
+  override def bufferSchema: StructType = new StructType(Array(StructField("distanceInKm",DoubleType,false),
+    StructField("timeTaken",DoubleType,false)))
+
+  override def dataType: DataType = DoubleType
+
+  override def deterministic: Boolean = true
+
+  override def initialize(buffer: MutableAggregationBuffer): Unit = Array((0,0.0),(1,0.0)).map(x => buffer.update(x._1,x._2) )
+
+  override def update(buffer: MutableAggregationBuffer, input: Row): Unit =
+    Array((0,input.getAs[Double]("distanceInKM")),(1,input.getAs[Double]("timeTaken"))).map(x => buffer.update(x._1,x._2 + buffer.getAs[Double](x._1)))
+
+  override def merge(buffer1: MutableAggregationBuffer, buffer2: Row): Unit =
+    {
+      buffer1.update(0,buffer2.getAs[Double]("distanceInKM") + buffer1.getAs[Double](0))
+      buffer1.update(1,buffer2.getAs[Double]("timeTaken") + buffer1.getAs[Double](1))
+    }
+    // Array((0,buffer2.getAs[Double]("distanceInKM")),(1,UDAFScala.getHour(buffer2.getAs[Double]("timeTaken"))),(2,1)).map(x => buffer1.update(x._1+buffer1.get(x._1),x._2 + buffer1.get(x._1)))
+
+  override def evaluate(buffer: Row): Any = buffer.getAs[Double]("distanceInKm") /  UDAFScala.getHour(buffer.getAs[Double]("timeTaken"))
+}
+
+class udafTotalOfLapTimeSpeedAndDistance extends UserDefinedAggregateFunction
+{
+  override def inputSchema: StructType = new StructType(Array(StructField("distanceInKm",DoubleType,false),
+    StructField("timeTaken",DoubleType,false)))
+
+  override def bufferSchema: StructType = new StructType(Array(StructField("distanceInKm",DoubleType,false),
+    StructField("timeTaken",DoubleType,false)))
+
+  override def dataType: DataType = DoubleType
+
+  override def deterministic: Boolean = true
+
+  override def initialize(buffer: MutableAggregationBuffer): Unit = Array((0,0.0),(1,0.0)).map(x => buffer.update(x._1,x._2) )
+
+  override def update(buffer: MutableAggregationBuffer, input: Row): Unit =
+    Array((0,input.getAs[Double]("distanceInKM")),(1,input.getAs[Double]("timeTaken"))).map(x => buffer.update(x._1,x._2 + buffer.getAs[Double](x._1)))
+
+  override def merge(buffer1: MutableAggregationBuffer, buffer2: Row): Unit =
+  {
+    buffer1.update(0,buffer2.getAs[Double]("distanceInKM") + buffer1.getAs[Double](0))
+    buffer1.update(1,buffer2.getAs[Double]("timeTaken") + buffer1.getAs[Double](1))
+  }
+  // Array((0,buffer2.getAs[Double]("distanceInKM")),(1,UDAFScala.getHour(buffer2.getAs[Double]("timeTaken"))),(2,1)).map(x => buffer1.update(x._1+buffer1.get(x._1),x._2 + buffer1.get(x._1)))
+
+  override def evaluate(buffer: Row): Any = buffer.getAs[Double]("distanceInKm") /  UDAFScala.getHour(buffer.getAs[Double]("timeTaken"))
+}
+
 
 class lapData extends Product {
 val trackId: Int = 0
@@ -96,7 +154,7 @@ val distanceInKM: Double = 0.0
 case class groupingInfo(trackId:Int,lapId:Int)
 
 case class lapIn(override val trackId:Int,override val driverId:Int,lapNo:Int,sectorId:Int,override val timeTaken:Double,override val distanceInKM:Double) extends lapData {
-  override def toString =s"(trackId=${this.trackId},driverId=${this.driverId},sectorId=${this.sectorId},timeTaken=${this.timeTaken},distanceInKM=${this.distanceInKM})"
+  override def toString =s"(trackId=${this.trackId},driverId=${this.driverId},lapNo=${this.lapNo},sectorId=${this.sectorId},timeTaken=${this.timeTaken},distanceInKM=${this.distanceInKM})"
 }
 case class lapInterPerSector(override val trackId:Int,override val driverId:Int,sectorId:Int,override val timeTaken:Double,avgSpeed:Double,override val distanceInKM:Double) extends lapData{
   override def toString =s"(trackId=${this.trackId},driverId=${this.driverId},sectorId=${this.sectorId},timeTaken=${this.timeTaken},avgSpeed=${this.avgSpeed},distanceInKM=${this.distanceInKM})"
@@ -112,12 +170,12 @@ case class lapIOPerLap(override val trackId:Int,override val driverId:Int,overri
 case class lapOutTotal(calculatedData:Array[lapInterPerLapTotal]) extends lapData
 
 case class lapInterPerLapTotal(override val trackId:Int, override val driverId:Int,lapId:Int,sectorId:Int, override val timeTaken:Double, avgSpeed:Double, override val distanceInKM:Double) extends lapData{
-  override def toString =s"(trackId=${this.trackId},driverId=${this.driverId},timeTaken=${this.timeTaken},avgSpeed=${this.avgSpeed},distanceInKM=${this.distanceInKM})"
+  override def toString =s"(trackId=${this.trackId},driverId=${this.driverId},sectorID=${this.sectorId},timeTaken=${this.timeTaken},avgSpeed=${this.avgSpeed},distanceInKM=${this.distanceInKM})"
 }
 
 case class fastestLap(lapId:Int,avgSpeed:Double)  extends lapData
 
-object findSpeedPerSector extends UDAFextention[lapIn,lapInterPerSector,lapOutPerSector] {
+object findSpeedPerSector extends UDAFAggregator[lapIn,lapInterPerSector,lapOutPerSector] {
   var lapSet:Set[Int] = Set.empty[Int]
   /* def this(totalRecords:Int){
       this()
@@ -156,7 +214,7 @@ object findSpeedPerSector extends UDAFextention[lapIn,lapInterPerSector,lapOutPe
     //org.apache.spark.sql.Encoders.bean[lapOut](lapOut.getClass.asInstanceOf[Class[lapOut]])
 }
 
- object averageSpeedPerLap extends UDAFextention[lapIn,lapIOPerLap,lapIOPerLap]{
+ object averageSpeedPerLap extends UDAFAggregator[lapIn,lapIOPerLap,lapIOPerLap]{
 
 
    override def zero: lapIOPerLap = lapIOPerLap(0,0,0.0,0.0,0.0)
@@ -176,7 +234,7 @@ object findSpeedPerSector extends UDAFextention[lapIn,lapInterPerSector,lapOutPe
 
 import scala.util.{Try,Success,Failure}
 
-object averageSpeedPerLapAdvanced extends UDAFextention[lapIn,lapInterPerLapTotal,lapOutTotal]{
+object averageSpeedPerLapAdvanced extends UDAFAggregator[lapIn,lapInterPerLapTotal,lapOutTotal]{
 
   val outputBufferMap=collection.mutable.Map[groupingInfo,lapOutTotal]()
 
@@ -218,6 +276,10 @@ object averageSpeedPerLapAdvanced extends UDAFextention[lapIn,lapInterPerLapTota
 
     lapOutTotal( outputBufferMap.foldLeft(Array.empty[lapInterPerLapTotal])((collector,input) => collector ++ input._2.calculatedData) match {
       case value =>
+        println(s"value ${value.deep}")
+        println(s"sectorLapMap ${sectorLapMap}")
+        outputBufferMap.map(x => s"outputBufferMap ${x._1} ${x._2.toString}")
+
         // avg sector time , lap id -1
           sectorLapMap.keys.foldLeft(value)((totalSet, sectorId) => totalSet :+ totalSet.filter(_.sectorId==sectorId).head.copy(lapId = -1,
           avgSpeed = totalSet.filter(_.sectorId == sectorId).map(_.avgSpeed).reduce(_ + _) / sectorLapMap(sectorId).size,
@@ -229,15 +291,19 @@ object averageSpeedPerLapAdvanced extends UDAFextention[lapIn,lapInterPerLapTota
 }
 
 
-object averageSpeedPerLapAdvancedPerDriver extends UDAFextention[lapIn,lapInterPerLapTotal,lapOutTotal]{
-  type driver=Int
+object averageSpeedPerLapAdvancedPerDriver extends UDAFAggregator[lapIn,lapInterPerLapTotal,lapOutTotal]{
+ /* type driver=Int
   type track=Int
   type lap=Int
   type keyInfo = (driver,track)
 
-  override def zero: lapInterPerLapTotal = lapInterPerLapTotal(0,0,0,0,0.0,0.0,0.0)
-
   val driverIdTrackIdMap=collection.mutable.Map[keyInfo,collection.mutable.Map[lap,Array[lapInterPerLapTotal]]]()
+
+*/
+// driverId,trackId  => lap
+  val driverIdTrackIdMap=collection.mutable.Map[(Int,Int),collection.mutable.Map[Int,Array[lapInterPerLapTotal]]]()
+
+  override def zero: lapInterPerLapTotal = lapInterPerLapTotal(0,0,0,0,0.0,0.0,0.0)
 
   val addInfoToMap= (incomingRow:lapInterPerLapTotal) =>
     driverIdTrackIdMap.get((incomingRow.driverId,incomingRow.trackId)) match {
@@ -261,13 +327,14 @@ object averageSpeedPerLapAdvancedPerDriver extends UDAFextention[lapIn,lapInterP
 
       case None =>
         driverIdTrackIdMap.put((incomingRow.driverId,incomingRow.trackId),
-          collection.mutable.Map[lap,Array[lapInterPerLapTotal]](incomingRow.lapId->Array(incomingRow)))
+          collection.mutable.Map[Int,Array[lapInterPerLapTotal]](incomingRow.lapId -> Array(incomingRow)))
     }
 
 
 
   // calculate per sector, while adding it to map
   override def reduce(b: lapInterPerLapTotal, a: lapIn): lapInterPerLapTotal = {
+    println(s"incoming record ${a.toString}")
     addInfoToMap(lapInterPerLapTotal(a.trackId,a.driverId,a.lapNo,a.sectorId,a.timeTaken,a.distanceInKM / UDAFScala.getHour(a.timeTaken),a.distanceInKM))
     b
   }
@@ -275,16 +342,24 @@ object averageSpeedPerLapAdvancedPerDriver extends UDAFextention[lapIn,lapInterP
   override def merge(b1: lapInterPerLapTotal, b2: lapInterPerLapTotal): lapInterPerLapTotal = b1 // nothing here
 
   override def finish(reduction: lapInterPerLapTotal): lapOutTotal = {
+    driverIdTrackIdMap.foreach(x =>{ println(s"${x._1}")
+      x._2.map(z => {println(s" ${z._1}")
+        z._2.deep.map(k => println(s" ${k.toString}"))
+      })
+    })
+
     lapOutTotal( driverIdTrackIdMap.flatMap(_._2.flatMap(
       x => x._2 :+ x._2.head.copy(sectorId = 0 , avgSpeed = x._2.map(_.avgSpeed).reduce(_+_) / x._2.size
         , distanceInKM = x._2.map(_.distanceInKM).reduce(_+_)
-        , timeTaken = x._2.map(_.avgSpeed).reduce(_+_)
+        , timeTaken = x._2.map(_.timeTaken).reduce(_+_)
       )
     )).groupBy(x=> (x.trackId,x.driverId)).flatMap(values => {
       values._2.toList match {
-        case listValues=> listValues:+ listValues.filter(_.sectorId ==0).sortWith(_.avgSpeed < _.avgSpeed).head.copy(lapId = -1)
+        case listValues=> listValues:+ listValues.filter(_.sectorId ==0).sortWith(_.avgSpeed < _.avgSpeed).last.copy(sectorId = -1)
       }
     }).toArray )
   }
+
+
 
 }

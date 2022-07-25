@@ -3,7 +3,7 @@ import org.apache.spark.sql.{Encoder, Encoders}
 
 import scala.reflect.runtime.universe.TypeTag
 
-class UDAFextention[I <: lapData : TypeTag,P <: lapData: TypeTag,O <: lapData: TypeTag] extends org.apache.spark.sql.expressions.Aggregator[I,P,O]  {
+class UDAFAggregator[I <: lapData : TypeTag,P <: lapData: TypeTag,O <: lapData: TypeTag] extends org.apache.spark.sql.expressions.Aggregator[I,P,O]  {
 
   override def zero: P = ???
 
