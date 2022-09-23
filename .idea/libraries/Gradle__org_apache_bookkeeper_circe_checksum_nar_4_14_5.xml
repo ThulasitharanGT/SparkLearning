@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.bookkeeper:circe-checksum:nar:4.14.5">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.bookkeeper/circe-checksum/4.14.5/833424c3d5de6808c1cbdb97699435e91d0fed74/circe-checksum-4.14.5.nar" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.bookkeeper/circe-checksum/4.14.5/9811442d683ac97d7aea590ba6fdfb3b1aae06b1/circe-checksum-4.14.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.bookkeeper:cpu-affinity:nar:4.14.5">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.bookkeeper/cpu-affinity/4.14.5/2425173a80380f40652d25c56a6aff74268e5ac9/cpu-affinity-4.14.5.nar" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.bookkeeper/cpu-affinity/4.14.5/ab8cb77d39d1eb2d14df784d48da8c101d44c52d/cpu-affinity-4.14.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -85,9 +85,15 @@ dependencies {
    /* compile 'org.scala-lang:scala-library:2.11.11'
     compile 'org.scala-lang:scala-reflect:2.11.11'
     compile 'org.scala-lang:scala-compiler:2.11.11'*/
-    
-    
-       compile 'org.scala-lang.modules:scala-parser-combinators_2.11:1.1.2'
+
+
+    compile 'org.apache.pulsar:pulsar-client:2.10.1'
+    compile 'org.apache.pulsar:pulsar-client-admin:2.10.1'
+    compile 'org.apache.pulsar:pulsar-common:2.10.1'
+    compile 'org.apache.pulsar:pulsar-io-core:2.10.1'
+
+
+    compile 'org.scala-lang.modules:scala-parser-combinators_2.11:1.1.2'
      //  compile group: 'org.scalatest', name: 'scalatest-core_2.11', version: '3.3.0-SNAP2'
       // testCompile group: 'org.scalatest', name: 'scalatest_2.11', version: '3.3.0-SNAP2'
        compile group: 'io.delta', name: 'delta-core_2.11', version: '0.6.1'

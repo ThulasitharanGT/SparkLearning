@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.bookkeeper:bookkeeper-common-allocator:4.14.5">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.bookkeeper/bookkeeper-common-allocator/4.14.5/8524e03fef2859ef2ba1c6f339fba7e52ce14542/bookkeeper-common-allocator-4.14.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.bookkeeper/bookkeeper-common-allocator/4.14.5/272e76fed9ea47d7ce703ee14e72d49e470b6420/bookkeeper-common-allocator-4.14.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
