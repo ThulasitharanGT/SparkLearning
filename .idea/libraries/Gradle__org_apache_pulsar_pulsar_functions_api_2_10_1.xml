@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: org.apache.pulsar:pulsar-functions-api:2.10.1">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.pulsar/pulsar-functions-api/2.10.1/a07a13cb35de9f2958b20b6acdf60ce037413b49/pulsar-functions-api-2.10.1.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/pulsar/pulsar-functions-api/2.10.1/pulsar-functions-api-2.10.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

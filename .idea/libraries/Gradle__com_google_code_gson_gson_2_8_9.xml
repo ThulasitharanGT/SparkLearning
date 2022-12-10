@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.code.gson:gson:2.8.9">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.8.9/8a432c1d6825781e21a02db2e2c33c5fde2833b9/gson-2.8.9.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.9/gson-2.8.9.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

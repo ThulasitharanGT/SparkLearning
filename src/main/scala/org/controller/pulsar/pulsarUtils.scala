@@ -16,7 +16,7 @@ object pulsarUtils {
       }
 
 
-    val closePulsarClient =() => try {
+    val closePulsarClient = () =>try {
       this.pulsarClient.close
     }
     catch {

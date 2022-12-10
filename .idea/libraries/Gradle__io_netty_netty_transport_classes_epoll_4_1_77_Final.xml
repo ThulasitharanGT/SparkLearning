@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: io.netty:netty-transport-classes-epoll:4.1.77.Final">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.netty/netty-transport-classes-epoll/4.1.77.Final/dd70dbccbcf98382223a59044f3c08d8e9920cad/netty-transport-classes-epoll-4.1.77.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-transport-classes-epoll/4.1.77.Final/netty-transport-classes-epoll-4.1.77.Final.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

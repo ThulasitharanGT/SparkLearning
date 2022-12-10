@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: commons-io:commons-io:2.8.0">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.8.0/92999e26e6534606b5678014e66948286298a35c/commons-io-2.8.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/commons-io/commons-io/2.8.0/commons-io-2.8.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: io.netty:netty-resolver-dns:4.1.77.Final">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.netty/netty-resolver-dns/4.1.77.Final/aad506ab6804e2720771634e2de2a065fa678126/netty-resolver-dns-4.1.77.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-resolver-dns/4.1.77.Final/netty-resolver-dns-4.1.77.Final.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

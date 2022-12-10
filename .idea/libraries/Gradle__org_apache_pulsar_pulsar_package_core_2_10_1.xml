@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Gradle: org.apache.pulsar:pulsar-package-core:2.10.1">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.pulsar/pulsar-package-core/2.10.1/ff23a7294ef8ac152176cca39e30d3a63fffa799/pulsar-package-core-2.10.1.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/pulsar/pulsar-package-core/2.10.1/pulsar-package-core-2.10.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
