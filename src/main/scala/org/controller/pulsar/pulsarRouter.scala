@@ -38,6 +38,10 @@ object pulsarRouter extends Function[String,Option[Throwable]]{
     case ("vegetable",pulsarInstance) =>
       sendMessage(msg,pulsarInstance.getPulsarProducer[String]("vegetableProd",vegetableTopic,Some(org.apache.pulsar.client.api.Schema.STRING)).asInstanceOf[org.apache.pulsar.client.api.Producer[String]])
       pulsarInstance.closePulsarClient()
+
+    case (value,pulsarInstance) =>
+      sendMessage(msg,pulsarInstance.getPulsarProducer[String](s"${value}Prod",vegetableTopic,Some(org.apache.pulsar.client.api.Schema.STRING)).asInstanceOf[org.apache.pulsar.client.api.Producer[String]])
+      pulsarInstance.closePulsarClient()
   }
 
   def sendMessage[T <: Any](msg:T,pulsarProducer:org.apache.pulsar.client.api.Producer[ T]) =

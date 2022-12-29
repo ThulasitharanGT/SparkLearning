@@ -557,15 +557,51 @@ products:
    src/main/scala/org/controller/persistingInsideJob/streamingToStaticDFForEach.scala -> build/classes/scala/main/org/controller/persistingInsideJob/streamingToStaticDFForEach$statsTableWithUpdatedInfo$.class
    src/main/scala/org/controller/persistingInsideJob/streamingToStaticDFForEach.scala -> build/classes/scala/main/org/controller/persistingInsideJob/streamingToStaticDFForEach$statsTableWithUpdatedInfo.class
    src/main/scala/org/controller/persistingInsideJob/streamingToStaticDFForEach.scala -> build/classes/scala/main/org/controller/persistingInsideJob/streamingToStaticDFForEach.class
+   src/main/scala/org/controller/pulsar/checkClass.java -> build/classes/scala/main/org/controller/pulsar/checkClass.class
+   src/main/scala/org/controller/pulsar/emp.java -> build/classes/scala/main/org/controller/pulsar/emp$1.class
+   src/main/scala/org/controller/pulsar/emp.java -> build/classes/scala/main/org/controller/pulsar/emp$Builder.class
+   src/main/scala/org/controller/pulsar/emp.java -> build/classes/scala/main/org/controller/pulsar/emp.class
+   src/main/scala/org/controller/pulsar/pulsarAutoSchema.scala -> build/classes/scala/main/org/controller/pulsar/pulsarAutoSchema$.class
+   src/main/scala/org/controller/pulsar/pulsarAutoSchema.scala -> build/classes/scala/main/org/controller/pulsar/pulsarAutoSchema.class
+   src/main/scala/org/controller/pulsar/pulsarConsumerTry.scala -> build/classes/scala/main/org/controller/pulsar/pulsarConsumerTry$.class
+   src/main/scala/org/controller/pulsar/pulsarConsumerTry.scala -> build/classes/scala/main/org/controller/pulsar/pulsarConsumerTry.class
+   src/main/scala/org/controller/pulsar/pulsarDerivedSchemaDefinition.scala -> build/classes/scala/main/org/controller/pulsar/pulsarDerivedSchemaDefinition$.class
+   src/main/scala/org/controller/pulsar/pulsarDerivedSchemaDefinition.scala -> build/classes/scala/main/org/controller/pulsar/pulsarDerivedSchemaDefinition.class
+   src/main/scala/org/controller/pulsar/pulsarExclusiveConsumer.scala -> build/classes/scala/main/org/controller/pulsar/pulsarExclusiveConsumer.class
+   src/main/scala/org/controller/pulsar/pulsarFunctions.scala -> build/classes/scala/main/org/controller/pulsar/pulsarFunctions$.class
    src/main/scala/org/controller/pulsar/pulsarFunctions.scala -> build/classes/scala/main/org/controller/pulsar/pulsarFunctions.class
    src/main/scala/org/controller/pulsar/pulsarJavaFun.scala -> build/classes/scala/main/org/controller/pulsar/pulsarJavaFun.class
    src/main/scala/org/controller/pulsar/pulsarJavaFunJavaSplit.java -> build/classes/scala/main/org/controller/pulsar/pulsarJavaFunJavaSplit.class
    src/main/scala/org/controller/pulsar/pulsarJavaFunSplit.scala -> build/classes/scala/main/org/controller/pulsar/pulsarJavaFunSplit.class
+   src/main/scala/org/controller/pulsar/pulsarNativeAvroSchema.scala -> build/classes/scala/main/org/controller/pulsar/pulsarNativeAvroSchema$.class
+   src/main/scala/org/controller/pulsar/pulsarNativeAvroSchema.scala -> build/classes/scala/main/org/controller/pulsar/pulsarNativeAvroSchema.class
+   src/main/scala/org/controller/pulsar/pulsarPrimitiveSchema.scala -> build/classes/scala/main/org/controller/pulsar/pulsarPrimitiveSchema$.class
+   src/main/scala/org/controller/pulsar/pulsarPrimitiveSchema.scala -> build/classes/scala/main/org/controller/pulsar/pulsarPrimitiveSchema.class
+   src/main/scala/org/controller/pulsar/pulsarProducerTry.scala -> build/classes/scala/main/org/controller/pulsar/pulsarProducerTry$.class
+   src/main/scala/org/controller/pulsar/pulsarProducerTry.scala -> build/classes/scala/main/org/controller/pulsar/pulsarProducerTry.class
+   src/main/scala/org/controller/pulsar/pulsarRouter.scala -> build/classes/scala/main/org/controller/pulsar/pulsarRouter$.class
    src/main/scala/org/controller/pulsar/pulsarRouter.scala -> build/classes/scala/main/org/controller/pulsar/pulsarRouter.class
+   src/main/scala/org/controller/pulsar/pulsarSchemaDerived.scala -> build/classes/scala/main/org/controller/pulsar/pulsarSchemaDerived$.class
+   src/main/scala/org/controller/pulsar/pulsarSchemaDerived.scala -> build/classes/scala/main/org/controller/pulsar/pulsarSchemaDerived.class
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSON.scala -> build/classes/scala/main/org/controller/pulsar/pulsarSchemaJSON$.class
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSON.scala -> build/classes/scala/main/org/controller/pulsar/pulsarSchemaJSON.class
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSONConsumer.scala -> build/classes/scala/main/org/controller/pulsar/pulsarSchemaJSONConsumer$.class
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSONConsumer.scala -> build/classes/scala/main/org/controller/pulsar/pulsarSchemaJSONConsumer.class
+   src/main/scala/org/controller/pulsar/pulsarSchemaTmpConsumer.scala -> build/classes/scala/main/org/controller/pulsar/pulsarSchemaTmpConsumer$.class
+   src/main/scala/org/controller/pulsar/pulsarSchemaTmpConsumer.scala -> build/classes/scala/main/org/controller/pulsar/pulsarSchemaTmpConsumer.class
+   src/main/scala/org/controller/pulsar/pulsarSchemaTry.scala -> build/classes/scala/main/org/controller/pulsar/pulsarSchemaTry$.class
+   src/main/scala/org/controller/pulsar/pulsarSchemaTry.scala -> build/classes/scala/main/org/controller/pulsar/pulsarSchemaTry.class
+   src/main/scala/org/controller/pulsar/pulsarSchemaTry.scala -> build/classes/scala/main/org/controller/pulsar/tmpUser.class
    src/main/scala/org/controller/pulsar/pulsarUtils.scala -> build/classes/scala/main/org/controller/pulsar/pulsarUtils$.class
    src/main/scala/org/controller/pulsar/pulsarUtils.scala -> build/classes/scala/main/org/controller/pulsar/pulsarUtils$pulsarUtil$.class
    src/main/scala/org/controller/pulsar/pulsarUtils.scala -> build/classes/scala/main/org/controller/pulsar/pulsarUtils$pulsarUtil.class
    src/main/scala/org/controller/pulsar/pulsarUtils.scala -> build/classes/scala/main/org/controller/pulsar/pulsarUtils.class
+   src/main/scala/org/controller/pulsar/recordSchemaBuilder.scala -> build/classes/scala/main/org/controller/pulsar/recordSchemaBuilder$.class
+   src/main/scala/org/controller/pulsar/recordSchemaBuilder.scala -> build/classes/scala/main/org/controller/pulsar/recordSchemaBuilder.class
+   src/main/scala/org/controller/pulsar/staticSchemaDerived.scala -> build/classes/scala/main/org/controller/pulsar/staticSchemaDerived$.class
+   src/main/scala/org/controller/pulsar/staticSchemaDerived.scala -> build/classes/scala/main/org/controller/pulsar/staticSchemaDerived.class
+   src/main/scala/org/controller/pulsar/tmpUserCool.java -> build/classes/scala/main/org/controller/pulsar/tmpUserCool.class
+   src/main/scala/org/controller/pulsar/userClass.java -> build/classes/scala/main/org/controller/pulsar/userClass.class
    src/main/scala/org/controller/rankEmployeeTest.scala -> build/classes/scala/main/org/controller/rankEmployeeTest$.class
    src/main/scala/org/controller/rankEmployeeTest.scala -> build/classes/scala/main/org/controller/rankEmployeeTest.class
    src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> build/classes/scala/main/org/controller/rankingSystemF1/driverRaceAndPointsInfo$$typecreator16$1.class
@@ -1314,6 +1350,21 @@ binary dependencies:
    src/main/scala/org/controller/persistingInsideJob/streamingToStaticDFForEach.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/persistingInsideJob/streamingToStaticDFForEach.scala -> /home/raptor/.m2/repository/org/scala-lang/scala-reflect/2.11.12/scala-reflect-2.11.12.jar
    src/main/scala/org/controller/persistingInsideJob/streamingToStaticDFForEach.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/checkClass.java -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/emp.java -> /home/raptor/.m2/repository/org/apache/avro/avro/1.10.2/avro-1.10.2.jar
+   src/main/scala/org/controller/pulsar/emp.java -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/pulsarAutoSchema.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/pulsar/pulsarAutoSchema.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
+   src/main/scala/org/controller/pulsar/pulsarAutoSchema.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/pulsarConsumerTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/pulsar/pulsarConsumerTry.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
+   src/main/scala/org/controller/pulsar/pulsarConsumerTry.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/pulsarDerivedSchemaDefinition.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/pulsar/pulsarDerivedSchemaDefinition.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
+   src/main/scala/org/controller/pulsar/pulsarDerivedSchemaDefinition.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/pulsarExclusiveConsumer.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/pulsar/pulsarExclusiveConsumer.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
+   src/main/scala/org/controller/pulsar/pulsarExclusiveConsumer.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/pulsar/pulsarFunctions.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/pulsar/pulsarFunctions.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-functions-api/2.10.1/pulsar-functions-api-2.10.1.jar
    src/main/scala/org/controller/pulsar/pulsarFunctions.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
@@ -1323,13 +1374,50 @@ binary dependencies:
    src/main/scala/org/controller/pulsar/pulsarJavaFunSplit.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/pulsar/pulsarJavaFunSplit.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
    src/main/scala/org/controller/pulsar/pulsarJavaFunSplit.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/pulsarNativeAvroSchema.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/pulsar/pulsarNativeAvroSchema.scala -> /home/raptor/.m2/repository/commons-io/commons-io/2.8.0/commons-io-2.8.0.jar
+   src/main/scala/org/controller/pulsar/pulsarNativeAvroSchema.scala -> /home/raptor/.m2/repository/org/apache/avro/avro/1.10.2/avro-1.10.2.jar
+   src/main/scala/org/controller/pulsar/pulsarNativeAvroSchema.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
+   src/main/scala/org/controller/pulsar/pulsarNativeAvroSchema.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/pulsarPrimitiveSchema.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/pulsar/pulsarPrimitiveSchema.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
+   src/main/scala/org/controller/pulsar/pulsarPrimitiveSchema.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/pulsarProducerTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/pulsar/pulsarProducerTry.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
+   src/main/scala/org/controller/pulsar/pulsarProducerTry.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/pulsar/pulsarRouter.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/pulsar/pulsarRouter.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
    src/main/scala/org/controller/pulsar/pulsarRouter.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-functions-api/2.10.1/pulsar-functions-api-2.10.1.jar
    src/main/scala/org/controller/pulsar/pulsarRouter.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaDerived.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaDerived.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaDerived.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSON.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSON.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSON.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client/2.10.1/pulsar-client-2.10.1.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSON.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSONConsumer.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSONConsumer.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSONConsumer.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client/2.10.1/pulsar-client-2.10.1.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSONConsumer.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaTmpConsumer.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaTmpConsumer.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaTmpConsumer.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client/2.10.1/pulsar-client-2.10.1.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaTmpConsumer.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaTry.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaTry.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
+   src/main/scala/org/controller/pulsar/pulsarSchemaTry.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/pulsar/pulsarUtils.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
    src/main/scala/org/controller/pulsar/pulsarUtils.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
    src/main/scala/org/controller/pulsar/pulsarUtils.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/recordSchemaBuilder.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/pulsar/recordSchemaBuilder.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
+   src/main/scala/org/controller/pulsar/recordSchemaBuilder.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/staticSchemaDerived.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
+   src/main/scala/org/controller/pulsar/staticSchemaDerived.scala -> /home/raptor/.m2/repository/org/apache/pulsar/pulsar-client-api/2.10.1/pulsar-client-api-2.10.1.jar
+   src/main/scala/org/controller/pulsar/staticSchemaDerived.scala -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/tmpUserCool.java -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
+   src/main/scala/org/controller/pulsar/userClass.java -> /home/raptor/Softwares/jdk1.8.0_221/jre/lib/rt.jar
    src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-catalyst_2.11/2.4.5/1f05212e4214d64a4810488f0b74b2bd86fc1245/spark-catalyst_2.11-2.4.5.jar
    src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.apache.spark/spark-sql_2.11/2.4.5/f5cb7af2983ff36d629c37f19ea30db640714ec2/spark-sql_2.11-2.4.5.jar
    src/main/scala/org/controller/rankEmployeeTest.scala -> /home/raptor/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.12.7/18c09ad08ec783f5074f4a0d6308a78759000cb1/scala-library-2.12.7.jar
@@ -1785,9 +1873,24 @@ source dependencies:
    src/main/scala/org/controller/persistingInsideJob/streamingToStaticDFForEach.scala -> src/main/scala/org/controller/persistingInsideJob/jobConstantsPersist.scala
    src/main/scala/org/controller/persistingInsideJob/streamingToStaticDFForEach.scala -> src/main/scala/org/controller/persistingInsideJob/jobHelper.scala
    src/main/scala/org/controller/persistingInsideJob/streamingToStaticDFForEach.scala -> src/main/scala/org/util/SparkOpener.scala
+   src/main/scala/org/controller/pulsar/checkClass.java -> src/main/scala/org/controller/pulsar/checkClass.java
+   src/main/scala/org/controller/pulsar/emp.java -> src/main/scala/org/controller/pulsar/emp.java
+   src/main/scala/org/controller/pulsar/pulsarAutoSchema.scala -> src/main/scala/org/controller/pulsar/pulsarUtils.scala
+   src/main/scala/org/controller/pulsar/pulsarDerivedSchemaDefinition.scala -> src/main/scala/org/controller/pulsar/pulsarUtils.scala
+   src/main/scala/org/controller/pulsar/pulsarDerivedSchemaDefinition.scala -> src/main/scala/org/controller/pulsar/userClass.java
    src/main/scala/org/controller/pulsar/pulsarJavaFunJavaSplit.java -> src/main/scala/org/controller/pulsar/pulsarJavaFunJavaSplit.java
    src/main/scala/org/controller/pulsar/pulsarJavaFunSplit.scala -> src/main/scala/org/controller/pulsar/pulsarUtils.scala
+   src/main/scala/org/controller/pulsar/pulsarNativeAvroSchema.scala -> src/main/scala/org/controller/pulsar/emp.java
+   src/main/scala/org/controller/pulsar/pulsarNativeAvroSchema.scala -> src/main/scala/org/controller/pulsar/pulsarUtils.scala
    src/main/scala/org/controller/pulsar/pulsarRouter.scala -> src/main/scala/org/controller/pulsar/pulsarUtils.scala
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSON.scala -> src/main/scala/org/controller/pulsar/tmpUserCool.java
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSONConsumer.scala -> src/main/scala/org/controller/pulsar/tmpUserCool.java
+   src/main/scala/org/controller/pulsar/pulsarSchemaTmpConsumer.scala -> src/main/scala/org/controller/pulsar/tmpUserCool.java
+   src/main/scala/org/controller/pulsar/recordSchemaBuilder.scala -> src/main/scala/org/controller/pulsar/pulsarUtils.scala
+   src/main/scala/org/controller/pulsar/staticSchemaDerived.scala -> src/main/scala/org/controller/pulsar/pulsarUtils.scala
+   src/main/scala/org/controller/pulsar/staticSchemaDerived.scala -> src/main/scala/org/controller/pulsar/tmpUserCool.java
+   src/main/scala/org/controller/pulsar/tmpUserCool.java -> src/main/scala/org/controller/pulsar/tmpUserCool.java
+   src/main/scala/org/controller/pulsar/userClass.java -> src/main/scala/org/controller/pulsar/userClass.java
    src/main/scala/org/controller/rankEmployeeTest.scala -> src/main/scala/org/constants/projectConstants.scala
    src/main/scala/org/controller/rankEmployeeTest.scala -> src/main/scala/org/util/SparkOpener.scala
    src/main/scala/org/controller/rankEmployeeTest.scala -> src/main/scala/org/util/readWriteUtil.scala
@@ -2429,15 +2532,51 @@ class names:
    src/main/scala/org/controller/persistingInsideJob/streamingToStaticDFForEach.scala -> org.controller.persistingInsideJob.streamingToStaticDFForEach$statsTable$
    src/main/scala/org/controller/persistingInsideJob/streamingToStaticDFForEach.scala -> org.controller.persistingInsideJob.streamingToStaticDFForEach$statsTableWithUpdatedInfo
    src/main/scala/org/controller/persistingInsideJob/streamingToStaticDFForEach.scala -> org.controller.persistingInsideJob.streamingToStaticDFForEach$statsTableWithUpdatedInfo$
+   src/main/scala/org/controller/pulsar/checkClass.java -> org.controller.pulsar.checkClass
+   src/main/scala/org/controller/pulsar/emp.java -> org.controller.pulsar.emp
+   src/main/scala/org/controller/pulsar/emp.java -> org.controller.pulsar.emp$1
+   src/main/scala/org/controller/pulsar/emp.java -> org.controller.pulsar.emp$Builder
+   src/main/scala/org/controller/pulsar/pulsarAutoSchema.scala -> org.controller.pulsar.pulsarAutoSchema
+   src/main/scala/org/controller/pulsar/pulsarAutoSchema.scala -> org.controller.pulsar.pulsarAutoSchema$
+   src/main/scala/org/controller/pulsar/pulsarConsumerTry.scala -> org.controller.pulsar.pulsarConsumerTry
+   src/main/scala/org/controller/pulsar/pulsarConsumerTry.scala -> org.controller.pulsar.pulsarConsumerTry$
+   src/main/scala/org/controller/pulsar/pulsarDerivedSchemaDefinition.scala -> org.controller.pulsar.pulsarDerivedSchemaDefinition
+   src/main/scala/org/controller/pulsar/pulsarDerivedSchemaDefinition.scala -> org.controller.pulsar.pulsarDerivedSchemaDefinition$
+   src/main/scala/org/controller/pulsar/pulsarExclusiveConsumer.scala -> org.controller.pulsar.pulsarExclusiveConsumer
    src/main/scala/org/controller/pulsar/pulsarFunctions.scala -> org.controller.pulsar.pulsarFunctions
+   src/main/scala/org/controller/pulsar/pulsarFunctions.scala -> org.controller.pulsar.pulsarFunctions$
    src/main/scala/org/controller/pulsar/pulsarJavaFun.scala -> org.controller.pulsar.pulsarJavaFun
    src/main/scala/org/controller/pulsar/pulsarJavaFunJavaSplit.java -> org.controller.pulsar.pulsarJavaFunJavaSplit
    src/main/scala/org/controller/pulsar/pulsarJavaFunSplit.scala -> org.controller.pulsar.pulsarJavaFunSplit
+   src/main/scala/org/controller/pulsar/pulsarNativeAvroSchema.scala -> org.controller.pulsar.pulsarNativeAvroSchema
+   src/main/scala/org/controller/pulsar/pulsarNativeAvroSchema.scala -> org.controller.pulsar.pulsarNativeAvroSchema$
+   src/main/scala/org/controller/pulsar/pulsarPrimitiveSchema.scala -> org.controller.pulsar.pulsarPrimitiveSchema
+   src/main/scala/org/controller/pulsar/pulsarPrimitiveSchema.scala -> org.controller.pulsar.pulsarPrimitiveSchema$
+   src/main/scala/org/controller/pulsar/pulsarProducerTry.scala -> org.controller.pulsar.pulsarProducerTry
+   src/main/scala/org/controller/pulsar/pulsarProducerTry.scala -> org.controller.pulsar.pulsarProducerTry$
    src/main/scala/org/controller/pulsar/pulsarRouter.scala -> org.controller.pulsar.pulsarRouter
+   src/main/scala/org/controller/pulsar/pulsarRouter.scala -> org.controller.pulsar.pulsarRouter$
+   src/main/scala/org/controller/pulsar/pulsarSchemaDerived.scala -> org.controller.pulsar.pulsarSchemaDerived
+   src/main/scala/org/controller/pulsar/pulsarSchemaDerived.scala -> org.controller.pulsar.pulsarSchemaDerived$
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSON.scala -> org.controller.pulsar.pulsarSchemaJSON
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSON.scala -> org.controller.pulsar.pulsarSchemaJSON$
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSONConsumer.scala -> org.controller.pulsar.pulsarSchemaJSONConsumer
+   src/main/scala/org/controller/pulsar/pulsarSchemaJSONConsumer.scala -> org.controller.pulsar.pulsarSchemaJSONConsumer$
+   src/main/scala/org/controller/pulsar/pulsarSchemaTmpConsumer.scala -> org.controller.pulsar.pulsarSchemaTmpConsumer
+   src/main/scala/org/controller/pulsar/pulsarSchemaTmpConsumer.scala -> org.controller.pulsar.pulsarSchemaTmpConsumer$
+   src/main/scala/org/controller/pulsar/pulsarSchemaTry.scala -> org.controller.pulsar.pulsarSchemaTry
+   src/main/scala/org/controller/pulsar/pulsarSchemaTry.scala -> org.controller.pulsar.pulsarSchemaTry$
+   src/main/scala/org/controller/pulsar/pulsarSchemaTry.scala -> org.controller.pulsar.tmpUser
    src/main/scala/org/controller/pulsar/pulsarUtils.scala -> org.controller.pulsar.pulsarUtils
    src/main/scala/org/controller/pulsar/pulsarUtils.scala -> org.controller.pulsar.pulsarUtils$
    src/main/scala/org/controller/pulsar/pulsarUtils.scala -> org.controller.pulsar.pulsarUtils$pulsarUtil
    src/main/scala/org/controller/pulsar/pulsarUtils.scala -> org.controller.pulsar.pulsarUtils$pulsarUtil$
+   src/main/scala/org/controller/pulsar/recordSchemaBuilder.scala -> org.controller.pulsar.recordSchemaBuilder
+   src/main/scala/org/controller/pulsar/recordSchemaBuilder.scala -> org.controller.pulsar.recordSchemaBuilder$
+   src/main/scala/org/controller/pulsar/staticSchemaDerived.scala -> org.controller.pulsar.staticSchemaDerived
+   src/main/scala/org/controller/pulsar/staticSchemaDerived.scala -> org.controller.pulsar.staticSchemaDerived$
+   src/main/scala/org/controller/pulsar/tmpUserCool.java -> org.controller.pulsar.tmpUserCool
+   src/main/scala/org/controller/pulsar/userClass.java -> org.controller.pulsar.userClass
    src/main/scala/org/controller/rankEmployeeTest.scala -> org.controller.rankEmployeeTest
    src/main/scala/org/controller/rankEmployeeTest.scala -> org.controller.rankEmployeeTest$
    src/main/scala/org/controller/rankingSystemF1/driverRaceAndPointsInfo.scala -> org.controller.rankingSystemF1.driverRaceAndPointsInfo
